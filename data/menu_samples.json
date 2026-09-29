@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "preview_only": true,
+  "description": "仅供酒单样式预览。示例价格使用游戏金币，不代表现实售价。未包含配方，不属于正式图鉴、解锁记录或顾客订单。",
+  "recipes": [
+    {
+      "id": "sample_old_fashioned",
+      "name": "古典",
+      "english_name": "Old Fashioned",
+      "category": "短饮",
+      "tags": [
+        "醇厚",
+        "微苦",
+        "橙香"
+      ],
+      "reference_price": 38,
+      "subtitle": "醇厚 · 微苦 · 橙香",
+      "thumbnail": ""
+    },
+    {
+      "id": "sample_margarita",
+      "name": "玛格丽特",
+      "english_name": "Margarita",
+      "category": "酸味鸡尾酒",
+      "tags": [
+        "柑橘",
+        "酸爽",
+        "咸口"
+      ],
+      "reference_price": 36,
+      "subtitle": "柑橘 · 酸爽 · 咸口",
+      "thumbnail": ""
+    },
+    {
+      "id": "sample_mojito",
+      "name": "莫吉托",
+      "english_name": "Mojito",
+      "category": "长饮",
+      "tags": [
+        "薄荷",
+        "清爽",
+        "气泡"
+      ],
+      "reference_price": 30,
+      "subtitle": "薄荷 · 清爽 · 气泡",
+      "thumbnail": ""
+    },
+    {
+      "id": "sample_negroni",
+      "name": "尼格罗尼",
+      "english_name": "Negroni",
+      "category": "开胃酒",
+      "tags": [
+        "苦甜",
+        "草本",
+        "橙香"
+      ],
+      "reference_price": 40,
+      "subtitle": "苦甜 · 草本 · 橙香",
+      "thumbnail": ""
+    },
+    {
+      "id": "sample_whiskey_sour",
+      "name": "威士忌酸",
+      "english_name": "Whiskey Sour",
+      "category": "酸味鸡尾酒",
+      "tags": [
+        "酸甜",
+        "柠檬",
+        "醇香"
+      ],
+      "reference_price": 35,
+      "subtitle": "酸甜 · 柠檬 · 醇香",
+      "thumbnail": ""
+    },
+    {
+      "id": "sample_gin_tonic",
+      "name": "金汤力",
+      "english_name": "Gin & Tonic",
+      "category": "长饮",
+      "tags": [
+        "清爽",
+        "微苦",
+        "气泡"
+      ],
+      "reference_price": 28,
+      "subtitle": "清爽 · 微苦 · 气泡",
+      "thumbnail": ""
+    }
+  ]
+}
