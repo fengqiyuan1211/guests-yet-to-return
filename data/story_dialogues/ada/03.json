@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "ada_03",
+  "guest_id": "ada",
+  "guest_name": "艾达",
+  "episode": 3,
+  "title": "新买家的时间表",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "前回说的新买家，是河谷货运公司。他们愿意固定来收货，省得我们到处找人卖。价钱还在谈，牧场里已经有人把明年要买的农具列好了。",
+      "choices": [
+        {
+          "id": "ada_03.start.c1",
+          "text": "听起来是个好消息。",
+          "next": "start_good"
+        },
+        {
+          "id": "ada_03.start.c2",
+          "text": "你怎么没他们那么高兴？",
+          "next": "start_worry"
+        }
+      ]
+    },
+    "start_good": {
+      "speaker": "guest",
+      "text": "是，能稳下来谁不想。我们也缺一辆像样的车，现在那辆拐弯响得比赶车的人还大声。",
+      "next": "schedule"
+    },
+    "start_worry": {
+      "speaker": "guest",
+      "text": "高兴，就是先得看看怎么做。农具都列两页了，问谁负责多出来的活，一屋子人看我。",
+      "next": "schedule"
+    },
+    "schedule": {
+      "speaker": "guest",
+      "text": "他们车多，收货要按时，分级和检查也得提前做。我们先照着试排了几天。我把早晚空出来补班，想着自己熟，跑快一点就够了。",
+      "choices": [
+        {
+          "id": "ada_03.schedule.c1",
+          "text": "最后赶上了吗？",
+          "next": "schedule_result"
+        },
+        {
+          "id": "ada_03.schedule.c2",
+          "text": "那你一天得跑几趟？",
+          "next": "schedule_trips"
+        }
+      ]
+    },
+    "schedule_result": {
+      "speaker": "guest",
+      "text": "人是赶上了，记录没跟上。东边水槽我查过，忘了写，托马接班又骑过去一趟。",
+      "next": "mistake"
+    },
+    "schedule_trips": {
+      "speaker": "guest",
+      "text": "来来回回，自己都算乱了。东边水槽查完没写，托马看记录空着，又替我白跑了一趟。",
+      "next": "mistake"
+    },
+    "mistake": {
+      "speaker": "guest",
+      "text": "回来时他的马都累了，我还问怎么这么晚。他把本子往我面前一放，我才想起来。这回没人受伤，也没丢东西，可我连句埋怨都说不出口。",
+      "choices": [
+        {
+          "id": "ada_03.mistake.c1",
+          "text": "你跟他认错了？",
+          "next": "mistake_apology"
+        },
+        {
+          "id": "ada_03.mistake.c2",
+          "text": "他当时说什么了？",
+          "next": "mistake_toma"
+        }
+      ]
+    },
+    "mistake_apology": {
+      "speaker": "guest",
+      "text": "认了，还想替他把晚上的活做完。他不肯，说别又拿多干一趟把事情混过去。",
+      "next": "close"
+    },
+    "mistake_toma": {
+      "speaker": "guest",
+      "text": "他说得重排，不能哪儿缺人就塞我进去。我当时正累，一听他那口气，差点又吵起来。",
+      "next": "close"
+    },
+    "close": {
+      "speaker": "guest",
+      "text": "他说明天把排班表带来，大家一起看。我先不替他猜了，到时候看他怎么排。下次过来再告诉你。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "ada_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "ada_02",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "ada_04",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

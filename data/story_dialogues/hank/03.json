@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "hank_03",
+  "guest_id": "hank",
+  "guest_name": "老霍克",
+  "episode": 3,
+  "title": "回来那一路",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "答应讲那晚的事，今天慢慢说。风沙起来前，车队一直没到。我带了两个人出去接，找到时车轮陷住了。我们把货卸下来，一起把车推了出来。",
+      "choices": [
+        {
+          "id": "hank_03.start.c1",
+          "text": "找到就好，后来呢？",
+          "next": "start_reply_1"
+        },
+        {
+          "id": "hank_03.start.c2",
+          "text": "你出去时带够东西了吗？",
+          "next": "start_reply_2"
+        }
+      ]
+    },
+    "start_reply_1": {
+      "speaker": "guest",
+      "text": "后来该往回走了，我却分不清方向。平常认的那几处石头都看不见，越走越不对劲。",
+      "next": "beat2"
+    },
+    "start_reply_2": {
+      "speaker": "guest",
+      "text": "玛莎硬塞了绳子给我，我还嫌重。后来就靠那根绳把人连在一块，才没在风里走散。",
+      "next": "beat2"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "后头有个孩子不停问多久能到家。我只会说快了，其实手都在抖。那个车夫来找我们，领着顺路标往回走，走近了才看见玛莎举的灯。",
+      "choices": [
+        {
+          "id": "hank_03.beat2.c1",
+          "text": "这下终于放心了。",
+          "next": "beat2_reply_1"
+        },
+        {
+          "id": "hank_03.beat2.c2",
+          "text": "那大家都帮上忙了啊。",
+          "next": "beat2_reply_2"
+        }
+      ]
+    },
+    "beat2_reply_1": {
+      "speaker": "guest",
+      "text": "腿一下就软了。回到街上我坐在地上，玛莎数完人，先骂我两句，再问手伤着没有。",
+      "next": "beat3"
+    },
+    "beat2_reply_2": {
+      "speaker": "guest",
+      "text": "是啊。车夫带路，玛莎举灯，齐恩送油，还有人出来做标记。我也出了力，可真不是我一个人救回来的。",
+      "next": "beat3"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "后来报纸写成我点灯引路。我解释过，没用。再后来逢节都请我坐前排，我心里也高兴，就由着他们说。如今要刻牌子了，我才不敢再含糊。",
+      "choices": [
+        {
+          "id": "hank_03.beat3.c1",
+          "text": "那就把你刚才说的讲给他们听。",
+          "next": "beat3_reply_1"
+        },
+        {
+          "id": "hank_03.beat3.c2",
+          "text": "他们听了会不会怪你？",
+          "next": "beat3_reply_2"
+        }
+      ]
+    },
+    "beat3_reply_1": {
+      "speaker": "guest",
+      "text": "得讲。我一直说报纸写错了，也该告诉他们，我自己后来没怎么纠正。",
+      "next": "closing"
+    },
+    "beat3_reply_2": {
+      "speaker": "guest",
+      "text": "会不会怪，我不知道。可不能为了怕难堪，真让那块牌子只留我一个名字。",
+      "next": "closing"
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "今晚这段总算讲完了。明天我就把稿子退回去，把事情说清楚。下回过来，你再问我有没有开这个口。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "hank_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "hank_02",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "hank_04",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

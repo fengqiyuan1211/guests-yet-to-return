@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="780" viewBox="0 0 760 780">
+<defs>
+ <linearGradient id="wood" x2="1"><stop stop-color="#201912"/><stop offset=".16" stop-color="#593322"/><stop offset=".5" stop-color="#321f17"/><stop offset=".85" stop-color="#633c28"/><stop offset="1" stop-color="#201812"/></linearGradient>
+ <linearGradient id="brass" x2="1" y2=".2"><stop stop-color="#6c4826"/><stop offset=".16" stop-color="#d9ae60"/><stop offset=".32" stop-color="#f9de96"/><stop offset=".5" stop-color="#99723c"/><stop offset=".8" stop-color="#e2bf76"/><stop offset="1" stop-color="#684322"/></linearGradient>
+ <linearGradient id="steel" x2="1"><stop stop-color="#302b26"/><stop offset=".3" stop-color="#a39b83"/><stop offset=".46" stop-color="#ede0bc"/><stop offset=".6" stop-color="#807563"/><stop offset="1" stop-color="#39322b"/></linearGradient>
+ <linearGradient id="red" x2="0" y2="1"><stop stop-color="#8c3927"/><stop offset=".4" stop-color="#58251e"/><stop offset="1" stop-color="#311914"/></linearGradient>
+ <linearGradient id="black" x2="0" y2="1"><stop stop-color="#060907"/><stop offset=".5" stop-color="#1f2821"/><stop offset="1" stop-color="#090d09"/></linearGradient>
+ <radialGradient id="screw"><stop stop-color="#efd995"/><stop offset=".6" stop-color="#a47c40"/><stop offset="1" stop-color="#30271c"/></radialGradient>
+</defs>
+<!-- copper boiler exhaust and external pipework -->
+<path d="M685 362h26V142h-28v-44" fill="none" stroke="#1c1510" stroke-width="26"/>
+<path d="M685 362h26V142h-28v-44" fill="none" stroke="url(#brass)" stroke-width="17"/>
+<path d="M36 525H20V275h39" fill="none" stroke="#19140f" stroke-width="28"/>
+<path d="M36 525H20V275h39" fill="none" stroke="url(#brass)" stroke-width="19"/>
+<g fill="url(#steel)" stroke="#392b1d" stroke-width="2"><rect x="672" y="95" width="23" height="12" rx="2"/><rect x="701" y="205" width="21" height="13" rx="2"/><rect x="8" y="359" width="25" height="13" rx="2"/></g>
+<!-- silhouette, feet and heavy timber case -->
+<path d="M82 45Q380-33 678 45l29 97v587H52V142Z" fill="#090b0a" opacity=".8" transform="translate(7 10)"/>
+<rect x="80" y="714" width="63" height="46" rx="5" fill="url(#steel)"/><rect x="617" y="714" width="63" height="46" rx="5" fill="url(#steel)"/>
+<path d="M80 45Q380-33 680 45l18 105v565q0 21-23 21H84q-23 0-23-21V150Z" fill="url(#wood)" stroke="#100f0c" stroke-width="8"/>
+<g fill="none" stroke="#b0793b" opacity=".15"><path d="M78 133v555M86 170v480M667 101v596M650 590v104M693 205v450M102 514q80 12 153 0t208 0 194-2M100 653q178-17 510 3M90 672q186-20 525 1"/></g>
+<!-- ornamental brass arch -->
+<path d="M93 56Q380-6 667 56v145H93Z" fill="url(#brass)" stroke="#4d341f" stroke-width="3"/>
+<path d="M106 68Q380 9 654 68v118H106Z" fill="url(#red)" stroke="#e3bf73" stroke-width="2"/>
+<path d="M128 73q253-44 504 0" fill="none" stroke="#d9ae62" stroke-width="2"/>
+<path d="m140 117 12-9 12 9-12 9Zm456 0 12-9 12 9-12 9Z" fill="#c4a063"/>
+<rect x="192" y="144" width="376" height="34" rx="4" fill="#201a11" stroke="#9b7946" stroke-width="2"/>
+<!-- window: bevels, inset black rubber, three separated reels -->
+<rect x="84" y="219" width="592" height="295" rx="16" fill="url(#brass)" stroke="#2c2117" stroke-width="5"/>
+<rect x="96" y="231" width="568" height="271" rx="9" fill="#18150f" stroke="#fbdf9e" stroke-width="2"/>
+<g fill="#1a1914" stroke="#6d552f" stroke-width="3"><rect x="104" y="242" width="174" height="248" rx="7"/><rect x="293" y="242" width="174" height="248" rx="7"/><rect x="482" y="242" width="174" height="248" rx="7"/></g>
+<!-- side payline indicators -->
+<path d="m76 352 21 12-21 12Zm608 0-21 12 21 12Z" fill="#df793d" stroke="#f7d786" stroke-width="2"/>
+<!-- payout display and small brass panel -->
+<rect x="110" y="548" width="540" height="90" rx="7" fill="url(#brass)" stroke="#231b10" stroke-width="3"/>
+<rect x="119" y="557" width="522" height="72" rx="4" fill="url(#black)" stroke="#4e492f" stroke-width="2"/>
+<rect x="257" y="661" width="246" height="43" rx="4" fill="url(#brass)" stroke="#3a2c18" stroke-width="3"/>
+<!-- coin entry / speaker grille -->
+<rect x="123" y="662" width="85" height="40" rx="8" fill="url(#steel)" stroke="#171a16" stroke-width="3"/>
+<rect x="133" y="673" width="65" height="8" rx="3" fill="#101411"/><path d="M139 690h53" stroke="#615948" stroke-width="2"/>
+<g stroke="#17130e" stroke-width="5" stroke-linecap="round"><path d="M556 665h63M554 676h66M554 687h66M556 698h63"/></g>
+<!-- corner screws -->
+<g fill="url(#screw)" stroke="#4b3520"><circle cx="84" cy="180" r="7"/><circle cx="676" cy="180" r="7"/><circle cx="82" cy="538" r="7"/><circle cx="678" cy="538" r="7"/><circle cx="83" cy="710" r="7"/><circle cx="677" cy="710" r="7"/><circle cx="110" cy="61" r="6"/><circle cx="649" cy="61" r="6"/></g>
+<g stroke="#4b3520" stroke-width="2"><path d="m80 176 8 8m-4 352 6 5m588-365 7 7m-601 528 7 7m588-181 6 5m-7 173 8 8"/></g>
+</svg>

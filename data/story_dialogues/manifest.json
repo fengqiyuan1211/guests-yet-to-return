@@ -1,0 +1,167 @@
+{
+  "format_version": "2.0",
+  "status": "integrated",
+  "characters": [
+    {
+      "guest_id": "stick",
+      "name": "小线",
+      "story_summary": "以前演过不少游戏，如今重聚老搭档，想起那些很久没再来的观众。",
+      "episodes": [
+        {
+          "id": "stick_01",
+          "episode": 1,
+          "title": "以前演过不少",
+          "file": "stick/01.json"
+        },
+        {
+          "id": "stick_02",
+          "episode": 2,
+          "title": "一张键盘挤两个人",
+          "file": "stick/02.json"
+        },
+        {
+          "id": "stick_03",
+          "episode": 3,
+          "title": "拍砸了也得接着拍",
+          "file": "stick/03.json"
+        },
+        {
+          "id": "stick_04",
+          "episode": 4,
+          "title": "好不容易约上一回",
+          "file": "stick/04.json"
+        },
+        {
+          "id": "stick_05",
+          "episode": 5,
+          "title": "请谁来看这场戏",
+          "file": "stick/05.json"
+        }
+      ]
+    },
+    {
+      "guest_id": "milo",
+      "name": "米洛",
+      "story_summary": "一张让他出名的地图出了问题，他逐步讲出自己删改地图的事，并开始认真补救。",
+      "episodes": [
+        {
+          "id": "milo_01",
+          "episode": 1,
+          "title": "封面上有我的名字",
+          "file": "milo/01.json"
+        },
+        {
+          "id": "milo_02",
+          "episode": 2,
+          "title": "样张上的签字",
+          "file": "milo/02.json"
+        },
+        {
+          "id": "milo_03",
+          "episode": 3,
+          "title": "那家店一直开着",
+          "file": "milo/03.json"
+        },
+        {
+          "id": "milo_04",
+          "episode": 4,
+          "title": "橱窗里的旧地图",
+          "file": "milo/04.json"
+        },
+        {
+          "id": "milo_05",
+          "episode": 5,
+          "title": "夹进旧图的那一页",
+          "file": "milo/05.json"
+        }
+      ]
+    },
+    {
+      "guest_id": "ada",
+      "name": "艾达",
+      "story_summary": "从习惯替所有人干活，到一次交接出错，她开始试着相信搭档，也给自己留出时间。",
+      "episodes": [
+        {
+          "id": "ada_01",
+          "episode": 1,
+          "title": "提前收工",
+          "file": "ada/01.json"
+        },
+        {
+          "id": "ada_02",
+          "episode": 2,
+          "title": "口袋里的怀表",
+          "file": "ada/02.json"
+        },
+        {
+          "id": "ada_03",
+          "episode": 3,
+          "title": "新买家的时间表",
+          "file": "ada/03.json"
+        },
+        {
+          "id": "ada_04",
+          "episode": 4,
+          "title": "托马的排班表",
+          "file": "ada/04.json"
+        },
+        {
+          "id": "ada_05",
+          "episode": 5,
+          "title": "第一次空下来的下午",
+          "file": "ada/05.json"
+        }
+      ]
+    },
+    {
+      "guest_id": "hank",
+      "name": "老霍克",
+      "story_summary": "一块待签的纪念牌，让他重新讲清那场风沙里是谁帮助了谁。",
+      "episodes": [
+        {
+          "id": "hank_01",
+          "episode": 1,
+          "title": "牌子上的名字",
+          "file": "hank/01.json"
+        },
+        {
+          "id": "hank_02",
+          "episode": 2,
+          "title": "谁领走了灯油",
+          "file": "hank/02.json"
+        },
+        {
+          "id": "hank_03",
+          "episode": 3,
+          "title": "回来那一路",
+          "file": "hank/03.json"
+        },
+        {
+          "id": "hank_04",
+          "episode": 4,
+          "title": "把稿子退回去",
+          "file": "hank/04.json"
+        },
+        {
+          "id": "hank_05",
+          "episode": 5,
+          "title": "这回写全了",
+          "file": "hank/05.json"
+        }
+      ]
+    },
+    {
+      "guest_id": "yellow_creature",
+      "name": "黄色生物",
+      "story_summary": "固定梗，无背景故事。",
+      "episodes": [
+        {
+          "id": "yellow_creature_repeat",
+          "episode": 1,
+          "title": "固定梗",
+          "file": "yellow_creature/repeat.json"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "milo_01",
+  "guest_id": "milo",
+  "guest_name": "米洛",
+  "episode": 1,
+  "title": "封面上有我的名字",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "老板，你这儿晚上人多吗？我在外头跑了快一个月，正想找人说说话。昨天差点让一场沙暴埋了，帽子追出去半里地才捡回来。",
+      "choices": [
+        {
+          "id": "milo_01.start.c1",
+          "text": "你没受伤吧？",
+          "next": "start_reply1"
+        },
+        {
+          "id": "milo_01.start.c2",
+          "text": "帽子追了半里地，人呢？",
+          "next": "start_reply2"
+        }
+      ]
+    },
+    "start_reply1": {
+      "speaker": "guest",
+      "text": "没事，真没事。说沙暴有点过了。是货车从旁边开过去，扬了一身土。我这么一讲，是不是立刻没意思了？",
+      "next": "beat2"
+    },
+    "start_reply2": {
+      "speaker": "guest",
+      "text": "人当然跟着追。好吧，半里地也是多说了些。就是过路的货车把帽子吹跑了，追到水沟边才够着。",
+      "next": "beat2"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "我小时候住驿站，就爱听客人讲这些。真去给商队探路，才知道有时候一整天都在等人修车。写信给妹妹莉娅，我就总想挑些厉害的说。",
+      "choices": [
+        {
+          "id": "milo_01.beat2.c1",
+          "text": "她爱听吗？",
+          "next": "beat2_reply1"
+        },
+        {
+          "id": "milo_01.beat2.c2",
+          "text": "修车也能写啊。",
+          "next": "beat2_reply2"
+        }
+      ]
+    },
+    "beat2_reply1": {
+      "speaker": "guest",
+      "text": "她总问井水多少钱，沿途开了什么店。我还嫌她不关心我的险情。她管着家里的杂货铺，这些倒确实有用。",
+      "next": "beat3"
+    },
+    "beat2_reply2": {
+      "speaker": "guest",
+      "text": "我写过一回，说等得在路边睡着了。她问我睡哪儿，有没有蚊子。倒比我编的险情问得详细。",
+      "next": "beat3"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "不过我也干过正经事。前年有人把我测的路线印成了地图，封面上还有我的名字。我买了六本寄回去，让莉娅摆在橱窗最显眼的地方。",
+      "choices": [
+        {
+          "id": "milo_01.beat3.c1",
+          "text": "六本？你挺舍得。",
+          "next": "beat3_reply1"
+        },
+        {
+          "id": "milo_01.beat3.c2",
+          "text": "那你在这儿也有熟客？",
+          "next": "beat3_reply2"
+        }
+      ]
+    },
+    "beat3_reply1": {
+      "speaker": "guest",
+      "text": "第一次嘛，谁忍得住。寄完发现路费不够，给商队多看了两晚行李才凑齐。这事就没写在信里。",
+      "next": "closing"
+    },
+    "beat3_reply2": {
+      "speaker": "guest",
+      "text": "不少车夫用过那张图。认出我的时候，一般先问地图上的米洛是不是我。以前我都恨不得把封面掏给他看。",
+      "next": "closing"
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "今天有个车夫托人留话，让我明早带着地图去货棚，说他照图走岔了。我还不知道是哪段路。先聊到这儿吧，明早见过他，下回来跟你说。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "milo_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": null,
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "milo_02",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

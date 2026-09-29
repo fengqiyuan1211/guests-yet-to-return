@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "milo_05",
+  "guest_id": "milo",
+  "guest_name": "米洛",
+  "episode": 5,
+  "title": "夹进旧图的那一页",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "说明印好了，给你看这一张。我没签他们改的那句话，自己付了印费。原先怎么漏的，就照实写了。今天已经送到三家书铺，货棚也留了一叠。",
+      "choices": [
+        {
+          "id": "milo_05.start.c1",
+          "text": "出版商同意了？",
+          "next": "start_reply1"
+        },
+        {
+          "id": "milo_05.start.c2",
+          "text": "旧图买主能拿到吗？",
+          "next": "start_reply2"
+        }
+      ]
+    },
+    "start_reply1": {
+      "speaker": "guest",
+      "text": "他们最后答应让书铺夹进去，印费不出。我付得起，就是这阵子得少乱买东西。至少现在拿到旧图的人能看到提醒。",
+      "next": "beat2"
+    },
+    "start_reply2": {
+      "speaker": "guest",
+      "text": "莉娅那边能找到的都送了，外地几位托商队带。还有找不到的，我把领取说明的地方写在书铺门口，能补一份是一份。",
+      "next": "beat2"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "那位车夫今天又来找我，我还有点发怵。他这回是来领说明，说下趟帮忙带去西边几个站。临走拍了拍地图，叫我以后别把雨季那行字藏起来。",
+      "choices": [
+        {
+          "id": "milo_05.beat2.c1",
+          "text": "他还愿意用你的图？",
+          "next": "beat2_reply1"
+        },
+        {
+          "id": "milo_05.beat2.c2",
+          "text": "罗恩看见印好的了吗？",
+          "next": "beat2_reply2"
+        }
+      ]
+    },
+    "beat2_reply1": {
+      "speaker": "guest",
+      "text": "他说新补的几处挺有用，让我把没确认的地方也标出来。我都写了待查，没敢拍胸口说再不会错。",
+      "next": "beat3"
+    },
+    "beat2_reply2": {
+      "speaker": "guest",
+      "text": "给他送去了。他没夸我，掏出笔又添了个路口名称。我问这还得改？他说当然。我就把笔接过来了。",
+      "next": "beat3"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "给公司的新报告也交了，哪些车能走，雨天绕哪里，都分开写了。他们还要算停靠的成本，这个接着谈。莉娅那封信我也回了，月底回家待四天，车位已经订好。",
+      "choices": [
+        {
+          "id": "milo_05.beat3.c1",
+          "text": "这回给了准日子。",
+          "next": "beat3_reply1"
+        },
+        {
+          "id": "milo_05.beat3.c2",
+          "text": "还写你的旅行记吗？",
+          "next": "beat3_reply2"
+        }
+      ]
+    },
+    "beat3_reply1": {
+      "speaker": "guest",
+      "text": "给了。她回信说那正好，拆橱窗缺个人抬木框。我先答应了，没再问她要不要听什么远途见闻。",
+      "next": "closing"
+    },
+    "beat3_reply2": {
+      "speaker": "guest",
+      "text": "写。今天就记车夫替我捎说明的事，还有罗恩一见面让我量院门。真写下来也不少，用不着添一场沙暴。",
+      "next": "closing"
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "旧图能补的已经开始补了，名单我还会接着追。月底回家再看看橱窗拆成什么样，下回来讲给你听。今天先聊到这儿，我坐会儿。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "milo_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "milo_04",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": null,
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

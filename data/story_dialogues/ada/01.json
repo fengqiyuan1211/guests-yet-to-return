@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "ada_01",
+  "guest_id": "ada",
+  "guest_name": "艾达",
+  "episode": 1,
+  "title": "提前收工",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "今天回来得早，我自己都有点不习惯。刚才在门口站了一会儿，想了半天是不是忘了什么。后来想起来，牛进棚了，门也锁了，真没事了。",
+      "choices": [
+        {
+          "id": "ada_01.start.c1",
+          "text": "那就坐会儿，门口又没人给你发工钱。",
+          "next": "start_joke"
+        },
+        {
+          "id": "ada_01.start.c2",
+          "text": "你平时要忙到什么时候？",
+          "next": "start_work"
+        }
+      ]
+    },
+    "start_joke": {
+      "speaker": "guest",
+      "text": "也是。我都牵着马来一趟了，总不能再牵回去找活干。要让托马看见，又得笑我。",
+      "next": "past"
+    },
+    "start_work": {
+      "speaker": "guest",
+      "text": "没准。赶完牛还得看看水槽，谁临时有事，我再替一阵。等想起来该回去，天都黑透了。",
+      "next": "past"
+    },
+    "past": {
+      "speaker": "guest",
+      "text": "我们牧场是几家凑起来的。早些年旱得厉害，各养各的撑不住，就把牛和农具合到一起。我家连马料都买不起，还是邻居先垫的钱。",
+      "choices": [
+        {
+          "id": "ada_01.past.c1",
+          "text": "那时候你也跟着干活了？",
+          "next": "past_age"
+        },
+        {
+          "id": "ada_01.past.c2",
+          "text": "几家一起做事，不会吵架吗？",
+          "next": "past_arguments"
+        }
+      ]
+    },
+    "past_age": {
+      "speaker": "guest",
+      "text": "搬点草料，干不了多少。年纪大些的人总偷偷替我多搬，还骗我说分给我的就这些。后来才知道。",
+      "next": "now"
+    },
+    "past_arguments": {
+      "speaker": "guest",
+      "text": "怎么不吵。修水槽都能吵半天。不过谁真缺东西，骂归骂，隔天还是会给他送过去。",
+      "next": "now"
+    },
+    "now": {
+      "speaker": "guest",
+      "text": "现在我熟悉路，腿脚也比他们利索，多跑几趟应该的。他们老说我一个人顶三个。这话听着挺好，就是有时候真把三个人的事都交给我了。",
+      "choices": [
+        {
+          "id": "ada_01.now.c1",
+          "text": "三个的工钱也得跟上吧。",
+          "next": "now_pay"
+        },
+        {
+          "id": "ada_01.now.c2",
+          "text": "你没跟他们提过？",
+          "next": "now_say"
+        }
+      ]
+    },
+    "now_pay": {
+      "speaker": "guest",
+      "text": "你替我去说，肯定比我说得好。我一看他们为难，就先答应了。工钱怎么开口，还真没练过。",
+      "next": "close"
+    },
+    "now_say": {
+      "speaker": "guest",
+      "text": "提过几回。他们也肯换，可我交代完总觉得不放心，最后又跟着去了。这事也赖我。",
+      "next": "close"
+    },
+    "close": {
+      "speaker": "guest",
+      "text": "行了，今天难得早收工，就不把牧场搬过来讲了。下回给你看个东西，一直揣在我口袋里，倒没空管它。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "ada_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": null,
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "ada_02",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

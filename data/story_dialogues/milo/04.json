@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "milo_04",
+  "guest_id": "milo",
+  "guest_name": "米洛",
+  "episode": 4,
+  "title": "橱窗里的旧地图",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "问清楚了。出版商只跟莉娅说要出新版，没说旧图哪里错。她还以为卖得好，正高兴呢。我把原稿的事写给她，她回了信，问我卖出去那十九份怎么办。",
+      "choices": [
+        {
+          "id": "milo_04.start.c1",
+          "text": "她生气了吗？",
+          "next": "start_reply1"
+        },
+        {
+          "id": "milo_04.start.c2",
+          "text": "买主都能找到吗？",
+          "next": "start_reply2"
+        }
+      ]
+    },
+    "start_reply1": {
+      "speaker": "guest",
+      "text": "她问我为什么现在才说。信里没骂人，我读着却比挨骂难受。她最近忙着改驿站，还得替我挨家找买图的人。",
+      "next": "beat2"
+    },
+    "start_reply2": {
+      "speaker": "guest",
+      "text": "有几位已经去外地了。她把去向也记着，让我找常跑那边的商队捎说明。我以前还嫌她信里总问些琐事。",
+      "next": "beat2"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "我把更正写好了。雨季那条路得绕，漏掉的站和井也补上了。罗恩核过位置，车夫帮我看了写法。这回第一行就写清楚旧图少了提示，不能照着原线走。",
+      "choices": [
+        {
+          "id": "milo_04.beat2.c1",
+          "text": "你妹妹那边呢？",
+          "next": "beat2_reply1"
+        },
+        {
+          "id": "milo_04.beat2.c2",
+          "text": "那位陷车的车夫看了吗？",
+          "next": "beat2_reply2"
+        }
+      ]
+    },
+    "beat2_reply1": {
+      "speaker": "guest",
+      "text": "我把更正先寄了一份，让她别急着替我垫印费。我也回了改驿站的事，木料能找谁运，这些我真能帮上。",
+      "next": "beat3"
+    },
+    "beat2_reply2": {
+      "speaker": "guest",
+      "text": "看了。他让我把绕行点画大点，还说别全用测路人才懂的记号。我改了，得让拿图的人看得明白。",
+      "next": "beat3"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "我想让出版商把更正夹进没卖掉的图，也送给卖过图的书铺。信刚回到我手里，前面都答应了，最后却要改一句话。",
+      "choices": [
+        {
+          "id": "milo_04.beat3.c1",
+          "text": "改成什么？",
+          "next": "beat3_reply1"
+        },
+        {
+          "id": "milo_04.beat3.c2",
+          "text": "不改就不让夹了？",
+          "next": "beat3_reply2"
+        }
+      ]
+    },
+    "beat3_reply1": {
+      "speaker": "guest",
+      "text": "他们要把旧图缺少雨季提示，改成道路情况有变。说这么写好看些。可那条路一直这样，变的只是他们想怎么说。",
+      "next": "closing"
+    },
+    "beat3_reply2": {
+      "speaker": "guest",
+      "text": "信上没说死，只说先签回去才能安排。我把笔拿出来，又放回去了。那车夫问过我的话，我还记得。",
+      "next": "closing"
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "明早得给他们答复。签了当然省事，可我已经签错过一回了。今天先说到这儿，等这张说明真发出去，下次拿来给你看。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "milo_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "milo_03",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "milo_05",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

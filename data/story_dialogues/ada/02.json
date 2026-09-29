@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "ada_02",
+  "guest_id": "ada",
+  "guest_name": "艾达",
+  "episode": 2,
+  "title": "口袋里的怀表",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "上次说给你看的，就是这只表。别看它旧，壳子还挺结实。机芯卡了，我拆开看过，知道是哪儿的毛病，就是一直没修完。",
+      "choices": [
+        {
+          "id": "ada_02.start.c1",
+          "text": "你还会修表？",
+          "next": "start_skill"
+        },
+        {
+          "id": "ada_02.start.c2",
+          "text": "这都停了多久了？",
+          "next": "start_delay"
+        }
+      ]
+    },
+    "start_skill": {
+      "speaker": "guest",
+      "text": "跟镇上师傅学过。第一次拆表，我一口气把小螺丝吹地上了。那天没学别的，净趴着找东西。",
+      "next": "apprentice"
+    },
+    "start_delay": {
+      "speaker": "guest",
+      "text": "两个月。每次掏出来都说今晚修，回去一挨枕头就睡着。倒是替别人修的几只，早交了。",
+      "next": "apprentice"
+    },
+    "apprentice": {
+      "speaker": "guest",
+      "text": "后来师傅去新城开店，问我愿不愿意跟去。当年牧场正缺人，我说等忙完这一阵。第二年他又写信，我回的还是这句话。",
+      "choices": [
+        {
+          "id": "ada_02.apprentice.c1",
+          "text": "现在还和师傅联系吗？",
+          "next": "apprentice_contact"
+        },
+        {
+          "id": "ada_02.apprentice.c2",
+          "text": "真让你去，你舍得这些牛吗？",
+          "next": "apprentice_ranch"
+        }
+      ]
+    },
+    "apprentice_contact": {
+      "speaker": "guest",
+      "text": "逢年过节写几句。他还给我寄零件，叫我别拿修马鞍的家伙乱撬。知道我手重。",
+      "next": "hobby"
+    },
+    "apprentice_ranch": {
+      "speaker": "guest",
+      "text": "舍不得，所以也没全怪忙。我喜欢在外头跑，也喜欢坐着鼓捣这些，偏偏一天就那么长。",
+      "next": "hobby"
+    },
+    "hobby": {
+      "speaker": "guest",
+      "text": "我没打算明天就换个行当。就想找个空，把这只弄好。可一有人问当初为什么没去，我就不太想聊，像是错过那回，以后都不能学了。",
+      "choices": [
+        {
+          "id": "ada_02.hobby.c1",
+          "text": "这里有空桌，不过小零件得看紧。",
+          "next": "hobby_table"
+        },
+        {
+          "id": "ada_02.hobby.c2",
+          "text": "修好以后给我看看，我还没见过里面。",
+          "next": "hobby_show"
+        }
+      ]
+    },
+    "hobby_table": {
+      "speaker": "guest",
+      "text": "借我一小块地方就成。我带盒子装着，这回不往外吹气了。少颗螺丝，你可别嫌我蹲得久。",
+      "next": "close"
+    },
+    "hobby_show": {
+      "speaker": "guest",
+      "text": "行，不过得等我先弄明白，别讲一半卡住。我师傅讲起来可快了，我追着问过好几条街。",
+      "next": "close"
+    },
+    "close": {
+      "speaker": "guest",
+      "text": "今天先收着，零件没带齐。下回来再折腾。牧场这两天来了个新买家，我得先把那边的安排弄清楚。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "ada_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "ada_01",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "ada_03",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "hank_01",
+  "guest_id": "hank",
+  "guest_name": "老霍克",
+  "episode": 1,
+  "title": "牌子上的名字",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "镇上送来一张稿子，说要在旧驿站立块纪念牌，让我签个字。写的是当年那场风沙，还是老说法，说我提着灯，把整支车队领了回来。",
+      "choices": [
+        {
+          "id": "hank_01.start.c1",
+          "text": "听起来你以前挺厉害啊。",
+          "next": "start_reply_1"
+        },
+        {
+          "id": "hank_01.start.c2",
+          "text": "你签了吗？",
+          "next": "start_reply_2"
+        }
+      ]
+    },
+    "start_reply_1": {
+      "speaker": "guest",
+      "text": "年轻的时候腿脚好，敢往外跑。这倒是真的。可稿子里有几句，我看着实在不太像自己的事。",
+      "next": "beat2"
+    },
+    "start_reply_2": {
+      "speaker": "guest",
+      "text": "笔都拿起来了，又放下了。人家还以为我嫌名字写得不够大，让我自己圈地方。",
+      "next": "beat2"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "那时候这儿只有一口井和几间铺子，我跟着赶牛队路过，本来待两天。井坏了，留下帮忙修。井修好了又搭货棚，就这么一拖再拖，住下了。",
+      "choices": [
+        {
+          "id": "hank_01.beat2.c1",
+          "text": "那你对镇子还真熟。",
+          "next": "beat2_reply_1"
+        },
+        {
+          "id": "hank_01.beat2.c2",
+          "text": "一起干活的人还在吗？",
+          "next": "beat2_reply_2"
+        }
+      ]
+    },
+    "beat2_reply_1": {
+      "speaker": "guest",
+      "text": "熟归熟，头一回也闹过笑话。认错了骡子，跟到人家磨坊去了。报纸可没写过这个。",
+      "next": "beat3"
+    },
+    "beat2_reply_2": {
+      "speaker": "guest",
+      "text": "有些搬了，有些不在了。洗衣服的玛莎，开铺子的齐恩，那阵子天天见。今天翻稿子，倒一个也没提。",
+      "next": "beat3"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "稿子一共就那么点地方，全写我。我想添几个人，又怕把事记岔了。齐恩当年什么都记账，连谁拿走半把钉子也记，灯油肯定也在里头。",
+      "choices": [
+        {
+          "id": "hank_01.beat3.c1",
+          "text": "账本还能找到吗？",
+          "next": "beat3_reply_1"
+        },
+        {
+          "id": "hank_01.beat3.c2",
+          "text": "先别急着签，查好了再说。",
+          "next": "beat3_reply_2"
+        }
+      ]
+    },
+    "beat3_reply_1": {
+      "speaker": "guest",
+      "text": "他孙子最近回来收拾旧屋，我去问问。旧报纸倒留了一堆，我现在不大敢照着它抄。",
+      "next": "closing"
+    },
+    "beat3_reply_2": {
+      "speaker": "guest",
+      "text": "我已经让他们等等了。既然要刻在那儿，总得先把谁做了什么弄明白。",
+      "next": "closing"
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "今天先说这些。我去问问那本账还在不在，下回来跟你说。那张稿子先放我兜里，省得又有人催着签。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "hank_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": null,
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "hank_02",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "milo_03",
+  "guest_id": "milo",
+  "guest_name": "米洛",
+  "episode": 3,
+  "title": "那家店一直开着",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "西坡那家店还开着，井也在。罗恩见我就递来一把尺，让我量院门。我准备了一路的解释，连第一句都没用上，就蹲门口去了。",
+      "choices": [
+        {
+          "id": "milo_03.start.c1",
+          "text": "量院门干什么？",
+          "next": "start_reply1"
+        },
+        {
+          "id": "milo_03.start.c2",
+          "text": "老板还认得你？",
+          "next": "start_reply2"
+        }
+      ]
+    },
+    "start_reply1": {
+      "speaker": "guest",
+      "text": "看货车进不进得来。旧图只写了能借宿，根本没写多大的车能停。罗恩说既然来了，就顺手量清楚。",
+      "next": "beat2"
+    },
+    "start_reply2": {
+      "speaker": "guest",
+      "text": "认得，叫我进屋歇脚。我提地图，他说确实有人找不到这儿，但生意少也因为铁路通了。我倒盼着他骂我两句。",
+      "next": "beat2"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "罗恩带我走了一圈。井还在用，北坡却多了个蓄水池，是几家牧场修的。旧稿照抄也不行。我把公司这次要查的收货路线一起量了，能走人和能走大车，得分开记。",
+      "choices": [
+        {
+          "id": "milo_03.beat2.c1",
+          "text": "他提那封信了吗？",
+          "next": "beat2_reply1"
+        },
+        {
+          "id": "milo_03.beat2.c2",
+          "text": "这得重画不少吧？",
+          "next": "beat2_reply2"
+        }
+      ]
+    },
+    "beat2_reply1": {
+      "speaker": "guest",
+      "text": "提了，问我收到没有。我说收到了，没好意思回。他说那下次写一句收到也行，害他以为寄丢了。",
+      "next": "beat3"
+    },
+    "beat2_reply2": {
+      "speaker": "guest",
+      "text": "不少。艾达那边的牧场给了用水记录，几个车夫答应看草图。等大家指出毛病再印，省得我又自己觉得都对了。",
+      "next": "beat3"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "回来我写信给莉娅，想请她查查家乡那段路。她回信却先问，出版商为什么让她把橱窗里的旧地图撤下来？这事他们没跟我说，我连勘误都还没交。",
+      "choices": [
+        {
+          "id": "milo_03.beat3.c1",
+          "text": "他们已经知道出错了？",
+          "next": "beat3_reply1"
+        },
+        {
+          "id": "milo_03.beat3.c2",
+          "text": "你妹妹替你卖过地图？",
+          "next": "beat3_reply2"
+        }
+      ]
+    },
+    "beat3_reply1": {
+      "speaker": "guest",
+      "text": "我前几天问过怎么补说明，对方说在查。我以为查完会找我，没想到先去找书铺了。",
+      "next": "closing"
+    },
+    "beat3_reply2": {
+      "speaker": "guest",
+      "text": "卖过。她信里夹了张买主名单，记得比我还仔细。我当初寄回去只想着让她摆着，根本没问后来的事。",
+      "next": "closing"
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "我得问清楚，他们撤旧图时有没有告诉人哪里不对。也得好好回莉娅这封信。下回再说吧，今晚我先把那张名单看完。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "milo_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "milo_02",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "milo_04",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

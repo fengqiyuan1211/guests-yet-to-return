@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "hank_04",
+  "guest_id": "hank",
+  "guest_name": "老霍克",
+  "episode": 4,
+  "title": "把稿子退回去",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "你不用问了，我去过了。稿子退了，报纸和账本也带上了。我跟他们说，当晚的灯不是我点的，我也迷了路，不能再照着原稿刻。",
+      "choices": [
+        {
+          "id": "hank_04.start.c1",
+          "text": "他们怎么说？",
+          "next": "start_reply_1"
+        },
+        {
+          "id": "hank_04.start.c2",
+          "text": "这些话说出口难吧。",
+          "next": "start_reply_2"
+        }
+      ]
+    },
+    "start_reply_1": {
+      "speaker": "guest",
+      "text": "管这事的年轻人愣了半天，说小时候听的就是那个版本。最后拿了张新纸，让我坐下，从头讲。",
+      "next": "beat2"
+    },
+    "start_reply_2": {
+      "speaker": "guest",
+      "text": "在门口站了一会儿。见了人又差点先扯修路的事，后来还是把那句我也迷了路说出来了。",
+      "next": "beat2"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "讲完才发现，还缺好些细节。找到我们的车夫叫什么，路上的标记是谁做的。我托米洛捎了几封信，一封去找当年跟那支车队走过的人。",
+      "choices": [
+        {
+          "id": "hank_04.beat2.c1",
+          "text": "这么多年，还找得到吗？",
+          "next": "beat2_reply_1"
+        },
+        {
+          "id": "hank_04.beat2.c2",
+          "text": "先把确定的写下来。",
+          "next": "beat2_reply_2"
+        }
+      ]
+    },
+    "beat2_reply_1": {
+      "speaker": "guest",
+      "text": "地址也不一定准，只能试。米洛说有人搬过家，会替我问问。我把记得的都写上了。",
+      "next": "beat3"
+    },
+    "beat2_reply_2": {
+      "speaker": "guest",
+      "text": "已经写了。玛莎借了梯子，齐恩给了灯油，都有账能对。拿不准的地方空着，等回信。",
+      "next": "beat3"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "新稿把我的名字移到后头，先讲那天大家怎么找人。我拿给齐恩的孙子看，他指着一行说，借出去的梯子是玛莎自己家的，爷爷只是替她收着。",
+      "choices": [
+        {
+          "id": "hank_04.beat3.c1",
+          "text": "还好给他看了一遍。",
+          "next": "beat3_reply_1"
+        },
+        {
+          "id": "hank_04.beat3.c2",
+          "text": "改来改去，你着急吗？",
+          "next": "beat3_reply_2"
+        }
+      ]
+    },
+    "beat3_reply_1": {
+      "speaker": "guest",
+      "text": "可不是。我以为照账本抄就够了，原来账上写借去，也没把话记全。那行又改了一次。",
+      "next": "closing"
+    },
+    "beat3_reply_2": {
+      "speaker": "guest",
+      "text": "急也不能催着人家同意。我以前一口气讲完，别人插不上话，这次多听几句吧。",
+      "next": "closing"
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "现在就等那几封信。我把稿子留了副本，下回来带着。真找着那个车夫的名字，可算少欠人家一句交代。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "hank_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "hank_03",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "hank_05",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

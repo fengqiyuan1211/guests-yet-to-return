@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "hank_02",
+  "guest_id": "hank",
+  "guest_name": "老霍克",
+  "episode": 2,
+  "title": "谁领走了灯油",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "上回说的账本找到了。齐恩的孙子从柜子底下翻出来的，纸都脆了。风沙那天的灯油写着玛莎来领，旁边还记着，把梯子一并借去。",
+      "choices": [
+        {
+          "id": "hank_02.start.c1",
+          "text": "玛莎领灯油做什么？",
+          "next": "start_reply_1"
+        },
+        {
+          "id": "hank_02.start.c2",
+          "text": "那怎么成了你提着灯？",
+          "next": "start_reply_2"
+        }
+      ]
+    },
+    "start_reply_1": {
+      "speaker": "guest",
+      "text": "她把灯举到路口高处，让外头的人看得见。那灯平常挂在齐恩铺子门口，灯罩还有一道裂缝。",
+      "next": "beat2"
+    },
+    "start_reply_2": {
+      "speaker": "guest",
+      "text": "我人还在外头呢。可后来听别人这么说，听久了，连我讲的时候都不怎么解释了。",
+      "next": "beat2"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "账本下面还有修车和送热饭的费用，好几家都出了东西。我先前只想着给牌子添名字，真看见这些，才想起来当晚街上谁都没歇着。",
+      "choices": [
+        {
+          "id": "hank_02.beat2.c1",
+          "text": "齐恩还收了他们的钱？",
+          "next": "beat2_reply_1"
+        },
+        {
+          "id": "hank_02.beat2.c2",
+          "text": "你以前怎么没提过他们？",
+          "next": "beat2_reply_2"
+        }
+      ]
+    },
+    "beat2_reply_1": {
+      "speaker": "guest",
+      "text": "没有，写着先记这里。他平常计较得很，这回倒没收。回头有人替他补了屋顶，账上也记了。",
+      "next": "beat3"
+    },
+    "beat2_reply_2": {
+      "speaker": "guest",
+      "text": "一开始提过。后来大家总追着问我出去救人的事，我就只讲那一段了。有时候还讲得挺来劲。",
+      "next": "beat3"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "还有一笔，给车夫补鞋底。就是他找到我们，领着往回走的。我记得那双鞋都开口了，偏偏人家的全名，我现在怎么也想不起来。",
+      "choices": [
+        {
+          "id": "hank_02.beat3.c1",
+          "text": "你们当时也找不着路了？",
+          "next": "beat3_reply_1"
+        },
+        {
+          "id": "hank_02.beat3.c2",
+          "text": "账上没写他的名字？",
+          "next": "beat3_reply_2"
+        }
+      ]
+    },
+    "beat3_reply_1": {
+      "speaker": "guest",
+      "text": "是。车队找到了，自己却走不回去。那段说起来不怎么好听，我好多年没仔细讲了。",
+      "next": "closing"
+    },
+    "beat3_reply_2": {
+      "speaker": "guest",
+      "text": "齐恩也只写了绰号。我得再找人问，不能就这么省了。那晚没有他，我们还不知道要绕多久。",
+      "next": "closing"
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "账本我得好好收着，别让它散了。下回我从出门说起，跟你讲清楚那晚到底怎么回来的。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "hank_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "hank_01",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "hank_03",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

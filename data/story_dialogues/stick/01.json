@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "stick_01",
+  "guest_id": "stick",
+  "guest_name": "小线",
+  "episode": 1,
+  "title": "以前演过不少",
+  "entry": "start",
+  "nodes": {
+    "start_reply1": {
+      "speaker": "guest",
+      "text": "逃跑的，爬飞艇的，什么活都接过。有时候一天换三个地方，球拍都来不及放下就去演特工了。",
+      "next": "beat2"
+    },
+    "start_reply2": {
+      "speaker": "guest",
+      "text": "最近活没那么多，出来转转。路过看见屋里有人，我就进来问问，没想好还真招不招人。",
+      "next": "beat2"
+    },
+    "start": {
+      "speaker": "guest",
+      "text": "这里招演员吗？我以前演过乒乓球运动员，也演过打羽毛球的。你要是玩过那些火柴人小游戏，说不定见过我。",
+      "choices": [
+        {
+          "id": "stick_01.start.c1",
+          "text": "还真有点眼熟，你还演过什么？",
+          "next": "start_reply1"
+        },
+        {
+          "id": "stick_01.start.c2",
+          "text": "演员啊，那你怎么跑这儿来了？",
+          "next": "start_reply2"
+        }
+      ]
+    },
+    "beat2_reply1": {
+      "speaker": "guest",
+      "text": "多的时候我都数不清。道具师看我老摔同一个地方，后来偷偷给墙垫厚了一点。",
+      "next": "beat3"
+    },
+    "beat2_reply2": {
+      "speaker": "guest",
+      "text": "想啊。但当时好不容易有人肯用我，我怕一说不干，下次就真没我的事了。",
+      "next": "beat3"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "刚开始可轮不到我打球。我专门给人当替身，跑两步撞墙，再爬起来。通告上都懒得写名字，就写要个火柴人。",
+      "choices": [
+        {
+          "id": "stick_01.beat2.c1",
+          "text": "一天要撞几回？",
+          "next": "beat2_reply1"
+        },
+        {
+          "id": "stick_01.beat2.c2",
+          "text": "那你不想换个活吗？",
+          "next": "beat2_reply2"
+        }
+      ]
+    },
+    "beat3_reply1": {
+      "speaker": "guest",
+      "text": "可不是。练了好几天才改过来。等我真会打了，反倒比原来那些活轻松，也认识了几个老搭档。",
+      "next": "closing"
+    },
+    "beat3_reply2": {
+      "speaker": "guest",
+      "text": "还行，至少不用一直捡球了。来玩的人也多，有两个小孩常来，我到现在还记着他们。",
+      "next": "closing"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "后来总算轮到我上球场。头一天紧张得很，球飞过来，我还下意识想往地上倒。搭档说今天用不着这招，我才反应过来。",
+      "choices": [
+        {
+          "id": "stick_01.beat3.c1",
+          "text": "你这习惯还挺难改。",
+          "next": "beat3_reply1"
+        },
+        {
+          "id": "stick_01.beat3.c2",
+          "text": "后来打得怎么样？",
+          "next": "beat3_reply2"
+        }
+      ]
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "那时候有两个小孩总来玩，我记到现在。后来有一回他们走了，就一直没再来。这个下回再跟你讲，我今天先歇会儿。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "stick_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": null,
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "stick_02",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

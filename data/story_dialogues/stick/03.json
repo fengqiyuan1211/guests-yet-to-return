@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "stick_03",
+  "guest_id": "stick",
+  "guest_name": "小线",
+  "episode": 3,
+  "title": "拍砸了也得接着拍",
+  "entry": "start",
+  "nodes": {
+    "start_reply1": {
+      "speaker": "guest",
+      "text": "我猜也是。你们看见不靠谱的东西，偏想点一下。我上工前都得先看看附近哪儿好摔。",
+      "next": "beat2"
+    },
+    "start_reply2": {
+      "speaker": "guest",
+      "text": "对，再来一遍。有些人错一次就记住，有些人还想再看一次。我都能背下他下一步要选什么。",
+      "next": "beat2"
+    },
+    "start": {
+      "speaker": "guest",
+      "text": "上回说那几个老搭档，是拍冒险游戏时认识的。我拍《火柴人逃脱记》那阵，有人把道具挨个试，就为了看我能倒多大霉。",
+      "choices": [
+        {
+          "id": "stick_03.start.c1",
+          "text": "这种事我好像也干过。",
+          "next": "start_reply1"
+        },
+        {
+          "id": "stick_03.start.c2",
+          "text": "试错了就重新来？",
+          "next": "start_reply2"
+        }
+      ]
+    },
+    "beat2_reply1": {
+      "speaker": "guest",
+      "text": "他会提醒，提醒我落地别压着道具。有回我急了，说你倒先关心关心演员啊，他笑得手都拿不稳。",
+      "next": "beat3"
+    },
+    "beat2_reply2": {
+      "speaker": "guest",
+      "text": "好着呢。忙的时候他替我留饭，我收工帮他搬东西。互相损几句太正常了，不损反倒不习惯。",
+      "next": "beat3"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "后来拍《火柴人智闯飞艇》，要用的道具更多。阿尺是管道具的，有些东西他递过来，自己先往后退，我一看就知道这回又悬。",
+      "choices": [
+        {
+          "id": "stick_03.beat2.c1",
+          "text": "阿尺也不提醒你？",
+          "next": "beat2_reply1"
+        },
+        {
+          "id": "stick_03.beat2.c2",
+          "text": "你俩关系应该挺好吧。",
+          "next": "beat2_reply2"
+        }
+      ]
+    },
+    "beat3_reply1": {
+      "speaker": "guest",
+      "text": "找得到。阿尺去了新片场，圆头在带新人，都忙。我也老想着等我这边闲一点，再去问他们。",
+      "next": "closing"
+    },
+    "beat3_reply2": {
+      "speaker": "guest",
+      "text": "在，箱子里压着呢。前几天翻出来，字都看得懂，就是有些地方忘了当时想怎么演。",
+      "next": "closing"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "还有个叫圆头的，老演我的对手。我们三个以前说好，哪天有空就自己排个戏，别老照着通告走。结果本子写了几页，谁也腾不出空。",
+      "choices": [
+        {
+          "id": "stick_03.beat3.c1",
+          "text": "现在还找得到他们吗？",
+          "next": "beat3_reply1"
+        },
+        {
+          "id": "stick_03.beat3.c2",
+          "text": "本子还在你手里？",
+          "next": "beat3_reply2"
+        }
+      ]
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "我前两天把旧稿寄给他们了，今天刚拿到回信，还没拆。等我看完，下次来告诉你他们怎么说。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "stick_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "stick_02",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "stick_04",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

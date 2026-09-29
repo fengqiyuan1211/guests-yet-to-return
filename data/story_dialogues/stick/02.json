@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "stick_02",
+  "guest_id": "stick",
+  "guest_name": "小线",
+  "episode": 2,
+  "title": "一张键盘挤两个人",
+  "entry": "start",
+  "nodes": {
+    "start_reply1": {
+      "speaker": "guest",
+      "text": "对，一个按字母，一个按方向键。手还能分开，胳膊老碰一块儿，谁没接到球就说是旁边的人挤的。",
+      "next": "beat2"
+    },
+    "start_reply2": {
+      "speaker": "guest",
+      "text": "有阵子差不多天天。大概是写完作业以后吧，我也不清楚，反正玩到一半经常有人喊他们。",
+      "next": "beat2"
+    },
+    "start": {
+      "speaker": "guest",
+      "text": "上回说那两个打羽毛球的小孩，我后来想了想，认识他们的时候，我还天天在球场上班。他俩共用一张键盘，老嫌对方占地方。",
+      "choices": [
+        {
+          "id": "stick_02.start.c1",
+          "text": "一人按一边那种？",
+          "next": "start_reply1"
+        },
+        {
+          "id": "stick_02.start.c2",
+          "text": "他们天天都来？",
+          "next": "start_reply2"
+        }
+      ]
+    },
+    "beat2_reply1": {
+      "speaker": "guest",
+      "text": "就是这个意思。我后来也不急着走了，反正过不了一会儿又要发球。",
+      "next": "beat3"
+    },
+    "beat2_reply2": {
+      "speaker": "guest",
+      "text": "记不准了。有一个特别爱算分，算到最后两个人各有一套，我都不知道该听谁的。",
+      "next": "beat3"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "他俩水平也差不多，谁输了都不服。我有一次以为他们真吵翻了，正准备收工，人家又开了一局。",
+      "choices": [
+        {
+          "id": "stick_02.beat2.c1",
+          "text": "嘴上说不玩，手还按着呢。",
+          "next": "beat2_reply1"
+        },
+        {
+          "id": "stick_02.beat2.c2",
+          "text": "你记得谁赢得多吗？",
+          "next": "beat2_reply2"
+        }
+      ]
+    },
+    "beat3_reply1": {
+      "speaker": "guest",
+      "text": "没来。我开始还数着日子，后面也没数了。新的人照常来玩，就是一直没再碰到那两个。",
+      "next": "closing"
+    },
+    "beat3_reply2": {
+      "speaker": "guest",
+      "text": "有可能。我连他们名字都不知道，上哪儿问去。有时候见谁发球的习惯像，还会多看两眼。",
+      "next": "closing"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "再后来他们来得少了，有时只来一个。最后一次一起玩，球还没打完就关了，说下次再接着打。我当时还想，明天又得接着吵。",
+      "choices": [
+        {
+          "id": "stick_02.beat3.c1",
+          "text": "结果第二天没来？",
+          "next": "beat3_reply1"
+        },
+        {
+          "id": "stick_02.beat3.c2",
+          "text": "可能后来忙起来了，也不住一块儿了。",
+          "next": "beat3_reply2"
+        }
+      ]
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "不过说起来，我自己也跟朋友约过下次，到现在都没办成。下回来跟你讲那几个老搭档吧，这会儿先不说了。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "stick_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "stick_01",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "stick_03",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

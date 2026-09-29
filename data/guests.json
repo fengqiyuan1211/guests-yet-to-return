@@ -1,0 +1,102 @@
+[
+  {
+    "id": "milo",
+    "name": "米洛",
+    "role": "带着地图的旅人",
+    "bio": "随身带着自己画的地图。\n赶了很远的路，想歇歇脚。",
+    "preferences": [
+      "橙香",
+      "平衡"
+    ],
+    "avoid": [
+      "奶制品"
+    ],
+    "portrait": [
+      265,
+      185,
+      490,
+      490
+    ],
+    "texture": "res://assets/guests/milo.png"
+  },
+  {
+    "id": "ada",
+    "name": "艾达",
+    "role": "牧场的骑手",
+    "bio": "刚从牧场回来，还没歇脚。\n口袋里装着一块旧怀表。",
+    "preferences": [
+      "清爽",
+      "低甜"
+    ],
+    "avoid": [
+      "薄荷"
+    ],
+    "portrait": [
+      245,
+      185,
+      490,
+      490
+    ],
+    "texture": "res://assets/guests/ada.png"
+  },
+  {
+    "id": "hank",
+    "name": "老霍克",
+    "role": "住在镇上的老人",
+    "bio": "在这里住了大半辈子。\n最近镇上请他核对一段往事。",
+    "preferences": [
+      "醇厚",
+      "微苦"
+    ],
+    "avoid": [
+      "额外糖浆"
+    ],
+    "portrait": [
+      265,
+      220,
+      485,
+      485
+    ],
+    "texture": "res://assets/guests/hank.png"
+  },
+  {
+    "id": "stick",
+    "name": "小线",
+    "role": "演过小游戏的演员",
+    "bio": "以前在小游戏里演戏。\n最近在找新的演出机会。",
+    "preferences": [
+      "清透",
+      "无气泡"
+    ],
+    "avoid": [
+      "果肉"
+    ],
+    "portrait": [
+      245,
+      120,
+      560,
+      560
+    ],
+    "texture": "res://assets/guests/stick.png"
+  },
+  {
+    "id": "yellow_creature",
+    "name": "黄色生物",
+    "role": "戴着牛仔帽的神秘客人",
+    "bio": "戴着牛仔帽，围着红围巾。\n进门先站一会儿，好像有话要说。",
+    "preferences": [
+      "甜一点",
+      "果香"
+    ],
+    "avoid": [
+      "酒精"
+    ],
+    "portrait": [
+      275,
+      110,
+      490,
+      490
+    ],
+    "texture": "res://assets/guests/yellow_creature.png"
+  }
+]

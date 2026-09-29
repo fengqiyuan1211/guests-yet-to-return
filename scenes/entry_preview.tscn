@@ -1,0 +1,344 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Theme" path="res://assets/western_theme.tres" id="theme"]
+[ext_resource type="Script" path="res://scripts/entry_preview.gd" id="script"]
+[ext_resource type="Script" path="res://scripts/ornament_panel.gd" id="ornament"]
+
+[sub_resource type="StyleBoxFlat" id="wood"]
+bg_color = Color(0.1490, 0.1059, 0.0784, 0.9608)
+border_width_left = 2
+content_margin_left = 12.0
+border_width_top = 2
+content_margin_top = 12.0
+border_width_right = 2
+content_margin_right = 12.0
+border_width_bottom = 2
+content_margin_bottom = 12.0
+border_color = Color(0.5490, 0.3882, 0.2392, 1.0000)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_left = 6
+corner_radius_bottom_right = 6
+corner_detail = 1
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="paper"]
+bg_color = Color(0.9294, 0.8588, 0.7176, 1.0000)
+border_width_left = 3
+content_margin_left = 12.0
+border_width_top = 3
+content_margin_top = 12.0
+border_width_right = 3
+content_margin_right = 12.0
+border_width_bottom = 3
+content_margin_bottom = 12.0
+border_color = Color(0.6627, 0.5137, 0.2980, 1.0000)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_left = 6
+corner_radius_bottom_right = 6
+corner_detail = 1
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="primary"]
+bg_color = Color(0.6431, 0.3529, 0.1765, 1.0000)
+border_width_left = 2
+content_margin_left = 12.0
+border_width_top = 2
+content_margin_top = 12.0
+border_width_right = 2
+content_margin_right = 12.0
+border_width_bottom = 2
+content_margin_bottom = 12.0
+border_color = Color(0.8824, 0.7176, 0.4157, 1.0000)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="primary_hover"]
+bg_color = Color(0.7412, 0.4431, 0.2275, 1.0000)
+border_width_left = 2
+content_margin_left = 12.0
+border_width_top = 2
+content_margin_top = 12.0
+border_width_right = 2
+content_margin_right = 12.0
+border_width_bottom = 2
+content_margin_bottom = 12.0
+border_color = Color(1.0000, 0.8784, 0.6275, 1.0000)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="primary_pressed"]
+bg_color = Color(0.5020, 0.2588, 0.1216, 1.0000)
+border_width_left = 2
+content_margin_left = 12.0
+border_width_top = 2
+content_margin_top = 12.0
+border_width_right = 2
+content_margin_right = 12.0
+border_width_bottom = 2
+content_margin_bottom = 12.0
+border_color = Color(0.8667, 0.6980, 0.4392, 1.0000)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="selected"]
+bg_color = Color(0.3961, 0.2706, 0.1412, 1.0000)
+border_width_left = 2
+content_margin_left = 12.0
+border_width_top = 2
+content_margin_top = 12.0
+border_width_right = 2
+content_margin_right = 12.0
+border_width_bottom = 2
+content_margin_bottom = 12.0
+border_color = Color(0.8353, 0.6510, 0.3686, 1.0000)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="small"]
+bg_color = Color(0.2078, 0.1451, 0.1059, 0.8549)
+border_width_left = 1
+content_margin_left = 12.0
+border_width_top = 1
+content_margin_top = 12.0
+border_width_right = 1
+content_margin_right = 12.0
+border_width_bottom = 1
+content_margin_bottom = 12.0
+border_color = Color(0.4588, 0.3216, 0.2078, 1.0000)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="compact"]
+bg_color = Color(0.1882, 0.1294, 0.0863, 1.0000)
+border_width_left = 1
+content_margin_left = 12.0
+border_width_top = 1
+content_margin_top = 5.0
+border_width_right = 1
+content_margin_right = 12.0
+border_width_bottom = 1
+content_margin_bottom = 5.0
+border_color = Color(0.5216, 0.3765, 0.2235, 1.0000)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="compact_hover"]
+bg_color = Color(0.3137, 0.2196, 0.1216, 1.0000)
+border_width_left = 1
+content_margin_left = 12.0
+border_width_top = 1
+content_margin_top = 5.0
+border_width_right = 1
+content_margin_right = 12.0
+border_width_bottom = 1
+content_margin_bottom = 5.0
+border_color = Color(0.8941, 0.7333, 0.4588, 1.0000)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="compact_pressed"]
+bg_color = Color(0.4745, 0.3216, 0.1725, 1.0000)
+border_width_left = 1
+content_margin_left = 12.0
+border_width_top = 1
+content_margin_top = 5.0
+border_width_right = 1
+content_margin_right = 12.0
+border_width_bottom = 1
+content_margin_bottom = 5.0
+border_color = Color(0.9529, 0.8000, 0.5333, 1.0000)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+corner_detail = 1
+
+[node name="EntryPreview" type="Control"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1600.0
+offset_bottom = 900.0
+theme = ExtResource("theme")
+script = ExtResource("script")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1600.0
+offset_bottom = 900.0
+color = Color(0.0627, 0.0471, 0.0353, 0.8118)
+
+[node name="Page" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 345.0
+offset_top = 165.0
+offset_right = 1255.0
+offset_bottom = 735.0
+mouse_filter = 0
+theme_override_styles/panel = SubResource("paper")
+script = ExtResource("ornament")
+material_kind = 1
+
+[node name="Eyebrow" type="Label" parent="Page"]
+layout_mode = 0
+offset_left = 42.0
+offset_top = 26.0
+offset_right = 742.0
+offset_bottom = 55.0
+mouse_filter = 2
+text = "THE WESTERN SALOON  /  酒馆事务"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.5961, 0.4392, 0.2431, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="PageTitle" type="Label" parent="Page"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 40.0
+offset_top = 70.0
+offset_right = 785.0
+offset_bottom = 128.0
+mouse_filter = 2
+text = "西部杂货铺"
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.2706, 0.1804, 0.1137, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="PageSubtitle" type="Label" parent="Page"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 42.0
+offset_top = 137.0
+offset_right = 842.0
+offset_bottom = 173.0
+mouse_filter = 2
+text = "好酒，从备齐材料开始。"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.4588, 0.3255, 0.2000, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="CloseButton" type="Button" parent="Page"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 817.0
+offset_top = 25.0
+offset_right = 875.0
+offset_bottom = 79.0
+mouse_default_cursor_shape = 2
+text = "×"
+
+[node name="Tabs" type="HBoxContainer" parent="Page"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 42.0
+offset_top = 197.0
+offset_right = 868.0
+offset_bottom = 251.0
+theme_override_constants/separation = 9
+
+[node name="Description" type="Label" parent="Page"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 47.0
+offset_top = 276.0
+offset_right = 861.0
+offset_bottom = 408.0
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.3490, 0.2471, 0.1608, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+autowrap_mode = 2
+
+[node name="Divider" type="ColorRect" parent="Page"]
+layout_mode = 0
+offset_left = 44.0
+offset_top = 429.0
+offset_right = 866.0
+offset_bottom = 430.0
+mouse_filter = 2
+color = Color(0.6510, 0.4902, 0.2745, 0.4392)
+
+[node name="PreviewLabel" type="Label" parent="Page"]
+layout_mode = 0
+offset_left = 45.0
+offset_top = 446.0
+offset_right = 515.0
+offset_bottom = 473.0
+mouse_filter = 2
+text = "入口预览 · 完整功能将在后续接入"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.5961, 0.4392, 0.2431, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="FeatureList" type="Label" parent="Page"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 45.0
+offset_top = 479.0
+offset_right = 593.0
+offset_bottom = 509.0
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.4588, 0.3255, 0.2000, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="ReturnButton" type="Button" parent="Page"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 638.0
+offset_top = 461.0
+offset_right = 867.0
+offset_bottom = 526.0
+mouse_default_cursor_shape = 2
+text = "返回酒馆    →"
+theme_override_styles/normal = SubResource("primary")
+theme_override_styles/hover = SubResource("primary_hover")
+theme_override_styles/pressed = SubResource("primary_pressed")
+

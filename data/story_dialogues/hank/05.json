@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "hank_05",
+  "guest_id": "hank",
+  "guest_name": "老霍克",
+  "episode": 5,
+  "title": "这回写全了",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "回信来了，那个车夫叫尼尔·贝克。信是他侄女写的，还附了旧车队的名册。几处日期能对上，我又托人核了一遍，这回敢把名字写全了。",
+      "choices": [
+        {
+          "id": "hank_05.start.c1",
+          "text": "他后来怎么样了？",
+          "next": "start_reply_1"
+        },
+        {
+          "id": "hank_05.start.c2",
+          "text": "名字补到牌子上了？",
+          "next": "start_reply_2"
+        }
+      ]
+    },
+    "start_reply_1": {
+      "speaker": "guest",
+      "text": "信里说后来跟南下的商队走了，定居后改做修车。再往后的事，她还在问家里人。我也想多知道些。",
+      "next": "beat2"
+    },
+    "start_reply_2": {
+      "speaker": "guest",
+      "text": "补了，连谁做了什么一起改清楚。今天我已经把核好的稿子送回去，这次签了字。",
+      "next": "beat2"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "定稿先写大家一起接回车队，再写玛莎举灯，齐恩供油，贝克带路。我也在里面，帮忙找到车队和推车，这两件确实是我干的。",
+      "choices": [
+        {
+          "id": "hank_05.beat2.c1",
+          "text": "这么写就明白了。",
+          "next": "beat2_reply_1"
+        },
+        {
+          "id": "hank_05.beat2.c2",
+          "text": "你有没有舍不得原来那个说法？",
+          "next": "beat2_reply_2"
+        }
+      ]
+    },
+    "beat2_reply_1": {
+      "speaker": "guest",
+      "text": "我照着念了一遍，没觉得少了什么。原稿上好几句夸得太大，现在删了，念起来倒省气。",
+      "next": "beat3"
+    },
+    "beat2_reply_2": {
+      "speaker": "guest",
+      "text": "有一点，人家夸了这么多年嘛。可稿子交出去以后，今天再有人问，我就把完整的事讲了。",
+      "next": "beat3"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "下午又碰见送稿的年轻人，他说已经把旧稿撤了，还想把这几封信存下来。我把信留给他抄，特意说账本得还，人家不是白送给我的。",
+      "choices": [
+        {
+          "id": "hank_05.beat3.c1",
+          "text": "这次总算没把别人漏下。",
+          "next": "beat3_reply_1"
+        },
+        {
+          "id": "hank_05.beat3.c2",
+          "text": "那旧报纸你还留着吗？",
+          "next": "beat3_reply_2"
+        }
+      ]
+    },
+    "beat3_reply_1": {
+      "speaker": "guest",
+      "text": "知道名字的都添了，还有几位只记得做过什么，也照实留了一笔。以后查到再补，不往我头上算了。",
+      "next": "closing"
+    },
+    "beat3_reply_2": {
+      "speaker": "guest",
+      "text": "留着，我在旁边夹了这次的稿子。以后谁翻到，我就解释。这张脸画得头发多，也舍不得扔。",
+      "next": "closing"
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "这块牌子的事，今天算跟你交代清楚了。我把纸收一收。还有些修井时的旧事，下回有空再慢慢讲。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "hank_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "hank_04",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": null,
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

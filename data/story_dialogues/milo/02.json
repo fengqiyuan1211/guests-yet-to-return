@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "milo_02",
+  "guest_id": "milo",
+  "guest_name": "米洛",
+  "episode": 2,
+  "title": "样张上的签字",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "我去见那个车夫了。他指着图问，西坡这条近路为什么雨天不能走？车陷住半天，货没按时送到。我翻来覆去找，图上真没写。",
+      "choices": [
+        {
+          "id": "milo_02.start.c1",
+          "text": "你当时不知道会积水？",
+          "next": "start_reply1"
+        },
+        {
+          "id": "milo_02.start.c2",
+          "text": "人和车还好吧？",
+          "next": "start_reply2"
+        }
+      ]
+    },
+    "start_reply1": {
+      "speaker": "guest",
+      "text": "知道。原稿上写着雨季绕行，印出来那版没有了。我一眼就认出了那块空地方，却还装着多看了两遍。",
+      "next": "beat2"
+    },
+    "start_reply2": {
+      "speaker": "guest",
+      "text": "人没事，车轴坏了，找附近牧场借马拖出来的。他没跟我吵，就问到底还有哪些地方不能照着走。我当时答不上来。",
+      "next": "beat2"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "出版商嫌图挤，先删小站，再删说明。我看过样张，还签了字。那时候光顾着看封面上的名字，觉得赶路的老手总会自己问。",
+      "choices": [
+        {
+          "id": "milo_02.beat2.c1",
+          "text": "你怎么跟车夫解释的？",
+          "next": "beat2_reply1"
+        },
+        {
+          "id": "milo_02.beat2.c2",
+          "text": "原稿还在吗？",
+          "next": "beat2_reply2"
+        }
+      ]
+    },
+    "beat2_reply1": {
+      "speaker": "guest",
+      "text": "说是印的时候删了。他接着问我没看过吗，我才把签字的事说出来。早知道开头就该直说，省得人家一句句问。",
+      "next": "beat3"
+    },
+    "beat2_reply2": {
+      "speaker": "guest",
+      "text": "在，我没舍得扔。可我交给车夫的那份印刷图，画得漂亮，偏偏少了他最需要知道的那一句。",
+      "next": "beat3"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "我老师罗恩也写信说过这些。还有西坡补给站，明明开着，我却没画进去。我一直没回他，怕他问当初为什么答应删。刚才才打听到，他现在就在那个站里帮忙。",
+      "choices": [
+        {
+          "id": "milo_02.beat3.c1",
+          "text": "那就当面问他吧。",
+          "next": "beat3_reply1"
+        },
+        {
+          "id": "milo_02.beat3.c2",
+          "text": "你打算怎么补救？",
+          "next": "beat3_reply2"
+        }
+      ]
+    },
+    "beat3_reply1": {
+      "speaker": "guest",
+      "text": "得去。我也想看看那家店。我曾答应老板给他标上，后来经过附近都绕着走，实在没脸打招呼。",
+      "next": "closing"
+    },
+    "beat3_reply2": {
+      "speaker": "guest",
+      "text": "先把原稿拿出来，一处处核对。哪里是我删的，哪里是后来变的，得分清。总不能再让别人帮我猜。",
+      "next": "closing"
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "明早我带原稿去西坡见罗恩。那口小井和补给站到底怎么样，也得亲眼看一次。先去问清楚，下回来再跟你讲。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "milo_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "milo_01",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "milo_03",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

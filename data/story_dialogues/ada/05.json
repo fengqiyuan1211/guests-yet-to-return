@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "ada_05",
+  "guest_id": "ada",
+  "guest_name": "艾达",
+  "episode": 5,
+  "title": "第一次空下来的下午",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "新班表跑了几天，东线交给托马了。他头一回回来晚了半个钟头，我都把马牵出来了。结果人家是停下来修门闩，还拿着换下来的给我看。",
+      "choices": [
+        {
+          "id": "ada_05.start.c1",
+          "text": "你没说他回来晚？",
+          "next": "start_hold"
+        },
+        {
+          "id": "ada_05.start.c2",
+          "text": "那半个钟头你一直守在门口？",
+          "next": "start_wait"
+        }
+      ]
+    },
+    "start_hold": {
+      "speaker": "guest",
+      "text": "差一点。我先听他说完，才问记没记在本子上。他说记了，还翻给我看，我这回挑不出错。",
+      "next": "contract"
+    },
+    "start_wait": {
+      "speaker": "guest",
+      "text": "头一刻钟没有，后面忍不住了。他一看我牵着马，就知道怎么回事，问我是不是来接班的。",
+      "next": "contract"
+    },
+    "contract": {
+      "speaker": "guest",
+      "text": "我们把这几天的时辰都记下了。晴天赶得上，雨天要绕路，得多留时间。我准备带着记录去见采购的人，不能先签了，再让大家追着车跑。",
+      "choices": [
+        {
+          "id": "ada_05.contract.c1",
+          "text": "这回有人跟你一起去吧？",
+          "next": "contract_company"
+        },
+        {
+          "id": "ada_05.contract.c2",
+          "text": "对方要是不肯改呢？",
+          "next": "contract_terms"
+        }
+      ]
+    },
+    "contract_company": {
+      "speaker": "guest",
+      "text": "托马也去，他管记录，我讲路。他让我别把他的那份也抢着说，我答应了，到时候你可别押我全忍得住。",
+      "next": "watch"
+    },
+    "contract_terms": {
+      "speaker": "guest",
+      "text": "再回来商量。有人急着签，我知道，可多跑一趟要多少人力，总得先算明白。不能光说我来想办法。",
+      "next": "watch"
+    },
+    "watch": {
+      "speaker": "guest",
+      "text": "昨天下午真空下来了，我没回牧场，把怀表修好了。托马收工后过来，我还以为出了什么事，结果他来送新班表，下周那半天又给我留着。",
+      "choices": [
+        {
+          "id": "ada_05.watch.c1",
+          "text": "那张表你这次没改吧？",
+          "next": "watch_plan"
+        },
+        {
+          "id": "ada_05.watch.c2",
+          "text": "他知道你喜欢修表？",
+          "next": "watch_learn"
+        }
+      ]
+    },
+    "close": {
+      "speaker": "guest",
+      "text": "表还走得稍微快一点，过两天再调。这次总算不是揣着坏表来找你了。合同还没谈，先说到这，下回来再跟你讲。",
+      "transition": "resume_existing_dialogue_loop"
+    },
+    "watch_plan": {
+      "speaker": "guest",
+      "text": "改了，空着那半天填上修表。托马说怕我闲着又去找活干，填了好。我嘴上嫌他管得宽，没擦。",
+      "next": "close"
+    },
+    "watch_learn": {
+      "speaker": "guest",
+      "text": "知道。他找我借过工具，还说等他空下来也想学。我就把那半天填上修表，省得回头又排成别的。",
+      "next": "close"
+    }
+  },
+  "story_id": "ada_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "ada_04",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": null,
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": "2.0",
+  "id": "yellow_creature_repeat",
+  "story_id": "yellow_creature_fixed",
+  "guest_id": "yellow_creature",
+  "guest_name": "黄色生物",
+  "episode": 1,
+  "title": "固定梗",
+  "entry": "start",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": null,
+    "repeatable": true
+  },
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "我是奶龙",
+      "choices": [
+        {
+          "id": "yellow_creature_repeat.start.c1",
+          "text": "我才是奶龙",
+          "next": "handoff"
+        }
+      ]
+    },
+    "handoff": {
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "yellow_creature_repeat",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

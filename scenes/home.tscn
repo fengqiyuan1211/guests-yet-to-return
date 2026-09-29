@@ -1,0 +1,1027 @@
+[gd_scene load_steps=25 format=3]
+
+[ext_resource type="Theme" path="res://assets/western_theme.tres" id="theme"]
+[ext_resource type="Script" path="res://scripts/home.gd" id="script"]
+[ext_resource type="Script" path="res://scripts/ornament_panel.gd" id="ornament"]
+[ext_resource type="Texture2D" path="res://assets/art/saloon-empty-v2.png" id="background"]
+[ext_resource type="Script" path="res://scripts/day_night_background.gd" id="day_night"]
+[ext_resource type="Script" path="res://scripts/atmosphere.gd" id="atmosphere"]
+[ext_resource type="Script" path="res://scripts/guest_spawner.gd" id="guest_spawner"]
+[ext_resource type="Texture2D" path="res://assets/icons/home.svg" id="icon_home"]
+[ext_resource type="Texture2D" path="res://assets/icons/coin.svg" id="icon_coin"]
+[ext_resource type="Texture2D" path="res://assets/icons/sun.svg" id="icon_sun"]
+[ext_resource type="Script" path="res://scripts/clock_face.gd" id="clock_face"]
+[ext_resource type="Texture2D" path="res://assets/icons/slots.svg" id="icon_slots"]
+[ext_resource type="Texture2D" path="res://assets/icons/codex.svg" id="icon_codex"]
+[ext_resource type="Texture2D" path="res://assets/icons/shop.svg" id="icon_shop"]
+[ext_resource type="Texture2D" path="res://assets/icons/research.svg" id="icon_research"]
+[ext_resource type="Texture2D" path="res://assets/icons/menu.svg" id="icon_menu"]
+[ext_resource type="Texture2D" path="res://assets/icons/reviews.svg" id="icon_reviews"]
+
+[sub_resource type="StyleBoxFlat" id="wood"]
+bg_color = Color(0.1490, 0.1059, 0.0784, 0.9608)
+border_width_left = 2
+content_margin_left = 12.0
+border_width_top = 2
+content_margin_top = 12.0
+border_width_right = 2
+content_margin_right = 12.0
+border_width_bottom = 2
+content_margin_bottom = 12.0
+border_color = Color(0.5490, 0.3882, 0.2392, 1.0000)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_left = 6
+corner_radius_bottom_right = 6
+corner_detail = 1
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="paper"]
+bg_color = Color(0.9294, 0.8588, 0.7176, 1.0000)
+border_width_left = 3
+content_margin_left = 12.0
+border_width_top = 3
+content_margin_top = 12.0
+border_width_right = 3
+content_margin_right = 12.0
+border_width_bottom = 3
+content_margin_bottom = 12.0
+border_color = Color(0.6627, 0.5137, 0.2980, 1.0000)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_left = 6
+corner_radius_bottom_right = 6
+corner_detail = 1
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="primary"]
+bg_color = Color(0.6431, 0.3529, 0.1765, 1.0000)
+border_width_left = 2
+content_margin_left = 12.0
+border_width_top = 2
+content_margin_top = 12.0
+border_width_right = 2
+content_margin_right = 12.0
+border_width_bottom = 2
+content_margin_bottom = 12.0
+border_color = Color(0.8824, 0.7176, 0.4157, 1.0000)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="primary_hover"]
+bg_color = Color(0.7412, 0.4431, 0.2275, 1.0000)
+border_width_left = 2
+content_margin_left = 12.0
+border_width_top = 2
+content_margin_top = 12.0
+border_width_right = 2
+content_margin_right = 12.0
+border_width_bottom = 2
+content_margin_bottom = 12.0
+border_color = Color(1.0000, 0.8784, 0.6275, 1.0000)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="primary_pressed"]
+bg_color = Color(0.5020, 0.2588, 0.1216, 1.0000)
+border_width_left = 2
+content_margin_left = 12.0
+border_width_top = 2
+content_margin_top = 12.0
+border_width_right = 2
+content_margin_right = 12.0
+border_width_bottom = 2
+content_margin_bottom = 12.0
+border_color = Color(0.8667, 0.6980, 0.4392, 1.0000)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="selected"]
+bg_color = Color(0.3961, 0.2706, 0.1412, 1.0000)
+border_width_left = 2
+content_margin_left = 12.0
+border_width_top = 2
+content_margin_top = 12.0
+border_width_right = 2
+content_margin_right = 12.0
+border_width_bottom = 2
+content_margin_bottom = 12.0
+border_color = Color(0.8353, 0.6510, 0.3686, 1.0000)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_left = 5
+corner_radius_bottom_right = 5
+corner_detail = 1
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 7
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="small"]
+bg_color = Color(0.2078, 0.1451, 0.1059, 0.8549)
+border_width_left = 1
+content_margin_left = 12.0
+border_width_top = 1
+content_margin_top = 12.0
+border_width_right = 1
+content_margin_right = 12.0
+border_width_bottom = 1
+content_margin_bottom = 12.0
+border_color = Color(0.4588, 0.3216, 0.2078, 1.0000)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="compact"]
+bg_color = Color(0.1882, 0.1294, 0.0863, 1.0000)
+border_width_left = 1
+content_margin_left = 12.0
+border_width_top = 1
+content_margin_top = 5.0
+border_width_right = 1
+content_margin_right = 12.0
+border_width_bottom = 1
+content_margin_bottom = 5.0
+border_color = Color(0.5216, 0.3765, 0.2235, 1.0000)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="compact_hover"]
+bg_color = Color(0.3137, 0.2196, 0.1216, 1.0000)
+border_width_left = 1
+content_margin_left = 12.0
+border_width_top = 1
+content_margin_top = 5.0
+border_width_right = 1
+content_margin_right = 12.0
+border_width_bottom = 1
+content_margin_bottom = 5.0
+border_color = Color(0.8941, 0.7333, 0.4588, 1.0000)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="compact_pressed"]
+bg_color = Color(0.4745, 0.3216, 0.1725, 1.0000)
+border_width_left = 1
+content_margin_left = 12.0
+border_width_top = 1
+content_margin_top = 5.0
+border_width_right = 1
+content_margin_right = 12.0
+border_width_bottom = 1
+content_margin_bottom = 5.0
+border_color = Color(0.9529, 0.8000, 0.5333, 1.0000)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+corner_detail = 1
+
+[node name="Home" type="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("theme")
+script = ExtResource("script")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("background")
+expand_mode = 1
+stretch_mode = 6
+script = ExtResource("day_night")
+
+[node name="Stage" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1600.0
+offset_bottom = 900.0
+mouse_filter = 2
+
+[node name="Atmosphere" type="Control" parent="Stage"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1600.0
+offset_bottom = 900.0
+mouse_filter = 2
+script = ExtResource("atmosphere")
+
+[node name="GuestLayer" type="Node2D" parent="Stage"]
+unique_name_in_owner = true
+script = ExtResource("guest_spawner")
+
+[node name="HomeContent" type="Control" parent="Stage"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1600.0
+offset_bottom = 900.0
+mouse_filter = 2
+
+[node name="TopBar" type="Panel" parent="Stage/HomeContent"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 1576.0
+offset_bottom = 110.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("wood")
+script = ExtResource("ornament")
+material_kind = 0
+
+[node name="Emblem" type="TextureRect" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 18.0
+offset_right = 75.0
+offset_bottom = 71.0
+mouse_filter = 2
+texture = ExtResource("icon_home")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BrandDivider" type="ColorRect" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 91.0
+offset_top = 20.0
+offset_right = 92.0
+offset_bottom = 72.0
+mouse_filter = 2
+color = Color(0.6784, 0.5373, 0.3176, 0.3020)
+
+[node name="Title" type="Label" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 110.0
+offset_top = 9.0
+offset_right = 525.0
+offset_bottom = 58.0
+mouse_filter = 2
+text = "致未归的客人"
+theme_override_font_sizes/font_size = 34
+theme_override_colors/font_color = Color(0.9451, 0.8745, 0.7412, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="EnglishTitle" type="Label" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 114.0
+offset_top = 59.0
+offset_right = 504.0
+offset_bottom = 79.0
+mouse_filter = 2
+text = "T H E   W E S T E R N   S A L O O N"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.7608, 0.6039, 0.3922, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="GoldDivider" type="ColorRect" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 623.0
+offset_top = 23.0
+offset_right = 624.0
+offset_bottom = 69.0
+mouse_filter = 2
+color = Color(0.6784, 0.5373, 0.3176, 0.3020)
+
+[node name="GoldIcon" type="TextureRect" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 640.0
+offset_top = 29.0
+offset_right = 670.0
+offset_bottom = 59.0
+mouse_filter = 2
+texture = ExtResource("icon_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GoldLabel" type="Label" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 683.0
+offset_top = 14.0
+offset_right = 825.0
+offset_bottom = 38.0
+mouse_filter = 2
+text = "账户结余"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.7059, 0.6039, 0.4706, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="GoldValue" type="Label" parent="Stage/HomeContent/TopBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 683.0
+offset_top = 40.0
+offset_right = 829.0
+offset_bottom = 74.0
+mouse_filter = 2
+text = "300"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.9451, 0.8745, 0.7412, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="ReputationDivider" type="ColorRect" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 823.0
+offset_top = 23.0
+offset_right = 824.0
+offset_bottom = 69.0
+mouse_filter = 2
+color = Color(0.6784, 0.5373, 0.3176, 0.3020)
+
+[node name="ReputationIcon" type="TextureRect" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 840.0
+offset_top = 29.0
+offset_right = 870.0
+offset_bottom = 59.0
+mouse_filter = 2
+texture = ExtResource("icon_home")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ReputationLabel" type="Label" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 883.0
+offset_top = 14.0
+offset_right = 1025.0
+offset_bottom = 38.0
+mouse_filter = 2
+text = "店铺评分"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.7059, 0.6039, 0.4706, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="ReputationValue" type="Label" parent="Stage/HomeContent/TopBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 883.0
+offset_top = 40.0
+offset_right = 1029.0
+offset_bottom = 74.0
+mouse_filter = 2
+text = "暂无评分"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.9451, 0.8745, 0.7412, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="DayDivider" type="ColorRect" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 1023.0
+offset_top = 23.0
+offset_right = 1024.0
+offset_bottom = 69.0
+mouse_filter = 2
+color = Color(0.6784, 0.5373, 0.3176, 0.3020)
+
+[node name="DayIcon" type="TextureRect" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 1040.0
+offset_top = 29.0
+offset_right = 1070.0
+offset_bottom = 59.0
+mouse_filter = 2
+texture = ExtResource("icon_sun")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DayLabel" type="Label" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 1083.0
+offset_top = 14.0
+offset_right = 1225.0
+offset_bottom = 38.0
+mouse_filter = 2
+text = "营业日"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.7059, 0.6039, 0.4706, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="DayValue" type="Label" parent="Stage/HomeContent/TopBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1083.0
+offset_top = 40.0
+offset_right = 1229.0
+offset_bottom = 74.0
+mouse_filter = 2
+text = "第 1 天"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.9451, 0.8745, 0.7412, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="TimeDivider" type="ColorRect" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 1223.0
+offset_top = 23.0
+offset_right = 1224.0
+offset_bottom = 69.0
+mouse_filter = 2
+color = Color(0.6784, 0.5373, 0.3176, 0.3020)
+
+[node name="TimeIcon" type="Control" parent="Stage/HomeContent/TopBar"]
+layout_mode = 0
+offset_left = 1240.0
+offset_top = 27.0
+offset_right = 1274.0
+offset_bottom = 61.0
+mouse_filter = 2
+script = ExtResource("clock_face")
+
+[node name="TimeLabel" type="Label" parent="Stage/HomeContent/TopBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1283.0
+offset_top = 14.0
+offset_right = 1425.0
+offset_bottom = 38.0
+mouse_filter = 2
+text = "黄昏"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.7059, 0.6039, 0.4706, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="TimeValue" type="Label" parent="Stage/HomeContent/TopBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1283.0
+offset_top = 40.0
+offset_right = 1429.0
+offset_bottom = 74.0
+mouse_filter = 2
+text = "18:00"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.9451, 0.8745, 0.7412, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="SlotsButton" type="Button" parent="Stage/HomeContent/TopBar" groups=["route_buttons"]]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1465.0
+offset_top = 17.0
+offset_right = 1530.0
+offset_bottom = 75.0
+mouse_default_cursor_shape = 2
+text = ""
+metadata/route = "slots"
+icon = ExtResource("icon_slots")
+icon_alignment = 0
+theme_override_constants/icon_max_width = 30
+theme_override_constants/h_separation = 19
+tooltip_text = "老虎机 · 20 金币一次"
+
+[node name="Navigation" type="Panel" parent="Stage/HomeContent"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 132.0
+offset_right = 216.0
+offset_bottom = 842.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("wood")
+script = ExtResource("ornament")
+material_kind = 0
+
+[node name="RailTitle" type="Label" parent="Stage/HomeContent/Navigation"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 23.0
+offset_right = 172.0
+offset_bottom = 50.0
+mouse_filter = 2
+text = "S A L O O N"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.7412, 0.6275, 0.4627, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 1
+
+[node name="RailRule" type="ColorRect" parent="Stage/HomeContent/Navigation"]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 66.0
+offset_right = 163.0
+offset_bottom = 67.0
+mouse_filter = 2
+color = Color(0.6784, 0.5373, 0.3176, 0.3020)
+
+[node name="HomeButton" type="Button" parent="Stage/HomeContent/Navigation"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 14.0
+offset_top = 85.0
+offset_right = 178.0
+offset_bottom = 152.0
+mouse_default_cursor_shape = 2
+text = "酒馆"
+icon = ExtResource("icon_home")
+icon_alignment = 0
+theme_override_constants/icon_max_width = 30
+theme_override_constants/h_separation = 19
+theme_override_styles/normal = SubResource("selected")
+
+[node name="CodexButton" type="Button" parent="Stage/HomeContent/Navigation" groups=["route_buttons"]]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 168.0
+offset_right = 178.0
+offset_bottom = 235.0
+mouse_default_cursor_shape = 2
+text = "图鉴"
+metadata/route = "codex"
+icon = ExtResource("icon_codex")
+icon_alignment = 0
+theme_override_constants/icon_max_width = 30
+theme_override_constants/h_separation = 19
+
+[node name="ShopButton" type="Button" parent="Stage/HomeContent/Navigation" groups=["route_buttons"]]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 251.0
+offset_right = 178.0
+offset_bottom = 318.0
+mouse_default_cursor_shape = 2
+text = "商店"
+metadata/route = "shop"
+icon = ExtResource("icon_shop")
+icon_alignment = 0
+theme_override_constants/icon_max_width = 30
+theme_override_constants/h_separation = 19
+
+[node name="ResearchButton" type="Button" parent="Stage/HomeContent/Navigation" groups=["route_buttons"]]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 334.0
+offset_right = 178.0
+offset_bottom = 401.0
+mouse_default_cursor_shape = 2
+text = "研发"
+metadata/route = "research"
+icon = ExtResource("icon_research")
+icon_alignment = 0
+theme_override_constants/icon_max_width = 30
+theme_override_constants/h_separation = 19
+
+[node name="MenuButton" type="Button" parent="Stage/HomeContent/Navigation" groups=["route_buttons"]]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 417.0
+offset_right = 178.0
+offset_bottom = 484.0
+mouse_default_cursor_shape = 2
+text = "酒单"
+metadata/route = "menu"
+icon = ExtResource("icon_menu")
+icon_alignment = 0
+theme_override_constants/icon_max_width = 30
+theme_override_constants/h_separation = 19
+
+[node name="ReviewsButton" type="Button" parent="Stage/HomeContent/Navigation" groups=["route_buttons"]]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 500.0
+offset_right = 178.0
+offset_bottom = 567.0
+mouse_default_cursor_shape = 2
+text = "评价"
+metadata/route = "reviews"
+icon = ExtResource("icon_reviews")
+icon_alignment = 0
+theme_override_constants/icon_max_width = 30
+theme_override_constants/h_separation = 19
+
+[node name="RailBottomRule" type="ColorRect" parent="Stage/HomeContent/Navigation"]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 601.0
+offset_right = 163.0
+offset_bottom = 602.0
+mouse_filter = 2
+color = Color(0.6784, 0.5373, 0.3176, 0.3020)
+
+[node name="RailMotto" type="Label" parent="Stage/HomeContent/Navigation"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 615.0
+offset_right = 169.0
+offset_bottom = 663.0
+mouse_filter = 2
+text = "好酒，值得等待。"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.7412, 0.6275, 0.4627, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 1
+
+[node name="HelpButton" type="Button" parent="Stage/HomeContent/Navigation" groups=["route_buttons"]]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 657.0
+offset_right = 157.0
+offset_bottom = 691.0
+mouse_default_cursor_shape = 2
+text = "操作指引"
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("compact")
+theme_override_styles/hover = SubResource("compact_hover")
+theme_override_styles/pressed = SubResource("compact_pressed")
+metadata/route = "help"
+
+[node name="SceneKicker" type="Label" parent="Stage/HomeContent"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 250.0
+offset_top = 142.0
+offset_right = 710.0
+offset_bottom = 173.0
+mouse_filter = 2
+text = "落 日 已 至  /  SUNSET HOURS"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.9333, 0.8275, 0.6275, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="SceneTitle" type="Label" parent="Stage/HomeContent"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 248.0
+offset_top = 175.0
+offset_right = 1148.0
+offset_bottom = 226.0
+mouse_filter = 2
+text = "给远道而来的人，留一杯好酒。"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1.0000, 0.9412, 0.8235, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="SceneRule" type="ColorRect" parent="Stage/HomeContent"]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 238.0
+offset_right = 314.0
+offset_bottom = 240.0
+mouse_filter = 2
+color = Color(0.8235, 0.6471, 0.3608, 1.0000)
+
+[node name="ShiftBadge" type="Panel" parent="Stage/HomeContent"]
+layout_mode = 0
+offset_left = 1350.0
+offset_top = 142.0
+offset_right = 1576.0
+offset_bottom = 186.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("small")
+script = ExtResource("ornament")
+material_kind = 0
+
+[node name="ShiftStatus" type="Label" parent="Stage/HomeContent/ShiftBadge"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 12.0
+offset_top = 4.0
+offset_right = 214.0
+offset_bottom = 39.0
+mouse_filter = 2
+text = "准备中 · 第一个夜晚"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.9098, 0.8000, 0.6275, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 1
+
+[node name="GuestNote" type="Panel" parent="Stage/HomeContent"]
+layout_mode = 0
+offset_left = 1242.0
+offset_top = 208.0
+offset_right = 1576.0
+offset_bottom = 560.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("paper")
+script = ExtResource("ornament")
+material_kind = 1
+
+[node name="NoteKicker" type="Label" parent="Stage/HomeContent/GuestNote"]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 22.0
+offset_right = 306.0
+offset_bottom = 46.0
+mouse_filter = 2
+text = "来 客 手 记  /  GUEST NOTES"
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.5686, 0.4157, 0.2431, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="NoteTitle" type="Label" parent="Stage/HomeContent/GuestNote"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 26.0
+offset_top = 53.0
+offset_right = 308.0
+offset_bottom = 101.0
+mouse_filter = 2
+text = "静候来客"
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(0.2745, 0.1843, 0.1255, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="NoteRole" type="Label" parent="Stage/HomeContent/GuestNote"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 28.0
+offset_top = 106.0
+offset_right = 306.0
+offset_bottom = 132.0
+mouse_filter = 2
+text = "每位客人，都带着自己的故事"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.5686, 0.4157, 0.2431, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="NoteDivider" type="ColorRect" parent="Stage/HomeContent/GuestNote"]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 145.0
+offset_right = 306.0
+offset_bottom = 146.0
+mouse_filter = 2
+color = Color(0.6549, 0.4902, 0.2745, 0.4000)
+
+[node name="NoteBody" type="Label" parent="Stage/HomeContent/GuestNote"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 28.0
+offset_top = 163.0
+offset_right = 306.0
+offset_bottom = 254.0
+mouse_filter = 2
+text = "擦亮杯子，备好材料。\n推开店门，听听今晚的第一个故事。"
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.4392, 0.3216, 0.2157, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+autowrap_mode = 2
+
+[node name="OrderKicker" type="Label" parent="Stage/HomeContent/GuestNote"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 28.0
+offset_top = 273.0
+offset_right = 306.0
+offset_bottom = 296.0
+mouse_filter = 2
+text = "今 晚 想 喝"
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.5686, 0.4157, 0.2431, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="NoteOrder" type="Label" parent="Stage/HomeContent/GuestNote"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 28.0
+offset_top = 300.0
+offset_right = 306.0
+offset_bottom = 329.0
+mouse_filter = 2
+text = "等待客人点单"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.3333, 0.2353, 0.1569, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="GuestDialogue" type="Panel" parent="Stage/HomeContent"]
+layout_mode = 0
+offset_left = 248.0
+offset_top = 618.0
+offset_right = 1576.0
+offset_bottom = 842.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("wood")
+script = ExtResource("ornament")
+material_kind = 0
+
+[node name="GuestPortrait" type="TextureRect" parent="Stage/HomeContent/GuestDialogue"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 38.0
+offset_right = 152.0
+offset_bottom = 166.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GuestName" type="Label" parent="Stage/HomeContent/GuestDialogue"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 180.0
+offset_top = 23.0
+offset_right = 376.0
+offset_bottom = 65.0
+mouse_filter = 2
+text = "静候来客"
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(1.0000, 0.8980, 0.6784, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="GuestRole" type="Label" parent="Stage/HomeContent/GuestDialogue"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 390.0
+offset_top = 33.0
+offset_right = 840.0
+offset_bottom = 60.0
+mouse_filter = 2
+text = "一把空椅子，一段还没开始的交谈"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.7412, 0.6275, 0.4627, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="TalkButton" type="Button" parent="Stage/HomeContent/GuestDialogue"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 858.0
+offset_top = 27.0
+offset_right = 982.0
+offset_bottom = 66.0
+mouse_default_cursor_shape = 2
+text = "再聊一句"
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("compact")
+theme_override_styles/hover = SubResource("compact_hover")
+theme_override_styles/pressed = SubResource("compact_pressed")
+
+[node name="DialogueRule" type="ColorRect" parent="Stage/HomeContent/GuestDialogue"]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 77.0
+offset_right = 982.0
+offset_bottom = 78.0
+mouse_filter = 2
+color = Color(0.6784, 0.5373, 0.3176, 0.3020)
+
+[node name="GuestSpeech" type="Label" parent="Stage/HomeContent/GuestDialogue"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 180.0
+offset_top = 92.0
+offset_right = 982.0
+offset_bottom = 164.0
+mouse_filter = 2
+text = "推开店门，迎接今晚的第一位客人。"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.9647, 0.8941, 0.7686, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+autowrap_mode = 2
+
+[node name="GuestTags" type="Label" parent="Stage/HomeContent/GuestDialogue"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 181.0
+offset_top = 181.0
+offset_right = 983.0
+offset_bottom = 208.0
+mouse_filter = 2
+text = "和客人慢慢聊聊。"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.8471, 0.7059, 0.4431, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="ActionDivider" type="ColorRect" parent="Stage/HomeContent/GuestDialogue"]
+layout_mode = 0
+offset_left = 1013.0
+offset_top = 28.0
+offset_right = 1014.0
+offset_bottom = 196.0
+mouse_filter = 2
+color = Color(0.6784, 0.5373, 0.3176, 0.3020)
+
+[node name="OpenButton" type="Button" parent="Stage/HomeContent/GuestDialogue"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1033.0
+offset_top = 49.0
+offset_right = 1308.0
+offset_bottom = 109.0
+mouse_default_cursor_shape = 2
+text = "开始营业    →"
+theme_override_styles/normal = SubResource("primary")
+theme_override_styles/hover = SubResource("primary_hover")
+theme_override_styles/pressed = SubResource("primary_pressed")
+
+[node name="NextGuestButton" type="Button" parent="Stage/HomeContent/GuestDialogue"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1033.0
+offset_top = 134.0
+offset_right = 1308.0
+offset_bottom = 180.0
+mouse_default_cursor_shape = 2
+text = "送客，迎接下一位"
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("compact")
+theme_override_styles/hover = SubResource("compact_hover")
+theme_override_styles/pressed = SubResource("compact_pressed")
+
+[node name="ActionCaption" type="Label" parent="Stage/HomeContent/GuestDialogue"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1033.0
+offset_top = 144.0
+offset_right = 1308.0
+offset_bottom = 171.0
+mouse_filter = 2
+text = "今晚，从第一杯好酒开始"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.7412, 0.6275, 0.4627, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 1
+
+[node name="BottomStatus" type="Label" parent="Stage/HomeContent"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 29.0
+offset_top = 857.0
+offset_right = 939.0
+offset_bottom = 883.0
+mouse_filter = 2
+text = "准备营业  /  第一个夜晚，等一位远道而来的客人。"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.8275, 0.7176, 0.5608, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 0
+
+[node name="Version" type="Label" parent="Stage/HomeContent"]
+layout_mode = 0
+offset_left = 1110.0
+offset_top = 857.0
+offset_right = 1573.0
+offset_bottom = 883.0
+mouse_filter = 2
+text = "酒谱手记  ·  鼠标 / 触屏  ·  v0.9"
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.7255, 0.5961, 0.4275, 1.0000)
+vertical_alignment = 1
+horizontal_alignment = 2
+
+[node name="PageHost" type="Control" parent="Stage"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1600.0
+offset_bottom = 900.0
+mouse_filter = 2
+

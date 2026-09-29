@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "ada_04",
+  "guest_id": "ada",
+  "guest_name": "艾达",
+  "episode": 4,
+  "title": "托马的排班表",
+  "entry": "start",
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "托马真把排班表拿来了，写得挺仔细，连下雨走哪条路都留了空。我看了第一遍就挑出三处，怕他漏掉，直接拿笔给改了。",
+      "choices": [
+        {
+          "id": "ada_04.start.c1",
+          "text": "你问过他为什么这么排吗？",
+          "next": "start_reason"
+        },
+        {
+          "id": "ada_04.start.c2",
+          "text": "他肯定不高兴吧。",
+          "next": "start_reaction"
+        }
+      ]
+    },
+    "start_reason": {
+      "speaker": "guest",
+      "text": "后面才问。他有一处是给老骑手少排坡路，我没看出来。那一笔改完又得擦，挺难看的。",
+      "next": "argument"
+    },
+    "start_reaction": {
+      "speaker": "guest",
+      "text": "没当场发火，就把笔拿回去了。他说有问题可以提，先让他把自己写的讲完。",
+      "next": "argument"
+    },
+    "argument": {
+      "speaker": "guest",
+      "text": "讲到东线，我又说先由我带。他说他跟着走过好多回了，我还是不放心。他问我，你每次都先做完，我到底什么时候才能学会。",
+      "choices": [
+        {
+          "id": "ada_04.argument.c1",
+          "text": "他自己走过整条线吗？",
+          "next": "argument_skill"
+        },
+        {
+          "id": "ada_04.argument.c2",
+          "text": "这话你怎么接的？",
+          "next": "argument_response"
+        }
+      ]
+    },
+    "argument_skill": {
+      "speaker": "guest",
+      "text": "走过，路也认得。就是我总想着还能提醒点什么，一提醒就变成我领着他走了。",
+      "next": "place"
+    },
+    "argument_response": {
+      "speaker": "guest",
+      "text": "我说出了事还得我收拾。他脸一下沉了。我说完也后悔，他明明没出事，先挨我一句。",
+      "next": "place"
+    },
+    "place": {
+      "speaker": "guest",
+      "text": "后来他说，真需要带的时候会叫我。我反倒有点不知道该干什么。这些年谁都来找我，突然有人说用不着，我还挺不习惯的。",
+      "choices": [
+        {
+          "id": "ada_04.place.c1",
+          "text": "你那只怀表可等很久了。",
+          "next": "place_watch"
+        },
+        {
+          "id": "ada_04.place.c2",
+          "text": "那东线最后排给谁了？",
+          "next": "place_route"
+        }
+      ]
+    },
+    "place_watch": {
+      "speaker": "guest",
+      "text": "我也这么想过。可刚想到能坐一下午，又怕他们真一下午都不来找我。听着是不是挺别扭。",
+      "next": "close"
+    },
+    "place_route": {
+      "speaker": "guest",
+      "text": "给他了。我就把坏过的路标标出来，没再改人名。不过他出发时，我恐怕还得忍着不跟上。",
+      "next": "close"
+    },
+    "close": {
+      "speaker": "guest",
+      "text": "先照这张表试几天吧，光在这儿说，我自己都觉得容易。等真跑过了，下回来再聊，别让我现在就夸口。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "ada_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "ada_03",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "ada_05",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

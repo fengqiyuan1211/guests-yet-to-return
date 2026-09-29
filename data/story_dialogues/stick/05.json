@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "stick_05",
+  "guest_id": "stick",
+  "guest_name": "小线",
+  "episode": 5,
+  "title": "请谁来看这场戏",
+  "entry": "start",
+  "nodes": {
+    "start_reply1": {
+      "speaker": "guest",
+      "text": "他说还以为自己哪里没做好，回去练了好久。我听得挺不好意思，原来我那点别扭，真让人家当回事了。",
+      "next": "beat2"
+    },
+    "start_reply2": {
+      "speaker": "guest",
+      "text": "损了，说我终于肯让别人演完了。我本来想回嘴，想了想，这回让他说吧。",
+      "next": "beat2"
+    },
+    "start": {
+      "speaker": "guest",
+      "text": "没跟圆头吵起来，你放心。昨天又排了一回，这次让新人照他的办法来，真比老版本好笑。我也跟他道歉了，前回不该一直打断。",
+      "choices": [
+        {
+          "id": "stick_05.start.c1",
+          "text": "新人怎么说？",
+          "next": "start_reply1"
+        },
+        {
+          "id": "stick_05.start.c2",
+          "text": "圆头没再损你两句？",
+          "next": "start_reply2"
+        }
+      ]
+    },
+    "beat2_reply1": {
+      "speaker": "guest",
+      "text": "想啊，尤其那两个打球的小孩。可人家现在忙什么，我都不知道。真没空，也不能因为一张邀请就让他为难。",
+      "next": "beat3"
+    },
+    "beat2_reply2": {
+      "speaker": "guest",
+      "text": "请了，新人还带了朋友来看排练。他们没看过老版本，照样笑得挺开心，我那会儿就没顾上想别的。",
+      "next": "beat3"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "邀请也写好了，开头还是致未归的客人。下面就说我们又凑起来演戏了，有时间可以来看看。我没再写什么一定要回来。",
+      "choices": [
+        {
+          "id": "stick_05.beat2.c1",
+          "text": "你还是想让以前那些人看见吧。",
+          "next": "beat2_reply1"
+        },
+        {
+          "id": "stick_05.beat2.c2",
+          "text": "现在也可以请些新观众。",
+          "next": "beat2_reply2"
+        }
+      ]
+    },
+    "beat3_reply1": {
+      "speaker": "guest",
+      "text": "先问现在还打不打羽毛球吧。不打也行，坐着聊会儿。我还有点想问，当年最后那局到底谁领先。",
+      "next": "closing"
+    },
+    "beat3_reply2": {
+      "speaker": "guest",
+      "text": "约了下周再合一遍，正式哪天还得看阿尺换班。这回每个人要做什么都说好了，不是一句有空再说就散了。",
+      "next": "closing"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "我以前一直觉得，得把老样子全找回来，这戏才算接上。昨天排完跟他们收东西，大家又为谁搬箱子吵起来，我反倒觉得挺熟悉。",
+      "choices": [
+        {
+          "id": "stick_05.beat3.c1",
+          "text": "那两个孩子要是来了，你准备说什么？",
+          "next": "beat3_reply1"
+        },
+        {
+          "id": "stick_05.beat3.c2",
+          "text": "演出的日子商量好了吗？",
+          "next": "beat3_reply2"
+        }
+      ]
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "这回总算把这点事跟你讲明白了。下次来给你说说真演起来怎么样，今天先歇会儿。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "stick_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "stick_04",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": null,
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}

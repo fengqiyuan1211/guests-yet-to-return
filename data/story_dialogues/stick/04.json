@@ -1,0 +1,112 @@
+{
+  "schema_version": "2.0",
+  "id": "stick_04",
+  "guest_id": "stick",
+  "guest_name": "小线",
+  "episode": 4,
+  "title": "好不容易约上一回",
+  "entry": "start",
+  "nodes": {
+    "start_reply1": {
+      "speaker": "guest",
+      "text": "可以添。我昨晚试着写了点，又怕给人家安排个没意思的活，来了只能站旁边看。",
+      "next": "beat2"
+    },
+    "start_reply2": {
+      "speaker": "guest",
+      "text": "圆头也这么说。他说都多久没碰面了，我还在算台词有几句。听着有点气人，也没说错。",
+      "next": "beat2"
+    },
+    "start": {
+      "speaker": "guest",
+      "text": "他们回我了。阿尺说能来一晚，圆头也愿意过来，还想带个新人。我挺高兴，就是旧本子只写了三个人。",
+      "choices": [
+        {
+          "id": "stick_04.start.c1",
+          "text": "添一个角色不行吗？",
+          "next": "start_reply1"
+        },
+        {
+          "id": "stick_04.start.c2",
+          "text": "人先见上，再一起改也行。",
+          "next": "start_reply2"
+        }
+      ]
+    },
+    "beat2_reply1": {
+      "speaker": "guest",
+      "text": "说不好。我演惯了，看到不一样的就想纠正。可他那下确实好笑，我当时也没夸。",
+      "next": "beat3"
+    },
+    "beat2_reply2": {
+      "speaker": "guest",
+      "text": "是啊。回去想想，我也觉得自己挺别扭，叫人来帮忙，又嫌人跟我记得的不一样。",
+      "next": "beat3"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "我们后来试着排了一段。新人手快，改了一个动作，我第一遍看着还笑了，第二遍就忍不住让他按以前的来。",
+      "choices": [
+        {
+          "id": "stick_04.beat2.c1",
+          "text": "你觉得以前那样更好？",
+          "next": "beat2_reply1"
+        },
+        {
+          "id": "stick_04.beat2.c2",
+          "text": "人家既然能逗笑你，也算演成了吧。",
+          "next": "beat2_reply2"
+        }
+      ]
+    },
+    "beat3_reply1": {
+      "speaker": "guest",
+      "text": "有一点吧，也不全是他们。我总觉得改得太多，以前看过的人就认不出了。可人家来不来，我都不知道。",
+      "next": "closing"
+    },
+    "beat3_reply2": {
+      "speaker": "guest",
+      "text": "应该说。我俩认识这么久，总不能让他一直猜你为什么不高兴。他也不欠我一场原封不动的旧戏。",
+      "next": "closing"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "圆头后来问我，到底是想一起演戏，还是想把以前那阵子再过一遍。我没答上来，光顾着说老观众认这个版本。",
+      "choices": [
+        {
+          "id": "stick_04.beat3.c1",
+          "text": "你还想着那两个打球的小孩？",
+          "next": "beat3_reply1"
+        },
+        {
+          "id": "stick_04.beat3.c2",
+          "text": "你把这些直接告诉圆头呢？",
+          "next": "beat3_reply2"
+        }
+      ]
+    },
+    "closing": {
+      "speaker": "guest",
+      "text": "圆头还约了明天再排。我得跟他说清楚，这回到底想怎么演。今天先聊到这，下回来告诉你我们有没有吵起来。",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "story_id": "stick_story",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "stick_03",
+    "repeatable": false
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "external",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "stick_05",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "existing_dialogue_loop"
+  }
+}
