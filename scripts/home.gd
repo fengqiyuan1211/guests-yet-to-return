@@ -17,6 +17,7 @@ var _restoring_reception := false
 func _ready() -> void:
 	Navigation.register_page(&"slots", preload("res://scenes/slot_machine.tscn"))
 	Navigation.register_page(&"codex", preload("res://scenes/codex.tscn"))
+	Navigation.register_page(&"menu", preload("res://scenes/drink_menu.tscn"))
 	Navigation.register_page(&"settings", preload("res://scenes/settings_menu.tscn"))
 	_setup_settings_button()
 	selected_navigation_style = %HomeButton.get_theme_stylebox("normal")
@@ -315,8 +316,13 @@ func _on_route_requested(route_id: StringName) -> void:
 	var codex_button: Button = find_child("CodexButton", true, false)
 	%HomeButton.remove_theme_stylebox_override("normal")
 	codex_button.remove_theme_stylebox_override("normal")
+	var menu_button: Button = find_child("MenuButton", true, false)
+	if menu_button != null:
+		menu_button.remove_theme_stylebox_override("normal")
 	if route_id == &"codex":
 		codex_button.add_theme_stylebox_override("normal", selected_navigation_style)
+	elif route_id == &"menu" and menu_button != null:
+		menu_button.add_theme_stylebox_override("normal", selected_navigation_style)
 	else:
 		%HomeButton.add_theme_stylebox_override("normal", selected_navigation_style)
 	if route_id == &"home":
@@ -325,8 +331,8 @@ func _on_route_requested(route_id: StringName) -> void:
 			previous_focus.grab_focus()
 		return
 	previous_focus = get_viewport().gui_get_focus_owner()
-	%HomeContent.visible = route_id in [&"slots", &"codex", &"settings"]
-	if route_id == &"codex":
+	%HomeContent.visible = route_id in [&"slots", &"codex", &"menu", &"settings"]
+	if route_id in [&"codex", &"menu"]:
 		for node in %HomeContent.get_children():
 			if node is CanvasItem and node.name not in ["TopBar", "Navigation", "Version"]:
 				journal_hidden_nodes[node] = node.visible

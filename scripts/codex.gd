@@ -1,5 +1,5 @@
 extends Control
-## Presentation-only journal. Blank mounting spaces are not unlocked/locked recipes.
+## Empty mounts remain blank until real catalogue data is supplied.
 signal close_requested
 signal page_turned(page: int)
 
@@ -61,7 +61,25 @@ func _ready() -> void:
 	binding.size = Vector2(80, 704)
 	add_child(binding)
 	_update_controls()
+	MenuCatalog.changed.connect(_catalog_changed)
 	next_button.grab_focus()
+
+func _catalog_changed() -> void:
+	if not turning:
+		page_index = 0
+		_replace_page(0)
+		_update_controls()
+
+func _visible_recipes() -> Array:
+	var records := MenuCatalog.all_recipes()
+	if selected_filter == 0:
+		return records
+	return records.filter(func(recipe: Dictionary): return recipe.unlocked == (selected_filter == 1))
+
+func _page_count() -> int:
+	if MenuCatalog.all_recipes().is_empty():
+		return PAGE_COUNT
+	return maxi(1, ceili(_visible_recipes().size() / 6.0))
 
 func _style(fill: Color, border: Color, thickness := 1) -> StyleBoxFlat:
 	var result := StyleBoxFlat.new()
@@ -117,7 +135,8 @@ func _make_page(index: int) -> Control:
 	sheet.add_child(texture)
 	_label(sheet, Rect2(180, 15, 330, 61), "酒 馆 图 鉴", 38)
 	_label(sheet, Rect2(510, 32, 504, 31), "S A L O O N  R E C I P E  J O U R N A L", 16)
-	_label(sheet, Rect2(1030, 27, 166, 34), "已点亮  0", 22)
+	_label(sheet, Rect2(1030, 27, 166, 34), "已点亮  %d" % MenuCatalog.unlocked_recipes().size(), 22)
+	var records := _visible_recipes()
 	for i in range(6):
 		var card := Control.new()
 		card.set_script(CARD_SCRIPT)
@@ -126,9 +145,20 @@ func _make_page(index: int) -> Control:
 		card.size = Vector2(300, 230)
 		sheet.add_child(card)
 		_label(card, Rect2(22, 12, 80, 28), "%03d" % (index * 6 + i + 1), 16, Color("8b6a45"))
+		var record_index := index * 6 + i
+		if record_index < records.size():
+			var recipe: Dictionary = records[record_index]
+			var ink := INK if recipe.unlocked else Color("8b8071")
+			_label(card, Rect2(28, 91, 256, 41), str(recipe.name), 27, ink)
+			_label(card, Rect2(28, 139, 256, 30), " · ".join(recipe.tags), 17, ink)
+			_label(card, Rect2(160, 14, 124, 26), "已点亮" if recipe.unlocked else "未点亮", 16, ink)
+			if not recipe.unlocked:
+				_label(card, Rect2(28, 179, 256, 29), str(recipe.get("unlock_hint", "备齐所需材料后点亮")), 15, ink)
+			else:
+				_label(card, Rect2(28, 179, 256, 29), "可加入今晚的酒单", 15, Color("8b6a45"))
 	_label(sheet, Rect2(170, 638, 550, 36), "好酒的故事，等你写下。", 18, Color("795731"))
 	_label(sheet, Rect2(66, 230, 40, 290), "酒\n谱\n手\n记", 20, Color("947345"), HORIZONTAL_ALIGNMENT_CENTER)
-	_label(sheet, Rect2(948, 638, 220, 36), "—  %02d / %02d  —" % [index + 1, PAGE_COUNT], 19, Color("795731"), HORIZONTAL_ALIGNMENT_CENTER)
+	_label(sheet, Rect2(948, 638, 220, 36), "—  %02d / %02d  —" % [index + 1, _page_count()], 19, Color("795731"), HORIZONTAL_ALIGNMENT_CENTER)
 	return sheet
 
 func _button(rect: Rect2, text_value: String) -> Button:
@@ -168,17 +198,19 @@ func _build_controls() -> void:
 	next_button.name = "NextPage"
 	next_button.tooltip_text = "下一页 · →"
 	next_button.pressed.connect(turn_page.bind(1))
-	_label(self, Rect2(260, 860, 650, 28), "尚未收录酒款  /  轻点纸张两侧，或左右滑动翻页", 15, Color("d2b789"))
+	_label(self, Rect2(260, 860, 650, 28), ("尚未收录酒款  /  " if MenuCatalog.all_recipes().is_empty() else "") + "轻点纸张两侧，或左右滑动翻页", 15, Color("d2b789"))
 
 func _select_filter(index: int) -> void:
 	if turning:
 		return
 	selected_filter = index
+	page_index = 0
+	_replace_page(0)
 	_update_controls()
 
 func _update_controls() -> void:
 	previous_button.disabled = turning or page_index == 0
-	next_button.disabled = turning or page_index == PAGE_COUNT - 1
+	next_button.disabled = turning or page_index == _page_count() - 1
 	for i in range(tabs.size()):
 		tabs[i].disabled = turning
 		tabs[i].set("ink_selected", i == selected_filter)
@@ -186,7 +218,7 @@ func _update_controls() -> void:
 
 func turn_page(direction: int) -> void:
 	var target := page_index + direction
-	if turning or direction not in [-1, 1] or target < 0 or target >= PAGE_COUNT:
+	if turning or direction not in [-1, 1] or target < 0 or target >= _page_count():
 		return
 	turning = true
 	press_active = false
