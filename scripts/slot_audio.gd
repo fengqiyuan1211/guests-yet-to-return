@@ -11,6 +11,7 @@ func _ready() -> void:
 	clips["jackpot"] = tone(659, 0.9, 0.18)
 	for i in range(4):
 		var player := AudioStreamPlayer.new()
+		player.bus = &"SFX"
 		add_child(player)
 		players.append(player)
 
