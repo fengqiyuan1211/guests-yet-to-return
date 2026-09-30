@@ -1,0 +1,76 @@
+{
+  "tracks": [
+    {
+      "id": "day-richer",
+      "title": "Richer",
+      "author": "Alex McCulloch / Pro Sensory",
+      "license": "CC0",
+      "url": "https://opengameart.org/content/richer",
+      "speed": 0.98,
+      "trim": [
+        16,
+        80
+      ],
+      "eq": "equalizer=f=240:t=q:w=0.7:g=0.8,treble=g=-2:f=3500,lowpass=f=11000",
+      "source_sha256": "4b01f3cbf18f3f92908de3b233cb9173a09b2b3f3519a339de28cab4b18244f9",
+      "output_sha256": "800ae5a878fe55ab53b1bf302e26c6843416745417bc5fa603311c6bae2fe456",
+      "processing": "highpass=f=45,equalizer=f=240:t=q:w=0.7:g=0.8,treble=g=-2:f=3500,lowpass=f=11000,acompressor=threshold=0.22:ratio=1.4:attack=30:release=220:makeup=1,atempo=0.98,aecho=0.95:0.98:31|59:0.035|0.018,silenceremove=start_periods=1:start_duration=0.04:start_threshold=-55dB,areverse,silenceremove=start_periods=1:start_duration=0.04:start_threshold=-55dB,areverse,loudnorm=I=-21:TP=-3:LRA=10",
+      "checked_on": "2026-09-30",
+      "edit_note": "Pitch-preserving tempo adjustment, warm EQ, subtle room echo, dynamic/loudness adjustment. In-game crossfade: 3.5 seconds."
+    },
+    {
+      "id": "day-country-waltz",
+      "title": "Country Waltz",
+      "author": "JuliusH",
+      "license": "Pixabay Content License",
+      "url": "https://pixabay.com/music/traditional-country-country-waltz-8065/",
+      "speed": 0.96,
+      "eq": "equalizer=f=260:t=q:w=0.8:g=0.8,treble=g=-2.5:f=3800,lowpass=f=10500",
+      "source_sha256": "bb7b6315032eb2b02beebfce1e0f6bb0c39debb95f74185f4168b774771d6fca",
+      "output_sha256": "72997f772b8bd2d770899a7ddf3278ac11c88bad32cb507b89e62b8e7709d202",
+      "processing": "highpass=f=45,equalizer=f=260:t=q:w=0.8:g=0.8,treble=g=-2.5:f=3800,lowpass=f=10500,acompressor=threshold=0.22:ratio=1.4:attack=30:release=220:makeup=1,atempo=0.96,aecho=0.95:0.98:31|59:0.035|0.018,silenceremove=start_periods=1:start_duration=0.04:start_threshold=-55dB,areverse,silenceremove=start_periods=1:start_duration=0.04:start_threshold=-55dB,areverse,loudnorm=I=-21:TP=-3:LRA=10",
+      "checked_on": "2026-09-30",
+      "edit_note": "Pitch-preserving tempo adjustment, warm EQ, subtle room echo, dynamic/loudness adjustment. In-game crossfade: 3.5 seconds."
+    },
+    {
+      "id": "night-laura",
+      "title": "Laura - Soft Acoustic Guitar Folk Instrumental",
+      "author": "kaazoom",
+      "license": "Pixabay Content License",
+      "url": "https://pixabay.com/music/acoustic-group-laura-soft-acoustic-guitar-folk-instrumental-144408/",
+      "speed": 0.97,
+      "eq": "equalizer=f=220:t=q:w=0.8:g=1.0,treble=g=-3:f=3300,lowpass=f=9500",
+      "source_sha256": "16607132f159b16e1a82352d64842df66e9bafc9ee3b8b83fc14d996e931fb1f",
+      "output_sha256": "d286beaff27bc1e57990edf99474a723c6c145681e0ddf39b458c0463aa59b9a",
+      "processing": "highpass=f=45,equalizer=f=220:t=q:w=0.8:g=1.0,treble=g=-3:f=3300,lowpass=f=9500,acompressor=threshold=0.22:ratio=1.4:attack=30:release=220:makeup=1,atempo=0.97,aecho=0.95:0.98:31|59:0.035|0.018,silenceremove=start_periods=1:start_duration=0.04:start_threshold=-55dB,areverse,silenceremove=start_periods=1:start_duration=0.04:start_threshold=-55dB,areverse,loudnorm=I=-21:TP=-3:LRA=10",
+      "checked_on": "2026-09-30",
+      "edit_note": "Pitch-preserving tempo adjustment, warm EQ, subtle room echo, dynamic/loudness adjustment. In-game crossfade: 3.5 seconds."
+    },
+    {
+      "id": "night-jazz",
+      "title": "Jazz Late Night - Cozy Calm Relaxing Mellow",
+      "author": "Denis Pavlov",
+      "license": "Pixabay Content License",
+      "url": "https://pixabay.com/music/traditional-jazz-jazz-late-night-cozy-calm-relaxing-mellow-463808/",
+      "speed": 0.94,
+      "eq": "in-game playback pitch_scale=0.94",
+      "source_file": "night-jazz.mp3",
+      "processing": "In-game 94% playback slowdown with a slight pitch drop, 3.5 second crossfade, night playlist slot 1.",
+      "checked_on": "2026-09-30",
+      "edit_note": "Used as the quiet late-night opening track; it crossfades into the western guitar track when the track ends."
+    },
+    {
+      "id": "night-laura-source",
+      "title": "Laura - Soft Acoustic Guitar Folk Instrumental",
+      "author": "kaazoom",
+      "license": "Pixabay Content License",
+      "url": "https://pixabay.com/music/acoustic-group-laura-soft-acoustic-guitar-folk-instrumental-144408/",
+      "speed": 0.94,
+      "eq": "in-game playback pitch_scale=0.94",
+      "source_file": "night-laura-source.mp3",
+      "processing": "In-game 94% playback slowdown with a slight pitch drop, 3.5 second crossfade, night playlist slot 2.",
+      "checked_on": "2026-09-30",
+      "edit_note": "Follows the nighttime jazz track and keeps the western acoustic mood for the rest of the night."
+    }
+  ]
+}
