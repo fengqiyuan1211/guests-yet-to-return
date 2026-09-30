@@ -1,0 +1,356 @@
+{
+  "schema_version": 1,
+  "style_id": "saloon-supplies-matte-v2",
+  "generator": "built_in_imagegen",
+  "transparent_background": true,
+  "records": [
+    {
+      "item_id": "lime_juice",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent inventory sprite for a hand-drawn 2D western saloon game.\nInput image 1 is the EDIT TARGET: preserve its single object's identity, shape, silhouette, proportions, orientation, composition, parts, label placement, and item count. Input image 2 will be the STYLE REFERENCE only; transfer its quiet flat matte hand-painted 2D gouache style, not its subject or bottle shape.\nChange rendering only: replace photographic shine with three or four broad low-contrast color planes, a fine softly irregular brown ink outline, and a few calm visible brush strokes. Use subdued warm natural colors. Preserve clearly readable silhouettes and large design features for a 96-pixel inventory icon. Simplify intricate veins, grains, glass reflections and woven fibers into sparse drawn marks. Soft diffuse light with very mild one-side shading, no brilliant highlights.\nMandatory exclusions: no metallic gold rim, golden edge lighting, halo, glow, white specular streaks, glossy photo finish, glitter, shiny plastic, 3D rendering, stippled noise, grainy photo texture, micro-mottling, oversharpened edges, heavy black shadows, text, letters, brand names, watermark, border, paper card, tabletop, scenery, extra props, or cast shadow on a surface.\nBackground: preserve genuinely transparent alpha outside the object. No black, white, solid colored or checkerboard background painted into the image. Keep a full uncropped object with clear transparent margins. The painted object may be opaque enough to read cleanly.\n\nSpecific subject and preserved identity: Preserve the short rounded glass juice bottle, cork, pale yellow-green liquid and rectangular blank paper label with a single lime drawing. Render the juice as soft pale lime green, bottle in muted gray-green glass planes, and cork/label in matte warm tan and cream. Make the lime graphic a simple brown and green hand drawing. No extra fruit outside the bottle.",
+      "image_path": "res://assets/art/supplies/materials/lime_juice.png",
+      "reference_image": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/materials/lime_juice.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-8ea408c2-4b85-45db-93a9-60361b808c47.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          334,
+          34,
+          918,
+          1197
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "e49bdb758d92e2222be68ee16df79b5f24eeb4554254f9f0c069b4b4cbfd6ca0"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "lemon_juice",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent inventory sprite for a hand-drawn 2D western saloon game.\nInput image 1 is the EDIT TARGET: preserve its single object's identity, shape, silhouette, proportions, orientation, composition, parts, label placement, and item count. Input image 2 will be the STYLE REFERENCE only; transfer its quiet flat matte hand-painted 2D gouache style, not its subject or bottle shape.\nChange rendering only: replace photographic shine with three or four broad low-contrast color planes, a fine softly irregular brown ink outline, and a few calm visible brush strokes. Use subdued warm natural colors. Preserve clearly readable silhouettes and large design features for a 96-pixel inventory icon. Simplify intricate veins, grains, glass reflections and woven fibers into sparse drawn marks. Soft diffuse light with very mild one-side shading, no brilliant highlights.\nMandatory exclusions: no metallic gold rim, golden edge lighting, halo, glow, white specular streaks, glossy photo finish, glitter, shiny plastic, 3D rendering, stippled noise, grainy photo texture, micro-mottling, oversharpened edges, heavy black shadows, text, letters, brand names, watermark, border, paper card, tabletop, scenery, extra props, or cast shadow on a surface.\nBackground: preserve genuinely transparent alpha outside the object. No black, white, solid colored or checkerboard background painted into the image. Keep a full uncropped object with clear transparent margins. The painted object may be opaque enough to read cleanly.\n\nSpecific subject and preserved identity: Preserve the short rounded juice bottle, cork, yellow cord around its neck, right-hand hanging paper tag with a lemon drawing, and pale yellow juice. Simplify tag and cord into calm drawn shapes. Matte lemon-cream palette with softly gray glass edges; no glowing gold glass rim.",
+      "image_path": "res://assets/art/supplies/materials/lemon_juice.png",
+      "reference_image": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/materials/lemon_juice.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-fbf4f104-3015-435a-a0c3-c50f88fe8783.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          346,
+          31,
+          1004,
+          1222
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "5cc63333503a9501072e77e60907d9fdb2a8f91658fc20d31c7fbd635789798b"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "simple_syrup",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent inventory sprite for a hand-drawn 2D western saloon game.\nInput image 1 is the EDIT TARGET: preserve its single object's identity, shape, silhouette, proportions, orientation, composition, parts, label placement, and item count. Input image 2 will be the STYLE REFERENCE only; transfer its quiet flat matte hand-painted 2D gouache style, not its subject or bottle shape.\nChange rendering only: replace photographic shine with three or four broad low-contrast color planes, a fine softly irregular brown ink outline, and a few calm visible brush strokes. Use subdued warm natural colors. Preserve clearly readable silhouettes and large design features for a 96-pixel inventory icon. Simplify intricate veins, grains, glass reflections and woven fibers into sparse drawn marks. Soft diffuse light with very mild one-side shading, no brilliant highlights.\nMandatory exclusions: no metallic gold rim, golden edge lighting, halo, glow, white specular streaks, glossy photo finish, glitter, shiny plastic, 3D rendering, stippled noise, grainy photo texture, micro-mottling, oversharpened edges, heavy black shadows, text, letters, brand names, watermark, border, paper card, tabletop, scenery, extra props, or cast shadow on a surface.\nBackground: preserve genuinely transparent alpha outside the object. No black, white, solid colored or checkerboard background painted into the image. Keep a full uncropped object with clear transparent margins. The painted object may be opaque enough to read cleanly.\n\nSpecific subject and preserved identity: Preserve the tall slim cylindrical syrup bottle, cork, straight sides, broad blank rectangular cream label, and very pale honey-colored clear syrup. Draw glass with a few muted gray-beige bands only, matte tan cork and cream label. Keep the label completely blank.",
+      "image_path": "res://assets/art/supplies/materials/simple_syrup.png",
+      "reference_image": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/materials/simple_syrup.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-7fe4e12d-8d04-4e44-b06e-f15b6686d8ad.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          440,
+          33,
+          815,
+          1212
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "4dcd138e4caff8e52a51c3ec50ffd057ed8c920c70bd3f411a2ebe84c98d5e65"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "soda_water",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent inventory sprite for a hand-drawn 2D western saloon game.\nInput image 1 is the EDIT TARGET: preserve its single object's identity, shape, silhouette, proportions, orientation, composition, parts, label placement, and item count. Input image 2 will be the STYLE REFERENCE only; transfer its quiet flat matte hand-painted 2D gouache style, not its subject or bottle shape.\nChange rendering only: replace photographic shine with three or four broad low-contrast color planes, a fine softly irregular brown ink outline, and a few calm visible brush strokes. Use subdued warm natural colors. Preserve clearly readable silhouettes and large design features for a 96-pixel inventory icon. Simplify intricate veins, grains, glass reflections and woven fibers into sparse drawn marks. Soft diffuse light with very mild one-side shading, no brilliant highlights.\nMandatory exclusions: no metallic gold rim, golden edge lighting, halo, glow, white specular streaks, glossy photo finish, glitter, shiny plastic, 3D rendering, stippled noise, grainy photo texture, micro-mottling, oversharpened edges, heavy black shadows, text, letters, brand names, watermark, border, paper card, tabletop, scenery, extra props, or cast shadow on a surface.\nBackground: preserve genuinely transparent alpha outside the object. No black, white, solid colored or checkerboard background painted into the image. Keep a full uncropped object with clear transparent margins. The painted object may be opaque enough to read cleanly.\n\nSpecific subject and preserved identity: Preserve the narrow soda bottle with smooth shoulders, crown cap, clear pale aqua water and blank oval paper label. Draw a few small quiet bubbles as thin blue-gray loops with no specular glints. Cap is subdued dull gray-tan, no gold-metal shine.",
+      "image_path": "res://assets/art/supplies/materials/soda_water.png",
+      "reference_image": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/materials/soda_water.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-14a004bd-8a50-4fcd-9cd7-9c80bc95f929.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          443,
+          47,
+          811,
+          1207
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "1477207b66f6d9034a7a6670fe3f72ed2d00533bb32a6eb440ad9e390af8cb86"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "tonic_water",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent inventory sprite for a hand-drawn 2D western saloon game.\nInput image 1 is the EDIT TARGET: preserve its single object's identity, shape, silhouette, proportions, orientation, composition, parts, label placement, and item count. Input image 2 will be the STYLE REFERENCE only; transfer its quiet flat matte hand-painted 2D gouache style, not its subject or bottle shape.\nChange rendering only: replace photographic shine with three or four broad low-contrast color planes, a fine softly irregular brown ink outline, and a few calm visible brush strokes. Use subdued warm natural colors. Preserve clearly readable silhouettes and large design features for a 96-pixel inventory icon. Simplify intricate veins, grains, glass reflections and woven fibers into sparse drawn marks. Soft diffuse light with very mild one-side shading, no brilliant highlights.\nMandatory exclusions: no metallic gold rim, golden edge lighting, halo, glow, white specular streaks, glossy photo finish, glitter, shiny plastic, 3D rendering, stippled noise, grainy photo texture, micro-mottling, oversharpened edges, heavy black shadows, text, letters, brand names, watermark, border, paper card, tabletop, scenery, extra props, or cast shadow on a surface.\nBackground: preserve genuinely transparent alpha outside the object. No black, white, solid colored or checkerboard background painted into the image. Keep a full uncropped object with clear transparent margins. The painted object may be opaque enough to read cleanly.\n\nSpecific subject and preserved identity: Preserve the slightly broader green-tinted soda bottle, crown cap, clear contents, and blank oval paper label with sparse ornamental linework. Use subdued green-gray glass planes and a few faint bubbles. Keep its broader shape distinguishable from the slim soda-water bottle.",
+      "image_path": "res://assets/art/supplies/materials/tonic_water.png",
+      "reference_image": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/materials/tonic_water.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-e2b4dfe1-80f6-47bc-b5a5-d63bf2165ea8.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          402,
+          22,
+          854,
+          1222
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "c386cafbe3efcaa801916e251fca368b868b46350ae72995b0ffed0aba249f04"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "cola",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent inventory sprite for a hand-drawn 2D western saloon game.\nInput image 1 is the EDIT TARGET: preserve its single object's identity, shape, silhouette, proportions, orientation, composition, parts, label placement, and item count. Input image 2 will be the STYLE REFERENCE only; transfer its quiet flat matte hand-painted 2D gouache style, not its subject or bottle shape.\nChange rendering only: replace photographic shine with three or four broad low-contrast color planes, a fine softly irregular brown ink outline, and a few calm visible brush strokes. Use subdued warm natural colors. Preserve clearly readable silhouettes and large design features for a 96-pixel inventory icon. Simplify intricate veins, grains, glass reflections and woven fibers into sparse drawn marks. Soft diffuse light with very mild one-side shading, no brilliant highlights.\nMandatory exclusions: no metallic gold rim, golden edge lighting, halo, glow, white specular streaks, glossy photo finish, glitter, shiny plastic, 3D rendering, stippled noise, grainy photo texture, micro-mottling, oversharpened edges, heavy black shadows, text, letters, brand names, watermark, border, paper card, tabletop, scenery, extra props, or cast shadow on a surface.\nBackground: preserve genuinely transparent alpha outside the object. No black, white, solid colored or checkerboard background painted into the image. Keep a full uncropped object with clear transparent margins. The painted object may be opaque enough to read cleanly.\n\nSpecific subject and preserved identity: Preserve the slender curved long-neck cola bottle, crown cap, deep brown liquid and blank cream label with restrained burgundy border. Use muted medium and dark brown broad planes; cap in matte gray-brown. A few simple small bubble outlines, no shiny glass streaks and no logo.",
+      "image_path": "res://assets/art/supplies/materials/cola.png",
+      "reference_image": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/materials/cola.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-9c3c5d38-e6fe-4a50-a7f5-d442b47eb811.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          443,
+          18,
+          808,
+          1219
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "a094c995db498d669533628d8695a1fe76818c9993673a56ab4736338bfdb828"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "white_cane_sugar",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent inventory sprite for a hand-drawn 2D western saloon game.\nInput image 1 is the EDIT TARGET: preserve its single object's identity, shape, silhouette, proportions, orientation, composition, parts, label placement, and item count. Input image 2 will be the STYLE REFERENCE only; transfer its quiet flat matte hand-painted 2D gouache style, not its subject or bottle shape.\nChange rendering only: replace photographic shine with three or four broad low-contrast color planes, a fine softly irregular brown ink outline, and a few calm visible brush strokes. Use subdued warm natural colors. Preserve clearly readable silhouettes and large design features for a 96-pixel inventory icon. Simplify intricate veins, grains, glass reflections and woven fibers into sparse drawn marks. Soft diffuse light with very mild one-side shading, no brilliant highlights.\nMandatory exclusions: no metallic gold rim, golden edge lighting, halo, glow, white specular streaks, glossy photo finish, glitter, shiny plastic, 3D rendering, stippled noise, grainy photo texture, micro-mottling, oversharpened edges, heavy black shadows, text, letters, brand names, watermark, border, paper card, tabletop, scenery, extra props, or cast shadow on a surface.\nBackground: preserve genuinely transparent alpha outside the object. No black, white, solid colored or checkerboard background painted into the image. Keep a full uncropped object with clear transparent margins. The painted object may be opaque enough to read cleanly.\n\nSpecific subject and preserved identity: Preserve the one squat open burlap sack with its rolled cloth rim and mound of white cane sugar. Draw sack in only a few matte tan planes with sparse weave strokes; sugar as a soft off-white mound with several tiny low-contrast granule marks. Keep the single bag shape and open top, no scoop or spill.",
+      "image_path": "res://assets/art/supplies/materials/white_cane_sugar.png",
+      "reference_image": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/materials/white_cane_sugar.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-bb1c9777-6f53-4584-8adb-0756084a0922.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          63,
+          111,
+          1202,
+          1155
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "53a8571c21fd56fdc57f4399f6ccaf31f5380402cb816f1bccf9adbed4bf1616"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "mint_leaf",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent inventory sprite for a hand-drawn 2D western saloon game.\nInput image 1 is the EDIT TARGET: preserve its single object's identity, shape, silhouette, proportions, orientation, composition, parts, label placement, and item count. Input image 2 will be the STYLE REFERENCE only; transfer its quiet flat matte hand-painted 2D gouache style, not its subject or bottle shape.\nChange rendering only: replace photographic shine with three or four broad low-contrast color planes, a fine softly irregular brown ink outline, and a few calm visible brush strokes. Use subdued warm natural colors. Preserve clearly readable silhouettes and large design features for a 96-pixel inventory icon. Simplify intricate veins, grains, glass reflections and woven fibers into sparse drawn marks. Soft diffuse light with very mild one-side shading, no brilliant highlights.\nMandatory exclusions: no metallic gold rim, golden edge lighting, halo, glow, white specular streaks, glossy photo finish, glitter, shiny plastic, 3D rendering, stippled noise, grainy photo texture, micro-mottling, oversharpened edges, heavy black shadows, text, letters, brand names, watermark, border, paper card, tabletop, scenery, extra props, or cast shadow on a surface.\nBackground: preserve genuinely transparent alpha outside the object. No black, white, solid colored or checkerboard background painted into the image. Keep a full uncropped object with clear transparent margins. The painted object may be opaque enough to read cleanly.\n\nSpecific subject and preserved identity: Preserve exactly one whole serrated mint leaf and its short stalk, with the same graceful diagonal orientation. Paint it in three calm green planes, a fine brown-green contour and a small number of gently drawn main veins. Matte natural leaf, no wet sparkle or glossy highlights.",
+      "image_path": "res://assets/art/supplies/materials/mint_leaf.png",
+      "reference_image": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/materials/mint_leaf.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-f0ad0886-ee09-4791-b796-12ac2c86252b.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          143,
+          109,
+          1164,
+          1155
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "22628cb1702b7c93ee13eeaa084ae1ad91a948f8e21c225b60306cf19c262620"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "mint_sprig",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent inventory sprite for a hand-drawn 2D western saloon game.\nInput image 1 is the EDIT TARGET: preserve its single object's identity, shape, silhouette, proportions, orientation, composition, parts, label placement, and item count. Input image 2 will be the STYLE REFERENCE only; transfer its quiet flat matte hand-painted 2D gouache style, not its subject or bottle shape.\nChange rendering only: replace photographic shine with three or four broad low-contrast color planes, a fine softly irregular brown ink outline, and a few calm visible brush strokes. Use subdued warm natural colors. Preserve clearly readable silhouettes and large design features for a 96-pixel inventory icon. Simplify intricate veins, grains, glass reflections and woven fibers into sparse drawn marks. Soft diffuse light with very mild one-side shading, no brilliant highlights.\nMandatory exclusions: no metallic gold rim, golden edge lighting, halo, glow, white specular streaks, glossy photo finish, glitter, shiny plastic, 3D rendering, stippled noise, grainy photo texture, micro-mottling, oversharpened edges, heavy black shadows, text, letters, brand names, watermark, border, paper card, tabletop, scenery, extra props, or cast shadow on a surface.\nBackground: preserve genuinely transparent alpha outside the object. No black, white, solid colored or checkerboard background painted into the image. Keep a full uncropped object with clear transparent margins. The painted object may be opaque enough to read cleanly.\n\nSpecific subject and preserved identity: Preserve one slender mint stem and its five leaves, with the existing branch arrangement and graceful diagonal silhouette. All five leaves and whole stem must remain. Three muted green planes, sparse hand-drawn veins and soft brown-green outline. No golden vein highlights, no photo grain.",
+      "image_path": "res://assets/art/supplies/materials/mint_sprig.png",
+      "reference_image": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/materials/mint_sprig.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-27d0ae6c-0971-4bc4-beae-a1437f1e8b9c.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          103,
+          44,
+          1221,
+          1221
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "451c9168f0eed61c8676e630619cb40712bbf0e5bebe1df6e0d9c6e7fa0b43bc"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "lime_wedge",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent inventory sprite for a hand-drawn 2D western saloon game.\nInput image 1 is the EDIT TARGET: preserve its single object's identity, shape, silhouette, proportions, orientation, composition, parts, label placement, and item count. Input image 2 will be the STYLE REFERENCE only; transfer its quiet flat matte hand-painted 2D gouache style, not its subject or bottle shape.\nChange rendering only: replace photographic shine with three or four broad low-contrast color planes, a fine softly irregular brown ink outline, and a few calm visible brush strokes. Use subdued warm natural colors. Preserve clearly readable silhouettes and large design features for a 96-pixel inventory icon. Simplify intricate veins, grains, glass reflections and woven fibers into sparse drawn marks. Soft diffuse light with very mild one-side shading, no brilliant highlights.\nMandatory exclusions: no metallic gold rim, golden edge lighting, halo, glow, white specular streaks, glossy photo finish, glitter, shiny plastic, 3D rendering, stippled noise, grainy photo texture, micro-mottling, oversharpened edges, heavy black shadows, text, letters, brand names, watermark, border, paper card, tabletop, scenery, extra props, or cast shadow on a surface.\nBackground: preserve genuinely transparent alpha outside the object. No black, white, solid colored or checkerboard background painted into the image. Keep a full uncropped object with clear transparent margins. The painted object may be opaque enough to read cleanly.\n\nSpecific subject and preserved identity: Preserve exactly the same single lime wedge silhouette, orientation, curved green peel, cream pith and cut juicy flesh visible in the target. Simplify citrus sections into broad soft pale green planes with a few brown-green segment lines. Matte green peel and flesh, no wet glossy dots, no additional slices.",
+      "image_path": "res://assets/art/supplies/materials/lime_wedge.png",
+      "reference_image": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/materials/lime_wedge.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-5c0644a2-5b70-4677-b19d-16637afe47d9.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          76,
+          100,
+          1213,
+          1134
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "44c2bae373cf513481e97f424d56530b619da0a30a9e01afdd93709c91c77d5a"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "lemon_slice",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent inventory sprite for a hand-drawn 2D western saloon game.\nInput image 1 is the EDIT TARGET: preserve its single object's identity, shape, silhouette, proportions, orientation, composition, parts, label placement, and item count. Input image 2 will be the STYLE REFERENCE only; transfer its quiet flat matte hand-painted 2D gouache style, not its subject or bottle shape.\nChange rendering only: replace photographic shine with three or four broad low-contrast color planes, a fine softly irregular brown ink outline, and a few calm visible brush strokes. Use subdued warm natural colors. Preserve clearly readable silhouettes and large design features for a 96-pixel inventory icon. Simplify intricate veins, grains, glass reflections and woven fibers into sparse drawn marks. Soft diffuse light with very mild one-side shading, no brilliant highlights.\nMandatory exclusions: no metallic gold rim, golden edge lighting, halo, glow, white specular streaks, glossy photo finish, glitter, shiny plastic, 3D rendering, stippled noise, grainy photo texture, micro-mottling, oversharpened edges, heavy black shadows, text, letters, brand names, watermark, border, paper card, tabletop, scenery, extra props, or cast shadow on a surface.\nBackground: preserve genuinely transparent alpha outside the object. No black, white, solid colored or checkerboard background painted into the image. Keep a full uncropped object with clear transparent margins. The painted object may be opaque enough to read cleanly.\n\nSpecific subject and preserved identity: Preserve exactly one full round lemon slice at the same mild angle, complete yellow rind, narrow ivory pith and segmented interior. Render a few broad muted lemon-yellow planes, sparse fine brown-yellow segment lines and soft painted strokes. No bright white shine, no sparkle, no photoreal pores.",
+      "image_path": "res://assets/art/supplies/materials/lemon_slice.png",
+      "reference_image": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/materials/lemon_slice.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-68e67f7a-a7ec-404e-8959-e82e47fa6ccb.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          149,
+          117,
+          1137,
+          1130
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "478b64ff18c78d3638e65547cdd848123dc43121388001c0149ec4ed8d149cf0"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "cocktail_cherry",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent inventory sprite for a hand-drawn 2D western saloon game.\nInput image 1 is the EDIT TARGET: preserve its single object's identity, shape, silhouette, proportions, orientation, composition, parts, label placement, and item count. Input image 2 will be the STYLE REFERENCE only; transfer its quiet flat matte hand-painted 2D gouache style, not its subject or bottle shape.\nChange rendering only: replace photographic shine with three or four broad low-contrast color planes, a fine softly irregular brown ink outline, and a few calm visible brush strokes. Use subdued warm natural colors. Preserve clearly readable silhouettes and large design features for a 96-pixel inventory icon. Simplify intricate veins, grains, glass reflections and woven fibers into sparse drawn marks. Soft diffuse light with very mild one-side shading, no brilliant highlights.\nMandatory exclusions: no metallic gold rim, golden edge lighting, halo, glow, white specular streaks, glossy photo finish, glitter, shiny plastic, 3D rendering, stippled noise, grainy photo texture, micro-mottling, oversharpened edges, heavy black shadows, text, letters, brand names, watermark, border, paper card, tabletop, scenery, extra props, or cast shadow on a surface.\nBackground: preserve genuinely transparent alpha outside the object. No black, white, solid colored or checkerboard background painted into the image. Keep a full uncropped object with clear transparent margins. The painted object may be opaque enough to read cleanly.\n\nSpecific subject and preserved identity: Preserve exactly one deep red cherry with the same round dimples, curved attached stem, proportions and pose. Draw three low-contrast muted red planes and a soft brown contour, with a matte muted brown-green stem. Remove white reflected gloss patches and bright orange-gold edge lighting. No extra cherries or jar.",
+      "image_path": "res://assets/art/supplies/materials/cocktail_cherry.png",
+      "reference_image": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/materials/cocktail_cherry.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-c4008036-1035-4fb1-ba96-7e49390ddaf4.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          206,
+          98,
+          1074,
+          1156
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "95612fd87c1338c079b70fb35ef3ce3172b9bca627a3a08aa832ebd9b6069bd6"
+      },
+      "status": "generated_and_visually_reviewed"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="90" viewBox="0 0 64 90" fill="none">
+  <title>调酒杯</title>
+  <g stroke="#775331" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 19L21 73C21 80 45 80 45 73L49 23L53 18L44 18"/>
+    <path d="M17 19C17 23 25 25 33 25C41 25 47 23 49 21M17 19C17 15 40 13 45 18L53 18"/>
+    <path d="M22 71C28 74 38 74 44 71M23 67C29 69 38 69 43 67" stroke-width="1.3"/>
+    <path d="M24 34L42 52M23 45L42 64M29 30L45 46M43 34L25 52M43 45L26 63M37 30L22 45" stroke-width="1.3"/>
+    <path d="M22 28L23 34" stroke-width="1.3"/>
+  </g>
+</svg>

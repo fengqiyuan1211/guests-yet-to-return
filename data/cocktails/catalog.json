@@ -1,0 +1,1834 @@
+{
+  "schema_version": 1,
+  "source": {
+    "workbook": "酒类属性与消耗设计_v3.xlsx",
+    "extracted_json": "work/store-catalog/source.json",
+    "sha256": "0508abd7c2baa06d7f01622e30babbe281c4c017039ed70c56b310933c1d94e7",
+    "included_source_ids": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5"
+    ],
+    "excluded_source_ids": [
+      "B1"
+    ],
+    "references": [
+      {
+        "id": "S0",
+        "name": "用户截图及本轮确认",
+        "scope": "A1、A2、B1命名；A2解锁和40/35/45/0；六杯范围",
+        "citation": "本次会话图片与文字",
+        "sheet_row": 37
+      },
+      {
+        "id": "S1",
+        "name": "IBA Last Word",
+        "scope": "四种液体各22.5 ml；加冰摇和过滤",
+        "citation": "https://iba-world.com/iba-cocktail/last-word/",
+        "sheet_row": 38
+      },
+      {
+        "id": "S2",
+        "name": "IBA Mojito",
+        "scope": "参考45 ml朗姆、20 ml青柠；糖浆、叶数、苏打量、冰均改编草案",
+        "citation": "https://iba-world.com/iba-cocktail/mojito/",
+        "sheet_row": 39
+      },
+      {
+        "id": "S3",
+        "name": "Fever-Tree Classic Gin & Tonic",
+        "scope": "金酒50 ml、汤力150 ml；冰量为本稿试调值",
+        "citation": "https://fever-tree.com/fr-be/cocktails/classic-gin-tonic-BELGIUM-fr",
+        "sheet_row": 40
+      },
+      {
+        "id": "S4",
+        "name": "IBA Long Island Iced Tea",
+        "scope": "七项固定液体参考量；可乐原为补满，本稿60 ml为草案",
+        "citation": "https://iba-world.com/iba-cocktail/long-island-iced-tea/",
+        "sheet_row": 41
+      },
+      {
+        "id": "S5",
+        "name": "IBA Manhattan",
+        "scope": "50 ml黑麦、20 ml甜红味美思、1 dash苦精",
+        "citation": "https://iba-world.com/iba-cocktail/manhattan/",
+        "sheet_row": 42
+      }
+    ]
+  },
+  "score_scale": {
+    "min": 0,
+    "max": 100,
+    "independent": true,
+    "meaning": "game_perception_not_abv"
+  },
+  "cocktails": [
+    {
+      "id": "last_word",
+      "source_id": "A1",
+      "source_code": "A1",
+      "name": "遗言",
+      "english_name": "LAST WORD",
+      "type": "经典",
+      "image_path": "res://assets/art/cocktails/last_word.png",
+      "image_generation": {
+        "style_id": "saloon-cocktail-cutout-v1",
+        "prompt_file_path": "res://assets/art/cocktails/prompts.json",
+        "prompt_record_id": "last_word"
+      },
+      "alcohol_intensity": 65,
+      "sweetness": 45,
+      "sourness": 65,
+      "bitterness": 20,
+      "scores_status": "draft",
+      "scores_basis": "四项分值均为策划草案",
+      "flavor_tags": [
+        "草本",
+        "青柠",
+        "樱桃"
+      ],
+      "mouthfeel_tags": [
+        "酸甜",
+        "短饮"
+      ],
+      "theme_tags": null,
+      "ingredients": [
+        {
+          "id": "A1-01",
+          "sku_id": "sku_gin_london_dry",
+          "ingredient_id": "gin_london_dry",
+          "name": "伦敦干金酒",
+          "use": "基酒",
+          "amount": 22.5,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 22.5,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S1 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 6,
+          "source": {
+            "sheet": "用料明细",
+            "row": 6
+          }
+        },
+        {
+          "id": "A1-02",
+          "sku_id": "sku_green_chartreuse",
+          "ingredient_id": "green_chartreuse",
+          "name": "绿查特酒",
+          "use": "配料",
+          "amount": 22.5,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 22.5,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S1 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 7,
+          "source": {
+            "sheet": "用料明细",
+            "row": 7
+          }
+        },
+        {
+          "id": "A1-03",
+          "sku_id": "sku_maraschino",
+          "ingredient_id": "maraschino",
+          "name": "马拉斯奇诺樱桃利口酒",
+          "use": "配料",
+          "amount": 22.5,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 22.5,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S1 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 8,
+          "source": {
+            "sheet": "用料明细",
+            "row": 8
+          }
+        },
+        {
+          "id": "A1-04",
+          "sku_id": "sku_lime_juice",
+          "ingredient_id": "lime_juice",
+          "name": "鲜榨青柠汁",
+          "use": "配料",
+          "amount": 22.5,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 22.5,
+          "specification": "已备好的鲜榨汁；不重复扣整果",
+          "specification_status": "reference",
+          "quantity_status": "reference",
+          "quantity_basis": "S1 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 9,
+          "source": {
+            "sheet": "用料明细",
+            "row": 9
+          }
+        }
+      ],
+      "ice": [
+        {
+          "id": "A1-05",
+          "sku_id": "sku_ice_standard_cube",
+          "ingredient_id": "ice_standard_cube",
+          "name": "标准方冰",
+          "use": "制作冰",
+          "amount": 150,
+          "unit": "g",
+          "required": true,
+          "inventory_unit": "g",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 150,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "draft",
+          "quantity_basis": "草案",
+          "step_reference": "03 加冰",
+          "note": "冰量需实测；滤出时不退库存",
+          "source_sheet_row": 10,
+          "source": {
+            "sheet": "用料明细",
+            "row": 10
+          },
+          "inventory_policy": "excluded_from_ingredient_inventory"
+        }
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "operation": "准备",
+          "instruction": "冷却鸡尾酒杯；备摇壶、量酒器、滤器。",
+          "equipment": "冷却鸡尾酒杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A1/01.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 6,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 6
+          }
+        },
+        {
+          "number": 2,
+          "operation": "加料",
+          "instruction": "按 A1 用料行量取四种液体。",
+          "equipment": "摇壶",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A1/02.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 7,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 7
+          }
+        },
+        {
+          "number": 3,
+          "operation": "加冰",
+          "instruction": "按 A1-05 加制作冰。",
+          "equipment": "摇壶",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A1/03.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 8,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 8
+          }
+        },
+        {
+          "number": 4,
+          "operation": "摇和",
+          "instruction": "记录实际摇和秒数；目标时长待试调。",
+          "equipment": "摇壶",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A1/04.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 9,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 9
+          }
+        },
+        {
+          "number": 5,
+          "operation": "过滤",
+          "instruction": "滤入冷却杯，制作冰不留在成品内。",
+          "equipment": "冷却鸡尾酒杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A1/05.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 10,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 10
+          }
+        }
+      ],
+      "equipment": [
+        "摇壶",
+        "量酒器",
+        "滤器"
+      ],
+      "codex_order": 2,
+      "decoration_id": "herbal",
+      "preparation": "冷杯→量取→加冰→摇和→过滤",
+      "story": "遗言曾出现在底特律运动俱乐部的酒单上，后来被西雅图的调酒师重新带回吧台。金酒、绿查特、樱桃利口酒和青柠汁各占一份，四种等量材料至今仍是它的特色。",
+      "story_sources": [
+        "https://www.chartreuse.fr/en/degustation/cocktails/",
+        "https://iba-world.com/iba-cocktail/last-word/"
+      ],
+      "display_equipment": [
+        "摇壶",
+        "量酒器",
+        "滤器"
+      ],
+      "display_equipment_basis": "原制作笔记明确列出。",
+      "display_steps": [
+        {
+          "number": 1,
+          "operation": "准备",
+          "instruction": "冷却鸡尾酒杯，准备摇壶、量酒器和滤器。"
+        },
+        {
+          "number": 2,
+          "operation": "量取",
+          "instruction": "量取金酒、绿查特酒、樱桃利口酒和青柠汁，各 22.5 ml，加入摇壶。"
+        },
+        {
+          "number": 3,
+          "operation": "加冰",
+          "instruction": "在摇壶中加入 150 g 标准方冰。"
+        },
+        {
+          "number": 4,
+          "operation": "摇和",
+          "instruction": "摇匀杯中材料，使酒液充分冷却。"
+        },
+        {
+          "number": 5,
+          "operation": "过滤",
+          "instruction": "将酒液过滤到冷却的鸡尾酒杯中，摇壶中的冰块不倒入成品。"
+        }
+      ],
+      "equipment_status": "derived_from_source_notes",
+      "glass": "冷却鸡尾酒杯",
+      "glass_status": "reference",
+      "recipe_status": "参考配方；冰量草案",
+      "recipe_review_status": "draft",
+      "unlock": {
+        "value": null,
+        "status": "unspecified",
+        "source_value": "待定",
+        "rule": null,
+        "scope": "catalog_reference"
+      },
+      "source": {
+        "workbook": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "酒谱总表",
+        "row": 6,
+        "ingredient_sheet": "用料明细",
+        "ingredient_rows": [
+          6,
+          7,
+          8,
+          9
+        ],
+        "ice_sheet": "用料明细",
+        "ice_rows": [
+          10
+        ],
+        "step_sheet": "制作笔记",
+        "step_rows": [
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "provenance": {
+        "worksheet": "酒谱总表",
+        "sheet_row": 6,
+        "source_references": [
+          "S1"
+        ],
+        "note_id": "笔记A1"
+      }
+    },
+    {
+      "id": "mojito",
+      "source_id": "A2",
+      "source_code": "A2",
+      "name": "莫吉托",
+      "english_name": "MOJITO",
+      "type": "经典",
+      "image_path": "res://assets/art/cocktails/mojito.png",
+      "image_generation": {
+        "style_id": "saloon-cocktail-cutout-v1",
+        "prompt_file_path": "res://assets/art/cocktails/prompts.json",
+        "prompt_record_id": "mojito"
+      },
+      "alcohol_intensity": 40,
+      "sweetness": 35,
+      "sourness": 45,
+      "bitterness": 0,
+      "scores_status": "source_confirmed",
+      "scores_basis": "四项分值原样保留用户截图",
+      "flavor_tags": [
+        "薄荷",
+        "青柠"
+      ],
+      "mouthfeel_tags": [
+        "清爽",
+        "气泡"
+      ],
+      "theme_tags": [
+        "夏日"
+      ],
+      "ingredients": [
+        {
+          "id": "A2-01",
+          "sku_id": "sku_white_rum",
+          "ingredient_id": "white_rum",
+          "name": "白朗姆酒",
+          "use": "基酒",
+          "amount": 45,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 45,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S2 参考量",
+          "step_reference": "04 加酒",
+          "note": null,
+          "source_sheet_row": 11,
+          "source": {
+            "sheet": "用料明细",
+            "row": 11
+          }
+        },
+        {
+          "id": "A2-02",
+          "sku_id": "sku_simple_syrup",
+          "ingredient_id": "simple_syrup",
+          "name": "糖浆",
+          "use": "配料",
+          "amount": 15,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 15,
+          "specification": "蔗糖:水=1:1（质量比草案）",
+          "specification_status": "draft",
+          "quantity_status": "draft",
+          "quantity_basis": "糖浆版草案",
+          "step_reference": "02 轻压",
+          "note": "以糖浆替代原参考配方中的白糖",
+          "source_sheet_row": 12,
+          "source": {
+            "sheet": "用料明细",
+            "row": 12
+          }
+        },
+        {
+          "id": "A2-03",
+          "sku_id": "sku_lime_juice",
+          "ingredient_id": "lime_juice",
+          "name": "鲜榨青柠汁",
+          "use": "配料",
+          "amount": 20,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 20,
+          "specification": "已备好的鲜榨汁；不重复扣整果",
+          "specification_status": "reference",
+          "quantity_status": "reference",
+          "quantity_basis": "S2 参考量",
+          "step_reference": "02 轻压",
+          "note": null,
+          "source_sheet_row": 13,
+          "source": {
+            "sheet": "用料明细",
+            "row": 13
+          }
+        },
+        {
+          "id": "A2-04",
+          "sku_id": "sku_soda_water",
+          "ingredient_id": "soda_water",
+          "name": "苏打水",
+          "use": "配料",
+          "amount": 60,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 60,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "draft",
+          "quantity_basis": "定量试调草案",
+          "step_reference": "04 补苏打",
+          "note": "可改补满；库存按实际量扣",
+          "source_sheet_row": 14,
+          "source": {
+            "sheet": "用料明细",
+            "row": 14
+          }
+        },
+        {
+          "id": "A2-05",
+          "sku_id": "sku_mint_leaf",
+          "ingredient_id": "mint_leaf",
+          "name": "薄荷叶",
+          "use": "制作香草",
+          "amount": 6,
+          "unit": "piece",
+          "required": true,
+          "inventory_unit": "piece",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 6,
+          "specification": "备料后按叶计数",
+          "specification_status": "reference",
+          "quantity_status": "draft",
+          "quantity_basis": "叶数草案",
+          "step_reference": "02 轻压",
+          "note": "用户图仅列薄荷；本稿暂按叶计",
+          "source_sheet_row": 15,
+          "source": {
+            "sheet": "用料明细",
+            "row": 15
+          }
+        },
+        {
+          "id": "A2-07",
+          "sku_id": "sku_mint_sprig",
+          "ingredient_id": "mint_sprig",
+          "name": "薄荷枝",
+          "use": "装饰",
+          "amount": 1,
+          "unit": "sprig",
+          "required": true,
+          "inventory_unit": "sprig",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 1,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "draft",
+          "quantity_basis": "装饰草案",
+          "step_reference": "05 装饰",
+          "note": null,
+          "source_sheet_row": 17,
+          "source": {
+            "sheet": "用料明细",
+            "row": 17
+          }
+        },
+        {
+          "id": "A2-08",
+          "sku_id": "sku_lime_wedge",
+          "ingredient_id": "lime_wedge",
+          "name": "青柠角",
+          "use": "装饰",
+          "amount": 1,
+          "unit": "piece",
+          "required": true,
+          "inventory_unit": "piece",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 1,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "draft",
+          "quantity_basis": "装饰草案",
+          "step_reference": "05 装饰",
+          "note": null,
+          "source_sheet_row": 18,
+          "source": {
+            "sheet": "用料明细",
+            "row": 18
+          }
+        }
+      ],
+      "ice": [
+        {
+          "id": "A2-06",
+          "sku_id": "sku_ice_crushed",
+          "ingredient_id": "ice_crushed",
+          "name": "碎冰",
+          "use": "出品冰",
+          "amount": 150,
+          "unit": "g",
+          "required": true,
+          "inventory_unit": "g",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 150,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "draft",
+          "quantity_basis": "冰型与冰量草案",
+          "step_reference": "03 加冰",
+          "note": null,
+          "source_sheet_row": 16,
+          "source": {
+            "sheet": "用料明细",
+            "row": 16
+          },
+          "inventory_policy": "excluded_from_ingredient_inventory"
+        }
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "operation": "准备",
+          "instruction": "备高球杯、量酒器、轻压棒与吧勺。",
+          "equipment": "高球杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A2/01.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 11,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 11
+          }
+        },
+        {
+          "number": 2,
+          "operation": "轻压",
+          "instruction": "轻压薄荷叶、青柠汁和糖浆；避免过度破碎。",
+          "equipment": "高球杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A2/02.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 12,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 12
+          }
+        },
+        {
+          "number": 3,
+          "operation": "加冰",
+          "instruction": "加入 A2-06 的出品冰。",
+          "equipment": "高球杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A2/03.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 13,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 13
+          }
+        },
+        {
+          "number": 4,
+          "operation": "加酒及苏打",
+          "instruction": "量取白朗姆和苏打水，轻搅混匀。",
+          "equipment": "高球杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A2/04.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 14,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 14
+          }
+        },
+        {
+          "number": 5,
+          "operation": "装饰",
+          "instruction": "加入 A2-07、A2-08；装饰也计入消耗。",
+          "equipment": "高球杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A2/05.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 15,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 15
+          }
+        }
+      ],
+      "equipment": [
+        "量酒器",
+        "轻压棒",
+        "吧勺"
+      ],
+      "codex_order": 3,
+      "decoration_id": "mint_citrus",
+      "preparation": "轻压薄荷→加冰→加酒→轻搅→装饰",
+      "story": "莫吉托来自古巴的调酒文化。当地调酒师以轻盈的朗姆酒搭配薄荷、青柠与苏打水，让这杯清爽的长饮从哈瓦那的吧台走向世界，也让薄荷和青柠成为人们熟悉的夏日味道。",
+      "story_sources": [
+        "https://havana-club.com/en-gb/our-story/",
+        "https://iba-world.com/iba-cocktail/mojito/"
+      ],
+      "display_equipment": [
+        "量酒器",
+        "轻压棒",
+        "吧勺"
+      ],
+      "display_equipment_basis": "原制作笔记明确列出。",
+      "display_steps": [
+        {
+          "number": 1,
+          "operation": "准备",
+          "instruction": "准备高球杯、量酒器、轻压棒和吧勺。"
+        },
+        {
+          "number": 2,
+          "operation": "轻压",
+          "instruction": "杯中加入 6 片薄荷叶、20 ml 青柠汁和 15 ml 糖浆。轻压薄荷，避免压碎叶片。"
+        },
+        {
+          "number": 3,
+          "operation": "加冰",
+          "instruction": "加入 150 g 碎冰。"
+        },
+        {
+          "number": 4,
+          "operation": "加酒",
+          "instruction": "加入 45 ml 白朗姆酒与 60 ml 苏打水，用吧勺轻搅混匀。"
+        },
+        {
+          "number": 5,
+          "operation": "装饰",
+          "instruction": "以 1 枝薄荷和 1 块青柠角装饰。"
+        }
+      ],
+      "equipment_status": "derived_from_source_notes",
+      "glass": "高球杯",
+      "glass_status": "reference",
+      "recipe_status": "糖浆版工作配方草案",
+      "recipe_review_status": "draft",
+      "unlock": {
+        "value": true,
+        "status": "source_confirmed",
+        "source_value": "是",
+        "rule": null,
+        "scope": "catalog_reference"
+      },
+      "source": {
+        "workbook": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "酒谱总表",
+        "row": 7,
+        "ingredient_sheet": "用料明细",
+        "ingredient_rows": [
+          11,
+          12,
+          13,
+          14,
+          15,
+          17,
+          18
+        ],
+        "ice_sheet": "用料明细",
+        "ice_rows": [
+          16
+        ],
+        "step_sheet": "制作笔记",
+        "step_rows": [
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      },
+      "provenance": {
+        "worksheet": "酒谱总表",
+        "sheet_row": 7,
+        "source_references": [
+          "S0",
+          "S2"
+        ],
+        "note_id": "笔记A2"
+      }
+    },
+    {
+      "id": "gin_and_tonic",
+      "source_id": "A3",
+      "source_code": "A3",
+      "name": "金汤力",
+      "english_name": "GIN & TONIC",
+      "type": "经典",
+      "image_path": "res://assets/art/cocktails/gin_and_tonic.png",
+      "image_generation": {
+        "style_id": "saloon-cocktail-cutout-v1",
+        "prompt_file_path": "res://assets/art/cocktails/prompts.json",
+        "prompt_record_id": "gin_and_tonic"
+      },
+      "alcohol_intensity": 35,
+      "sweetness": 25,
+      "sourness": 20,
+      "bitterness": 30,
+      "scores_status": "draft",
+      "scores_basis": "四项分值均为策划草案",
+      "flavor_tags": [
+        "杜松",
+        "柑橘"
+      ],
+      "mouthfeel_tags": [
+        "清爽",
+        "气泡"
+      ],
+      "theme_tags": null,
+      "ingredients": [
+        {
+          "id": "A3-01",
+          "sku_id": "sku_gin_london_dry",
+          "ingredient_id": "gin_london_dry",
+          "name": "伦敦干金酒",
+          "use": "基酒",
+          "amount": 50,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 50,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S3 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 19,
+          "source": {
+            "sheet": "用料明细",
+            "row": 19
+          }
+        },
+        {
+          "id": "A3-02",
+          "sku_id": "sku_tonic_water",
+          "ingredient_id": "tonic_water",
+          "name": "汤力水",
+          "use": "配料",
+          "amount": 150,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 150,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S3 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 20,
+          "source": {
+            "sheet": "用料明细",
+            "row": 20
+          }
+        },
+        {
+          "id": "A3-04",
+          "sku_id": "sku_lime_wedge",
+          "ingredient_id": "lime_wedge",
+          "name": "青柠角",
+          "use": "装饰",
+          "amount": 1,
+          "unit": "piece",
+          "required": true,
+          "inventory_unit": "piece",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 1,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "draft",
+          "quantity_basis": "数量草案",
+          "step_reference": "03 装饰",
+          "note": null,
+          "source_sheet_row": 22,
+          "source": {
+            "sheet": "用料明细",
+            "row": 22
+          }
+        }
+      ],
+      "ice": [
+        {
+          "id": "A3-03",
+          "sku_id": "sku_ice_standard_cube",
+          "ingredient_id": "ice_standard_cube",
+          "name": "标准方冰",
+          "use": "出品冰",
+          "amount": 150,
+          "unit": "g",
+          "required": true,
+          "inventory_unit": "g",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 150,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "draft",
+          "quantity_basis": "冰量草案",
+          "step_reference": "01 加冰",
+          "note": null,
+          "source_sheet_row": 21,
+          "source": {
+            "sheet": "用料明细",
+            "row": 21
+          },
+          "inventory_policy": "excluded_from_ingredient_inventory"
+        }
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "operation": "加冰",
+          "instruction": "杯中加入出品冰。",
+          "equipment": "球形杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A3/01.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 16,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 16
+          }
+        },
+        {
+          "number": 2,
+          "operation": "加料",
+          "instruction": "量取金酒和汤力水，轻搅。",
+          "equipment": "球形杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A3/02.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 17,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 17
+          }
+        },
+        {
+          "number": 3,
+          "operation": "装饰",
+          "instruction": "以青柠角装饰。",
+          "equipment": "球形杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A3/03.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 18,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 18
+          }
+        }
+      ],
+      "equipment": [],
+      "codex_order": 4,
+      "decoration_id": "citrus",
+      "preparation": "加冰→加酒→轻搅→装饰",
+      "story": "金汤力的故事常被追溯到英属印度：人们为缓和奎宁的苦味，加入金酒、糖与柑橘。如今它成了简洁的酒吧经典，杜松子香、微苦与气泡构成了熟悉的清爽风味。",
+      "story_sources": [
+        "https://sipsmith.com/our-story/gin-history/",
+        "https://fever-tree.com/en-us/cocktails/classic-gin-tonic"
+      ],
+      "display_equipment": [
+        "量酒器",
+        "吧勺"
+      ],
+      "display_equipment_basis": "根据原笔记的量取与轻搅动作补充，原 equipment 不变。",
+      "display_steps": [
+        {
+          "number": 1,
+          "operation": "加冰",
+          "instruction": "球形杯中加入 150 g 标准方冰。"
+        },
+        {
+          "number": 2,
+          "operation": "轻搅",
+          "instruction": "加入 50 ml 金酒和 150 ml 汤力水，用吧勺轻搅。"
+        },
+        {
+          "number": 3,
+          "operation": "装饰",
+          "instruction": "以 1 块青柠角装饰。"
+        }
+      ],
+      "equipment_status": "unspecified",
+      "glass": "球形杯",
+      "glass_status": "reference",
+      "recipe_status": "参考配方；冰量草案",
+      "recipe_review_status": "draft",
+      "unlock": {
+        "value": null,
+        "status": "unspecified",
+        "source_value": "待定",
+        "rule": null,
+        "scope": "catalog_reference"
+      },
+      "source": {
+        "workbook": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "酒谱总表",
+        "row": 8,
+        "ingredient_sheet": "用料明细",
+        "ingredient_rows": [
+          19,
+          20,
+          22
+        ],
+        "ice_sheet": "用料明细",
+        "ice_rows": [
+          21
+        ],
+        "step_sheet": "制作笔记",
+        "step_rows": [
+          16,
+          17,
+          18
+        ]
+      },
+      "provenance": {
+        "worksheet": "酒谱总表",
+        "sheet_row": 8,
+        "source_references": [
+          "S3"
+        ],
+        "note_id": "笔记A3"
+      }
+    },
+    {
+      "id": "long_island_iced_tea",
+      "source_id": "A4",
+      "source_code": "A4",
+      "name": "长岛冰茶",
+      "english_name": "LONG ISLAND ICED TEA",
+      "type": "经典",
+      "image_path": "res://assets/art/cocktails/long_island_iced_tea.png",
+      "image_generation": {
+        "style_id": "saloon-cocktail-cutout-v1",
+        "prompt_file_path": "res://assets/art/cocktails/prompts.json",
+        "prompt_record_id": "long_island_iced_tea"
+      },
+      "alcohol_intensity": 55,
+      "sweetness": 55,
+      "sourness": 45,
+      "bitterness": 10,
+      "scores_status": "draft",
+      "scores_basis": "四项分值均为策划草案",
+      "flavor_tags": [
+        "柑橘",
+        "可乐"
+      ],
+      "mouthfeel_tags": [
+        "甜酸",
+        "气泡"
+      ],
+      "theme_tags": null,
+      "ingredients": [
+        {
+          "id": "A4-01",
+          "sku_id": "sku_vodka",
+          "ingredient_id": "vodka",
+          "name": "伏特加",
+          "use": "基酒",
+          "amount": 15,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 15,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S4 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 23,
+          "source": {
+            "sheet": "用料明细",
+            "row": 23
+          }
+        },
+        {
+          "id": "A4-02",
+          "sku_id": "sku_tequila",
+          "ingredient_id": "tequila",
+          "name": "龙舌兰酒",
+          "use": "基酒",
+          "amount": 15,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 15,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S4 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 24,
+          "source": {
+            "sheet": "用料明细",
+            "row": 24
+          }
+        },
+        {
+          "id": "A4-03",
+          "sku_id": "sku_white_rum",
+          "ingredient_id": "white_rum",
+          "name": "白朗姆酒",
+          "use": "基酒",
+          "amount": 15,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 15,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S4 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 25,
+          "source": {
+            "sheet": "用料明细",
+            "row": 25
+          }
+        },
+        {
+          "id": "A4-04",
+          "sku_id": "sku_gin_london_dry",
+          "ingredient_id": "gin_london_dry",
+          "name": "伦敦干金酒",
+          "use": "基酒",
+          "amount": 15,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 15,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S4 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 26,
+          "source": {
+            "sheet": "用料明细",
+            "row": 26
+          }
+        },
+        {
+          "id": "A4-05",
+          "sku_id": "sku_cointreau",
+          "ingredient_id": "cointreau",
+          "name": "君度橙酒",
+          "use": "配料",
+          "amount": 15,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 15,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S4 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 27,
+          "source": {
+            "sheet": "用料明细",
+            "row": 27
+          }
+        },
+        {
+          "id": "A4-06",
+          "sku_id": "sku_lemon_juice",
+          "ingredient_id": "lemon_juice",
+          "name": "鲜榨柠檬汁",
+          "use": "配料",
+          "amount": 25,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 25,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S4 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 28,
+          "source": {
+            "sheet": "用料明细",
+            "row": 28
+          }
+        },
+        {
+          "id": "A4-07",
+          "sku_id": "sku_simple_syrup",
+          "ingredient_id": "simple_syrup",
+          "name": "糖浆",
+          "use": "配料",
+          "amount": 30,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 30,
+          "specification": "蔗糖:水=1:1（质量比草案）",
+          "specification_status": "draft",
+          "quantity_status": "reference",
+          "quantity_basis": "S4 参考量",
+          "step_reference": "02 加料",
+          "note": "糖浆浓度由商品定义",
+          "source_sheet_row": 29,
+          "source": {
+            "sheet": "用料明细",
+            "row": 29
+          }
+        },
+        {
+          "id": "A4-08",
+          "sku_id": "sku_cola",
+          "ingredient_id": "cola",
+          "name": "可乐",
+          "use": "配料",
+          "amount": 60,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 60,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "draft",
+          "quantity_basis": "定量试调草案",
+          "step_reference": "03 补可乐",
+          "note": "原参考为补满；60 ml 不是 IBA 定量",
+          "source_sheet_row": 30,
+          "source": {
+            "sheet": "用料明细",
+            "row": 30
+          }
+        },
+        {
+          "id": "A4-10",
+          "sku_id": "sku_lemon_slice",
+          "ingredient_id": "lemon_slice",
+          "name": "柠檬片",
+          "use": "装饰",
+          "amount": 1,
+          "unit": "piece",
+          "required": false,
+          "inventory_unit": "piece",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 1,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "draft",
+          "quantity_basis": "数量草案",
+          "step_reference": "04 装饰",
+          "note": "本版成本包含装饰，实际可省略",
+          "source_sheet_row": 32,
+          "source": {
+            "sheet": "用料明细",
+            "row": 32
+          }
+        }
+      ],
+      "ice": [
+        {
+          "id": "A4-09",
+          "sku_id": "sku_ice_standard_cube",
+          "ingredient_id": "ice_standard_cube",
+          "name": "标准方冰",
+          "use": "出品冰",
+          "amount": 150,
+          "unit": "g",
+          "required": true,
+          "inventory_unit": "g",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 150,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "draft",
+          "quantity_basis": "冰量草案",
+          "step_reference": "01 加冰",
+          "note": null,
+          "source_sheet_row": 31,
+          "source": {
+            "sheet": "用料明细",
+            "row": 31
+          },
+          "inventory_policy": "excluded_from_ingredient_inventory"
+        }
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "operation": "加冰",
+          "instruction": "高球杯中加入出品冰。",
+          "equipment": "高球杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A4/01.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 19,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 19
+          }
+        },
+        {
+          "number": 2,
+          "operation": "加料",
+          "instruction": "量取五种酒、柠檬汁和糖浆。",
+          "equipment": "高球杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A4/02.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 20,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 20
+          }
+        },
+        {
+          "number": 3,
+          "operation": "补可乐",
+          "instruction": "加入可乐并轻搅，实际量需记录。",
+          "equipment": "高球杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A4/03.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 21,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 21
+          }
+        },
+        {
+          "number": 4,
+          "operation": "装饰",
+          "instruction": "柠檬片可选；省略时不扣装饰库存。",
+          "equipment": "高球杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A4/04.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 22,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 22
+          }
+        }
+      ],
+      "equipment": [],
+      "codex_order": 5,
+      "decoration_id": "citrus",
+      "preparation": "加冰→量取→补可乐→轻搅→装饰",
+      "story": "长岛冰茶看起来像一杯冰茶，杯中却没有茶叶。伏特加、金酒、朗姆、龙舌兰与橙味利口酒汇在一起，可乐给它添上茶色；这份容易误认的外表，也成了它最鲜明的记忆点。",
+      "story_sources": [
+        "https://www.cointreau.com/uk/en/cocktails/long-island-ice-tea",
+        "https://iba-world.com/iba-cocktail/long-island-iced-tea/"
+      ],
+      "display_equipment": [
+        "量酒器",
+        "吧勺"
+      ],
+      "display_equipment_basis": "根据原笔记的量取与轻搅动作补充，沿用原高球杯直调法。",
+      "display_steps": [
+        {
+          "number": 1,
+          "operation": "加冰",
+          "instruction": "高球杯中加入 150 g 标准方冰。"
+        },
+        {
+          "number": 2,
+          "operation": "量取",
+          "instruction": "加入伏特加、龙舌兰酒、白朗姆酒、金酒和君度橙酒各 15 ml，再加入 25 ml 柠檬汁与 30 ml 糖浆。"
+        },
+        {
+          "number": 3,
+          "operation": "补可乐",
+          "instruction": "加入 60 ml 可乐，用吧勺轻搅混匀。"
+        },
+        {
+          "number": 4,
+          "operation": "装饰",
+          "instruction": "可用 1 片柠檬片装饰，也可以不加。"
+        }
+      ],
+      "equipment_status": "unspecified",
+      "glass": "高球杯",
+      "glass_status": "reference",
+      "recipe_status": "可乐定量与冰量待试调",
+      "recipe_review_status": "draft",
+      "unlock": {
+        "value": null,
+        "status": "unspecified",
+        "source_value": "待定",
+        "rule": null,
+        "scope": "catalog_reference"
+      },
+      "source": {
+        "workbook": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "酒谱总表",
+        "row": 9,
+        "ingredient_sheet": "用料明细",
+        "ingredient_rows": [
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          32
+        ],
+        "ice_sheet": "用料明细",
+        "ice_rows": [
+          31
+        ],
+        "step_sheet": "制作笔记",
+        "step_rows": [
+          19,
+          20,
+          21,
+          22
+        ]
+      },
+      "provenance": {
+        "worksheet": "酒谱总表",
+        "sheet_row": 9,
+        "source_references": [
+          "S4"
+        ],
+        "note_id": "笔记A4"
+      }
+    },
+    {
+      "id": "manhattan",
+      "source_id": "A5",
+      "source_code": "A5",
+      "name": "曼哈顿",
+      "english_name": "MANHATTAN",
+      "type": "经典",
+      "image_path": "res://assets/art/cocktails/manhattan.png",
+      "image_generation": {
+        "style_id": "saloon-cocktail-cutout-v1",
+        "prompt_file_path": "res://assets/art/cocktails/prompts.json",
+        "prompt_record_id": "manhattan"
+      },
+      "alcohol_intensity": 75,
+      "sweetness": 30,
+      "sourness": 10,
+      "bitterness": 35,
+      "scores_status": "draft",
+      "scores_basis": "四项分值均为策划草案",
+      "flavor_tags": [
+        "威士忌",
+        "香料"
+      ],
+      "mouthfeel_tags": [
+        "醇厚",
+        "微苦"
+      ],
+      "theme_tags": null,
+      "ingredients": [
+        {
+          "id": "A5-01",
+          "sku_id": "sku_rye_whiskey",
+          "ingredient_id": "rye_whiskey",
+          "name": "黑麦威士忌",
+          "use": "基酒",
+          "amount": 50,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 50,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S5 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 33,
+          "source": {
+            "sheet": "用料明细",
+            "row": 33
+          }
+        },
+        {
+          "id": "A5-02",
+          "sku_id": "sku_sweet_red_vermouth",
+          "ingredient_id": "sweet_red_vermouth",
+          "name": "甜红味美思",
+          "use": "配料",
+          "amount": 20,
+          "unit": "ml",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 20,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S5 参考量",
+          "step_reference": "02 加料",
+          "note": null,
+          "source_sheet_row": 34,
+          "source": {
+            "sheet": "用料明细",
+            "row": 34
+          }
+        },
+        {
+          "id": "A5-03",
+          "sku_id": "sku_angostura_bitters",
+          "ingredient_id": "angostura_bitters",
+          "name": "安格仕苦精",
+          "use": "配料",
+          "amount": 1,
+          "unit": "dash",
+          "required": true,
+          "inventory_unit": "ml",
+          "conversion_factor": null,
+          "conversion_status": "unspecified",
+          "inventory_amount": null,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "reference",
+          "quantity_basis": "S5 参考量",
+          "step_reference": "02 加料",
+          "note": "待实测该苦精瓶每 dash 的 ml",
+          "source_sheet_row": 35,
+          "source": {
+            "sheet": "用料明细",
+            "row": 35
+          }
+        },
+        {
+          "id": "A5-05",
+          "sku_id": "sku_cocktail_cherry",
+          "ingredient_id": "cocktail_cherry",
+          "name": "鸡尾酒樱桃",
+          "use": "装饰",
+          "amount": 1,
+          "unit": "piece",
+          "required": true,
+          "inventory_unit": "piece",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 1,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "draft",
+          "quantity_basis": "数量草案",
+          "step_reference": "05 装饰",
+          "note": null,
+          "source_sheet_row": 37,
+          "source": {
+            "sheet": "用料明细",
+            "row": 37
+          }
+        }
+      ],
+      "ice": [
+        {
+          "id": "A5-04",
+          "sku_id": "sku_ice_standard_cube",
+          "ingredient_id": "ice_standard_cube",
+          "name": "标准方冰",
+          "use": "制作冰",
+          "amount": 150,
+          "unit": "g",
+          "required": true,
+          "inventory_unit": "g",
+          "conversion_factor": 1,
+          "conversion_status": "source_value",
+          "inventory_amount": 150,
+          "specification": "商品规格待选",
+          "specification_status": "unspecified",
+          "quantity_status": "draft",
+          "quantity_basis": "冰量草案",
+          "step_reference": "03 搅拌",
+          "note": null,
+          "source_sheet_row": 36,
+          "source": {
+            "sheet": "用料明细",
+            "row": 36
+          },
+          "inventory_policy": "excluded_from_ingredient_inventory"
+        }
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "operation": "准备",
+          "instruction": "冷却鸡尾酒杯，备调酒杯。",
+          "equipment": "调酒杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A5/01.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 23,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 23
+          }
+        },
+        {
+          "number": 2,
+          "operation": "加料",
+          "instruction": "量取威士忌、味美思和苦精。",
+          "equipment": "调酒杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A5/02.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 24,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 24
+          }
+        },
+        {
+          "number": 3,
+          "operation": "搅拌",
+          "instruction": "加制作冰搅拌；记录秒数。",
+          "equipment": "调酒杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A5/03.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 25,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 25
+          }
+        },
+        {
+          "number": 4,
+          "operation": "过滤",
+          "instruction": "滤入冷却杯。",
+          "equipment": "冷却鸡尾酒杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A5/04.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 26,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 26
+          }
+        },
+        {
+          "number": 5,
+          "operation": "装饰",
+          "instruction": "以鸡尾酒樱桃装饰。",
+          "equipment": "冷却鸡尾酒杯",
+          "min_seconds": null,
+          "max_seconds": null,
+          "planned_image_path": "notes/A5/05.png",
+          "image_status": "planned",
+          "source_image_status": "待绘制",
+          "source_sheet_row": 27,
+          "source": {
+            "sheet": "制作笔记",
+            "row": 27
+          }
+        }
+      ],
+      "equipment": [
+        "调酒杯"
+      ],
+      "codex_order": 6,
+      "decoration_id": "cherry",
+      "preparation": "冷杯→量取→加冰→搅拌→过滤→装饰",
+      "story": "十九世纪的纽约报纸已记下曼哈顿的名字，那时威士忌、味美思与苦精的组合还曾用过其他称呼。今天，黑麦威士忌仍是它的经典主角，搅拌后配上一颗樱桃，保留了简洁的做法。",
+      "story_sources": [
+        "https://www.diageobaracademy.com/en-zz/home/explore-all-recipes/bulleit-manhattan",
+        "https://iba-world.com/iba-cocktail/manhattan/"
+      ],
+      "display_equipment": [
+        "量酒器",
+        "调酒杯",
+        "吧勺",
+        "滤器"
+      ],
+      "display_equipment_basis": "调酒杯来自原笔记；量酒器、吧勺和滤器根据量取、搅拌、过滤动作补充。",
+      "display_steps": [
+        {
+          "number": 1,
+          "operation": "准备",
+          "instruction": "冷却鸡尾酒杯，准备调酒杯、量酒器、吧勺和滤器。"
+        },
+        {
+          "number": 2,
+          "operation": "量取",
+          "instruction": "调酒杯中加入 50 ml 黑麦威士忌、20 ml 甜红味美思和 1 dash 安格仕苦精。"
+        },
+        {
+          "number": 3,
+          "operation": "搅拌",
+          "instruction": "加入 150 g 标准方冰，用吧勺搅拌，使酒液充分冷却。"
+        },
+        {
+          "number": 4,
+          "operation": "过滤",
+          "instruction": "将酒液过滤到冷却的鸡尾酒杯中，制作冰不留在成品内。"
+        },
+        {
+          "number": 5,
+          "operation": "装饰",
+          "instruction": "以 1 颗鸡尾酒樱桃装饰。"
+        }
+      ],
+      "equipment_status": "derived_from_source_notes",
+      "glass": "冷却鸡尾酒杯",
+      "glass_status": "reference",
+      "recipe_status": "苦精换算与冰量待试调",
+      "recipe_review_status": "draft",
+      "unlock": {
+        "value": null,
+        "status": "unspecified",
+        "source_value": "待定",
+        "rule": null,
+        "scope": "catalog_reference"
+      },
+      "source": {
+        "workbook": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "酒谱总表",
+        "row": 10,
+        "ingredient_sheet": "用料明细",
+        "ingredient_rows": [
+          33,
+          34,
+          35,
+          37
+        ],
+        "ice_sheet": "用料明细",
+        "ice_rows": [
+          36
+        ],
+        "step_sheet": "制作笔记",
+        "step_rows": [
+          23,
+          24,
+          25,
+          26,
+          27
+        ]
+      },
+      "provenance": {
+        "worksheet": "酒谱总表",
+        "sheet_row": 10,
+        "source_references": [
+          "S5"
+        ],
+        "note_id": "笔记A5"
+      }
+    }
+  ]
+}

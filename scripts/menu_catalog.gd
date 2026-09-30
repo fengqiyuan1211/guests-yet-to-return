@@ -3,21 +3,27 @@ extends Node
 signal changed
 
 const MAX_MENU_SIZE := 6
+const DEFAULT_CATALOG_PATH := "res://data/drink_catalog.json"
+const CocktailDefinitions := preload("res://scripts/cocktail_database.gd")
 const DEFAULT_DESIGN := {
 	"method": "template", "template": "parchment", "title": "今晚的酒单",
 	"subtitle": "致未归的客人", "strokes": [], "ai_image_path": "", "ai_prompt": ""
 }
 
-var catalog_path := "res://data/drink_catalog.json"
+var catalog_path := DEFAULT_CATALOG_PATH
+var codex_settings_path := "res://data/codex_settings.json"
 var save_path := "user://menu_state.json"
 var last_error := ""
 var writable := true
 var entries: Array = []
 var design: Dictionary = DEFAULT_DESIGN.duplicate(true)
 var unlocked_ids: Array = []
+var inventory: Dictionary = {}
 var _recipes: Array = []
 var _by_id: Dictionary = {}
 var _catalog_ready := false
+var _using_finished_catalog := false
+var _initial_settings: Dictionary = {}
 
 func _ready() -> void:
 	# Match existing isolated test saves; explicit menu paths take precedence.
@@ -71,9 +77,20 @@ func load_catalog() -> bool:
 	var data: Variant = _read_json(catalog_path)
 	if not data is Dictionary or data.get("version") != 1 or not data.get("recipes") is Array:
 		return _catalog_error()
+	_using_finished_catalog = catalog_path == DEFAULT_CATALOG_PATH and data.recipes.is_empty()
+	_initial_settings = {}
+	var records: Array = data.recipes
+	if _using_finished_catalog:
+		records = _finished_recipes()
+		if records.is_empty():
+			return _catalog_error()
+		if FileAccess.file_exists(codex_settings_path):
+			var settings: Variant = _read_json(codex_settings_path)
+			if settings is Dictionary:
+				_initial_settings = settings.duplicate(true)
 	var next_recipes: Array = []
 	var next_by_id: Dictionary = {}
-	for recipe in data.recipes:
+	for recipe in records:
 		if not _valid_recipe(recipe) or next_by_id.has(recipe.id):
 			return _catalog_error()
 		next_recipes.append(recipe.duplicate(true))
@@ -82,8 +99,49 @@ func load_catalog() -> bool:
 	_by_id = next_by_id
 	_catalog_ready = true
 	unlocked_ids = _default_unlocks()
+	inventory = _default_inventory()
 	last_error = ""
 	return true
+
+func _finished_recipes() -> Array:
+	# Only the default, empty legacy catalogue uses the canonical cocktail data.
+	# A supplied legacy catalogue keeps its own content and unlock defaults.
+	var tree := Engine.get_main_loop() as SceneTree
+	var database: Node = tree.root.get_node_or_null("CocktailDatabase") if tree != null else null
+	var temporary := database == null
+	if temporary:
+		database = CocktailDefinitions.new()
+		if not database.reload_catalog():
+			database.free()
+			return []
+	var result: Array = []
+	for cocktail in database.list_cocktails():
+		var recipe: Dictionary = cocktail.duplicate(true)
+		recipe["category"] = cocktail.type
+		recipe["subtitle"] = " · ".join(cocktail.mouthfeel_tags)
+		recipe["thumbnail"] = cocktail.image_path
+		recipe["tags"] = cocktail.mouthfeel_tags.duplicate()
+		for tag in cocktail.flavor_tags:
+			if not recipe.tags.has(tag):
+				recipe.tags.append(tag)
+		recipe["flavor"] = " · ".join(cocktail.flavor_tags)
+		# This is a menu editor starting value, not a claimed market price.
+		recipe["reference_price"] = cocktail.get("reference_price", 1)
+		recipe["price_status"] = "editor_starting_value" if not cocktail.has("reference_price") else "catalog_value"
+		recipe["unlocked_by_default"] = false
+		var ingredients: Array = []
+		var ice: Array = cocktail.get("ice", []).duplicate(true)
+		for ingredient in cocktail.ingredients:
+			if _is_ice(ingredient):
+				ice.append(ingredient.duplicate(true))
+			else:
+				ingredients.append(ingredient.duplicate(true))
+		recipe["ingredients"] = ingredients
+		recipe["ice"] = ice
+		result.append(recipe)
+	if temporary:
+		database.free()
+	return result
 
 func _catalog_error() -> bool:
 	_catalog_ready = false
@@ -93,10 +151,58 @@ func _catalog_error() -> bool:
 
 func _default_unlocks() -> Array:
 	var result: Array = []
+	if _using_finished_catalog:
+		var initial: Variant = _initial_settings.get("initial_unlocked_ids", [])
+		if initial is Array:
+			for id in initial:
+				if id is String and _by_id.has(id) and not result.has(id):
+					result.append(id)
+		return result
 	for recipe in _recipes:
 		if recipe.unlocked_by_default:
 			result.append(recipe.id)
 	return result
+
+func _default_inventory() -> Dictionary:
+	var initial: Variant = _initial_settings.get("initial_inventory", {}) if _using_finished_catalog else {}
+	return initial.duplicate(true) if _valid_inventory(initial) else {}
+
+func _valid_inventory(value: Variant) -> bool:
+	if not value is Dictionary:
+		return false
+	for sku_id in value:
+		if not _text(sku_id, 100, false) or not (value[sku_id] is int or value[sku_id] is float):
+			return false
+		if not is_finite(float(value[sku_id])) or value[sku_id] < 0:
+			return false
+	return true
+
+func _is_ice(ingredient: Dictionary) -> bool:
+	return str(ingredient.get("sku_id", "")).begins_with("sku_ice_") \
+		or str(ingredient.get("ingredient_id", "")).begins_with("ice_") \
+		or ingredient.get("use", "") in ["制作冰", "出品冰", "冰", "冰块", "ice"]
+
+func ingredient_available(ingredient: Dictionary) -> bool:
+	if _is_ice(ingredient):
+		return false
+	var available: Variant = inventory.get(ingredient.get("sku_id", ""), 0)
+	if not (available is int or available is float) or not is_finite(float(available)) or available <= 0:
+		return false
+	var needed: Variant = ingredient.get("inventory_amount")
+	if (needed is int or needed is float) and is_finite(float(needed)) and needed > 0:
+		return available >= needed
+	# Dash has no conversion in the source sheet: require stock without inventing ml.
+	return ingredient.get("unit", "") == "dash"
+
+func ingredient_progress(cocktail: Dictionary) -> Dictionary:
+	var progress := {"owned": 0, "total": 0}
+	for ingredient in cocktail.get("ingredients", []):
+		if not ingredient is Dictionary or _is_ice(ingredient) or not ingredient.get("required", true):
+			continue
+		progress.total += 1
+		if ingredient_available(ingredient):
+			progress.owned += 1
+	return progress
 
 func all_recipes() -> Array:
 	var result: Array = []
@@ -195,9 +301,10 @@ func load_state() -> bool:
 		entries = []
 		design = DEFAULT_DESIGN.duplicate(true)
 		unlocked_ids = _default_unlocks()
+		inventory = _default_inventory()
 		return true
 	var data: Variant = _read_json(save_path)
-	if not data is Dictionary or data.get("version") != 1 or not _valid_unlocks(data.get("unlocked_ids")) or not _valid_design(data.get("design")):
+	if not data is Dictionary or data.get("version") != 1 or not _valid_unlocks(data.get("unlocked_ids")) or not _valid_design(data.get("design")) or not _valid_inventory(data.get("inventory", {})):
 		return _state_error()
 	var next_unlocked: Array = data.unlocked_ids.duplicate()
 	for id in _default_unlocks():
@@ -210,6 +317,7 @@ func load_state() -> bool:
 	entries = normalized.entries.duplicate(true)
 	design = DEFAULT_DESIGN.duplicate(true)
 	design.merge(data.design, true)
+	inventory = data.get("inventory", {}).duplicate(true)
 	return true
 
 func _state_error() -> bool:
@@ -240,16 +348,22 @@ func reset_game() -> bool:
 	# Called only after the player's confirmed restart and GameSession backup.
 	if not _catalog_ready:
 		return false
-	return _commit([], DEFAULT_DESIGN.duplicate(true), _default_unlocks())
+	return _commit([], DEFAULT_DESIGN.duplicate(true), _default_unlocks(), _default_inventory())
 
-func _commit(next_entries: Array, next_design: Dictionary, next_unlocked: Array) -> bool:
+func _commit(next_entries: Array, next_design: Dictionary, next_unlocked: Array, next_inventory: Variant = null) -> bool:
+	var complete_inventory: Variant = inventory if next_inventory == null else next_inventory
+	if not _valid_inventory(complete_inventory):
+		last_error = "原料记录未能保存，请检查数量后重试。"
+		return false
 	var snapshot := {"version": 1, "unlocked_ids": next_unlocked.duplicate(true),
-		"entries": next_entries.duplicate(true), "design": next_design.duplicate(true)}
+		"entries": next_entries.duplicate(true), "design": next_design.duplicate(true),
+		"inventory": complete_inventory.duplicate(true)}
 	if not _atomic_write(snapshot):
 		return false
 	entries = snapshot.entries
 	design = snapshot.design
 	unlocked_ids = snapshot.unlocked_ids
+	inventory = snapshot.inventory
 	writable = true
 	last_error = ""
 	changed.emit()

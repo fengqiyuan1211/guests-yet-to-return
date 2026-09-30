@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="90" viewBox="0 0 64 90" fill="none">
+  <title>轻压棒</title>
+  <g stroke="#775331" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M25 17C24 9 38 8 39 16L37 41C37 49 39 58 43 69L44 75C45 80 21 80 21 75L22 69C26 58 28 49 28 41L25 17Z"/>
+    <path d="M26 17C30 19 35 19 38 17M23 69C29 71 37 71 42 69M22 74C28 76 37 76 44 74" stroke-width="1.3"/>
+    <path d="M30 23C32 36 32 52 28 63M35 24C33 35 34 53 38 64" stroke-width="1.3"/>
+    <path d="M26 75L26 78M32 76L32 79M38 75L38 78" stroke-width="1.3"/>
+  </g>
+</svg>

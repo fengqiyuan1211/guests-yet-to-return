@@ -1,0 +1,1147 @@
+{
+  "schema_version": 1,
+  "style_id": "saloon-supplies-matte-v2",
+  "generator": "built_in_imagegen",
+  "transparent_background": true,
+  "style_references": [
+    "res://assets/art/supplies/materials/gin_london_dry.png"
+  ],
+  "geometry_hint_coordinates": "source pixels; recalibrate against current alpha bounding box",
+  "assets": [
+    {
+      "id": "shaker_body",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent independent prop sprite for a hand-drawn 2D Western saloon game.\nInput image 1 is the existing sprite EDIT TARGET. Preserve its exact silhouette, physical structure, object count, relative dimensions, vertical orientation, perspective and placement. Change the rendering treatment.\nInput image 2 is a STYLE REFERENCE only. Match its illustrated brown contours, simplified broad painted color planes and quiet gouache strokes; do not copy its bottle, blue palette, label or subject.\nChange the object to genuinely two-dimensional matte gouache/ink illustration. Restrained natural colors, thin hand-drawn brown contours, 3 or 4 broad low-contrast planes, sparse soft brush marks. Soft diffuse interior light. Keep material readable using contours and value changes rather than reflections.\nRemove all bright golden rim lights, metallic sparkle, white specular streaks, fiery/glowing contours, mirror-shine stripes, micrograin, dense photorealistic refractions and glossy 3D treatment. The result must be an illustrated game object, not a shaded photo or 3D render. No floor, ground shadow, scenery, frame, written words, logo, watermark or extra props.\nMaintain genuine transparent alpha everywhere outside the whole uncropped object, with empty margins on every side. Keep the object large enough for 96px readability while preserving existing composition. Do not paint a black/white/checkerboard background.\n\nSpecific subject: Single OPEN empty Cobbler shaker cup BODY only. Matte warm pewter/silver-gray painted metal, subdued gray interior. No shoulder lid, cap or fixed liquid. Preserve open rim and taper.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/shaker_body.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-44ccad79-abdd-4e98-a1df-69d8d854b5d6.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-44ccad79-abdd-4e98-a1df-69d8d854b5d6.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/shaker_body.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          345,
+          210,
+          909,
+          1088
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "0af48ba245293220bf717e6eda0d4de38f3d4435f64f1217a187dc3b35439c6b"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "id": "shaker_strainer_top",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent independent prop sprite for a hand-drawn 2D Western saloon game.\nInput image 1 is the existing sprite EDIT TARGET. Preserve its exact silhouette, physical structure, object count, relative dimensions, vertical orientation, perspective and placement. Change the rendering treatment.\nInput image 2 is a STYLE REFERENCE only. Match its illustrated brown contours, simplified broad painted color planes and quiet gouache strokes; do not copy its bottle, blue palette, label or subject.\nChange the object to genuinely two-dimensional matte gouache/ink illustration. Restrained natural colors, thin hand-drawn brown contours, 3 or 4 broad low-contrast planes, sparse soft brush marks. Soft diffuse interior light. Keep material readable using contours and value changes rather than reflections.\nRemove all bright golden rim lights, metallic sparkle, white specular streaks, fiery/glowing contours, mirror-shine stripes, micrograin, dense photorealistic refractions and glossy 3D treatment. The result must be an illustrated game object, not a shaded photo or 3D render. No floor, ground shadow, scenery, frame, written words, logo, watermark or extra props.\nMaintain genuine transparent alpha everywhere outside the whole uncropped object, with empty margins on every side. Keep the object large enough for 96px readability while preserving existing composition. Do not paint a black/white/checkerboard background.\n\nSpecific subject: ONLY the matching detached removable middle shoulder strainer lid, including short open perforated spout. Matte warm silver-gray metal, no body or small cap. Preserve exact original part dimensions so it fits the body.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/shaker_strainer_top.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-ddc183ce-4d8d-48d1-a3fe-0b22c6ac64cb.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-ddc183ce-4d8d-48d1-a3fe-0b22c6ac64cb.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/shaker_strainer_top.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          294,
+          348,
+          961,
+          918
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "03504613e493a0e6a0f4e86452ec4434ac380b20e0d109edafa6a74c7e18d9c7"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "id": "shaker_cap",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent independent prop sprite for a hand-drawn 2D Western saloon game.\nInput image 1 is the existing sprite EDIT TARGET. Preserve its exact silhouette, physical structure, object count, relative dimensions, vertical orientation, perspective and placement. Change the rendering treatment.\nInput image 2 is a STYLE REFERENCE only. Match its illustrated brown contours, simplified broad painted color planes and quiet gouache strokes; do not copy its bottle, blue palette, label or subject.\nChange the object to genuinely two-dimensional matte gouache/ink illustration. Restrained natural colors, thin hand-drawn brown contours, 3 or 4 broad low-contrast planes, sparse soft brush marks. Soft diffuse interior light. Keep material readable using contours and value changes rather than reflections.\nRemove all bright golden rim lights, metallic sparkle, white specular streaks, fiery/glowing contours, mirror-shine stripes, micrograin, dense photorealistic refractions and glossy 3D treatment. The result must be an illustrated game object, not a shaded photo or 3D render. No floor, ground shadow, scenery, frame, written words, logo, watermark or extra props.\nMaintain genuine transparent alpha everywhere outside the whole uncropped object, with empty margins on every side. Keep the object large enough for 96px readability while preserving existing composition. Do not paint a black/white/checkerboard background.\n\nSpecific subject: ONLY the matching detached small top cap. Matte warm silver-gray metal, preserve original rim dimensions, no lower body or shoulder lid.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/shaker_cap.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-cba1d2a6-f44a-47a5-a395-8d52eecd78c8.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-cba1d2a6-f44a-47a5-a395-8d52eecd78c8.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/shaker_cap.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          341,
+          443,
+          910,
+          929
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "3129622975594a61aca01714c1ad02de9c36adf6ca3c9e718f1d79b9391a885a"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "id": "jigger",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent independent prop sprite for a hand-drawn 2D Western saloon game.\nInput image 1 is the existing sprite EDIT TARGET. Preserve its exact silhouette, physical structure, object count, relative dimensions, vertical orientation, perspective and placement. Change the rendering treatment.\nInput image 2 is a STYLE REFERENCE only. Match its illustrated brown contours, simplified broad painted color planes and quiet gouache strokes; do not copy its bottle, blue palette, label or subject.\nChange the object to genuinely two-dimensional matte gouache/ink illustration. Restrained natural colors, thin hand-drawn brown contours, 3 or 4 broad low-contrast planes, sparse soft brush marks. Soft diffuse interior light. Keep material readable using contours and value changes rather than reflections.\nRemove all bright golden rim lights, metallic sparkle, white specular streaks, fiery/glowing contours, mirror-shine stripes, micrograin, dense photorealistic refractions and glossy 3D treatment. The result must be an illustrated game object, not a shaded photo or 3D render. No floor, ground shadow, scenery, frame, written words, logo, watermark or extra props.\nMaintain genuine transparent alpha everywhere outside the whole uncropped object, with empty margins on every side. Keep the object large enough for 96px readability while preserving existing composition. Do not paint a black/white/checkerboard background.\n\nSpecific subject: One double-ended OPEN jigger. Matte dark ochre/brass low-contrast painted planes, never luminous gold. Preserve opposing conical cups and fine rim.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/jigger.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-d0172970-7c13-483f-a629-8b0ad2b7505c.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-d0172970-7c13-483f-a629-8b0ad2b7505c.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/jigger.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          358,
+          171,
+          896,
+          1072
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "e25a4ec8634d4025d1fdc7e84174d5ccfd902c70f662f8795fcb3f74cc34ce3b"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "id": "muddler",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent independent prop sprite for a hand-drawn 2D Western saloon game.\nInput image 1 is the existing sprite EDIT TARGET. Preserve its exact silhouette, physical structure, object count, relative dimensions, vertical orientation, perspective and placement. Change the rendering treatment.\nInput image 2 is a STYLE REFERENCE only. Match its illustrated brown contours, simplified broad painted color planes and quiet gouache strokes; do not copy its bottle, blue palette, label or subject.\nChange the object to genuinely two-dimensional matte gouache/ink illustration. Restrained natural colors, thin hand-drawn brown contours, 3 or 4 broad low-contrast planes, sparse soft brush marks. Soft diffuse interior light. Keep material readable using contours and value changes rather than reflections.\nRemove all bright golden rim lights, metallic sparkle, white specular streaks, fiery/glowing contours, mirror-shine stripes, micrograin, dense photorealistic refractions and glossy 3D treatment. The result must be an illustrated game object, not a shaded photo or 3D render. No floor, ground shadow, scenery, frame, written words, logo, watermark or extra props.\nMaintain genuine transparent alpha everywhere outside the whole uncropped object, with empty margins on every side. Keep the object large enough for 96px readability while preserving existing composition. Do not paint a black/white/checkerboard background.\n\nSpecific subject: One wooden muddler. Quiet warm brown wood and a few sparse grain marks, diffuse matte surface. Complete flat crushing end and rounded grip.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/muddler.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-6fa7f7cd-bace-44b0-84b1-7610ece0e4eb.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-6fa7f7cd-bace-44b0-84b1-7610ece0e4eb.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/muddler.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          500,
+          85,
+          754,
+          1166
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "707384b05a502288efdd0a644c4165e28927dd219973204489f62f9f80875643"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "id": "bar_spoon",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent independent prop sprite for a hand-drawn 2D Western saloon game.\nInput image 1 is the existing sprite EDIT TARGET. Preserve its exact silhouette, physical structure, object count, relative dimensions, vertical orientation, perspective and placement. Change the rendering treatment.\nInput image 2 is a STYLE REFERENCE only. Match its illustrated brown contours, simplified broad painted color planes and quiet gouache strokes; do not copy its bottle, blue palette, label or subject.\nChange the object to genuinely two-dimensional matte gouache/ink illustration. Restrained natural colors, thin hand-drawn brown contours, 3 or 4 broad low-contrast planes, sparse soft brush marks. Soft diffuse interior light. Keep material readable using contours and value changes rather than reflections.\nRemove all bright golden rim lights, metallic sparkle, white specular streaks, fiery/glowing contours, mirror-shine stripes, micrograin, dense photorealistic refractions and glossy 3D treatment. The result must be an illustrated game object, not a shaded photo or 3D render. No floor, ground shadow, scenery, frame, written words, logo, watermark or extra props.\nMaintain genuine transparent alpha everywhere outside the whole uncropped object, with empty margins on every side. Keep the object large enough for 96px readability while preserving existing composition. Do not paint a black/white/checkerboard background.\n\nSpecific subject: One complete upright long twisted-handle bar spoon. Subdued gray painted metal, sparse brown contour defining handle twist and bowl; not shiny jewelry.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/bar_spoon.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-21e0dfd0-9db3-4253-a30e-e8d346b1eb37.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-21e0dfd0-9db3-4253-a30e-e8d346b1eb37.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/bar_spoon.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          558,
+          122,
+          732,
+          1130
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "39244bbd9920d34f37a0f41f778f39a7c5cd4f786450cbfb1fc682c2f73fecad"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "id": "strainer",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent independent prop sprite for a hand-drawn 2D Western saloon game.\nInput image 1 is the existing sprite EDIT TARGET. Preserve its exact silhouette, physical structure, object count, relative dimensions, vertical orientation, perspective and placement. Change the rendering treatment.\nInput image 2 is a STYLE REFERENCE only. Match its illustrated brown contours, simplified broad painted color planes and quiet gouache strokes; do not copy its bottle, blue palette, label or subject.\nChange the object to genuinely two-dimensional matte gouache/ink illustration. Restrained natural colors, thin hand-drawn brown contours, 3 or 4 broad low-contrast planes, sparse soft brush marks. Soft diffuse interior light. Keep material readable using contours and value changes rather than reflections.\nRemove all bright golden rim lights, metallic sparkle, white specular streaks, fiery/glowing contours, mirror-shine stripes, micrograin, dense photorealistic refractions and glossy 3D treatment. The result must be an illustrated game object, not a shaded photo or 3D render. No floor, ground shadow, scenery, frame, written words, logo, watermark or extra props.\nMaintain genuine transparent alpha everywhere outside the whole uncropped object, with empty margins on every side. Keep the object large enough for 96px readability while preserving existing composition. Do not paint a black/white/checkerboard background.\n\nSpecific subject: One complete Hawthorne strainer with handle and circular coiled rim. Matte warm silver-gray drawn material; a few clear brown spring lines, not shimmering metallic microtexture.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/strainer.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-9b81f8b3-9859-4cae-972c-5d2be0d7b6b5.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-9b81f8b3-9859-4cae-972c-5d2be0d7b6b5.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/strainer.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          207,
+          109,
+          1060,
+          1167
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "40d2d64ef770666afd0fa6a69670e9fc531d722eff45a78689c1f2a804d65a14"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "id": "mixing_glass",
+      "prompt": "EDIT input image 1: a single OPEN EMPTY cylindrical mixing glass with pouring spout and thick base. Preserve its exact OUTER silhouette, cup proportions, bowl width and depth, perspective, orientation, stem/base/foot and placement. Input image 2 is ONLY the style guide for quiet thin hand-drawn brown ink lines and muted matte gray accents. Do not copy the opaque bottle treatment or paint broad value planes across clear glass.\n\nMake a clean delicate 2D PEN-AND-WASH EMPTY GLASS overlay sprite for a Western tavern game. GLASS FACES ARE INVISIBLE: the entire central inner cavity is one continuous uniformly transparent area, without any painted white/cream/gray fill. Draw ONLY slender exterior brown contour lines, slender back/front rim ellipses, a fine bottom ellipse, and very small soft gray edge accents. There must be NO vertical reflection strips and NO wide painted glass wall panels. Keep side edge accents extremely narrow, about 6–12 pixels on this 1254px canvas, never wide bands. Pale gray matte paint may remain only in the small stem/foot and the thick bottom below the cavity. All central front/back faces remain unfilled and see-through, like an unfilled hand-drawn glass contour illustration. A colored polygon placed behind this PNG must show continuously all the way from left inner edge to right inner edge and from rim to the bottom.\n\nThis is a real transparent PNG with an empty cavity, NOT a white cup with a central erased hole. Keep the entire cavity free of pigment; make its boundary a clean smooth fine drawn contour, no cloudy hole perimeter, ragged white fuzz, patchwork, grain, speckled holes or background artifacts. Thin ink contours, a few calm brush touches ONLY outside cavity, true matte 2D. No shiny specular stripes, luminous golden edges, realistic refractions, heavy faceted shading, 3D render or photographic lighting. No liquid/ice/garnish, no other props, no hands, no scenery, no floor shadow, no text or branding. Object complete and centered, preserve reference margins, transparent background true.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/mixing_glass.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-1145c464-80ee-459c-8881-8f3761ae1324.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-1145c464-80ee-459c-8881-8f3761ae1324.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/mixing_glass.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          349,
+          145,
+          1003,
+          1166
+        ],
+        "transparent_background": true,
+        "alpha_range": [
+          0,
+          255
+        ]
+      },
+      "status": "generated_and_visually_reviewed",
+      "geometry_hints": {
+        "quality": "v1 estimates affine-mapped to v2; mouth and liquid containment visually reviewed in Godot",
+        "source_pixel_coordinates": {
+          "mouth_center": [
+            623.9773,
+            208.4385
+          ],
+          "mouth_ellipse_radii": [
+            284.8864,
+            52.6659
+          ],
+          "interior_bottom": [
+            626.4545,
+            966.109
+          ],
+          "pour_spout_tip": [
+            984.4205,
+            229.9836
+          ],
+          "liquid_outline": [
+            [
+              396.0682,
+              263.4982
+            ],
+            [
+              884.0909,
+              263.4982
+            ],
+            [
+              861.7955,
+              897.8828
+            ],
+            [
+              815.9659,
+              944.5639
+            ],
+            [
+              728.0227,
+              975.6846
+            ],
+            [
+              531.0795,
+              975.6846
+            ],
+            [
+              438.1818,
+              943.3669
+            ],
+            [
+              401.0227,
+              895.4889
+            ]
+          ]
+        },
+        "normalized_to_alpha_bbox_gt8": {
+          "mouth_center": [
+            0.420455,
+            0.062134
+          ],
+          "mouth_ellipse_radii": [
+            0.435606,
+            0.051583
+          ],
+          "interior_bottom": [
+            0.424242,
+            0.80422
+          ],
+          "pour_spout_tip": [
+            0.971591,
+            0.083236
+          ],
+          "liquid_outline": [
+            [
+              0.07197,
+              0.116061
+            ],
+            [
+              0.818182,
+              0.116061
+            ],
+            [
+              0.784091,
+              0.737397
+            ],
+            [
+              0.714015,
+              0.783118
+            ],
+            [
+              0.579545,
+              0.813599
+            ],
+            [
+              0.278409,
+              0.813599
+            ],
+            [
+              0.136364,
+              0.781946
+            ],
+            [
+              0.079545,
+              0.735053
+            ]
+          ]
+        }
+      },
+      "geometry_mapping": {
+        "method": "un-padded_alpha_gt8_bbox_affine",
+        "old_bbox": [
+          414,
+          249,
+          942,
+          1102
+        ],
+        "new_bbox": [
+          349,
+          145,
+          1003,
+          1166
+        ],
+        "scale_xy": [
+          1.2386363636363635,
+          1.1969519343493553
+        ],
+        "aspect_drift": 0.03482548303801969,
+        "requires_visual_review": false,
+        "image_sha256": "e4c6f2a3e64d8a8e5fa52df83cf19fdb68c7340351698375ea884217991a2946",
+        "visual_review": "Godot 4.7.2 native fill preview at 65%; liquid contained inside bowl"
+      }
+    },
+    {
+      "id": "cocktail_glass",
+      "prompt": "EDIT input image 1: a single OPEN EMPTY shallow rounded coupe cocktail glass with slender stem and foot. Preserve its exact OUTER silhouette, cup proportions, bowl width and depth, perspective, orientation, stem/base/foot and placement. Input image 2 is ONLY the style guide for quiet thin hand-drawn brown ink lines and muted matte gray accents. Do not copy the opaque bottle treatment or paint broad value planes across clear glass.\n\nMake a clean delicate 2D PEN-AND-WASH EMPTY GLASS overlay sprite for a Western tavern game. GLASS FACES ARE INVISIBLE: the entire central inner cavity is one continuous uniformly transparent area, without any painted white/cream/gray fill. Draw ONLY slender exterior brown contour lines, slender back/front rim ellipses, a fine bottom ellipse, and very small soft gray edge accents. There must be NO vertical reflection strips and NO wide painted glass wall panels. Keep side edge accents extremely narrow, about 6–12 pixels on this 1254px canvas, never wide bands. Pale gray matte paint may remain only in the small stem/foot and the thick bottom below the cavity. All central front/back faces remain unfilled and see-through, like an unfilled hand-drawn glass contour illustration. A colored polygon placed behind this PNG must show continuously all the way from left inner edge to right inner edge and from rim to the bottom.\n\nThis is a real transparent PNG with an empty cavity, NOT a white cup with a central erased hole. Keep the entire cavity free of pigment; make its boundary a clean smooth fine drawn contour, no cloudy hole perimeter, ragged white fuzz, patchwork, grain, speckled holes or background artifacts. Thin ink contours, a few calm brush touches ONLY outside cavity, true matte 2D. No shiny specular stripes, luminous golden edges, realistic refractions, heavy faceted shading, 3D render or photographic lighting. No liquid/ice/garnish, no other props, no hands, no scenery, no floor shadow, no text or branding. Object complete and centered, preserve reference margins, transparent background true.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/cocktail_glass.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-a6ecad01-b715-4cb8-9d66-790554cd13ca.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-a6ecad01-b715-4cb8-9d66-790554cd13ca.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/cocktail_glass.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          320,
+          265,
+          934,
+          1091
+        ],
+        "transparent_background": true,
+        "alpha_range": [
+          0,
+          255
+        ]
+      },
+      "status": "generated_and_visually_reviewed",
+      "geometry_hints": {
+        "quality": "v1 estimates affine-mapped to v2; mouth and liquid containment visually reviewed in Godot",
+        "source_pixel_coordinates": {
+          "mouth_center": [
+            627.0,
+            350.6016
+          ],
+          "mouth_ellipse_radii": [
+            281.8922,
+            78.9314
+          ],
+          "interior_bottom": [
+            628.1413,
+            605.183
+          ],
+          "stem_start": [
+            628.1413,
+            644.0929
+          ],
+          "foot_start_y": 924.2436,
+          "liquid_outline": [
+            [
+              349.6729,
+              383.9529
+            ],
+            [
+              900.9033,
+              383.9529
+            ],
+            [
+              888.3494,
+              462.8843
+            ],
+            [
+              842.6989,
+              520.6931
+            ],
+            [
+              757.1041,
+              576.2786
+            ],
+            [
+              688.6283,
+              601.8479
+            ],
+            [
+              565.3717,
+              601.8479
+            ],
+            [
+              479.777,
+              576.2786
+            ],
+            [
+              402.171,
+              520.6931
+            ],
+            [
+              361.0855,
+              462.8843
+            ]
+          ]
+        },
+        "normalized_to_alpha_bbox_gt8": {
+          "mouth_center": [
+            0.5,
+            0.103634
+          ],
+          "mouth_ellipse_radii": [
+            0.459108,
+            0.095559
+          ],
+          "interior_bottom": [
+            0.501859,
+            0.411844
+          ],
+          "stem_start": [
+            0.501859,
+            0.45895
+          ],
+          "foot_start_y": 0.798116,
+          "liquid_outline": [
+            [
+              0.048327,
+              0.144011
+            ],
+            [
+              0.946097,
+              0.144011
+            ],
+            [
+              0.92565,
+              0.239569
+            ],
+            [
+              0.851301,
+              0.309556
+            ],
+            [
+              0.711896,
+              0.376851
+            ],
+            [
+              0.600372,
+              0.407806
+            ],
+            [
+              0.399628,
+              0.407806
+            ],
+            [
+              0.260223,
+              0.376851
+            ],
+            [
+              0.133829,
+              0.309556
+            ],
+            [
+              0.066914,
+              0.239569
+            ]
+          ]
+        }
+      },
+      "geometry_mapping": {
+        "method": "un-padded_alpha_gt8_bbox_affine",
+        "old_bbox": [
+          359,
+          268,
+          897,
+          1011
+        ],
+        "new_bbox": [
+          320,
+          265,
+          934,
+          1091
+        ],
+        "scale_xy": [
+          1.141263940520446,
+          1.1117092866756393
+        ],
+        "aspect_drift": 0.026584876279287517,
+        "requires_visual_review": false,
+        "image_sha256": "9237963ce90f204f7a2a82f5a87886ad6d81defd3719062405f12bb5ada1d343",
+        "visual_review": "Godot 4.7.2 native fill preview at 65%; liquid contained inside bowl"
+      }
+    },
+    {
+      "id": "highball_glass",
+      "prompt": "EDIT input image 1: a single OPEN EMPTY tall straight highball glass with thick base. Preserve its exact OUTER silhouette, cup proportions, bowl width and depth, perspective, orientation, stem/base/foot and placement. Input image 2 is ONLY the style guide for quiet thin hand-drawn brown ink lines and muted matte gray accents. Do not copy the opaque bottle treatment or paint broad value planes across clear glass.\n\nMake a clean delicate 2D PEN-AND-WASH EMPTY GLASS overlay sprite for a Western tavern game. GLASS FACES ARE INVISIBLE: the entire central inner cavity is one continuous uniformly transparent area, without any painted white/cream/gray fill. Draw ONLY slender exterior brown contour lines, slender back/front rim ellipses, a fine bottom ellipse, and very small soft gray edge accents. There must be NO vertical reflection strips and NO wide painted glass wall panels. Keep side edge accents extremely narrow, about 6–12 pixels on this 1254px canvas, never wide bands. Pale gray matte paint may remain only in the small stem/foot and the thick bottom below the cavity. All central front/back faces remain unfilled and see-through, like an unfilled hand-drawn glass contour illustration. A colored polygon placed behind this PNG must show continuously all the way from left inner edge to right inner edge and from rim to the bottom.\n\nThis is a real transparent PNG with an empty cavity, NOT a white cup with a central erased hole. Keep the entire cavity free of pigment; make its boundary a clean smooth fine drawn contour, no cloudy hole perimeter, ragged white fuzz, patchwork, grain, speckled holes or background artifacts. Thin ink contours, a few calm brush touches ONLY outside cavity, true matte 2D. No shiny specular stripes, luminous golden edges, realistic refractions, heavy faceted shading, 3D render or photographic lighting. No liquid/ice/garnish, no other props, no hands, no scenery, no floor shadow, no text or branding. Object complete and centered, preserve reference margins, transparent background true.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/highball_glass.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-f6029e50-0161-4914-a55a-59a42466f9d3.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-f6029e50-0161-4914-a55a-59a42466f9d3.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/highball_glass.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          389,
+          116,
+          866,
+          1143
+        ],
+        "transparent_background": true,
+        "alpha_range": [
+          0,
+          255
+        ]
+      },
+      "status": "generated_and_visually_reviewed",
+      "geometry_hints": {
+        "quality": "v1 estimates affine-mapped to v2; mouth and liquid containment visually reviewed in Godot",
+        "source_pixel_coordinates": {
+          "mouth_center": [
+            628.6807,
+            171.8669
+          ],
+          "mouth_ellipse_radii": [
+            217.2475,
+            52.3009
+          ],
+          "interior_bottom": [
+            627.5,
+            946.8715
+          ],
+          "liquid_outline": [
+            [
+              416.1559,
+              221.7905
+            ],
+            [
+              838.8441,
+              221.7905
+            ],
+            [
+              821.1337,
+              908.8345
+            ],
+            [
+              770.3639,
+              943.3056
+            ],
+            [
+              486.9975,
+              943.3056
+            ],
+            [
+              432.6856,
+              908.8345
+            ]
+          ]
+        },
+        "normalized_to_alpha_bbox_gt8": {
+          "mouth_center": [
+            0.502475,
+            0.054398
+          ],
+          "mouth_ellipse_radii": [
+            0.455445,
+            0.050926
+          ],
+          "interior_bottom": [
+            0.5,
+            0.809028
+          ],
+          "liquid_outline": [
+            [
+              0.056931,
+              0.103009
+            ],
+            [
+              0.943069,
+              0.103009
+            ],
+            [
+              0.905941,
+              0.771991
+            ],
+            [
+              0.799505,
+              0.805556
+            ],
+            [
+              0.205445,
+              0.805556
+            ],
+            [
+              0.091584,
+              0.771991
+            ]
+          ]
+        }
+      },
+      "geometry_mapping": {
+        "method": "un-padded_alpha_gt8_bbox_affine",
+        "old_bbox": [
+          427,
+          241,
+          831,
+          1105
+        ],
+        "new_bbox": [
+          389,
+          116,
+          866,
+          1143
+        ],
+        "scale_xy": [
+          1.1806930693069306,
+          1.1886574074074074
+        ],
+        "aspect_drift": 0.006700280544120751,
+        "requires_visual_review": false,
+        "image_sha256": "d43fdac6fa9211d69b638b531954450a9821edc6399236c38cfd6db90b9d0a71",
+        "visual_review": "Godot 4.7.2 native fill preview at 65%; liquid contained inside bowl"
+      }
+    },
+    {
+      "id": "balloon_glass",
+      "prompt": "EDIT input image 1: a single OPEN EMPTY round balloon-bowl goblet with slender stem and foot. Preserve its exact OUTER silhouette, cup proportions, bowl width and depth, perspective, orientation, stem/base/foot and placement. Input image 2 is ONLY the style guide for quiet thin hand-drawn brown ink lines and muted matte gray accents. Do not copy the opaque bottle treatment or paint broad value planes across clear glass.\n\nMake a clean delicate 2D PEN-AND-WASH EMPTY GLASS overlay sprite for a Western tavern game. GLASS FACES ARE INVISIBLE: the entire central inner cavity is one continuous uniformly transparent area, without any painted white/cream/gray fill. Draw ONLY slender exterior brown contour lines, slender back/front rim ellipses, a fine bottom ellipse, and very small soft gray edge accents. There must be NO vertical reflection strips and NO wide painted glass wall panels. Keep side edge accents extremely narrow, about 6–12 pixels on this 1254px canvas, never wide bands. Pale gray matte paint may remain only in the small stem/foot and the thick bottom below the cavity. All central front/back faces remain unfilled and see-through, like an unfilled hand-drawn glass contour illustration. A colored polygon placed behind this PNG must show continuously all the way from left inner edge to right inner edge and from rim to the bottom.\n\nThis is a real transparent PNG with an empty cavity, NOT a white cup with a central erased hole. Keep the entire cavity free of pigment; make its boundary a clean smooth fine drawn contour, no cloudy hole perimeter, ragged white fuzz, patchwork, grain, speckled holes or background artifacts. Thin ink contours, a few calm brush touches ONLY outside cavity, true matte 2D. No shiny specular stripes, luminous golden edges, realistic refractions, heavy faceted shading, 3D render or photographic lighting. No liquid/ice/garnish, no other props, no hands, no scenery, no floor shadow, no text or branding. Object complete and centered, preserve reference margins, transparent background true.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/balloon_glass.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-eb99d799-b198-4b11-9f60-e70826417fd4.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-eb99d799-b198-4b11-9f60-e70826417fd4.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/balloon_glass.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          306,
+          161,
+          948,
+          1137
+        ],
+        "transparent_background": true,
+        "alpha_range": [
+          0,
+          255
+        ]
+      },
+      "status": "generated_and_visually_reviewed",
+      "geometry_hints": {
+        "quality": "v1 estimates affine-mapped to v2; mouth and liquid containment visually reviewed in Godot",
+        "source_pixel_coordinates": {
+          "mouth_center": [
+            628.6748,
+            212.0824
+          ],
+          "mouth_ellipse_radii": [
+            237.8191,
+            47.8218
+          ],
+          "interior_bottom": [
+            627.5583,
+            645.7394
+          ],
+          "stem_start": [
+            627.5583,
+            684.8664
+          ],
+          "foot_start_y": 964.1893,
+          "liquid_outline": [
+            [
+              378.5739,
+              238.167
+            ],
+            [
+              878.7757,
+              238.167
+            ],
+            [
+              898.873,
+              291.4232
+            ],
+            [
+              917.8539,
+              400.1091
+            ],
+            [
+              903.3391,
+              508.7951
+            ],
+            [
+              874.3096,
+              563.1381
+            ],
+            [
+              811.7843,
+              617.4811
+            ],
+            [
+              701.2487,
+              645.7394
+            ],
+            [
+              553.8678,
+              645.7394
+            ],
+            [
+              439.9826,
+              617.4811
+            ],
+            [
+              378.5739,
+              563.1381
+            ],
+            [
+              348.4278,
+              508.7951
+            ],
+            [
+              333.913,
+              400.1091
+            ],
+            [
+              356.2435,
+              291.4232
+            ]
+          ]
+        },
+        "normalized_to_alpha_bbox_gt8": {
+          "mouth_center": [
+            0.502609,
+            0.052339
+          ],
+          "mouth_ellipse_radii": [
+            0.370435,
+            0.048998
+          ],
+          "interior_bottom": [
+            0.50087,
+            0.496659
+          ],
+          "stem_start": [
+            0.50087,
+            0.536748
+          ],
+          "foot_start_y": 0.82294,
+          "liquid_outline": [
+            [
+              0.113043,
+              0.079065
+            ],
+            [
+              0.892174,
+              0.079065
+            ],
+            [
+              0.923478,
+              0.13363
+            ],
+            [
+              0.953043,
+              0.244989
+            ],
+            [
+              0.930435,
+              0.356347
+            ],
+            [
+              0.885217,
+              0.412027
+            ],
+            [
+              0.787826,
+              0.467706
+            ],
+            [
+              0.615652,
+              0.496659
+            ],
+            [
+              0.386087,
+              0.496659
+            ],
+            [
+              0.208696,
+              0.467706
+            ],
+            [
+              0.113043,
+              0.412027
+            ],
+            [
+              0.066087,
+              0.356347
+            ],
+            [
+              0.043478,
+              0.244989
+            ],
+            [
+              0.078261,
+              0.13363
+            ]
+          ]
+        }
+      },
+      "geometry_mapping": {
+        "method": "un-padded_alpha_gt8_bbox_affine",
+        "old_bbox": [
+          340,
+          205,
+          915,
+          1103
+        ],
+        "new_bbox": [
+          306,
+          161,
+          948,
+          1137
+        ],
+        "scale_xy": [
+          1.1165217391304347,
+          1.086859688195991
+        ],
+        "aspect_drift": 0.02729151817533859,
+        "requires_visual_review": false,
+        "image_sha256": "5ba6b72fada1c8929f5c2beb8dae5e31dde4990d8d04d8079e22e7fc44b1e87f",
+        "visual_review": "Godot 4.7.2 native fill preview at 65%; liquid contained inside bowl"
+      }
+    },
+    {
+      "id": "saucer_glass",
+      "prompt": "EDIT input image 1: a single OPEN EMPTY very wide very shallow saucer glass, a flatter/wider bowl than rounded coupe, with stem and foot. Preserve its exact OUTER silhouette, cup proportions, bowl width and depth, perspective, orientation, stem/base/foot and placement. Input image 2 is ONLY the style guide for quiet thin hand-drawn brown ink lines and muted matte gray accents. Do not copy the opaque bottle treatment or paint broad value planes across clear glass.\n\nMake a clean delicate 2D PEN-AND-WASH EMPTY GLASS overlay sprite for a Western tavern game. GLASS FACES ARE INVISIBLE: the entire central inner cavity is one continuous uniformly transparent area, without any painted white/cream/gray fill. Draw ONLY slender exterior brown contour lines, slender back/front rim ellipses, a fine bottom ellipse, and very small soft gray edge accents. There must be NO vertical reflection strips and NO wide painted glass wall panels. Keep side edge accents extremely narrow, about 6–12 pixels on this 1254px canvas, never wide bands. Pale gray matte paint may remain only in the small stem/foot and the thick bottom below the cavity. All central front/back faces remain unfilled and see-through, like an unfilled hand-drawn glass contour illustration. A colored polygon placed behind this PNG must show continuously all the way from left inner edge to right inner edge and from rim to the bottom.\n\nThis is a real transparent PNG with an empty cavity, NOT a white cup with a central erased hole. Keep the entire cavity free of pigment; make its boundary a clean smooth fine drawn contour, no cloudy hole perimeter, ragged white fuzz, patchwork, grain, speckled holes or background artifacts. Thin ink contours, a few calm brush touches ONLY outside cavity, true matte 2D. No shiny specular stripes, luminous golden edges, realistic refractions, heavy faceted shading, 3D render or photographic lighting. No liquid/ice/garnish, no other props, no hands, no scenery, no floor shadow, no text or branding. Object complete and centered, preserve reference margins, transparent background true.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/saucer_glass.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-2a0ef4e8-85dd-40b2-9d9b-0087f0938242.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-2a0ef4e8-85dd-40b2-9d9b-0087f0938242.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/equipment/saucer_glass.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          209,
+          218,
+          1045,
+          1126
+        ],
+        "transparent_background": true,
+        "alpha_range": [
+          0,
+          255
+        ]
+      },
+      "status": "generated_and_visually_reviewed",
+      "geometry_hints": {
+        "quality": "v1 estimates affine-mapped to v2; mouth and liquid containment visually reviewed in Godot",
+        "source_pixel_coordinates": {
+          "mouth_center": [
+            626.402,
+            321.6738
+          ],
+          "mouth_ellipse_radii": [
+            394.6781,
+            88.8632
+          ],
+          "interior_bottom": [
+            627.598,
+            507.3752
+          ],
+          "stem_start": [
+            626.402,
+            567.7566
+          ],
+          "foot_start_y": 950.5521,
+          "liquid_outline": [
+            [
+              236.5079,
+              355.8519
+            ],
+            [
+              1015.1001,
+              355.8519
+            ],
+            [
+              993.5722,
+              413.9548
+            ],
+            [
+              946.9285,
+              454.9686
+            ],
+            [
+              872.7768,
+              486.8683
+            ],
+            [
+              763.9413,
+              507.3752
+            ],
+            [
+              487.6667,
+              507.3752
+            ],
+            [
+              378.8312,
+              486.8683
+            ],
+            [
+              305.8755,
+              454.9686
+            ],
+            [
+              254.4478,
+              413.9548
+            ]
+          ]
+        },
+        "normalized_to_alpha_bbox_gt8": {
+          "mouth_center": [
+            0.499285,
+            0.114178
+          ],
+          "mouth_ellipse_radii": [
+            0.472103,
+            0.097867
+          ],
+          "interior_bottom": [
+            0.500715,
+            0.318695
+          ],
+          "stem_start": [
+            0.499285,
+            0.385194
+          ],
+          "foot_start_y": 0.806775,
+          "liquid_outline": [
+            [
+              0.032904,
+              0.151819
+            ],
+            [
+              0.964235,
+              0.151819
+            ],
+            [
+              0.938483,
+              0.215809
+            ],
+            [
+              0.88269,
+              0.260979
+            ],
+            [
+              0.793991,
+              0.29611
+            ],
+            [
+              0.663805,
+              0.318695
+            ],
+            [
+              0.333333,
+              0.318695
+            ],
+            [
+              0.203147,
+              0.29611
+            ],
+            [
+              0.11588,
+              0.260979
+            ],
+            [
+              0.054363,
+              0.215809
+            ]
+          ]
+        }
+      },
+      "geometry_mapping": {
+        "method": "un-padded_alpha_gt8_bbox_affine",
+        "old_bbox": [
+          280,
+          259,
+          979,
+          1056
+        ],
+        "new_bbox": [
+          209,
+          218,
+          1045,
+          1126
+        ],
+        "scale_xy": [
+          1.195994277539342,
+          1.1392722710163112
+        ],
+        "aspect_drift": 0.049787928633100664,
+        "requires_visual_review": false,
+        "image_sha256": "9c50ee0f238449af2ac39e38a6b9db29d54e0cad1657cea039aa1fc8a5573f55",
+        "visual_review": "Godot 4.7.2 native fill preview at 65%; liquid contained inside bowl"
+      }
+    },
+    {
+      "id": "standard_cube",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent independent prop sprite for a hand-drawn 2D Western saloon game.\nInput image 1 is the existing sprite EDIT TARGET. Preserve its exact silhouette, physical structure, object count, relative dimensions, vertical orientation, perspective and placement. Change the rendering treatment.\nInput image 2 is a STYLE REFERENCE only. Match its illustrated brown contours, simplified broad painted color planes and quiet gouache strokes; do not copy its bottle, blue palette, label or subject.\nChange the object to genuinely two-dimensional matte gouache/ink illustration. Restrained natural colors, thin hand-drawn brown contours, 3 or 4 broad low-contrast planes, sparse soft brush marks. Soft diffuse interior light. Keep material readable using contours and value changes rather than reflections.\nRemove all bright golden rim lights, metallic sparkle, white specular streaks, fiery/glowing contours, mirror-shine stripes, micrograin, dense photorealistic refractions and glossy 3D treatment. The result must be an illustrated game object, not a shaded photo or 3D render. No floor, ground shadow, scenery, frame, written words, logo, watermark or extra props.\nMaintain genuine transparent alpha everywhere outside the whole uncropped object, with empty margins on every side. Keep the object large enough for 96px readability while preserving existing composition. Do not paint a black/white/checkerboard background.\n\nSpecific subject: Exactly the existing serving of THREE large regular ice cubes as one coherent sprite. Quiet translucent cool gray-blue planes and sparse thin drawn fractures. No brilliant diamond facets, bright white sparkle, glossy render or extra ice cubes.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/ice/standard_cube.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-74546844-5905-40f1-94d1-5ad80b567352.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-74546844-5905-40f1-94d1-5ad80b567352.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/ice/standard_cube.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          86,
+          202,
+          1193,
+          1104
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "a02d5430b2ae42a7bbf232f5eb871d7f303efd1b49eacae48a62948760d8490f"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "id": "crushed_ice",
+      "prompt": "Use case: style-transfer.\nAsset type: one transparent independent prop sprite for a hand-drawn 2D Western saloon game.\nInput image 1 is the existing sprite EDIT TARGET. Preserve its exact silhouette, physical structure, object count, relative dimensions, vertical orientation, perspective and placement. Change the rendering treatment.\nInput image 2 is a STYLE REFERENCE only. Match its illustrated brown contours, simplified broad painted color planes and quiet gouache strokes; do not copy its bottle, blue palette, label or subject.\nChange the object to genuinely two-dimensional matte gouache/ink illustration. Restrained natural colors, thin hand-drawn brown contours, 3 or 4 broad low-contrast planes, sparse soft brush marks. Soft diffuse interior light. Keep material readable using contours and value changes rather than reflections.\nRemove all bright golden rim lights, metallic sparkle, white specular streaks, fiery/glowing contours, mirror-shine stripes, micrograin, dense photorealistic refractions and glossy 3D treatment. The result must be an illustrated game object, not a shaded photo or 3D render. No floor, ground shadow, scenery, frame, written words, logo, watermark or extra props.\nMaintain genuine transparent alpha everywhere outside the whole uncropped object, with empty margins on every side. Keep the object large enough for 96px readability while preserving existing composition. Do not paint a black/white/checkerboard background.\n\nSpecific subject: Exactly the existing single small mound of crushed ice. Quiet translucent cool gray-blue chips, simplified sparse contours and large value groups. No jewel-like sparkle, dazzling white highlights, bright golden rim, snow or new objects.",
+      "refs": [
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/ice/crushed_ice.png",
+        "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/work/supply-assets-v2/staged/materials/gin_london_dry.png"
+      ],
+      "generated_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-d046f83f-5296-4256-930b-54282a0c6121.png",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f12e-7be1-7921-9a7a-1d5e6605cac5/exec-d046f83f-5296-4256-930b-54282a0c6121.png",
+      "saved_path": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/godot-home/assets/art/supplies/ice/crushed_ice.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          16,
+          361,
+          1238,
+          1068
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "8539625c0ad19999804f1058b17536f7039d8ba54f5beb81fdf753f3c13ac025"
+      },
+      "status": "generated_and_visually_reviewed"
+    }
+  ],
+  "geometry_mapping_source": "/Users/creeper/.codex/.chatgpt-projects/g-p-6ab6ad61850081919a54840cf4c21b2a/output/backups/before-supply-art-v2-20260930-203907/assets/art/supplies/prompts-equipment.json",
+  "geometry_review_required": false,
+  "validation": {
+    "asset_count": 14,
+    "all_rgba": true,
+    "png_pixel_edits": false,
+    "empty_glass_review": "Godot native empty and 65 percent fill previews passed for all five glasses"
+  }
+}

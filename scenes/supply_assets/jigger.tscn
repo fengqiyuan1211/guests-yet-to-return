@@ -1,0 +1,49 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/supply_tool.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/art/supplies/textures/jigger.tres" id="tex_1"]
+
+[sub_resource type="RectangleShape2D" id="hit_shape"]
+size = Vector2(112.400, 185)
+
+[node name="jigger" type="Node2D"]
+script = ExtResource("1_script")
+tool_id = "tool_jigger"
+supports_open = false
+liquid_shape = PackedVector2Array(-34, -170, 34, -170, 10, -99, -10, -99)
+
+[node name="Liquid" type="Polygon2D" parent="."]
+visible = false
+color = Color(0.79, 0.5, 0.22, 0.75)
+
+[node name="Body" type="Sprite2D" parent="."]
+position = Vector2(0.000, -92.500)
+scale = Vector2(0.200000, 0.200000)
+texture = ExtResource("tex_1")
+
+[node name="HitArea" type="Area2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+input_pickable = true
+
+[node name="Shape" type="CollisionShape2D" parent="HitArea"]
+position = Vector2(0.000, -92.500)
+shape = SubResource("hit_shape")
+
+[node name="GrabPoint" type="Marker2D" parent="."]
+position = Vector2(0.000, -92.500)
+
+[node name="RestPoint" type="Marker2D" parent="."]
+position = Vector2(0.000, 0.000)
+
+[node name="RimPoint" type="Marker2D" parent="."]
+position = Vector2(0.000, -170.000)
+
+[node name="PourPoint" type="Marker2D" parent="."]
+position = Vector2(42.150, -170.000)
+
+[node name="FillPoint" type="Marker2D" parent="."]
+position = Vector2(0.000, -120.250)
+
+[node name="GarnishPoint" type="Marker2D" parent="."]
+position = Vector2(-33.720, -165.000)

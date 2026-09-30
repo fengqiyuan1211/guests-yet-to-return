@@ -1,0 +1,477 @@
+{
+  "schema_version": 1,
+  "generator": "built_in_imagegen",
+  "png_policy": "original_pixels_preserved",
+  "assets": {
+    "balloon_glass": {
+      "image_path": "res://assets/art/supplies/equipment/balloon_glass.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        294,
+        149,
+        666,
+        1000
+      ],
+      "alpha_threshold": 8,
+      "sha256": "5ba6b72fada1c8929f5c2beb8dae5e31dde4990d8d04d8079e22e7fc44b1e87f"
+    },
+    "bar_spoon": {
+      "image_path": "res://assets/art/supplies/equipment/bar_spoon.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        546,
+        110,
+        198,
+        1032
+      ],
+      "alpha_threshold": 8,
+      "sha256": "39244bbd9920d34f37a0f41f778f39a7c5cd4f786450cbfb1fc682c2f73fecad"
+    },
+    "cocktail_glass": {
+      "image_path": "res://assets/art/supplies/equipment/cocktail_glass.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        308,
+        253,
+        638,
+        850
+      ],
+      "alpha_threshold": 8,
+      "sha256": "9237963ce90f204f7a2a82f5a87886ad6d81defd3719062405f12bb5ada1d343"
+    },
+    "highball_glass": {
+      "image_path": "res://assets/art/supplies/equipment/highball_glass.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        377,
+        104,
+        501,
+        1051
+      ],
+      "alpha_threshold": 8,
+      "sha256": "d43fdac6fa9211d69b638b531954450a9821edc6399236c38cfd6db90b9d0a71"
+    },
+    "jigger": {
+      "image_path": "res://assets/art/supplies/equipment/jigger.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        346,
+        159,
+        562,
+        925
+      ],
+      "alpha_threshold": 8,
+      "sha256": "e25a4ec8634d4025d1fdc7e84174d5ccfd902c70f662f8795fcb3f74cc34ce3b"
+    },
+    "mixing_glass": {
+      "image_path": "res://assets/art/supplies/equipment/mixing_glass.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        337,
+        133,
+        678,
+        1045
+      ],
+      "alpha_threshold": 8,
+      "sha256": "e4c6f2a3e64d8a8e5fa52df83cf19fdb68c7340351698375ea884217991a2946"
+    },
+    "muddler": {
+      "image_path": "res://assets/art/supplies/equipment/muddler.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        488,
+        73,
+        278,
+        1105
+      ],
+      "alpha_threshold": 8,
+      "sha256": "707384b05a502288efdd0a644c4165e28927dd219973204489f62f9f80875643"
+    },
+    "saucer_glass": {
+      "image_path": "res://assets/art/supplies/equipment/saucer_glass.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        197,
+        206,
+        860,
+        932
+      ],
+      "alpha_threshold": 8,
+      "sha256": "9c50ee0f238449af2ac39e38a6b9db29d54e0cad1657cea039aa1fc8a5573f55"
+    },
+    "shaker_body": {
+      "image_path": "res://assets/art/supplies/equipment/shaker_body.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        333,
+        198,
+        588,
+        902
+      ],
+      "alpha_threshold": 8,
+      "sha256": "0af48ba245293220bf717e6eda0d4de38f3d4435f64f1217a187dc3b35439c6b"
+    },
+    "shaker_cap": {
+      "image_path": "res://assets/art/supplies/equipment/shaker_cap.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        329,
+        431,
+        593,
+        510
+      ],
+      "alpha_threshold": 8,
+      "sha256": "3129622975594a61aca01714c1ad02de9c36adf6ca3c9e718f1d79b9391a885a"
+    },
+    "shaker_strainer_top": {
+      "image_path": "res://assets/art/supplies/equipment/shaker_strainer_top.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        282,
+        336,
+        691,
+        594
+      ],
+      "alpha_threshold": 8,
+      "sha256": "03504613e493a0e6a0f4e86452ec4434ac380b20e0d109edafa6a74c7e18d9c7"
+    },
+    "strainer": {
+      "image_path": "res://assets/art/supplies/equipment/strainer.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        195,
+        97,
+        877,
+        1082
+      ],
+      "alpha_threshold": 8,
+      "sha256": "40d2d64ef770666afd0fa6a69670e9fc531d722eff45a78689c1f2a804d65a14"
+    },
+    "crushed_ice": {
+      "image_path": "res://assets/art/supplies/ice/crushed_ice.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        4,
+        349,
+        1246,
+        731
+      ],
+      "alpha_threshold": 8,
+      "sha256": "8539625c0ad19999804f1058b17536f7039d8ba54f5beb81fdf753f3c13ac025"
+    },
+    "standard_cube": {
+      "image_path": "res://assets/art/supplies/ice/standard_cube.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        74,
+        190,
+        1131,
+        926
+      ],
+      "alpha_threshold": 8,
+      "sha256": "a02d5430b2ae42a7bbf232f5eb871d7f303efd1b49eacae48a62948760d8490f"
+    },
+    "angostura_bitters": {
+      "image_path": "res://assets/art/supplies/materials/angostura_bitters.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        394,
+        45,
+        469,
+        1171
+      ],
+      "alpha_threshold": 8,
+      "sha256": "86dd4fe1f1a7f70b2e5e774a1cd32233b0805ec6b565f45a74605d7667105b77"
+    },
+    "cocktail_cherry": {
+      "image_path": "res://assets/art/supplies/materials/cocktail_cherry.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        194,
+        86,
+        892,
+        1082
+      ],
+      "alpha_threshold": 8,
+      "sha256": "95612fd87c1338c079b70fb35ef3ce3172b9bca627a3a08aa832ebd9b6069bd6"
+    },
+    "cointreau": {
+      "image_path": "res://assets/art/supplies/materials/cointreau.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        363,
+        26,
+        526,
+        1192
+      ],
+      "alpha_threshold": 8,
+      "sha256": "3b2895e32a675b7673c5ce86b71dfd2363d0c7b414539370624c880797e19bf5"
+    },
+    "cola": {
+      "image_path": "res://assets/art/supplies/materials/cola.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        431,
+        6,
+        389,
+        1225
+      ],
+      "alpha_threshold": 8,
+      "sha256": "a094c995db498d669533628d8695a1fe76818c9993673a56ab4736338bfdb828"
+    },
+    "gin_london_dry": {
+      "image_path": "res://assets/art/supplies/materials/gin_london_dry.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        408,
+        39,
+        439,
+        1174
+      ],
+      "alpha_threshold": 8,
+      "sha256": "d71778a5ce611184bc2c26a731bdced8834425f53623bf7ee9225e364c22442f"
+    },
+    "green_chartreuse": {
+      "image_path": "res://assets/art/supplies/materials/green_chartreuse.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        461,
+        38,
+        331,
+        1185
+      ],
+      "alpha_threshold": 8,
+      "sha256": "b765cad59516e14464ecb76b15bdf5e4f54f3fb34d71d1cf6147dc5fc2860a5e"
+    },
+    "lemon_juice": {
+      "image_path": "res://assets/art/supplies/materials/lemon_juice.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        334,
+        19,
+        682,
+        1215
+      ],
+      "alpha_threshold": 8,
+      "sha256": "5cc63333503a9501072e77e60907d9fdb2a8f91658fc20d31c7fbd635789798b"
+    },
+    "lemon_slice": {
+      "image_path": "res://assets/art/supplies/materials/lemon_slice.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        137,
+        105,
+        1012,
+        1037
+      ],
+      "alpha_threshold": 8,
+      "sha256": "478b64ff18c78d3638e65547cdd848123dc43121388001c0149ec4ed8d149cf0"
+    },
+    "lime_juice": {
+      "image_path": "res://assets/art/supplies/materials/lime_juice.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        322,
+        22,
+        608,
+        1187
+      ],
+      "alpha_threshold": 8,
+      "sha256": "e49bdb758d92e2222be68ee16df79b5f24eeb4554254f9f0c069b4b4cbfd6ca0"
+    },
+    "lime_wedge": {
+      "image_path": "res://assets/art/supplies/materials/lime_wedge.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        64,
+        88,
+        1161,
+        1058
+      ],
+      "alpha_threshold": 8,
+      "sha256": "44c2bae373cf513481e97f424d56530b619da0a30a9e01afdd93709c91c77d5a"
+    },
+    "maraschino": {
+      "image_path": "res://assets/art/supplies/materials/maraschino.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        491,
+        13,
+        272,
+        1221
+      ],
+      "alpha_threshold": 8,
+      "sha256": "f027d046e758cae278161d589c857925ea12930d463bf27045ca744113ea830c"
+    },
+    "mint_leaf": {
+      "image_path": "res://assets/art/supplies/materials/mint_leaf.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        131,
+        97,
+        1045,
+        1070
+      ],
+      "alpha_threshold": 8,
+      "sha256": "22628cb1702b7c93ee13eeaa084ae1ad91a948f8e21c225b60306cf19c262620"
+    },
+    "mint_sprig": {
+      "image_path": "res://assets/art/supplies/materials/mint_sprig.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        91,
+        32,
+        1142,
+        1201
+      ],
+      "alpha_threshold": 8,
+      "sha256": "451c9168f0eed61c8676e630619cb40712bbf0e5bebe1df6e0d9c6e7fa0b43bc"
+    },
+    "rye_whiskey": {
+      "image_path": "res://assets/art/supplies/materials/rye_whiskey.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        283,
+        43,
+        691,
+        1182
+      ],
+      "alpha_threshold": 8,
+      "sha256": "c468db6d9ef93cc841440772d3689c08800b008fec08357b67ed07d1db8493b4"
+    },
+    "simple_syrup": {
+      "image_path": "res://assets/art/supplies/materials/simple_syrup.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        428,
+        21,
+        399,
+        1203
+      ],
+      "alpha_threshold": 8,
+      "sha256": "4dcd138e4caff8e52a51c3ec50ffd057ed8c920c70bd3f411a2ebe84c98d5e65"
+    },
+    "soda_water": {
+      "image_path": "res://assets/art/supplies/materials/soda_water.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        431,
+        35,
+        392,
+        1184
+      ],
+      "alpha_threshold": 8,
+      "sha256": "1477207b66f6d9034a7a6670fe3f72ed2d00533bb32a6eb440ad9e390af8cb86"
+    },
+    "sweet_red_vermouth": {
+      "image_path": "res://assets/art/supplies/materials/sweet_red_vermouth.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        440,
+        7,
+        376,
+        1247
+      ],
+      "alpha_threshold": 8,
+      "sha256": "3cf58bc73c931e6fd6b62536c6b3366a610004677a2cc36f05c2def391595de8"
+    },
+    "tequila": {
+      "image_path": "res://assets/art/supplies/materials/tequila.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        230,
+        38,
+        794,
+        1187
+      ],
+      "alpha_threshold": 8,
+      "sha256": "d95bdddac716a245af835d7636e1bb6d32b4cbb46c238c9818282b2e024e9b4a"
+    },
+    "tonic_water": {
+      "image_path": "res://assets/art/supplies/materials/tonic_water.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        390,
+        10,
+        476,
+        1224
+      ],
+      "alpha_threshold": 8,
+      "sha256": "c386cafbe3efcaa801916e251fca368b868b46350ae72995b0ffed0aba249f04"
+    },
+    "vodka": {
+      "image_path": "res://assets/art/supplies/materials/vodka.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        341,
+        76,
+        571,
+        1104
+      ],
+      "alpha_threshold": 8,
+      "sha256": "bfaeba31edcd2540be6f4d3e49d217a5f9463aca2c6ccf3a2fb524249186c64b"
+    },
+    "white_cane_sugar": {
+      "image_path": "res://assets/art/supplies/materials/white_cane_sugar.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        51,
+        99,
+        1163,
+        1068
+      ],
+      "alpha_threshold": 8,
+      "sha256": "53a8571c21fd56fdc57f4399f6ccaf31f5380402cb816f1bccf9adbed4bf1616"
+    },
+    "white_rum": {
+      "image_path": "res://assets/art/supplies/materials/white_rum.png",
+      "width": 1254,
+      "height": 1254,
+      "visible_region": [
+        453,
+        8,
+        349,
+        1232
+      ],
+      "alpha_threshold": 8,
+      "sha256": "3856cd2ecb424b6d757c93e38dffd07aefe3e8d1e8b40bbbc63cd422016bde4e"
+    }
+  },
+  "style_id": "saloon-supplies-matte-v2",
+  "reviewed_with": "Godot 4.7.2 Compatibility"
+}

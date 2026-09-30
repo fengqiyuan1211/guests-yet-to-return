@@ -1,0 +1,1672 @@
+{
+  "schema_version": 1,
+  "source": {
+    "file": "酒类属性与消耗设计_v3.xlsx",
+    "export": "work/store-catalog/source.json"
+  },
+  "categories": [
+    "原酒",
+    "配料",
+    "装饰品",
+    "器材",
+    "杯型"
+  ],
+  "items": [
+    {
+      "id": "sku_gin_london_dry",
+      "ingredient_id": "gin_london_dry",
+      "kind": "ingredient",
+      "name": "伦敦干金酒",
+      "english_name": "London Dry Gin",
+      "category": "原酒",
+      "source_category": "基酒",
+      "contains_alcohol": true,
+      "alcohol_status": "confirmed",
+      "abv": null,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 750,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "juniper",
+        "herbal"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/gin_london_dry.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/gin_london_dry.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 6,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_green_chartreuse",
+      "ingredient_id": "green_chartreuse",
+      "kind": "ingredient",
+      "name": "绿查特酒",
+      "english_name": "Green Chartreuse",
+      "category": "原酒",
+      "source_category": "利口酒",
+      "contains_alcohol": true,
+      "alcohol_status": "confirmed",
+      "abv": null,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 700,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "herbal",
+        "sweet"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/green_chartreuse.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/green_chartreuse.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 7,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_maraschino",
+      "ingredient_id": "maraschino",
+      "kind": "ingredient",
+      "name": "马拉斯奇诺樱桃利口酒",
+      "english_name": "Maraschino Liqueur",
+      "category": "原酒",
+      "source_category": "利口酒",
+      "contains_alcohol": true,
+      "alcohol_status": "confirmed",
+      "abv": null,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 700,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "fruit",
+        "sweet"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/maraschino.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/maraschino.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 8,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_lime_juice",
+      "ingredient_id": "lime_juice",
+      "kind": "ingredient",
+      "name": "鲜榨青柠汁",
+      "english_name": "Fresh Lime Juice",
+      "category": "配料",
+      "source_category": "果汁",
+      "contains_alcohol": false,
+      "alcohol_status": "confirmed",
+      "abv": 0,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 250,
+        "container_unit": "瓶",
+        "source_amount": 250,
+        "capacity_status": "source_demo",
+        "description": "已备好的鲜榨汁；不重复扣整果"
+      },
+      "price": 24,
+      "price_status": "source_demo",
+      "flavor_hints": [
+        "sour",
+        "citrus",
+        "pulp_if_unstrained"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/lime_juice.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/lime_juice.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 9,
+        "status": "包装与金币价为演示值"
+      }
+    },
+    {
+      "id": "sku_lime_wedge",
+      "ingredient_id": "lime_wedge",
+      "kind": "ingredient",
+      "name": "青柠角",
+      "english_name": "Lime Wedge",
+      "category": "装饰品",
+      "source_category": "装饰",
+      "contains_alcohol": false,
+      "alcohol_status": "confirmed",
+      "abv": 0,
+      "storage_mode": "quantity",
+      "measurement_unit": "piece",
+      "quantity_unit": "块",
+      "package": {
+        "purchase_quantity": 20,
+        "container_capacity": null,
+        "container_unit": null,
+        "source_amount": 20,
+        "capacity_status": "source_demo",
+        "description": "商品规格待选"
+      },
+      "price": 10,
+      "price_status": "source_demo",
+      "flavor_hints": [
+        "citrus",
+        "pulp_if_squeezed"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/lime_wedge.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/lime_wedge.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 10,
+        "status": "包装与金币价为演示值"
+      }
+    },
+    {
+      "id": "sku_lemon_juice",
+      "ingredient_id": "lemon_juice",
+      "kind": "ingredient",
+      "name": "鲜榨柠檬汁",
+      "english_name": "Fresh Lemon Juice",
+      "category": "配料",
+      "source_category": "果汁",
+      "contains_alcohol": false,
+      "alcohol_status": "confirmed",
+      "abv": 0,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 250,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "sour",
+        "citrus",
+        "pulp_if_unstrained"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/lemon_juice.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/lemon_juice.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 11,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_lemon_slice",
+      "ingredient_id": "lemon_slice",
+      "kind": "ingredient",
+      "name": "柠檬片",
+      "english_name": "Lemon Slice",
+      "category": "装饰品",
+      "source_category": "装饰",
+      "contains_alcohol": false,
+      "alcohol_status": "confirmed",
+      "abv": 0,
+      "storage_mode": "quantity",
+      "measurement_unit": "piece",
+      "quantity_unit": "片",
+      "package": {
+        "purchase_quantity": 20,
+        "container_capacity": null,
+        "container_unit": null,
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "citrus",
+        "fruit_flesh"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/lemon_slice.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/lemon_slice.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 12,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_tonic_water",
+      "ingredient_id": "tonic_water",
+      "kind": "ingredient",
+      "name": "汤力水",
+      "english_name": "Tonic Water",
+      "category": "配料",
+      "source_category": "调和饮料",
+      "contains_alcohol": false,
+      "alcohol_status": "confirmed",
+      "abv": 0,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 250,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "bitter",
+        "citrus",
+        "carbonation"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/tonic_water.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/tonic_water.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 13,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_white_rum",
+      "ingredient_id": "white_rum",
+      "kind": "ingredient",
+      "name": "白朗姆酒",
+      "english_name": "White Rum",
+      "category": "原酒",
+      "source_category": "基酒",
+      "contains_alcohol": true,
+      "alcohol_status": "confirmed",
+      "abv": null,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 700,
+        "container_unit": "瓶",
+        "source_amount": 700,
+        "capacity_status": "source_demo",
+        "description": "商品规格待选"
+      },
+      "price": 110,
+      "price_status": "source_demo",
+      "flavor_hints": [],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/white_rum.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/white_rum.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 14,
+        "status": "包装与金币价为演示值"
+      }
+    },
+    {
+      "id": "sku_mint_sprig",
+      "ingredient_id": "mint_sprig",
+      "kind": "ingredient",
+      "name": "薄荷枝",
+      "english_name": "Mint Sprig",
+      "category": "装饰品",
+      "source_category": "香草",
+      "contains_alcohol": false,
+      "alcohol_status": "confirmed",
+      "abv": 0,
+      "storage_mode": "quantity",
+      "measurement_unit": "sprig",
+      "quantity_unit": "枝",
+      "package": {
+        "purchase_quantity": 20,
+        "container_capacity": null,
+        "container_unit": null,
+        "source_amount": 20,
+        "capacity_status": "source_demo",
+        "description": "商品规格待选"
+      },
+      "price": 10,
+      "price_status": "source_demo",
+      "flavor_hints": [
+        "herbal",
+        "mint",
+        "mint"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/mint_sprig.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/mint_sprig.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 15,
+        "status": "包装与金币价为演示值"
+      }
+    },
+    {
+      "id": "sku_white_cane_sugar",
+      "ingredient_id": "white_cane_sugar",
+      "kind": "ingredient",
+      "name": "白蔗糖",
+      "english_name": "White Cane Sugar",
+      "category": "配料",
+      "source_category": "甜味料",
+      "contains_alcohol": false,
+      "alcohol_status": "confirmed",
+      "abv": 0,
+      "storage_mode": "container",
+      "measurement_unit": "g",
+      "quantity_unit": "袋",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 1000,
+        "container_unit": "袋",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "sweet",
+        "added_sugar"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/white_cane_sugar.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/white_cane_sugar.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 16,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_soda_water",
+      "ingredient_id": "soda_water",
+      "kind": "ingredient",
+      "name": "苏打水",
+      "english_name": "Soda Water",
+      "category": "配料",
+      "source_category": "调和饮料",
+      "contains_alcohol": false,
+      "alcohol_status": "confirmed",
+      "abv": 0,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 1000,
+        "container_unit": "瓶",
+        "source_amount": 1000,
+        "capacity_status": "source_demo",
+        "description": "商品规格待选"
+      },
+      "price": 8,
+      "price_status": "source_demo",
+      "flavor_hints": [
+        "carbonation"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/soda_water.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/soda_water.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 17,
+        "status": "包装与金币价为演示值"
+      }
+    },
+    {
+      "id": "sku_vodka",
+      "ingredient_id": "vodka",
+      "kind": "ingredient",
+      "name": "伏特加",
+      "english_name": "Vodka",
+      "category": "原酒",
+      "source_category": "基酒",
+      "contains_alcohol": true,
+      "alcohol_status": "confirmed",
+      "abv": null,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 750,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/vodka.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/vodka.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 18,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_tequila",
+      "ingredient_id": "tequila",
+      "kind": "ingredient",
+      "name": "龙舌兰酒",
+      "english_name": "Tequila",
+      "category": "原酒",
+      "source_category": "基酒",
+      "contains_alcohol": true,
+      "alcohol_status": "confirmed",
+      "abv": null,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 750,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/tequila.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/tequila.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 19,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_cointreau",
+      "ingredient_id": "cointreau",
+      "kind": "ingredient",
+      "name": "君度橙酒",
+      "english_name": "Cointreau",
+      "category": "原酒",
+      "source_category": "利口酒",
+      "contains_alcohol": true,
+      "alcohol_status": "confirmed",
+      "abv": null,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 700,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "sweet",
+        "citrus"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/cointreau.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/cointreau.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 20,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_simple_syrup",
+      "ingredient_id": "simple_syrup",
+      "kind": "ingredient",
+      "name": "糖浆",
+      "english_name": "Simple Syrup",
+      "category": "配料",
+      "source_category": "甜味料",
+      "contains_alcohol": false,
+      "alcohol_status": "confirmed",
+      "abv": 0,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 500,
+        "container_unit": "瓶",
+        "source_amount": 500,
+        "capacity_status": "source_demo",
+        "description": "蔗糖:水=1:1（质量比草案）"
+      },
+      "price": 25,
+      "price_status": "source_demo",
+      "flavor_hints": [
+        "sweet",
+        "added_syrup"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/simple_syrup.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/simple_syrup.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 21,
+        "status": "包装与金币价为演示值"
+      }
+    },
+    {
+      "id": "sku_cola",
+      "ingredient_id": "cola",
+      "kind": "ingredient",
+      "name": "可乐",
+      "english_name": "Cola",
+      "category": "配料",
+      "source_category": "调和饮料",
+      "contains_alcohol": false,
+      "alcohol_status": "confirmed",
+      "abv": 0,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 330,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "sweet",
+        "spice",
+        "carbonation"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/cola.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/cola.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 22,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_rye_whiskey",
+      "ingredient_id": "rye_whiskey",
+      "kind": "ingredient",
+      "name": "黑麦威士忌",
+      "english_name": "Rye Whiskey",
+      "category": "原酒",
+      "source_category": "基酒",
+      "contains_alcohol": true,
+      "alcohol_status": "confirmed",
+      "abv": null,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 750,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "spice"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/rye_whiskey.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/rye_whiskey.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 23,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_sweet_red_vermouth",
+      "ingredient_id": "sweet_red_vermouth",
+      "kind": "ingredient",
+      "name": "甜红味美思",
+      "english_name": "Sweet Red Vermouth",
+      "category": "原酒",
+      "source_category": "加强葡萄酒",
+      "contains_alcohol": true,
+      "alcohol_status": "confirmed",
+      "abv": null,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 750,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "sweet",
+        "herbal"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/sweet_red_vermouth.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/sweet_red_vermouth.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 24,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_angostura_bitters",
+      "ingredient_id": "angostura_bitters",
+      "kind": "ingredient",
+      "name": "安格仕苦精",
+      "english_name": "Angostura Bitters",
+      "category": "原酒",
+      "source_category": "苦精",
+      "contains_alcohol": true,
+      "alcohol_status": "confirmed",
+      "abv": null,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 200,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "bitter",
+        "spice"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/angostura_bitters.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/angostura_bitters.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 25,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_cocktail_cherry",
+      "ingredient_id": "cocktail_cherry",
+      "kind": "ingredient",
+      "name": "鸡尾酒樱桃",
+      "english_name": "Cocktail Cherry",
+      "category": "装饰品",
+      "source_category": "装饰",
+      "contains_alcohol": null,
+      "alcohol_status": "unconfirmed",
+      "abv": null,
+      "storage_mode": "quantity",
+      "measurement_unit": "piece",
+      "quantity_unit": "颗",
+      "package": {
+        "purchase_quantity": 20,
+        "container_capacity": null,
+        "container_unit": null,
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "fruit",
+        "sweet"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/cocktail_cherry.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/cocktail_cherry.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 26,
+        "status": "商品待定"
+      }
+    },
+    {
+      "id": "sku_mint_leaf",
+      "ingredient_id": "mint_leaf",
+      "kind": "ingredient",
+      "name": "薄荷叶",
+      "english_name": "Mint Leaf",
+      "category": "配料",
+      "source_category": "香草",
+      "contains_alcohol": false,
+      "alcohol_status": "confirmed",
+      "abv": 0,
+      "storage_mode": "quantity",
+      "measurement_unit": "piece",
+      "quantity_unit": "片",
+      "package": {
+        "purchase_quantity": 100,
+        "container_capacity": null,
+        "container_unit": null,
+        "source_amount": 100,
+        "capacity_status": "source_demo",
+        "description": "备料后按叶计数"
+      },
+      "price": 20,
+      "price_status": "source_demo",
+      "flavor_hints": [
+        "mint",
+        "mint"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/mint_leaf.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/mint_leaf.tres",
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "原料商品",
+        "row": 29,
+        "status": "包装与金币价为演示值"
+      }
+    },
+    {
+      "id": "tool_shaker",
+      "asset_id": "shaker",
+      "kind": "equipment",
+      "name": "摇壶",
+      "english_name": "Cobbler Shaker",
+      "category": "器材",
+      "storage_mode": "permanent",
+      "unlock_policy": "permanent_on_first_purchase",
+      "price": null,
+      "price_status": "unconfirmed",
+      "operations": [
+        "open",
+        "close",
+        "fill",
+        "shake",
+        "pour"
+      ],
+      "image_path": "res://assets/art/supplies/equipment/shaker_body.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/shaker_body.tres",
+      "scene_path": "res://scenes/supply_assets/shaker.tscn",
+      "parts": [
+        {
+          "id": "shaker_body",
+          "image_path": "res://assets/art/supplies/equipment/shaker_body.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/shaker_body.tres"
+        },
+        {
+          "id": "shaker_strainer_top",
+          "image_path": "res://assets/art/supplies/equipment/shaker_strainer_top.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/shaker_strainer_top.tres"
+        },
+        {
+          "id": "shaker_cap",
+          "image_path": "res://assets/art/supplies/equipment/shaker_cap.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/shaker_cap.tres"
+        }
+      ],
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "制作笔记",
+        "selection": "五款经典酒及回响所需器具，排除备料器材"
+      },
+      "operations_status": "interaction_design_prototype",
+      "interaction_geometry": {
+        "coordinates": "scene_local_pixels",
+        "origin": "base_center",
+        "default_visible_height": 235,
+        "anchors": {
+          "GrabPoint": [
+            0,
+            -117.5
+          ],
+          "RestPoint": [
+            0,
+            0
+          ],
+          "RimPoint": [
+            0,
+            -220
+          ],
+          "PourPoint": [
+            57.447,
+            -220
+          ],
+          "FillPoint": [
+            0,
+            -152.75
+          ],
+          "GarnishPoint": [
+            -45.958,
+            -215
+          ]
+        },
+        "liquid_polygon": [
+          -43,
+          -202,
+          43,
+          -202,
+          33,
+          -18,
+          -33,
+          -18
+        ],
+        "calibration_status": "prototype_visual_anchors"
+      }
+    },
+    {
+      "id": "tool_jigger",
+      "asset_id": "jigger",
+      "kind": "equipment",
+      "name": "量酒器",
+      "english_name": "Jigger",
+      "category": "器材",
+      "storage_mode": "permanent",
+      "unlock_policy": "permanent_on_first_purchase",
+      "price": null,
+      "price_status": "unconfirmed",
+      "operations": [
+        "measure",
+        "fill",
+        "pour"
+      ],
+      "image_path": "res://assets/art/supplies/equipment/jigger.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/jigger.tres",
+      "scene_path": "res://scenes/supply_assets/jigger.tscn",
+      "parts": [
+        {
+          "id": "jigger",
+          "image_path": "res://assets/art/supplies/equipment/jigger.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/jigger.tres"
+        }
+      ],
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "制作笔记",
+        "selection": "五款经典酒及回响所需器具，排除备料器材"
+      },
+      "operations_status": "interaction_design_prototype",
+      "interaction_geometry": {
+        "coordinates": "scene_local_pixels",
+        "origin": "base_center",
+        "default_visible_height": 185,
+        "anchors": {
+          "GrabPoint": [
+            0,
+            -92.5
+          ],
+          "RestPoint": [
+            0,
+            0
+          ],
+          "RimPoint": [
+            0,
+            -170
+          ],
+          "PourPoint": [
+            42.15,
+            -170
+          ],
+          "FillPoint": [
+            0,
+            -120.25
+          ],
+          "GarnishPoint": [
+            -33.72,
+            -165
+          ]
+        },
+        "liquid_polygon": [
+          -34,
+          -170,
+          34,
+          -170,
+          10,
+          -99,
+          -10,
+          -99
+        ],
+        "calibration_status": "prototype_visual_anchors"
+      }
+    },
+    {
+      "id": "tool_strainer",
+      "asset_id": "strainer",
+      "kind": "equipment",
+      "name": "滤器",
+      "english_name": "Hawthorne Strainer",
+      "category": "器材",
+      "storage_mode": "permanent",
+      "unlock_policy": "permanent_on_first_purchase",
+      "price": null,
+      "price_status": "unconfirmed",
+      "operations": [
+        "place",
+        "strain"
+      ],
+      "image_path": "res://assets/art/supplies/equipment/strainer.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/strainer.tres",
+      "scene_path": "res://scenes/supply_assets/strainer.tscn",
+      "parts": [
+        {
+          "id": "strainer",
+          "image_path": "res://assets/art/supplies/equipment/strainer.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/strainer.tres"
+        }
+      ],
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "制作笔记",
+        "selection": "五款经典酒及回响所需器具，排除备料器材"
+      },
+      "operations_status": "interaction_design_prototype",
+      "interaction_geometry": {
+        "coordinates": "scene_local_pixels",
+        "origin": "base_center",
+        "default_visible_height": 250,
+        "anchors": {
+          "GrabPoint": [
+            0,
+            -125.0
+          ],
+          "RestPoint": [
+            0,
+            0
+          ],
+          "RimPoint": [
+            0,
+            -235
+          ],
+          "PourPoint": [
+            75.988,
+            -235
+          ],
+          "FillPoint": [
+            0,
+            -162.5
+          ],
+          "GarnishPoint": [
+            -60.79,
+            -230
+          ],
+          "WorkingPoint": [
+            0,
+            -225
+          ]
+        },
+        "liquid_polygon": [],
+        "calibration_status": "prototype_visual_anchors"
+      }
+    },
+    {
+      "id": "tool_muddler",
+      "asset_id": "muddler",
+      "kind": "equipment",
+      "name": "轻压棒",
+      "english_name": "Muddler",
+      "category": "器材",
+      "storage_mode": "permanent",
+      "unlock_policy": "permanent_on_first_purchase",
+      "price": null,
+      "price_status": "unconfirmed",
+      "operations": [
+        "press"
+      ],
+      "image_path": "res://assets/art/supplies/equipment/muddler.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/muddler.tres",
+      "scene_path": "res://scenes/supply_assets/muddler.tscn",
+      "parts": [
+        {
+          "id": "muddler",
+          "image_path": "res://assets/art/supplies/equipment/muddler.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/muddler.tres"
+        }
+      ],
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "制作笔记",
+        "selection": "五款经典酒及回响所需器具，排除备料器材"
+      },
+      "operations_status": "interaction_design_prototype",
+      "interaction_geometry": {
+        "coordinates": "scene_local_pixels",
+        "origin": "base_center",
+        "default_visible_height": 275,
+        "anchors": {
+          "GrabPoint": [
+            0,
+            -137.5
+          ],
+          "RestPoint": [
+            0,
+            0
+          ],
+          "RimPoint": [
+            0,
+            -260
+          ],
+          "PourPoint": [
+            25.945,
+            -260
+          ],
+          "FillPoint": [
+            0,
+            -178.75
+          ],
+          "GarnishPoint": [
+            -20.756,
+            -255
+          ],
+          "WorkingPoint": [
+            0,
+            -22
+          ]
+        },
+        "liquid_polygon": [],
+        "calibration_status": "prototype_visual_anchors"
+      }
+    },
+    {
+      "id": "tool_bar_spoon",
+      "asset_id": "bar_spoon",
+      "kind": "equipment",
+      "name": "吧勺",
+      "english_name": "Bar Spoon",
+      "category": "器材",
+      "storage_mode": "permanent",
+      "unlock_policy": "permanent_on_first_purchase",
+      "price": null,
+      "price_status": "unconfirmed",
+      "operations": [
+        "stir"
+      ],
+      "image_path": "res://assets/art/supplies/equipment/bar_spoon.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/bar_spoon.tres",
+      "scene_path": "res://scenes/supply_assets/bar_spoon.tscn",
+      "parts": [
+        {
+          "id": "bar_spoon",
+          "image_path": "res://assets/art/supplies/equipment/bar_spoon.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/bar_spoon.tres"
+        }
+      ],
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "制作笔记",
+        "selection": "五款经典酒及回响所需器具，排除备料器材"
+      },
+      "operations_status": "interaction_design_prototype",
+      "interaction_geometry": {
+        "coordinates": "scene_local_pixels",
+        "origin": "base_center",
+        "default_visible_height": 285,
+        "anchors": {
+          "GrabPoint": [
+            0,
+            -142.5
+          ],
+          "RestPoint": [
+            0,
+            0
+          ],
+          "RimPoint": [
+            0,
+            -270
+          ],
+          "PourPoint": [
+            20.505,
+            -270
+          ],
+          "FillPoint": [
+            0,
+            -185.25
+          ],
+          "GarnishPoint": [
+            -16.404,
+            -265
+          ],
+          "WorkingPoint": [
+            0,
+            -260
+          ]
+        },
+        "liquid_polygon": [],
+        "calibration_status": "prototype_visual_anchors"
+      }
+    },
+    {
+      "id": "tool_mixing_glass",
+      "asset_id": "mixing_glass",
+      "kind": "equipment",
+      "name": "调酒杯",
+      "english_name": "Mixing Glass",
+      "category": "器材",
+      "storage_mode": "permanent",
+      "unlock_policy": "permanent_on_first_purchase",
+      "price": null,
+      "price_status": "unconfirmed",
+      "operations": [
+        "fill",
+        "stir",
+        "strain",
+        "pour"
+      ],
+      "image_path": "res://assets/art/supplies/equipment/mixing_glass.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/mixing_glass.tres",
+      "scene_path": "res://scenes/supply_assets/mixing_glass.tscn",
+      "parts": [
+        {
+          "id": "mixing_glass",
+          "image_path": "res://assets/art/supplies/equipment/mixing_glass.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/mixing_glass.tres"
+        }
+      ],
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "制作笔记",
+        "selection": "五款经典酒及回响所需器具，排除备料器材"
+      },
+      "operations_status": "interaction_design_prototype",
+      "interaction_geometry": {
+        "coordinates": "scene_local_pixels",
+        "origin": "base_center",
+        "default_visible_height": 265,
+        "anchors": {
+          "GrabPoint": [
+            0,
+            -132.5
+          ],
+          "RestPoint": [
+            0,
+            0
+          ],
+          "RimPoint": [
+            0.0,
+            -245.87
+          ],
+          "PourPoint": [
+            91.404,
+            -240.406
+          ],
+          "FillPoint": [
+            0.628,
+            -53.733
+          ],
+          "GarnishPoint": [
+            -57.795,
+            -245.87
+          ]
+        },
+        "liquid_polygon": [
+          -57.795,
+          -231.907,
+          65.962,
+          -231.907,
+          60.308,
+          -71.035,
+          48.686,
+          -59.197,
+          26.385,
+          -51.305,
+          -23.558,
+          -51.305,
+          -47.116,
+          -59.5,
+          -56.539,
+          -71.642
+        ],
+        "calibration_status": "prototype_visual_anchors"
+      }
+    },
+    {
+      "id": "glass_cocktail_glass",
+      "asset_id": "cocktail_glass",
+      "kind": "glassware",
+      "name": "鸡尾酒杯",
+      "english_name": "Cocktail Glass",
+      "category": "杯型",
+      "storage_mode": "permanent",
+      "unlock_policy": "permanent_on_first_purchase",
+      "price": null,
+      "price_status": "unconfirmed",
+      "operations": [
+        "fill",
+        "garnish",
+        "serve",
+        "pour"
+      ],
+      "image_path": "res://assets/art/supplies/equipment/cocktail_glass.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/cocktail_glass.tres",
+      "scene_path": "res://scenes/supply_assets/cocktail_glass.tscn",
+      "parts": [
+        {
+          "id": "cocktail_glass",
+          "image_path": "res://assets/art/supplies/equipment/cocktail_glass.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/cocktail_glass.tres"
+        }
+      ],
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "酒谱总表",
+        "selection": "五款经典酒及回响的杯型"
+      },
+      "operations_status": "interaction_design_prototype",
+      "interaction_geometry": {
+        "coordinates": "scene_local_pixels",
+        "origin": "base_center",
+        "default_visible_height": 265,
+        "anchors": {
+          "GrabPoint": [
+            0,
+            -132.5
+          ],
+          "RestPoint": [
+            0,
+            0
+          ],
+          "RimPoint": [
+            0.0,
+            -234.571
+          ],
+          "PourPoint": [
+            70.307,
+            -234.571
+          ],
+          "FillPoint": [
+            0.356,
+            -155.202
+          ],
+          "GarnishPoint": [
+            -70.307,
+            -234.571
+          ]
+        },
+        "liquid_polygon": [
+          -86.461,
+          -224.174,
+          85.393,
+          -224.174,
+          81.48,
+          -199.565,
+          67.247,
+          -181.543,
+          40.562,
+          -164.213,
+          19.214,
+          -156.242,
+          -19.214,
+          -156.242,
+          -45.899,
+          -164.213,
+          -70.094,
+          -181.543,
+          -82.903,
+          -199.565
+        ],
+        "calibration_status": "prototype_visual_anchors"
+      }
+    },
+    {
+      "id": "glass_highball_glass",
+      "asset_id": "highball_glass",
+      "kind": "glassware",
+      "name": "高球杯",
+      "english_name": "Highball Glass",
+      "category": "杯型",
+      "storage_mode": "permanent",
+      "unlock_policy": "permanent_on_first_purchase",
+      "price": null,
+      "price_status": "unconfirmed",
+      "operations": [
+        "fill",
+        "garnish",
+        "serve",
+        "pour"
+      ],
+      "image_path": "res://assets/art/supplies/equipment/highball_glass.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/highball_glass.tres",
+      "scene_path": "res://scenes/supply_assets/highball_glass.tscn",
+      "parts": [
+        {
+          "id": "highball_glass",
+          "image_path": "res://assets/art/supplies/equipment/highball_glass.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/highball_glass.tres"
+        }
+      ],
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "酒谱总表",
+        "selection": "五款经典酒及回响的杯型"
+      },
+      "operations_status": "interaction_design_prototype",
+      "interaction_geometry": {
+        "coordinates": "scene_local_pixels",
+        "origin": "base_center",
+        "default_visible_height": 265,
+        "anchors": {
+          "GrabPoint": [
+            0,
+            -132.5
+          ],
+          "RestPoint": [
+            0,
+            0
+          ],
+          "RimPoint": [
+            0.0,
+            -247.888
+          ],
+          "PourPoint": [
+            43.822,
+            -247.888
+          ],
+          "FillPoint": [
+            -0.298,
+            -52.478
+          ],
+          "GarnishPoint": [
+            -43.822,
+            -247.888
+          ]
+        },
+        "liquid_polygon": [
+          -53.586,
+          -235.3,
+          52.991,
+          -235.3,
+          48.525,
+          -62.068,
+          35.724,
+          -53.377,
+          -35.724,
+          -53.377,
+          -49.418,
+          -62.068
+        ],
+        "calibration_status": "prototype_visual_anchors"
+      }
+    },
+    {
+      "id": "glass_balloon_glass",
+      "asset_id": "balloon_glass",
+      "kind": "glassware",
+      "name": "球形杯",
+      "english_name": "Balloon Glass",
+      "category": "杯型",
+      "storage_mode": "permanent",
+      "unlock_policy": "permanent_on_first_purchase",
+      "price": null,
+      "price_status": "unconfirmed",
+      "operations": [
+        "fill",
+        "garnish",
+        "serve",
+        "pour"
+      ],
+      "image_path": "res://assets/art/supplies/equipment/balloon_glass.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/balloon_glass.tres",
+      "scene_path": "res://scenes/supply_assets/balloon_glass.tscn",
+      "parts": [
+        {
+          "id": "balloon_glass",
+          "image_path": "res://assets/art/supplies/equipment/balloon_glass.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/balloon_glass.tres"
+        }
+      ],
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "酒谱总表",
+        "selection": "五款经典酒及回响的杯型"
+      },
+      "operations_status": "interaction_design_prototype",
+      "interaction_geometry": {
+        "coordinates": "scene_local_pixels",
+        "origin": "base_center",
+        "default_visible_height": 265,
+        "anchors": {
+          "GrabPoint": [
+            0,
+            -132.5
+          ],
+          "RestPoint": [
+            0,
+            0
+          ],
+          "RimPoint": [
+            0.0,
+            -248.283
+          ],
+          "PourPoint": [
+            50.418,
+            -248.283
+          ],
+          "FillPoint": [
+            -0.296,
+            -133.364
+          ],
+          "GarnishPoint": [
+            -50.418,
+            -248.283
+          ]
+        },
+        "liquid_polygon": [
+          -66.277,
+          -241.371,
+          66.277,
+          -241.371,
+          71.603,
+          -227.258,
+          76.632,
+          -198.456,
+          72.786,
+          -169.654,
+          65.093,
+          -155.253,
+          48.524,
+          -140.853,
+          19.232,
+          -133.364,
+          -19.824,
+          -133.364,
+          -50.003,
+          -140.853,
+          -66.277,
+          -155.253,
+          -74.265,
+          -169.654,
+          -78.112,
+          -198.456,
+          -72.194,
+          -227.258
+        ],
+        "calibration_status": "prototype_visual_anchors"
+      }
+    },
+    {
+      "id": "glass_saucer_glass",
+      "asset_id": "saucer_glass",
+      "kind": "glassware",
+      "name": "碟形杯",
+      "english_name": "Coupe Glass",
+      "category": "杯型",
+      "storage_mode": "permanent",
+      "unlock_policy": "permanent_on_first_purchase",
+      "price": null,
+      "price_status": "unconfirmed",
+      "operations": [
+        "fill",
+        "garnish",
+        "serve",
+        "pour"
+      ],
+      "image_path": "res://assets/art/supplies/equipment/saucer_glass.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/saucer_glass.tres",
+      "scene_path": "res://scenes/supply_assets/saucer_glass.tscn",
+      "parts": [
+        {
+          "id": "saucer_glass",
+          "image_path": "res://assets/art/supplies/equipment/saucer_glass.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/saucer_glass.tres"
+        }
+      ],
+      "provenance": {
+        "file": "酒类属性与消耗设计_v3.xlsx",
+        "sheet": "酒谱总表",
+        "selection": "五款经典酒及回响的杯型"
+      },
+      "operations_status": "interaction_design_prototype",
+      "interaction_geometry": {
+        "coordinates": "scene_local_pixels",
+        "origin": "base_center",
+        "default_visible_height": 265,
+        "anchors": {
+          "GrabPoint": [
+            0,
+            -132.5
+          ],
+          "RestPoint": [
+            0,
+            0
+          ],
+          "RimPoint": [
+            0.0,
+            -232.11
+          ],
+          "PourPoint": [
+            89.777,
+            -232.11
+          ],
+          "FillPoint": [
+            0.34,
+            -179.309
+          ],
+          "GarnishPoint": [
+            -89.777,
+            -232.11
+          ]
+        },
+        "liquid_polygon": [
+          -110.86,
+          -222.392,
+          110.52,
+          -222.392,
+          104.399,
+          -205.871,
+          91.137,
+          -194.21,
+          70.053,
+          -185.139,
+          39.107,
+          -179.309,
+          -39.447,
+          -179.309,
+          -70.393,
+          -185.139,
+          -91.137,
+          -194.21,
+          -105.76,
+          -205.871
+        ],
+        "calibration_status": "prototype_visual_anchors"
+      }
+    }
+  ],
+  "ice": [
+    {
+      "id": "ice_standard_cube",
+      "name": "标准方冰",
+      "image_path": "res://assets/art/supplies/ice/standard_cube.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/standard_cube.tres",
+      "kind": "ice",
+      "inventory_policy": "excluded_from_ingredient_inventory"
+    },
+    {
+      "id": "ice_crushed",
+      "name": "碎冰",
+      "image_path": "res://assets/art/supplies/ice/crushed_ice.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/crushed_ice.tres",
+      "kind": "ice",
+      "inventory_policy": "excluded_from_ingredient_inventory"
+    }
+  ],
+  "notes": [
+    "冰仅为制作素材，不是原料商品。",
+    "商品容量缺失时采用明确标记的游戏草案值；ABV、价格和 dash 换算不作推断。",
+    "鸡尾酒樱桃的含酒状态尚待确认。"
+  ]
+}

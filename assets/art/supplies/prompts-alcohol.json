@@ -1,0 +1,318 @@
+{
+  "schema_version": 1,
+  "style_id": "saloon-supplies-matte-v2",
+  "generator": "built_in_imagegen",
+  "transparent_background": true,
+  "records": [
+    {
+      "item_id": "gin_london_dry",
+      "prompt": "Use case: style-transfer.\nAsset type: one fully transparent PNG interactive bottle sprite for a 2D hand-painted Western saloon game.\nInput image 1 is a real-world Bombay Sapphire gin shape/color reference only: use the recognizable cool blue rectangular flat-sided bottle, square shoulders, medium narrow neck and dark blue fitted screw cap. Do not reproduce the photo background, glass, bar objects, brand wordmarks or portrait.\nInput image 2 is the existing gin sprite to redesign. Its strong reflective golden treatment is explicitly unwanted.\nPrimary request: replace that generic round bottle with a clearly recognizable blue square gin bottle, and redraw in genuine 2D matte gouache and hand-inked illustration.\nBottle: complete upright flat-sided pale dusty turquoise-blue glass, broad squared shoulders, slim neck, small matte navy screw cap, clear gin inside. Distinct cream shield-shaped front paper label with dark blue thin border and ONE legible small word \"GIN\"; optional simple tiny juniper leaf ink mark, no brand logo, no portrait, no serial fine print. Show one narrow side plane to make the squared silhouette readable.\nStyle: clearly drawn 2D game prop, not a photo, not 3D. Muted dusty colors, thin warm dark-brown outline, simple restrained brush texture, broad low-contrast painted color planes. Soft diffuse room lighting. Surfaces must look satin/matte. Glass should be suggested by translucent quiet blue planes and a few thin desaturated edge strokes, without realistic optical refractions.\nVERY IMPORTANT LIGHTING: remove all the old harsh golden highlights, fiery/glowing edges, white mirror shine, metallic-looking striations and speckled glitter texture. No bright rim light, no glossy white highlight bands, no bloom, no specular sparkle. Keep silhouette readable via brown contour and controlled value differences.\nComposition: exactly ONE complete bottle centered, perfectly upright; slightly elevated front three-quarter view; bottle occupies the central 70% of canvas height, with at least 14% truly empty transparent padding on every side. Mouth and base complete. No bottle floating cap, no additional object.\nBackground: genuine alpha transparency everywhere outside the bottle. No scenery, paper sheet, table, floor, ground shadow or checkerboard. Preserve full opacity of label/cap but allow subtle translucent glass. Output final independent bottle sprite only.",
+      "image_path": "res://assets/art/supplies/materials/gin_london_dry.png",
+      "reference_image": [
+        "work/supply-assets-v2/references/gin-bombay-sapphire.jpg",
+        "godot-home/assets/art/supplies/materials/gin_london_dry.png"
+      ],
+      "prototype_url": "https://www.bombaysapphire.com/products/bombay-sapphire/",
+      "prototype_name": null,
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-51bd0c98-ef55-4c68-8694-12fd2be93c76.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          420,
+          51,
+          835,
+          1201
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "d71778a5ce611184bc2c26a731bdced8834425f53623bf7ee9225e364c22442f"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "green_chartreuse",
+      "prompt": "Use case: stylized-concept. Asset type: transparent 2D hand painted ingredient sprite for a Western saloon game.\nInput image 1 is STYLE ONLY: match its gentle matte watercolor/gouache surface, subtle paperlike pigment within the object, thin brown outlines, deliberately simplified hand painted shapes. Input image 2 is SHAPE / GLASS COLOR / LABEL BLOCK reference only. Do not reproduce photographic highlights, brand names, logos, embossing or detailed typography.\nCreate ONE complete isolated upright green herbal liqueur bottle. It has a slim long round cylinder body, rounded sloping shoulders and a distinctly long narrow neck, narrow dark charcoal ribbed screw cap; luminous herbal olive-green glass/liquid translated into dull sage and olive painted areas. Broad dark forest-green rectangular label wrapping lower body, with pale cream small inset panel and a simple herb sprig ink drawing. Generic label word exactly \"HERBAL\". A small unbranded oval embossed outline on upper shoulder is enough; omit logos and crests. Unlike the blue rectangular style bottle, this bottle is cylindrical green and much narrower, long-necked.\nPure 2D illustration: only 3–4 soft broad shaded color areas, matte diffuse ambient light, low contrast, no narrow white sparkle or glossy edge. Simplify glass into muted watercolor color planes, not realistic reflective glass. Three-quarter front view with only very slight top visibility, perfectly vertical. Centered with full cap and base visible and at least 10% clear breathing space. Real transparent alpha background, no ground shadow or reflection, no table, no props, no border, no background scene. No brand words such as Chartreuse. Do not copy any logo. No golden rim glow, bright light streak, mirror reflections, glossy studio render, 3D realism, photorealism.",
+      "image_path": "res://assets/art/supplies/materials/green_chartreuse.png",
+      "reference_image": [
+        "work/supply-assets-v2/staged/materials/gin_london_dry.png",
+        "work/supply-assets-v2/references/green_chartreuse-0.png"
+      ],
+      "prototype_url": "https://www.chartreuse.fr/en/produit/green-chartreuse/",
+      "prototype_name": "Green Chartreuse",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f18e-d1c9-7bc2-9036-bd691a721da9/exec-b1bef11d-b174-4586-9cd4-9b528d876b8d.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          473,
+          50,
+          780,
+          1211
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "b765cad59516e14464ecb76b15bdf5e4f54f3fb34d71d1cf6147dc5fc2860a5e"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "maraschino",
+      "prompt": "Use case: stylized-concept. Asset type: transparent 2D hand-painted ingredient sprite for a Western saloon game.\nInput image 1 is STYLE ONLY: gentle matte watercolor/gouache pigment, simplified shapes, subtle hand-painted texture and fine brown contour. Input image 2 is bottle SHAPE / CAP / LABEL COLOR reference only: do not copy its photographic shine, logos, brand names or proprietary artwork.\nPure 2D painting with 3–4 broad soft color areas, low contrast diffuse ambient light, almost no highlights. Matte colored planes, not reflective real glass. Three-quarter front view with subtle top visibility, perfectly vertical, complete cap and base visible, centered, at least 10% transparent breathing room. Real transparent alpha, no ground shadow, no table, no reflection, no other props, no scene. Generic label word only as specified; no brand text. No golden glowing edge, mirror streak, brilliant white rims, glossy photo lighting, photorealism, 3D render or complex etched decoration.\nSubject: ONE tall extremely slender cherry liqueur bottle: a narrow green-glass cylinder with steep tapered shoulders, very long slim neck, bright muted brick-red cylindrical cap. Coarse tan straw weave wraps the lower two thirds of the bottle, with broad horizontal woven strips and four vertical supports, visible both above and below a slim white rectangular label. The label has a dark red word \"CHERRY\" and just a tiny simple pair of ink-drawn cherries, no other text. The straw silhouette and red cap are distinctive. Preserve the reference’s very narrow body and unusually tall neck; do not widen to a standard wine bottle.",
+      "image_path": "res://assets/art/supplies/materials/maraschino.png",
+      "reference_image": [
+        "work/supply-assets-v2/staged/materials/gin_london_dry.png",
+        "work/supply-assets-v2/references/maraschino-clean.png"
+      ],
+      "prototype_url": "https://www.luxardo.it/it/liquori-e-distillati/maraschino-originale/",
+      "prototype_name": "Luxardo Maraschino",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f18e-d1c9-7bc2-9036-bd691a721da9/exec-d4a6621b-9ef7-44d0-8b0c-98e6db85aa0c.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          503,
+          25,
+          751,
+          1222
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "f027d046e758cae278161d589c857925ea12930d463bf27045ca744113ea830c"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "white_rum",
+      "prompt": "Use case: stylized-concept. Asset type: transparent 2D hand painted bottle sprite for a Western saloon game. Image 1 is style ONLY: matte watercolor/gouache hand painting, restrained pigment blocks, fine brown contour; do not copy its blue square shape or long botanical label. Image 2 is SHAPE/CAP/LABEL COLORS reference only, never its brand logo or photographic highlights.\nOne whole isolated upright bottle. Pure 2D painting with 3–4 broad softly shaded muted color planes, matte diffuse ambient low contrast, no shiny glass, no glowing rims, no mirror reflection or white sparkle streak. Complete cap and base visible, slight three-quarter front view, centered in a square composition, 10% loose margins. Genuine transparent alpha with nothing outside the bottle silhouette. No cast shadow, no haze, no glow, no colored backdrop, no props, no table, no 3D rendering, no photorealism. Only specified generic label word, no brand text or logo.\nSubject: ONE tall slim white rum bottle, clear pale gray glass and colorless liquid. Slim cylindrical body, gently angular high shoulders and very LONG narrow neck. Tall chalk WHITE screw cap and white neck sleeve with one simple small black band. A broad white label wraps middle of body, black word \"RUM\" and a small dark RED oval with an original sugarcane leaf sketch above it; no bat, no circular brand logo. Small plain pale-gray secondary strip label low on bottle, no tiny text. This is a lean long-neck clear bottle with white cap and predominantly white labels, different from the squat vodka bottle and blue gin bottle. Keep bottle shadow colors pale warm gray and muted seafoam gray.",
+      "image_path": "res://assets/art/supplies/materials/white_rum.png",
+      "reference_image": [
+        "work/supply-assets-v2/staged/materials/gin_london_dry.png",
+        "work/supply-assets-v2/references/white_rum-clean.png"
+      ],
+      "prototype_url": "https://www.bacardi.com/our-rums/carta-blanca-rum/",
+      "prototype_name": "Bacardi Carta Blanca",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f18e-d1c9-7bc2-9036-bd691a721da9/exec-9359165f-7398-4b2d-9385-ab8afcb7e8d2.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          465,
+          20,
+          790,
+          1228
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "3856cd2ecb424b6d757c93e38dffd07aefe3e8d1e8b40bbbc63cd422016bde4e"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "vodka",
+      "prompt": "Use case: stylized-concept. Asset type: transparent 2D hand painted vodka bottle sprite for a Western saloon game.\nInput image 1 is STYLE ONLY: match its matte watercolor/gouache pigment, fine dark brown contour and handmade broad color planes. Input image 2 is our OLD vodka asset only to indicate the category and silver cap. CHANGE its shape, label and surface. Do not copy the old narrow long neck, the cream paper label or excessive gold reflections.\nMake ONE isolated generic vodka bottle based on an 18th-century apothecary bottle silhouette (like the real broad-shouldered Swedish vodka bottle): round cylindrical body, quite broad in proportion to height, very rounded dome shoulders tapering to a SHORT thick neck, simple dull silver screw cap. Height about 2.5 times its body width, neck only 12% of total height; much broader shoulders and shorter neck than the old vodka sprite. Clear colorless liquid in pale blue-gray glass. A small plain oval contour medallion on upper shoulder, no portrait or brand emblem. NO paper label: print generic large dark COBALT BLUE word \"VODKA\" directly on the middle of the clear glass, and a tiny blue simple wheat ear below; one small blue horizontal underline. No Absolut word, no brand logo, no decorative shield, no handwriting or other text.\nPure 2D matte hand painting, 3–4 broad gently shaded watercolor color areas, muted pale gray-blue glass and blue ink, silver cap represented by dull gray pigment. Weak diffuse ambient light. No gold or warm glowing outlines, no shining streaks, no mirror glass, no sharp white highlights. Three-quarter front view with only subtle top visibility, perfectly upright and complete cap/base, centered square canvas with 10% loose margins. Genuine transparent alpha, every pixel outside bottle silhouette completely clear. No ground shadow, table, colored glow, halo, background, props or reflection. No photorealism, no 3D rendering.",
+      "image_path": "res://assets/art/supplies/materials/vodka.png",
+      "reference_image": [
+        "work/supply-assets-v2/staged/materials/gin_london_dry.png",
+        "godot-home/assets/art/supplies/materials/vodka.png"
+      ],
+      "prototype_url": "https://www.absolut.com/en/products/absolut-vodka/",
+      "prototype_name": "Absolut Vodka",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f18e-d1c9-7bc2-9036-bd691a721da9/exec-ac180b87-ad88-4c58-b4e3-1ef5ea84cdfb.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          353,
+          88,
+          900,
+          1168
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "bfaeba31edcd2540be6f4d3e49d217a5f9463aca2c6ccf3a2fb524249186c64b"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "tequila",
+      "prompt": "Use case: stylized-concept. Asset type: transparent 2D hand-painted ingredient sprite for a Western saloon game.\nInput image 1 is STYLE ONLY: gentle matte watercolor/gouache pigment, simplified shapes, subtle hand-painted texture and fine brown contour. Input image 2 is bottle SHAPE / CAP / LABEL COLOR reference only: do not copy its photographic shine, logos, brand names or proprietary artwork.\nPure 2D painting with 3–4 broad soft color areas, low contrast diffuse ambient light, almost no highlights. Matte colored planes, not reflective real glass. Three-quarter front view with subtle top visibility, perfectly vertical, complete cap and base visible, centered, at least 10% transparent breathing room. Real transparent alpha, no ground shadow, no table, no reflection, no other props, no scene. Generic label word only as specified; no brand text. No golden glowing edge, mirror streak, brilliant white rims, glossy photo lighting, photorealism, 3D render or complex etched decoration.\nSubject: ONE squat broad clear-glass agave spirit bottle, distinctly wider and shorter than a wine bottle. Broad rounded square body, near spherical rounded shoulders, a very short wide neck topped with a large rounded natural pale cork plug. Muted grassy green simple neck band with an agave leaf icon. The body is pale blue-gray clear glass with clear colorless liquid, rendered in soft gray watercolor planes. Small cream rectangular front label says \"AGAVE\" in dark green with a small original agave line drawing. Show the sturdy thick bottom as a subdued gray-blue area. No bee, logo or gold crest.",
+      "image_path": "res://assets/art/supplies/materials/tequila.png",
+      "reference_image": [
+        "work/supply-assets-v2/staged/materials/gin_london_dry.png",
+        "work/supply-assets-v2/references/tequila-0.png"
+      ],
+      "prototype_url": "https://www.patrontequila.com/products/patron-silver.html",
+      "prototype_name": "Patrón Silver",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f18e-d1c9-7bc2-9036-bd691a721da9/exec-4d74b2cc-2d39-4f47-93ba-91211ea541a7.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          242,
+          50,
+          1012,
+          1213
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "d95bdddac716a245af835d7636e1bb6d32b4cbb46c238c9818282b2e024e9b4a"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "cointreau",
+      "prompt": "Use case: stylized-concept. Asset type: transparent 2D hand painted bottle sprite for a Western saloon game.\nImage 1 is STYLE reference only, not shape or label template: match matte watercolor/gouache pigment, soft handpainted color blocks, fine brown contour and subtle brush texture. Image 2 is SHAPE / CAP / GLASS COLOR reference only. Never reproduce its brand names, logos or photographic lighting.\nCreate one complete isolated upright bottle. Pure 2D hand drawing, with only 3–4 broad gently shaded color areas. Desaturated natural pigments, matte diffuse low contrast, no bright white streaks, no shining rims, no gold light, no photographic glass reflections. View slightly three-quarter front with faint top visibility, vertically upright, full cap and base, center, 10% loose margins on genuine transparent background. No table, no ground shadow, no reflection, no other props or decoration outside bottle. Exact generic text only as specified, no other text, no logos. No photo realism, 3D render, mirror highlights or glossy surface.\nSubject: ONE orange liqueur bottle. Short broad amber-orange glass rectangular bottle with flat front, bevelled vertical corners and very broad rounded-square shoulders, a short neck and muted terracotta copper screw cap. The body is warm orange-brown, no golden glow. A vertical ivory WHITE rectangular label with a thin brick-red keyline, large dark brown generic word \"ORANGE\", and a simple original small orange branch illustration printed on the label. Small cream unbranded oval tag on neck. Preserve the square bottle silhouette and copper cap from the photo, but absolutely no Cointreau typography or word. Label should look white, not a large tan kraft label.",
+      "image_path": "res://assets/art/supplies/materials/cointreau.png",
+      "reference_image": [
+        "work/supply-assets-v2/staged/materials/gin_london_dry.png",
+        "work/supply-assets-v2/references/cointreau-0.webp"
+      ],
+      "prototype_url": "https://www.cointreau.com/int/en/products",
+      "prototype_name": "Cointreau L'Unique",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f18e-d1c9-7bc2-9036-bd691a721da9/exec-07d3475c-4bd4-4ede-be47-2116944f055d.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          375,
+          38,
+          877,
+          1206
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "3b2895e32a675b7673c5ce86b71dfd2363d0c7b414539370624c880797e19bf5"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "rye_whiskey",
+      "prompt": "Use case: stylized-concept. Asset type: transparent 2D hand painted bottle sprite for a Western saloon game.\nImage 1 is STYLE reference only, not shape or label template: match matte watercolor/gouache pigment, soft handpainted color blocks, fine brown contour and subtle brush texture. Image 2 is SHAPE / CAP / GLASS COLOR reference only. Never reproduce its brand names, logos or photographic lighting.\nCreate one complete isolated upright bottle. Pure 2D hand drawing, with only 3–4 broad gently shaded color areas. Desaturated natural pigments, matte diffuse low contrast, no bright white streaks, no shining rims, no gold light, no photographic glass reflections. View slightly three-quarter front with faint top visibility, vertically upright, full cap and base, center, 10% loose margins on genuine transparent background. No table, no ground shadow, no reflection, no other props or decoration outside bottle. Exact generic text only as specified, no other text, no logos. No photo realism, 3D render, mirror highlights or glossy surface.\nSubject: ONE rye whiskey bottle with a wide flattened rectangular flask-like body, broad low domed shoulders and a very SHORT thick neck, dark brown short stopper with a black neck wrap. Muted brown-amber liquor visible across the majority of its unlabeled upper front. A muted sage-green horizontal rectangular paper label wraps the lower third of the bottle, dark green simple generic word \"RYE\" and tiny wheat drawing. The green label should be wide and short, not a tall cream botanical label. Do not reproduce any embossed Bulleit letters, proprietary label border or logo. The low wide shoulder and short neck distinguish this old frontier whiskey bottle.",
+      "image_path": "res://assets/art/supplies/materials/rye_whiskey.png",
+      "reference_image": [
+        "work/supply-assets-v2/staged/materials/gin_london_dry.png",
+        "work/supply-assets-v2/references/rye_whiskey-clean.jpg"
+      ],
+      "prototype_url": "https://www.bulleit.com/whiskeys/bulleit-rye-whiskey",
+      "prototype_name": "Bulleit Rye",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f18e-d1c9-7bc2-9036-bd691a721da9/exec-9e5c7f7b-9b10-4e49-91eb-cde1a9c36104.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          295,
+          55,
+          962,
+          1213
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "c468db6d9ef93cc841440772d3689c08800b008fec08357b67ed07d1db8493b4"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "sweet_red_vermouth",
+      "prompt": "Use case: stylized-concept. Asset type: transparent 2D hand painted bottle sprite for a Western saloon game.\nImage 1 is STYLE reference only, not shape or label template: match matte watercolor/gouache pigment, soft handpainted color blocks, fine brown contour and subtle brush texture. Image 2 is SHAPE / CAP / GLASS COLOR reference only. Never reproduce its brand names, logos or photographic lighting.\nCreate one complete isolated upright bottle. Pure 2D hand drawing, with only 3–4 broad gently shaded color areas. Desaturated natural pigments, matte diffuse low contrast, no bright white streaks, no shining rims, no gold light, no photographic glass reflections. View slightly three-quarter front with faint top visibility, vertically upright, full cap and base, center, 10% loose margins on genuine transparent background. No table, no ground shadow, no reflection, no other props or decoration outside bottle. Exact generic text only as specified, no other text, no logos. No photo realism, 3D render, mirror highlights or glossy surface.\nSubject: ONE sweet red vermouth bottle. Tall narrow round wine-like dark brown bottle with reddish chestnut liquid, modest rounded shoulders, a thin neck and muted burgundy red screw cap; a burgundy red simple neck sleeve. A cream label with ARCH top fills the central body, red simple generic words \"RED VERMOUTH\" and a small original line drawing of grapes. A wide burgundy accent strip across the bottom of the label, no round red circle and no black horizontal logo bar. The bottle has a few widely spaced simple diagonal ink hatches near its lower glass to hint a textured base, no embossed dates or brand words. Dark red brown bottle, tall and lean, red cap.",
+      "image_path": "res://assets/art/supplies/materials/sweet_red_vermouth.png",
+      "reference_image": [
+        "work/supply-assets-v2/staged/materials/gin_london_dry.png",
+        "work/supply-assets-v2/references/sweet_red_vermouth-clean.png"
+      ],
+      "prototype_url": "https://www.martini.com/products/martini-rosso/",
+      "prototype_name": "Martini Rosso",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f18e-d1c9-7bc2-9036-bd691a721da9/exec-2aeeb704-7d49-4bc5-88f3-1ab557205801.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          452,
+          19,
+          804,
+          1243
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "3cf58bc73c931e6fd6b62536c6b3366a610004677a2cc36f05c2def391595de8"
+      },
+      "status": "generated_and_visually_reviewed"
+    },
+    {
+      "item_id": "angostura_bitters",
+      "prompt": "Use case: stylized-concept. Asset type: transparent 2D hand painted bottle sprite for a Western saloon game. Image 1 is style ONLY: matte watercolor/gouache hand painting, restrained pigment blocks, fine brown contour; do not copy its blue square shape or long botanical label. Image 2 is SHAPE/CAP/LABEL COLORS reference only, never its brand logo or photographic highlights.\nOne whole isolated upright bottle. Pure 2D painting with 3–4 broad softly shaded muted color planes, matte diffuse ambient low contrast, no shiny glass, no glowing rims, no mirror reflection or white sparkle streak. Complete cap and base visible, slight three-quarter front view, centered in a square composition, 10% loose margins. Genuine transparent alpha with nothing outside the bottle silhouette. No cast shadow, no haze, no glow, no colored backdrop, no props, no table, no 3D rendering, no photorealism. Only specified generic label word, no brand text or logo.\nSubject: ONE small apothecary aromatic bitters bottle. Short dark brown near-black cylindrical medicine glass bottle with modest sloped shoulders and short neck. Bright but matte mustard YELLOW plastic ribbed cap, no dropper bulb. Deliberately oversized broad WHITE paper label wraps almost the whole body and extends slightly wider than the glass shoulders, with a small folded open collar at its top edge; this funny large white label and yellow cap are its distinctive features. On front print generic black serif word \"BITTERS\" only and a tiny simple original clove drawing, two thin black horizontal ink rules. No copying Angostura words, crest, brand script, signature or microprint. Actual bottle dark warm brown, white label, yellow cap; compact and narrow, no gold light.",
+      "image_path": "res://assets/art/supplies/materials/angostura_bitters.png",
+      "reference_image": [
+        "work/supply-assets-v2/staged/materials/gin_london_dry.png",
+        "work/supply-assets-v2/references/angostura_bitters-0.png"
+      ],
+      "prototype_url": "https://angosturabitters.com/portfolio/aromatic-bitters/",
+      "prototype_name": "Angostura aromatic bitters",
+      "original_output_path": "/Users/creeper/.codex/generated_images/01a0f18e-d1c9-7bc2-9036-bd691a721da9/exec-6470abb1-7f9e-46e3-a970-190771e4701e.png",
+      "image_info": {
+        "canvas_size": [
+          1254,
+          1254
+        ],
+        "alpha_bbox_gt8": [
+          406,
+          57,
+          851,
+          1204
+        ],
+        "alpha_range": [
+          0,
+          255
+        ],
+        "transparent_background": true,
+        "sha256": "86dd4fe1f1a7f70b2e5e774a1cd32233b0805ec6b565f45a74605d7667105b77"
+      },
+      "status": "generated_and_visually_reviewed"
+    }
+  ]
+}

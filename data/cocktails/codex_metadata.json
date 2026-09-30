@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "description": "图鉴展示补充内容。构建目录会把这些字段合并到 catalog.json；原工作簿用料与制作笔记仍独立保留。",
+  "cocktails": {
+    "last_word": {
+      "codex_order": 2,
+      "decoration_id": "herbal",
+      "preparation": "冷杯→量取→加冰→摇和→过滤",
+      "story": "遗言曾出现在底特律运动俱乐部的酒单上，后来被西雅图的调酒师重新带回吧台。金酒、绿查特、樱桃利口酒和青柠汁各占一份，四种等量材料至今仍是它的特色。",
+      "story_sources": [
+        "https://www.chartreuse.fr/en/degustation/cocktails/",
+        "https://iba-world.com/iba-cocktail/last-word/"
+      ],
+      "display_equipment": [
+        "摇壶",
+        "量酒器",
+        "滤器"
+      ],
+      "display_equipment_basis": "原制作笔记明确列出。",
+      "display_steps": [
+        {
+          "number": 1,
+          "operation": "准备",
+          "instruction": "冷却鸡尾酒杯，准备摇壶、量酒器和滤器。"
+        },
+        {
+          "number": 2,
+          "operation": "量取",
+          "instruction": "量取金酒、绿查特酒、樱桃利口酒和青柠汁，各 22.5 ml，加入摇壶。"
+        },
+        {
+          "number": 3,
+          "operation": "加冰",
+          "instruction": "在摇壶中加入 150 g 标准方冰。"
+        },
+        {
+          "number": 4,
+          "operation": "摇和",
+          "instruction": "摇匀杯中材料，使酒液充分冷却。"
+        },
+        {
+          "number": 5,
+          "operation": "过滤",
+          "instruction": "将酒液过滤到冷却的鸡尾酒杯中，摇壶中的冰块不倒入成品。"
+        }
+      ]
+    },
+    "mojito": {
+      "codex_order": 3,
+      "decoration_id": "mint_citrus",
+      "preparation": "轻压薄荷→加冰→加酒→轻搅→装饰",
+      "story": "莫吉托来自古巴的调酒文化。当地调酒师以轻盈的朗姆酒搭配薄荷、青柠与苏打水，让这杯清爽的长饮从哈瓦那的吧台走向世界，也让薄荷和青柠成为人们熟悉的夏日味道。",
+      "story_sources": [
+        "https://havana-club.com/en-gb/our-story/",
+        "https://iba-world.com/iba-cocktail/mojito/"
+      ],
+      "display_equipment": [
+        "量酒器",
+        "轻压棒",
+        "吧勺"
+      ],
+      "display_equipment_basis": "原制作笔记明确列出。",
+      "display_steps": [
+        {
+          "number": 1,
+          "operation": "准备",
+          "instruction": "准备高球杯、量酒器、轻压棒和吧勺。"
+        },
+        {
+          "number": 2,
+          "operation": "轻压",
+          "instruction": "杯中加入 6 片薄荷叶、20 ml 青柠汁和 15 ml 糖浆。轻压薄荷，避免压碎叶片。"
+        },
+        {
+          "number": 3,
+          "operation": "加冰",
+          "instruction": "加入 150 g 碎冰。"
+        },
+        {
+          "number": 4,
+          "operation": "加酒",
+          "instruction": "加入 45 ml 白朗姆酒与 60 ml 苏打水，用吧勺轻搅混匀。"
+        },
+        {
+          "number": 5,
+          "operation": "装饰",
+          "instruction": "以 1 枝薄荷和 1 块青柠角装饰。"
+        }
+      ]
+    },
+    "gin_and_tonic": {
+      "codex_order": 4,
+      "decoration_id": "citrus",
+      "preparation": "加冰→加酒→轻搅→装饰",
+      "story": "金汤力的故事常被追溯到英属印度：人们为缓和奎宁的苦味，加入金酒、糖与柑橘。如今它成了简洁的酒吧经典，杜松子香、微苦与气泡构成了熟悉的清爽风味。",
+      "story_sources": [
+        "https://sipsmith.com/our-story/gin-history/",
+        "https://fever-tree.com/en-us/cocktails/classic-gin-tonic"
+      ],
+      "display_equipment": [
+        "量酒器",
+        "吧勺"
+      ],
+      "display_equipment_basis": "根据原笔记的量取与轻搅动作补充，原 equipment 不变。",
+      "display_steps": [
+        {
+          "number": 1,
+          "operation": "加冰",
+          "instruction": "球形杯中加入 150 g 标准方冰。"
+        },
+        {
+          "number": 2,
+          "operation": "轻搅",
+          "instruction": "加入 50 ml 金酒和 150 ml 汤力水，用吧勺轻搅。"
+        },
+        {
+          "number": 3,
+          "operation": "装饰",
+          "instruction": "以 1 块青柠角装饰。"
+        }
+      ]
+    },
+    "long_island_iced_tea": {
+      "codex_order": 5,
+      "decoration_id": "citrus",
+      "preparation": "加冰→量取→补可乐→轻搅→装饰",
+      "story": "长岛冰茶看起来像一杯冰茶，杯中却没有茶叶。伏特加、金酒、朗姆、龙舌兰与橙味利口酒汇在一起，可乐给它添上茶色；这份容易误认的外表，也成了它最鲜明的记忆点。",
+      "story_sources": [
+        "https://www.cointreau.com/uk/en/cocktails/long-island-ice-tea",
+        "https://iba-world.com/iba-cocktail/long-island-iced-tea/"
+      ],
+      "display_equipment": [
+        "量酒器",
+        "吧勺"
+      ],
+      "display_equipment_basis": "根据原笔记的量取与轻搅动作补充，沿用原高球杯直调法。",
+      "display_steps": [
+        {
+          "number": 1,
+          "operation": "加冰",
+          "instruction": "高球杯中加入 150 g 标准方冰。"
+        },
+        {
+          "number": 2,
+          "operation": "量取",
+          "instruction": "加入伏特加、龙舌兰酒、白朗姆酒、金酒和君度橙酒各 15 ml，再加入 25 ml 柠檬汁与 30 ml 糖浆。"
+        },
+        {
+          "number": 3,
+          "operation": "补可乐",
+          "instruction": "加入 60 ml 可乐，用吧勺轻搅混匀。"
+        },
+        {
+          "number": 4,
+          "operation": "装饰",
+          "instruction": "可用 1 片柠檬片装饰，也可以不加。"
+        }
+      ]
+    },
+    "manhattan": {
+      "codex_order": 6,
+      "decoration_id": "cherry",
+      "preparation": "冷杯→量取→加冰→搅拌→过滤→装饰",
+      "story": "十九世纪的纽约报纸已记下曼哈顿的名字，那时威士忌、味美思与苦精的组合还曾用过其他称呼。今天，黑麦威士忌仍是它的经典主角，搅拌后配上一颗樱桃，保留了简洁的做法。",
+      "story_sources": [
+        "https://www.diageobaracademy.com/en-zz/home/explore-all-recipes/bulleit-manhattan",
+        "https://iba-world.com/iba-cocktail/manhattan/"
+      ],
+      "display_equipment": [
+        "量酒器",
+        "调酒杯",
+        "吧勺",
+        "滤器"
+      ],
+      "display_equipment_basis": "调酒杯来自原笔记；量酒器、吧勺和滤器根据量取、搅拌、过滤动作补充。",
+      "display_steps": [
+        {
+          "number": 1,
+          "operation": "准备",
+          "instruction": "冷却鸡尾酒杯，准备调酒杯、量酒器、吧勺和滤器。"
+        },
+        {
+          "number": 2,
+          "operation": "量取",
+          "instruction": "调酒杯中加入 50 ml 黑麦威士忌、20 ml 甜红味美思和 1 dash 安格仕苦精。"
+        },
+        {
+          "number": 3,
+          "operation": "搅拌",
+          "instruction": "加入 150 g 标准方冰，用吧勺搅拌，使酒液充分冷却。"
+        },
+        {
+          "number": 4,
+          "operation": "过滤",
+          "instruction": "将酒液过滤到冷却的鸡尾酒杯中，制作冰不留在成品内。"
+        },
+        {
+          "number": 5,
+          "operation": "装饰",
+          "instruction": "以 1 颗鸡尾酒樱桃装饰。"
+        }
+      ]
+    }
+  }
+}

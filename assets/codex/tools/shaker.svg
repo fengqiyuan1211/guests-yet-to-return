@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="90" viewBox="0 0 64 90" fill="none">
+  <title>摇壶</title>
+  <g stroke="#775331" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M25 18L25 12C25 8 39 8 39 12L39 18"/>
+    <path d="M23 19C25 17 39 17 41 19L45 26L47 30L42 74C42 79 22 79 22 74L17 30L19 26L23 19Z"/>
+    <path d="M18 29C25 32 40 32 46 29M19 35C26 38 39 38 45 35M22 72C27 74 37 74 42 72" stroke-width="1.3"/>
+    <path d="M24 22C28 24 36 24 40 22M26 12C29 13 35 13 38 12" stroke-width="1.3"/>
+    <path d="M23 42L26 65M39 43L37 65" stroke-width="1.3"/>
+  </g>
+</svg>
