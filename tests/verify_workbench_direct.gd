@@ -1,0 +1,96 @@
+extends "res://tests/verify_workbench_drag.gd"
+
+func dose() -> void:
+	bench.measure_waiting=false
+	bench.measure.set_process(false)
+	bench.measure.progress=.67
+	space()
+
+func run() -> void:
+	WorkbenchSession.reset_game()
+	home=load("res://scenes/home.tscn").instantiate()
+	add_child(home)
+	await settle()
+	Navigation.go_to(&"mixing")
+	await settle()
+	bench=home.active_page
+	check(bench.context.find_children("*","Button",true,false).is_empty(),"bottom contains instructions only")
+	check(not bench.table.prop_visible("strainer") and not bench.table.prop_visible("muddler"),"spare tools hidden at rest")
+	check(bench.table.POS.glass.y<bench.table.POS.shaker.y and bench.table._rect("spoon").get_center().distance_to(bench.table.POS.mixing)<180,"glass upper right and spoon next to mixing glass")
+	from_pantry("gin","glass")
+	check(is_instance_valid(bench.measure) and bench.table.pour_vessel=="glass","direct glass drag starts targeted pour")
+	check(WorkbenchSession.state.stock.gin==600,"direct pour preview does not debit")
+	bench.measure_waiting=false
+	bench.measure.set_process(false)
+	bench.measure.progress=.67
+	await get_tree().create_timer(.4).timeout
+	await capture("11-direct-pour")
+	dose()
+	space()
+	check(WorkbenchSession.state.session.status=="mixing" and WorkbenchSession.state.stock.gin==570,"repeated space after dose cannot accidentally serve or debit twice")
+	check(WorkbenchSession.state.session.vessels.glass.contents.get("gin")==30 and WorkbenchSession.state.session.vessels.jigger.contents.is_empty(),"direct pour bypasses jigger")
+	check(bench.next_hint.text.contains("30 ml"),"hint reflects actual completed dose")
+	click(bench.category_buttons[1])
+	await settle()
+	from_pantry("lime","mixing")
+	dose()
+	check(WorkbenchSession.state.session.vessels.mixing.contents.get("lime")==20,"direct ingredient enters mixing glass")
+	from_pantry("syrup","shaker")
+	dose()
+	check(WorkbenchSession.state.session.vessels.shaker.contents.get("syrup")==10,"direct ingredient enters open shaker")
+	space()
+	check(WorkbenchSession.state.session.lid,"space closes selected shaker")
+	var before: Dictionary=WorkbenchSession.snapshot()
+	from_pantry("lime","shaker")
+	check(not is_instance_valid(bench.measure) and WorkbenchSession.state==before,"closed shaker rejects direct pour without mutation")
+	space()
+	check(not WorkbenchSession.state.session.lid,"space opens selected shaker")
+	from_pantry("lime","glass")
+	cancel()
+	check(WorkbenchSession.state.stock.lime==580,"cancelled direct pour does not consume")
+	click(bench.category_buttons[4])
+	await settle()
+	from_pantry("cube","glass")
+	click(bench.category_buttons[2])
+	await settle()
+	from_pantry("garnish","glass")
+	var drink: Dictionary=WorkbenchSession.state.session.vessels.glass.duplicate(true)
+	var stock: Dictionary=WorkbenchSession.state.stock.duplicate(true)
+	click(bench.category_buttons[3])
+	await settle()
+	click(bench.item_buttons.highball)
+	check(WorkbenchSession.state.session.cup=="highball" and WorkbenchSession.state.session.vessels.glass==drink and WorkbenchSession.state.stock==stock,"one click replaces cup while preserving liquid ice garnish and stock")
+	click(bench.category_buttons[5])
+	await settle()
+	from_pantry("strainer","mixing")
+	check(WorkbenchSession.state.session.vessels.glass.contents.get("lime")==20 and WorkbenchSession.state.session.vessels.mixing.contents.is_empty(),"menu strainer filters directly without confirmation")
+	await get_tree().create_timer(1.1).timeout
+	await capture("12-tidy-table")
+	before=WorkbenchSession.snapshot()
+	check(WorkbenchSession.load_state() and JSON.parse_string(JSON.stringify(WorkbenchSession.state))==JSON.parse_string(JSON.stringify(before)),"direct target actions and replacement cup survive reload")
+	var sid: String=WorkbenchSession.state.session.id
+	check(WorkbenchSession.command("direct-idempotent",sid,"withdraw",{"material":"soda","ml":90,"vessel":"glass"}),"direct command accepted")
+	before=WorkbenchSession.snapshot()
+	check(WorkbenchSession.command("direct-idempotent",sid,"withdraw",{"material":"soda","ml":90,"vessel":"glass"}) and WorkbenchSession.state==before,"direct command retry returns receipt without another debit")
+	check(WorkbenchSession.command("direct-fill",sid,"withdraw",{"material":"soda","ml":90,"vessel":"glass"}),"direct fill approaches ice-displaced capacity")
+	before=WorkbenchSession.snapshot()
+	check(not WorkbenchSession.command("direct-overflow",sid,"withdraw",{"material":"soda","ml":40,"vessel":"glass"}) and WorkbenchSession.state==before,"overflow rejects atomically with ice displacement")
+	var path: String=WorkbenchSession.save_path
+	WorkbenchSession.save_path=path+"/unwritable.json"
+	check(not WorkbenchSession.command("direct-write-fail",sid,"withdraw",{"material":"gin","ml":5,"vessel":"glass"}) and WorkbenchSession.state==before,"failed direct save preserves stock contents and log")
+	WorkbenchSession.save_path=path
+	WorkbenchSession.last_error=""
+	# Explicit glass grip arms serving; dragging to the marked area serves immediately.
+	drag_between(local_point(bench.table._rect("glass").position+Vector2(85,220)),local_point(bench.table.SERVE_RECT.get_center()))
+	check(WorkbenchSession.state.session.status=="finished" and not WorkbenchSession.state.session.result.sales,"glass drag serves without confirmation or sales")
+	check(WorkbenchSession.state.session.result.waste.get("syrup")==10,"remaining shaker contents recorded as waste")
+	cancel()
+	bench._issue("start")
+	bench._issue("withdraw",{"material":"gin","ml":15,"vessel":"glass"})
+	table_click(bench.table.POS.glass)
+	space()
+	check(WorkbenchSession.state.session.status=="finished","explicit glass selection then space serves")
+	print("WORKBENCH DIRECT: %d checks, %d failures" % [count,failures.size()])
+	home.queue_free()
+	await settle()
+	get_tree().quit(0 if failures.is_empty() else 1)

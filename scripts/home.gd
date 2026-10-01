@@ -15,6 +15,7 @@ var story_choices: HBoxContainer
 var _restoring_reception := false
 
 func _ready() -> void:
+	Navigation.register_page(&"mixing", preload("res://scenes/workbench.tscn"))
 	Navigation.register_page(&"slots", preload("res://scenes/slot_machine.tscn"))
 	Navigation.register_page(&"codex", preload("res://scenes/codex.tscn"))
 	Navigation.register_page(&"menu", preload("res://scenes/drink_menu.tscn"))
