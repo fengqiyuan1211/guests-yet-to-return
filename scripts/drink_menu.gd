@@ -235,10 +235,10 @@ func _add_drink_art(parent: Node, rect: Rect2, recipe: Dictionary) -> void:
 	var path: String = recipe.get("thumbnail", "")
 	if not path.is_empty() and ResourceLoader.exists(path):
 		var art := TextureRect.new()
+		art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		art.texture = load(path)
 		art.position = rect.position
 		art.size = rect.size
-		art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		art.mouse_filter = MOUSE_FILTER_IGNORE
 		parent.add_child(art)

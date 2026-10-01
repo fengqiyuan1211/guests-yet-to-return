@@ -19,7 +19,9 @@ func _ready() -> void:
 	Navigation.register_page(&"slots", preload("res://scenes/slot_machine.tscn"))
 	Navigation.register_page(&"codex", preload("res://scenes/codex.tscn"))
 	Navigation.register_page(&"menu", preload("res://scenes/drink_menu.tscn"))
+	Navigation.register_page(&"shop", preload("res://scenes/harbor_shop.tscn"))
 	Navigation.register_page(&"settings", preload("res://scenes/settings_menu.tscn"))
+	Navigation.register_page(&"backpack", preload("res://scenes/backpack.tscn"))
 	_setup_settings_button()
 	selected_navigation_style = %HomeButton.get_theme_stylebox("normal")
 	SlotWallet.balance_changed.connect(_on_balance_changed)
@@ -313,7 +315,7 @@ func _on_route_requested(route_id: StringName) -> void:
 		if is_instance_valid(node):
 			node.visible = journal_hidden_nodes[node]
 	journal_hidden_nodes.clear()
-	%GuestLayer.visible = route_id in [&"home", &"settings"]
+	%GuestLayer.visible = route_id in [&"home", &"settings", &"backpack"]
 	var codex_button: Button = find_child("CodexButton", true, false)
 	%HomeButton.remove_theme_stylebox_override("normal")
 	codex_button.remove_theme_stylebox_override("normal")
@@ -332,7 +334,7 @@ func _on_route_requested(route_id: StringName) -> void:
 			previous_focus.grab_focus()
 		return
 	previous_focus = get_viewport().gui_get_focus_owner()
-	%HomeContent.visible = route_id in [&"slots", &"codex", &"menu", &"settings"]
+	%HomeContent.visible = route_id in [&"slots", &"codex", &"menu", &"settings", &"backpack"]
 	if route_id in [&"codex", &"menu"]:
 		for node in %HomeContent.get_children():
 			if node is CanvasItem and node.name not in ["TopBar", "Navigation", "Version"]:

@@ -1,0 +1,38 @@
+{
+  "generator": "builtin",
+  "workflow": "lighting-weather",
+  "date": "2026-10-01",
+  "reference": "res://assets/art/shop/harbor-shop-day.png",
+  "logical_canvas": {
+    "width": 1600,
+    "height": 900
+  },
+  "constraints": [
+    "Keep the same scene geometry and camera for normalized-UV blending.",
+    "No people, goods, labels or UI.",
+    "Day, dusk and dawn lanterns off; night uses existing lanterns only."
+  ],
+  "variants": [
+    {
+      "phase": "dusk",
+      "name": "黄昏",
+      "path": "res://assets/art/shop/harbor-shop-dusk.png",
+      "prompt": "Use case: lighting-weather.\nAsset type: ONE opaque production background image for a Godot 2D hand-painted western harbor shop. This is a strict RELIGHTING EDIT of the provided empty daytime harbor, not a new layout. Preserve the original 16:9 landscape framing, exact camera, geometry, all objects, silhouette positions, shelf/counter alignment, ropes, empty two-tier wooden shelves on the RIGHT, sailing ship and harbor buildings on the LEFT, wooden awning, barrels, and foreground counter. Keep every plank, edge, mast, dock post, lantern, shelf opening, and horizon in its exact original position and size. No added or removed objects. No merchandise, bottles, NPCs, people, UI, text, price labels, signs, borders or watermarks. All shelf bays stay empty, so separate game sprites can stand on the original flat surfaces. Match the original matte watercolor/gouache game painting style; detailed wood and brass with soft highlights. Change only time-of-day illumination and sky/water color; preserve the original scene's readability. These backgrounds will be smoothly blended pixel for pixel, so no composition drift, no zoom, no crop, no camera movement, no shifted shelf edges. Do not reimagine any portion. The output must be one full-sized single scene, not a contact sheet.\nLighting for this variant:\nAt dusk around 18:00. The sky is soft rose, peach and muted lavender near the horizon, with warm low sunset light entering from the existing open left harbor; clouds and town roofs glow gently. The blue sea gains calm copper-pink reflections, still recognizable. The right wooden shelf, awning and foreground counter have soft amber evening light and naturally darker shadows than daytime. All existing lamps/lanterns remain unlit: no flame, no artificial halo. Preserve every lantern exactly. Cozy, late western port atmosphere, rich but not exaggerated orange, no dramatic weather.",
+      "original_generated_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-e93a6993-0313-4cc8-9ef6-0bf5880e01c7.png"
+    },
+    {
+      "phase": "night",
+      "name": "夜晚",
+      "path": "res://assets/art/shop/harbor-shop-night.png",
+      "prompt": "Use case: lighting-weather.\nAsset type: ONE opaque production background image for a Godot 2D hand-painted western harbor shop. This is a strict RELIGHTING EDIT of the provided empty daytime harbor, not a new layout. Preserve the original 16:9 landscape framing, exact camera, geometry, all objects, silhouette positions, shelf/counter alignment, ropes, empty two-tier wooden shelves on the RIGHT, sailing ship and harbor buildings on the LEFT, wooden awning, barrels, and foreground counter. Keep every plank, edge, mast, dock post, lantern, shelf opening, and horizon in its exact original position and size. No added or removed objects. No merchandise, bottles, NPCs, people, UI, text, price labels, signs, borders or watermarks. All shelf bays stay empty, so separate game sprites can stand on the original flat surfaces. Match the original matte watercolor/gouache game painting style; detailed wood and brass with soft highlights. Change only time-of-day illumination and sky/water color; preserve the original scene's readability. These backgrounds will be smoothly blended pixel for pixel, so no composition drift, no zoom, no crop, no camera movement, no shifted shelf edges. Do not reimagine any portion. The output must be one full-sized single scene, not a contact sheet.\nLighting for this variant:\nAt a quiet clear night around 23:00. Deep indigo-blue sky with a few faint stars and calm dark teal water reflecting small harbor lights. Keep the existing clouds, ship, dock and town silhouettes legible in dim blue moonlit ambient light. Switch ON only the existing brass lanterns (the large lower-left counter lantern and the lantern on the shelf's left wooden support). Warm amber flames within their original glass housings illuminate nearby counter wood, ropes and shelf edges softly. Small subdued warm glows may come from existing distant building windows, with no changed window geometry. The cabinet remains visible, not black: enough warm light to support legible separate product sprites. Avoid strong lens flares, big light blobs, added lamps, extra ships, neon, fireworks, fantasy moon or dramatic fog. Naturally quiet western harbor night.",
+      "original_generated_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-88eaf3f1-a33b-44d3-92b3-07474be73577.png"
+    },
+    {
+      "phase": "dawn",
+      "name": "黎明",
+      "path": "res://assets/art/shop/harbor-shop-dawn.png",
+      "prompt": "Use case: lighting-weather.\nAsset type: ONE opaque production background image for a Godot 2D hand-painted western harbor shop. This is a strict RELIGHTING EDIT of the provided empty daytime harbor, not a new layout. Preserve the original 16:9 landscape framing, exact camera, geometry, all objects, silhouette positions, shelf/counter alignment, ropes, empty two-tier wooden shelves on the RIGHT, sailing ship and harbor buildings on the LEFT, wooden awning, barrels, and foreground counter. Keep every plank, edge, mast, dock post, lantern, shelf opening, and horizon in its exact original position and size. No added or removed objects. No merchandise, bottles, NPCs, people, UI, text, price labels, signs, borders or watermarks. All shelf bays stay empty, so separate game sprites can stand on the original flat surfaces. Match the original matte watercolor/gouache game painting style; detailed wood and brass with soft highlights. Change only time-of-day illumination and sky/water color; preserve the original scene's readability. These backgrounds will be smoothly blended pixel for pixel, so no composition drift, no zoom, no crop, no camera movement, no shifted shelf edges. Do not reimagine any portion. The output must be one full-sized single scene, not a contact sheet.\nLighting for this variant:\nAt early dawn around 06:00, distinct from both day and sunset. Pale cool periwinkle and pearl-gray sky with a restrained peach strip near the original horizon; the open harbor carries cool lavender-blue first light and soft silvery sea reflections. The distant original town and ship are visible in quiet diffuse early-morning light; wood shadows are gently cool, not orange. Very faint morning haze over the water without covering or moving objects. All existing lamps/lanterns are off, their glass neutral, no flame or glow. A restful harbor just before sunrise; not full bright midday and not another sunset. Preserve the original clouds and every object exactly.",
+      "original_generated_path": "/Users/creeper/.codex/generated_images/01a0de92-8728-72c3-b13c-0be99290d09f/exec-d9413b8b-4677-4f09-9c44-b3a458875b5e.png"
+    }
+  ]
+}

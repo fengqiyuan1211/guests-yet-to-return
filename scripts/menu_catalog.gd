@@ -344,6 +344,21 @@ func save_state() -> bool:
 		return false
 	return save_menu(entries, design)
 
+func update_supply_inventory(next_inventory: Dictionary, purchased_recipe_ids: Array) -> bool:
+	# Supplies owns consumable stock. This is a saved display/recipe-check snapshot.
+	if not writable or not _catalog_ready or not _valid_inventory(next_inventory):
+		return false
+	var next_unlocked := unlocked_ids.duplicate()
+	for id in purchased_recipe_ids:
+		if not id is String or not _by_id.has(id):
+			last_error = "原料对应的酒谱暂时无法读取。"
+			return false
+		if not next_unlocked.has(id):
+			next_unlocked.append(id)
+	if inventory == next_inventory and unlocked_ids == next_unlocked:
+		return true
+	return _commit(entries, design, next_unlocked, next_inventory)
+
 func reset_game() -> bool:
 	# Called only after the player's confirmed restart and GameSession backup.
 	if not _catalog_ready:

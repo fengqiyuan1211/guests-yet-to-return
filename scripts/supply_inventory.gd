@@ -14,7 +14,14 @@ func _init() -> void:
 func reset() -> void:
 	var template: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(INITIAL_PATH))
 	_states = template.get("items", {}).duplicate(true)
+	_own_default_equipment()
 	last_error = ""
+
+func _own_default_equipment() -> void:
+	# Workbench tools and serving glasses are supplied with the bar.
+	for item: Dictionary in catalog.list_items():
+		if item.storage_mode == "permanent":
+			_states[item.id] = {"unlocked": true, "owned": true}
 
 func get_state(id: String) -> Dictionary:
 	return _states.get(id, {}).duplicate(true)
@@ -41,6 +48,9 @@ func purchase(id: String, packages := 1) -> bool:
 	var item: Dictionary = catalog.get_item(id)
 	if item.is_empty() or packages <= 0:
 		last_error = "购买内容或数量无效。"
+		return false
+	if item.storage_mode == "permanent":
+		last_error = "酒馆已经备好这些器材和酒杯。"
 		return false
 	var state := get_state(id)
 	match item.storage_mode:
@@ -105,6 +115,9 @@ func restore(data: Variant) -> bool:
 	var candidate := _states.duplicate(true)
 	for item: Dictionary in catalog.list_items():
 		var id: String = item.id
+		if item.storage_mode == "permanent":
+			candidate[id] = {"unlocked": true, "owned": true}
+			continue
 		if not data.items.has(id):
 			# New catalogue entries start locked, even if this object held old stock.
 			candidate[id] = {"unlocked": false}

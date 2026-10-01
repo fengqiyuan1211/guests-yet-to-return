@@ -18,6 +18,7 @@ const DETAIL_SCRIPT := preload("res://scripts/cocktail_detail.gd")
 var page_index := 0
 var selected_filter := 0
 var turning := false
+var _catalog_refresh_pending := false
 var page_content: Control
 var previous_button: Button
 var next_button: Button
@@ -29,7 +30,7 @@ var paper: Texture2D
 var press_position := Vector2.ZERO
 var press_active := false
 var reserved_tutorial_slot := true
-var allow_locked_details := true
+var allow_locked_details := false
 var detail_id := ""
 var navigation_hint: Label
 
@@ -78,7 +79,9 @@ func _load_settings() -> void:
 
 func _catalog_changed() -> void:
 	if turning:
+		_catalog_refresh_pending = true
 		return
+	_catalog_refresh_pending = false
 	if not detail_id.is_empty():
 		var id := detail_id
 		if MenuCatalog.get_recipe(id).is_empty():
@@ -185,12 +188,23 @@ func _make_page(index: int) -> Control:
 		card.disabled = not recipe.unlocked and not allow_locked_details
 		card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if not card.disabled else Control.CURSOR_ARROW
 		card.pressed.connect(show_detail.bind(str(recipe.id)))
-		card.tooltip_text = str(recipe.name) + (" · 备齐原料后点亮" if not recipe.unlocked else " · 查看酒谱")
+		card.tooltip_text = _missing_material_tooltip(str(recipe.id)) if not recipe.unlocked else "查看酒谱"
 		_populate_card(card, recipe)
 	_label(sheet, Rect2(170, 638, 550, 36), "好酒的故事，等你写下。", 18, Color("795731"))
 	_label(sheet, Rect2(66, 230, 40, 290), "酒\n谱\n手\n记", 20, Color("947345"), HORIZONTAL_ALIGNMENT_CENTER)
 	_label(sheet, Rect2(948, 638, 220, 36), "—  %02d / %02d  —" % [index + 1, _page_count()], 19, Color("795731"), HORIZONTAL_ALIGNMENT_CENTER)
 	return sheet
+
+func _missing_material_tooltip(recipe_id: String) -> String:
+	var names: Array[String] = []
+	var supplies := get_node_or_null("/root/Supplies")
+	if supplies != null:
+		var requirements: Dictionary = supplies.call("missing_recipe_requirements", recipe_id)
+		for item: Dictionary in requirements.get("ingredients", []):
+			var name_value := str(item.get("name", "")).strip_edges()
+			if not name_value.is_empty() and not names.has(name_value):
+				names.append(name_value)
+	return "缺少：\n" + "\n".join(names)
 
 func _populate_card(card: Button, recipe: Dictionary) -> void:
 	var ink := INK if recipe.unlocked else Color("624e35")
@@ -366,7 +380,10 @@ func turn_page(direction: int) -> void:
 	snapshot.render_target_update_mode = SubViewport.UPDATE_DISABLED
 	page_index = target
 	turning = false
-	_update_controls()
+	if _catalog_refresh_pending:
+		_catalog_changed()
+	else:
+		_update_controls()
 	page_turned.emit(page_index)
 
 func _replace_page(index: int) -> void:

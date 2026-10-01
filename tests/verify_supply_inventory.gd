@@ -29,7 +29,7 @@ func write_json(path: String, data: Variant) -> void:
 		file.close()
 
 func _ready() -> void:
-	for name in ["SlotWallet", "StoryDialogue", "GameSession", "MenuCatalog"]:
+	for name in ["SlotWallet", "StoryDialogue", "GameSession", "MenuCatalog", "Supplies"]:
 		var singleton := get_node_or_null("/root/" + name)
 		if singleton != null and not str(singleton.save_path).begins_with("/tmp/") and not str(singleton.save_path).begins_with("/private/tmp/"):
 			push_error("Run with isolated --slot-wallet, --dialogue-save, --game-save and --menu-save paths")
@@ -73,9 +73,12 @@ func verify_definitions() -> void:
 		check(initial.items.has(item.id), "Initial state matches product ID: " + item.id)
 		check(not item.id.begins_with("sku_ice_") and item.get("kind", "") != "ice", "Ice is excluded from product items: " + item.id)
 		var state := inventory.get_state(item.id)
-		check(not state.get("unlocked", true) and inventory.total_remaining(item.id) == 0.0, "New-game item begins locked and empty: " + item.id)
 		if item.storage_mode == "permanent":
-			check(not state.get("owned", true) and not state.has("quantity") and not state.has("current_remaining"), "Permanent item starts unowned without consumable fields: " + item.id)
+			check(state.get("unlocked", false) and state.get("owned", false) and inventory.total_remaining(item.id) == 1.0, "Tools and glasses are available from the start: " + item.id)
+		else:
+			check(not state.get("unlocked", true) and inventory.total_remaining(item.id) == 0.0, "New-game shop item begins locked and empty: " + item.id)
+		if item.storage_mode == "permanent":
+			check(state.get("owned", false) and not state.has("quantity") and not state.has("current_remaining"), "Permanent ownership matches defaults without consumable fields: " + item.id)
 		elif item.storage_mode == "quantity":
 			check(state.quantity == 0 and not state.has("current_remaining"), "Quantity item has no current-package remainder: " + item.id)
 			check(item.package.purchase_quantity is int or item.package.purchase_quantity is float, "Quantity purchase size is numeric: " + item.id)
@@ -148,14 +151,19 @@ func verify_quantity_and_permanent() -> void:
 	check(not inventory.consume(LIME, 0.5) and same_state(inventory.serialize(), before), "Fractional garnish consumption is rejected without changing state")
 	check(inventory.consume(LIME, 33) and inventory.is_unlocked(LIME), "Exhausted garnish remains unlocked")
 	check(inventory.get_state(LIME).quantity == 0 and not inventory.get_state(LIME).has("current_remaining"), "Empty garnish still has only a quantity")
-	for id in [SHAKER, "glass_highball_glass"]:
-		check(inventory.purchase(id), "Permanent equipment or glass can be unlocked: " + id)
+	for item: Dictionary in inventory.catalog.list_items():
+		if item.storage_mode != "permanent":
+			continue
+		var id: String = item.id
+		check(not inventory.purchase(id), "Default equipment cannot be purchased: " + id)
 		state = inventory.get_state(id)
 		check(state.owned and state.unlocked and inventory.total_remaining(id) == 1, "Permanent object stores owned state: " + id)
 		before = inventory.serialize()
-		check(inventory.purchase(id, 2) and same_state(inventory.serialize(), before), "Repeated permanent purchase does not create consumable counts: " + id)
+		check(not inventory.purchase(id, 2) and same_state(inventory.serialize(), before), "Default equipment purchase is rejected at any quantity: " + id)
 		check(not inventory.consume(id, 1) and same_state(inventory.serialize(), before), "Permanent object cannot be consumed: " + id)
 		check(not inventory.as_recipe_inventory().has(id), "Equipment or glass never enters ingredient stock bridge: " + id)
+	before = inventory.serialize()
+	check(not inventory.purchase("glass_highball_glass") and inventory.is_unlocked("glass_highball_glass") and same_state(inventory.serialize(), before), "Default serving glass cannot be purchased")
 
 func verify_rejected_operations() -> void:
 	var inventory := InventoryScript.new()
@@ -175,16 +183,16 @@ func verify_rejected_operations() -> void:
 		var invalid := before.duplicate(true)
 		invalid.items[GIN].merge(patch, true)
 		check(not inventory.restore(invalid) and same_state(inventory.serialize(), before), "Invalid bottle save preserves all inventory: " + str(patch))
-	var invalid_permanent := before.duplicate(true)
-	invalid_permanent.items["glass_saucer_glass"] = {"owned": true, "unlocked": false}
-	check(not inventory.restore(invalid_permanent) and same_state(inventory.serialize(), before), "Late invalid equipment entry cannot partially commit earlier save entries")
+	var invalid_late := before.duplicate(true)
+	invalid_late.items["sku_cocktail_cherry"] = {"unlocked": true, "quantity": -1}
+	check(not inventory.restore(invalid_late) and same_state(inventory.serialize(), before), "Late invalid quantity entry cannot partially commit earlier save entries")
 	var copied := inventory.serialize()
 	copied.items[GIN].quantity = 200
 	check(same_state(inventory.serialize(), before), "Serialized save is a deep copy")
 
 func verify_restore_and_files() -> void:
 	var inventory := InventoryScript.new()
-	check(inventory.purchase(GIN, 2) and inventory.consume(GIN, 650) and inventory.purchase(LIME) and inventory.consume(LIME, 4) and inventory.purchase(SHAKER), "Save fixture contains opened stock, garnish pieces and permanent tool")
+	check(inventory.purchase(GIN, 2) and inventory.consume(GIN, 650) and inventory.purchase(LIME) and inventory.consume(LIME, 4) and inventory.get_state(SHAKER).owned, "Save fixture contains opened stock, garnish pieces and default tool")
 	var snapshot := inventory.serialize()
 	var restored := InventoryScript.new()
 	check(restored.restore(snapshot) and same_state(restored.serialize(), snapshot), "In-memory restore preserves exact inventory")
@@ -209,10 +217,14 @@ func verify_restore_and_files() -> void:
 	older_save.items["future_unknown_item"] = {"unlocked": true, "quantity": 10}
 	check(restored.purchase("sku_mint_leaf") and restored.restore(older_save), "Older partial save restores after object already held newer stock")
 	check(restored.get_state(GIN) == {"unlocked": false, "quantity": 0, "current_remaining": 0.0}, "New container absent from older save starts locked and empty")
-	check(restored.get_state(SHAKER) == {"unlocked": false, "owned": false}, "New equipment absent from older save starts locked and unowned")
+	check(restored.get_state(SHAKER) == {"unlocked": true, "owned": true}, "Equipment absent from older save becomes default owned")
 	check(restored.get_state("sku_mint_leaf") == {"unlocked": false, "quantity": 0}, "New quantity item absent from older save starts locked and empty")
 	check(restored.get_state("future_unknown_item").is_empty(), "Unknown legacy item is not admitted into inventory")
 	check(restored.get_state(LIME).quantity == 16 and restored.get_state(LIME).unlocked, "Existing older-save item keeps quantity and unlock")
+	older_save.items.erase("glass_highball_glass")
+	older_save.items["glass_saucer_glass"] = {"owned": false, "unlocked": false}
+	older_save.items["tool_mixing_glass"] = {"owned": false, "unlocked": false}
+	check(restored.restore(older_save) and restored.get_state("glass_highball_glass").owned and restored.get_state("glass_saucer_glass").owned and restored.get_state("tool_mixing_glass").owned, "Older missing or locked glasses and tools upgrade to default ownership")
 	restored.reset()
 	var initial: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/supplies/initial_state.json"))
 	check(same_state(restored.serialize(), initial), "Explicit reset returns to all declared new-game initial values")

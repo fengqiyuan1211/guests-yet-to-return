@@ -850,7 +850,7 @@
       "english_name": "Cobbler Shaker",
       "category": "器材",
       "storage_mode": "permanent",
-      "unlock_policy": "permanent_on_first_purchase",
+      "unlock_policy": "available_by_default",
       "price": null,
       "price_status": "unconfirmed",
       "operations": [
@@ -927,7 +927,8 @@
           -18
         ],
         "calibration_status": "prototype_visual_anchors"
-      }
+      },
+      "shop_available": false
     },
     {
       "id": "tool_jigger",
@@ -937,7 +938,7 @@
       "english_name": "Jigger",
       "category": "器材",
       "storage_mode": "permanent",
-      "unlock_policy": "permanent_on_first_purchase",
+      "unlock_policy": "available_by_default",
       "price": null,
       "price_status": "unconfirmed",
       "operations": [
@@ -1002,7 +1003,8 @@
           -99
         ],
         "calibration_status": "prototype_visual_anchors"
-      }
+      },
+      "shop_available": false
     },
     {
       "id": "tool_strainer",
@@ -1012,7 +1014,7 @@
       "english_name": "Hawthorne Strainer",
       "category": "器材",
       "storage_mode": "permanent",
-      "unlock_policy": "permanent_on_first_purchase",
+      "unlock_policy": "available_by_default",
       "price": null,
       "price_status": "unconfirmed",
       "operations": [
@@ -1071,7 +1073,8 @@
         },
         "liquid_polygon": [],
         "calibration_status": "prototype_visual_anchors"
-      }
+      },
+      "shop_available": false
     },
     {
       "id": "tool_muddler",
@@ -1081,7 +1084,7 @@
       "english_name": "Muddler",
       "category": "器材",
       "storage_mode": "permanent",
-      "unlock_policy": "permanent_on_first_purchase",
+      "unlock_policy": "available_by_default",
       "price": null,
       "price_status": "unconfirmed",
       "operations": [
@@ -1139,7 +1142,8 @@
         },
         "liquid_polygon": [],
         "calibration_status": "prototype_visual_anchors"
-      }
+      },
+      "shop_available": false
     },
     {
       "id": "tool_bar_spoon",
@@ -1149,7 +1153,7 @@
       "english_name": "Bar Spoon",
       "category": "器材",
       "storage_mode": "permanent",
-      "unlock_policy": "permanent_on_first_purchase",
+      "unlock_policy": "available_by_default",
       "price": null,
       "price_status": "unconfirmed",
       "operations": [
@@ -1207,7 +1211,8 @@
         },
         "liquid_polygon": [],
         "calibration_status": "prototype_visual_anchors"
-      }
+      },
+      "shop_available": false
     },
     {
       "id": "tool_mixing_glass",
@@ -1217,7 +1222,7 @@
       "english_name": "Mixing Glass",
       "category": "器材",
       "storage_mode": "permanent",
-      "unlock_policy": "permanent_on_first_purchase",
+      "unlock_policy": "available_by_default",
       "price": null,
       "price_status": "unconfirmed",
       "operations": [
@@ -1291,7 +1296,8 @@
           -71.642
         ],
         "calibration_status": "prototype_visual_anchors"
-      }
+      },
+      "shop_available": false
     },
     {
       "id": "glass_cocktail_glass",
@@ -1301,7 +1307,7 @@
       "english_name": "Cocktail Glass",
       "category": "杯型",
       "storage_mode": "permanent",
-      "unlock_policy": "permanent_on_first_purchase",
+      "unlock_policy": "available_by_default",
       "price": null,
       "price_status": "unconfirmed",
       "operations": [
@@ -1379,7 +1385,8 @@
           -199.565
         ],
         "calibration_status": "prototype_visual_anchors"
-      }
+      },
+      "shop_available": false
     },
     {
       "id": "glass_highball_glass",
@@ -1389,7 +1396,7 @@
       "english_name": "Highball Glass",
       "category": "杯型",
       "storage_mode": "permanent",
-      "unlock_policy": "permanent_on_first_purchase",
+      "unlock_policy": "available_by_default",
       "price": null,
       "price_status": "unconfirmed",
       "operations": [
@@ -1459,7 +1466,8 @@
           -62.068
         ],
         "calibration_status": "prototype_visual_anchors"
-      }
+      },
+      "shop_available": false
     },
     {
       "id": "glass_balloon_glass",
@@ -1469,7 +1477,7 @@
       "english_name": "Balloon Glass",
       "category": "杯型",
       "storage_mode": "permanent",
-      "unlock_policy": "permanent_on_first_purchase",
+      "unlock_policy": "available_by_default",
       "price": null,
       "price_status": "unconfirmed",
       "operations": [
@@ -1555,7 +1563,8 @@
           -227.258
         ],
         "calibration_status": "prototype_visual_anchors"
-      }
+      },
+      "shop_available": false
     },
     {
       "id": "glass_saucer_glass",
@@ -1565,7 +1574,7 @@
       "english_name": "Coupe Glass",
       "category": "杯型",
       "storage_mode": "permanent",
-      "unlock_policy": "permanent_on_first_purchase",
+      "unlock_policy": "available_by_default",
       "price": null,
       "price_status": "unconfirmed",
       "operations": [
@@ -1643,7 +1652,8 @@
           -205.871
         ],
         "calibration_status": "prototype_visual_anchors"
-      }
+      },
+      "shop_available": false
     }
   ],
   "ice": [
