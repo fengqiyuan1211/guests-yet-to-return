@@ -17,12 +17,13 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-CocktailDatabase="*res://scripts/cocktail_database.gd"
 Navigation="*res://scripts/navigation.gd"
 TimeManager="*res://scripts/time_manager.gd"
 SlotWallet="*res://scripts/slot_wallet.gd"
 StoryDialogue="*res://scripts/story_dialogue.gd"
+CocktailDatabase="*res://scripts/cocktail_database.gd"
 MenuCatalog="*res://scripts/menu_catalog.gd"
+Supplies="*res://scripts/supplies.gd"
 MenuArt="*res://scripts/menu_art_provider.gd"
 GameSession="*res://scripts/game_session.gd"
 SaloonAudio="*res://scripts/saloon_audio.gd"

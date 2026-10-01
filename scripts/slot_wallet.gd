@@ -13,6 +13,8 @@ var recovered_hidden := false
 var hidden_misses := 0
 var spin_count := 0
 var hidden_prizes: Array = []
+## Short-lived receipts make shop debits recoverable without charging twice.
+var purchase_receipts: Dictionary = {}
 var save_path := "user://wallet.json"
 var rng := RandomNumberGenerator.new()
 var writable := true
@@ -42,6 +44,10 @@ func load_wallet() -> void:
 		writable = false
 		last_error = "存档版本不兼容，请保留存档。"
 		return
+	if not _valid_purchase_receipts(data.get("purchase_receipts", {})):
+		writable = false
+		last_error = "购买记录不完整，请保留存档后重试。"
+		return
 	if version == 2 and not _valid_hidden_data(data):
 		writable = false
 		last_error = "大奖记录不完整，请保留存档后重试。"
@@ -55,6 +61,7 @@ func load_wallet() -> void:
 	hidden_misses = int(data.get("hidden_misses", 0))
 	spin_count = int(data.get("spin_count", 0))
 	hidden_prizes = data.get("hidden_prizes", []).duplicate(true)
+	purchase_receipts = data.get("purchase_receipts", {}).duplicate(true)
 	recovered_payout = -1
 	recovered_hidden = false
 	if not pending.is_empty():
@@ -71,7 +78,8 @@ func persist() -> bool:
 		last_error = "金币未能保存，请检查存储空间后重试。"
 		return false
 	file.store_string(JSON.stringify({"version": 2, "balance": balance, "pending": pending,
-		"hidden_misses": hidden_misses, "spin_count": spin_count, "hidden_prizes": hidden_prizes}))
+		"hidden_misses": hidden_misses, "spin_count": spin_count, "hidden_prizes": hidden_prizes,
+		"purchase_receipts": purchase_receipts}))
 	file.flush()
 	var error := file.get_error()
 	file.close()
@@ -79,6 +87,54 @@ func persist() -> bool:
 		last_error = "金币未能保存，请重试。"
 		return false
 	last_error = ""
+	return true
+
+func _valid_purchase_receipts(value: Variant) -> bool:
+	if not value is Dictionary or value.size() > 4096:
+		return false
+	for id in value:
+		if not id is String or id.is_empty() or id.length() > 128 or not _whole_number(value[id], 1, 1000000000):
+			return false
+	return true
+
+func has_purchase_receipt(id: String, amount: int) -> bool:
+	return purchase_receipts.get(id, -1) == amount
+
+func spend_for_purchase(id: String, amount: int) -> bool:
+	if not writable or id.is_empty() or id.length() > 128 or amount <= 0 or amount > 1000000000:
+		last_error = "这次购买暂时无法结算。"
+		return false
+	if purchase_receipts.has(id):
+		if has_purchase_receipt(id, amount):
+			return true
+		last_error = "购买记录不一致，请保留存档。"
+		return false
+	if not pending.is_empty():
+		last_error = "请先等待本轮老虎机结算。"
+		return false
+	if balance < amount:
+		last_error = "金币不足，还需要 %d 金币。" % (amount - balance)
+		return false
+	if purchase_receipts.size() >= 4096:
+		last_error = "购买记录需要整理，请重新打开游戏。"
+		return false
+	balance -= amount
+	purchase_receipts[id] = amount
+	if not persist():
+		balance += amount
+		purchase_receipts.erase(id)
+		return false
+	balance_changed.emit(balance)
+	return true
+
+func forget_purchase_receipt(id: String) -> bool:
+	if not purchase_receipts.has(id):
+		return true
+	var previous: Variant = purchase_receipts[id]
+	purchase_receipts.erase(id)
+	if not persist():
+		purchase_receipts[id] = previous
+		return false
 	return true
 
 func begin_spin() -> Array:

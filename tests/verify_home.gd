@@ -6,6 +6,13 @@ var home: Control
 var capture := false
 
 func _ready() -> void:
+	for service_name: String in ["GameSession", "StoryDialogue", "SlotWallet", "MenuCatalog", "Supplies"]:
+		var service := get_node_or_null("/root/" + service_name)
+		var path := str(service.get("save_path")) if service != null else ""
+		if not path.begins_with("/tmp/") and not path.begins_with("/private/tmp/"):
+			push_error("Home verification requires isolated temporary saves: " + service_name)
+			get_tree().quit(2)
+			return
 	capture = "--screenshots" in OS.get_cmdline_user_args()
 	call_deferred("run")
 
@@ -55,14 +62,13 @@ func run() -> void:
 	await settle()
 	check(Navigation.current_route == &"shop", "Native click must open the shop entry")
 	if is_instance_valid(home.active_page):
-		check(home.active_page.get_node("%Tabs").get_child_count() == 5, "Shop needs five categories")
-		home.active_page.get_node("%Tabs").get_child(2).pressed.emit()
-		check(home.active_page.selected_tab == 2, "Shop category switching failed")
-		await screenshot("02-shop-entry.png")
-		# Blank paper catches input instead of accidentally closing via backdrop.
-		var panel := home.active_page.get_node("Page") as Control
-		check(panel.mouse_filter == Control.MOUSE_FILTER_STOP, "Entry panel must block backdrop click")
-		home.active_page.get_node("%ReturnButton").pressed.emit()
+		check(home.active_page.find_children("Category_*", "Button", true, false).size() == 3, "Harbor shop needs three consumable categories")
+		check(home.active_page.find_child("Category_杯型", true, false) == null and home.active_page.find_child("Category_器材", true, false) == null, "Default-owned glassware and tools must not be sold")
+		home.active_page.find_child("Category_装饰品", true, false).pressed.emit()
+		check(home.active_page.category == "装饰品", "Shop category switching failed")
+		await screenshot("02-harbor-shop.png")
+		check(home.active_page.mouse_filter == Control.MOUSE_FILTER_STOP, "Shop must block accidental backdrop clicks")
+		home.active_page.find_child("BackButton", true, false).pressed.emit()
 	await settle()
 	check(Navigation.current_route == &"home", "Return should restore home")
 	for route in Navigation.ROUTES:

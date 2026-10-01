@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "currency": "coins",
+  "price_basis": "game_provisional",
+  "note": "游戏暂定每包装售价，仅原酒、配料和装饰品。器材与杯型默认拥有，不销售。用于当前原型，不代表原表或现实市场价格；后续可调整本文件，不改商品定义。",
+  "prices": {
+    "sku_gin_london_dry": 100,
+    "sku_green_chartreuse": 140,
+    "sku_maraschino": 90,
+    "sku_white_rum": 110,
+    "sku_vodka": 90,
+    "sku_tequila": 120,
+    "sku_cointreau": 100,
+    "sku_rye_whiskey": 130,
+    "sku_sweet_red_vermouth": 65,
+    "sku_angostura_bitters": 55,
+    "sku_lime_juice": 24,
+    "sku_lemon_juice": 24,
+    "sku_simple_syrup": 25,
+    "sku_soda_water": 8,
+    "sku_tonic_water": 12,
+    "sku_cola": 8,
+    "sku_white_cane_sugar": 15,
+    "sku_mint_leaf": 20,
+    "sku_mint_sprig": 10,
+    "sku_lime_wedge": 10,
+    "sku_lemon_slice": 10,
+    "sku_cocktail_cherry": 18
+  }
+}

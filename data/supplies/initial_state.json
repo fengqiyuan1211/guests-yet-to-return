@@ -107,44 +107,44 @@
       "quantity": 0
     },
     "tool_shaker": {
-      "unlocked": false,
-      "owned": false
+      "unlocked": true,
+      "owned": true
     },
     "tool_jigger": {
-      "unlocked": false,
-      "owned": false
+      "unlocked": true,
+      "owned": true
     },
     "tool_strainer": {
-      "unlocked": false,
-      "owned": false
+      "unlocked": true,
+      "owned": true
     },
     "tool_muddler": {
-      "unlocked": false,
-      "owned": false
+      "unlocked": true,
+      "owned": true
     },
     "tool_bar_spoon": {
-      "unlocked": false,
-      "owned": false
+      "unlocked": true,
+      "owned": true
     },
     "tool_mixing_glass": {
-      "unlocked": false,
-      "owned": false
+      "unlocked": true,
+      "owned": true
     },
     "glass_cocktail_glass": {
-      "unlocked": false,
-      "owned": false
+      "unlocked": true,
+      "owned": true
     },
     "glass_highball_glass": {
-      "unlocked": false,
-      "owned": false
+      "unlocked": true,
+      "owned": true
     },
     "glass_balloon_glass": {
-      "unlocked": false,
-      "owned": false
+      "unlocked": true,
+      "owned": true
     },
     "glass_saucer_glass": {
-      "unlocked": false,
-      "owned": false
+      "unlocked": true,
+      "owned": true
     }
   }
 }

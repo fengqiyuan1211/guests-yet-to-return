@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=26 format=3]
 
 [ext_resource type="Theme" path="res://assets/western_theme.tres" id="theme"]
 [ext_resource type="Script" path="res://scripts/home.gd" id="script"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" path="res://assets/icons/sun.svg" id="icon_sun"]
 [ext_resource type="Script" path="res://scripts/clock_face.gd" id="clock_face"]
 [ext_resource type="Texture2D" path="res://assets/icons/slots.svg" id="icon_slots"]
+[ext_resource type="Texture2D" path="res://assets/icons/backpack.svg" id="icon_backpack"]
 [ext_resource type="Texture2D" path="res://assets/icons/codex.svg" id="icon_codex"]
 [ext_resource type="Texture2D" path="res://assets/icons/shop.svg" id="icon_shop"]
 [ext_resource type="Texture2D" path="res://assets/icons/research.svg" id="icon_research"]
@@ -478,7 +479,7 @@ unique_name_in_owner = true
 layout_mode = 0
 offset_left = 1283.0
 offset_top = 14.0
-offset_right = 1425.0
+offset_right = 1402.0
 offset_bottom = 38.0
 mouse_filter = 2
 text = "黄昏"
@@ -492,7 +493,7 @@ unique_name_in_owner = true
 layout_mode = 0
 offset_left = 1283.0
 offset_top = 40.0
-offset_right = 1429.0
+offset_right = 1402.0
 offset_bottom = 74.0
 mouse_filter = 2
 text = "18:00"
@@ -504,9 +505,9 @@ horizontal_alignment = 0
 [node name="SlotsButton" type="Button" parent="Stage/HomeContent/TopBar" groups=["route_buttons"]]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1465.0
+offset_left = 1409.0
 offset_top = 17.0
-offset_right = 1530.0
+offset_right = 1467.0
 offset_bottom = 75.0
 mouse_default_cursor_shape = 2
 text = ""
@@ -516,6 +517,21 @@ icon_alignment = 0
 theme_override_constants/icon_max_width = 30
 theme_override_constants/h_separation = 19
 tooltip_text = "老虎机 · 20 金币一次"
+
+[node name="BackpackButton" type="Button" parent="Stage/HomeContent/TopBar" groups=["route_buttons"]]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1479.0
+offset_top = 17.0
+offset_right = 1537.0
+offset_bottom = 75.0
+mouse_default_cursor_shape = 2
+text = ""
+metadata/route = "backpack"
+icon = ExtResource("icon_backpack")
+icon_alignment = 1
+theme_override_constants/icon_max_width = 30
+tooltip_text = "物品栏"
 
 [node name="Navigation" type="Panel" parent="Stage/HomeContent"]
 layout_mode = 0
@@ -1024,4 +1040,3 @@ offset_top = 0.0
 offset_right = 1600.0
 offset_bottom = 900.0
 mouse_filter = 2
-

@@ -4,6 +4,13 @@ var home: Control
 var capture := false
 
 func _ready() -> void:
+	for service_name: String in ["SlotWallet", "StoryDialogue", "GameSession", "MenuCatalog", "Supplies"]:
+		var service := get_node_or_null("/root/" + service_name)
+		var path := str(service.get("save_path")) if service != null else ""
+		if not path.begins_with("/tmp/") and not path.begins_with("/private/tmp/"):
+			push_error("Refusing a test against live saves: " + service_name)
+			get_tree().quit(2)
+			return
 	capture = "--screenshots" in OS.get_cmdline_user_args()
 	get_tree().create_timer(45).timeout.connect(func(): push_error("Codex test timed out"); get_tree().quit(2))
 	call_deferred("run")
@@ -29,6 +36,19 @@ func click_at(point: Vector2) -> void:
 	up.pressed = false
 	get_viewport().push_input(up, true)
 
+func hover(button: Control) -> void:
+	var motion := InputEventMouseMotion.new()
+	motion.position = button.get_global_rect().get_center()
+	motion.global_position = motion.position
+	get_viewport().push_input(motion, true)
+
+func missing_tooltip(recipe_id: String) -> String:
+	var names: Array[String] = []
+	for item: Dictionary in Supplies.missing_recipe_requirements(recipe_id).ingredients:
+		if not names.has(str(item.name)):
+			names.append(str(item.name))
+	return "缺少：\n" + "\n".join(names)
+
 func key(code: Key) -> void:
 	var event := InputEventKey.new()
 	event.keycode = code
@@ -44,6 +64,9 @@ func screenshot(filename: String) -> void:
 	check(get_viewport().get_texture().get_image().save_png(path.path_join(filename)) == OK, "Screenshot saved")
 
 func run() -> void:
+	check(MenuCatalog.reset_game() and Supplies.reset_game(), "Private fixture starts with no materials or unlocked drinks")
+	SlotWallet.balance = 10000
+	check(SlotWallet.persist(), "Private fixture funds are saved only to the isolated wallet")
 	home = load("res://scenes/home.tscn").instantiate()
 	add_child(home)
 	await settle(0.5)
@@ -73,13 +96,52 @@ func run() -> void:
 		click(tutorial)
 	check(not journal.turning and journal.page_index == 0 and journal.detail_id.is_empty(), "Clicking the tutorial placeholder does not open a drink or turn the page")
 	var cocktail_ids := ["last_word", "mojito", "gin_and_tonic", "long_island_iced_tea", "manhattan"]
+	check(not journal.allow_locked_details, "Production configuration forbids locked drink previews")
+	for index in range(cocktail_ids.size()):
+		var recipe_id: String = cocktail_ids[index]
+		var locked_slot: Button = journal.page_content.find_child("CardSlot%d" % (index + 2), true, false)
+		check(locked_slot != null and locked_slot.disabled and locked_slot.is_locked, "Undiscovered drink is disabled: " + recipe_id)
+		check(not MenuCatalog.get_recipe(recipe_id).unlocked, "Fixture drink starts undiscovered: " + recipe_id)
+		if locked_slot == null:
+			continue
+		var expected_tooltip := missing_tooltip(recipe_id)
+		check(locked_slot.tooltip_text == expected_tooltip, "Locked hint contains only actual missing item names: " + recipe_id)
+		check(locked_slot.mouse_default_cursor_shape == Control.CURSOR_ARROW, "Locked drink uses an arrow cursor: " + recipe_id)
+		hover(locked_slot)
+		await settle(0.02)
+		check(get_viewport().gui_get_hovered_control() == locked_slot and locked_slot.get_tooltip(locked_slot.size / 2) == expected_tooltip, "Native hover resolves the missing-only hint: " + recipe_id)
+		click(locked_slot)
+		await settle(0.02)
+		check(journal.detail_id.is_empty(), "Native click cannot open an undiscovered drink: " + recipe_id)
+		journal.show_detail(recipe_id)
+		check(journal.detail_id.is_empty(), "Direct detail entry also respects the lock: " + recipe_id)
+	click(journal.tabs[2])
+	await settle(0.1)
+	var filtered_slot: Button = journal.page_content.find_child("CardSlot2", true, false)
+	check(filtered_slot != null and filtered_slot.disabled, "Undiscovered filter keeps recipe cards disabled")
+	if filtered_slot != null:
+		click(filtered_slot)
+	check(journal.selected_filter == 2 and journal.page_index == 0 and journal.detail_id.is_empty(), "Clicking a locked filtered card preserves filter and page")
+	click(journal.tabs[0])
+	# Exercise the real discovery path; no preview flag or direct unlock manipulation.
+	for recipe_id: String in cocktail_ids:
+		for ingredient: Dictionary in MenuCatalog.get_recipe(recipe_id).ingredients:
+			if not ingredient.get("required", true) or MenuCatalog._is_ice(ingredient):
+				continue
+			var sku_id: String = str(ingredient.get("sku_id", ""))
+			if not Supplies.is_unlocked(sku_id):
+				check(Supplies.purchase(sku_id), "Fixture purchases required material: " + sku_id)
+		check(MenuCatalog.get_recipe(recipe_id).unlocked, "Required purchases permanently discover the drink: " + recipe_id)
+	await settle(0.1)
+	balance = SlotWallet.balance
 	for index in range(cocktail_ids.size()):
 		var expected_id: String = cocktail_ids[index]
 		var slot: Button = journal.page_content.find_child("CardSlot%d" % (index + 2), true, false)
 		check(slot != null and slot.get_meta("has_recipe", false) and slot.get_meta("cocktail_id", "") == expected_id, "Each card position holds one distinct cocktail: " + expected_id)
 		if slot == null:
 			continue
-		check(not slot.disabled and not MenuCatalog.get_recipe(expected_id).unlocked, "Locked drink is clickable for this test release: " + expected_id)
+		check(not slot.disabled and MenuCatalog.get_recipe(expected_id).unlocked, "Purchased drink is enabled for viewing: " + expected_id)
+		check(slot.tooltip_text == "查看酒谱", "Discovered drink has its ordinary viewing hint: " + expected_id)
 		click(slot)
 		await settle(0.12)
 		check(journal.detail_id == expected_id, "Actual card click opens matching details: " + expected_id)
@@ -102,26 +164,6 @@ func run() -> void:
 			click(back)
 		await settle(0.12)
 		check(journal.detail_id.is_empty() and journal.selected_filter == 0 and journal.page_index == 0, "Returning preserves current filter and page")
-	click(journal.tabs[2])
-	await settle(0.1)
-	click(journal.page_content.find_child("CardSlot2", true, false))
-	await settle(0.1)
-	check(journal.detail_id == "last_word", "Locked filter can still open preview details")
-	journal.close_detail()
-	await settle(0.1)
-	check(journal.selected_filter == 2 and journal.page_index == 0 and journal.detail_id.is_empty(), "Returning preserves the locked filter")
-	journal.allow_locked_details = false
-	journal._update_controls()
-	for slot_index in range(2, 7):
-		var locked_slot: Button = journal.page_content.find_child("CardSlot%d" % slot_index, true, false)
-		check(locked_slot != null and locked_slot.disabled, "Production lock gate disables card %d" % slot_index)
-		if locked_slot != null:
-			click(locked_slot)
-		check(journal.detail_id.is_empty(), "Disabled locked card cannot enter details")
-	journal.show_detail("mojito")
-	check(journal.detail_id.is_empty(), "Programmatic entry also respects the production lock gate")
-	journal.allow_locked_details = true
-	journal._update_controls()
 	click(journal.tabs[0])
 	click(journal.tabs[1])
 	check(journal.selected_filter == 1 and not journal.turning, "Ink filter remains independent of page turning")

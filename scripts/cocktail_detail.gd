@@ -177,7 +177,18 @@ func _ingredients_column() -> void:
 		text.clip_text = true
 		row.tooltip_text = name_value + " " + amount_text(ingredient)
 		_label(row, Rect2(197, 0, 73, 26), amount_text(ingredient), 16, MUTED)
-		_label(row, Rect2(273, 0, 53, 26), "已有" if available else "未拥有", 15, MUTED)
+		var remaining := float(MenuCatalog.inventory.get(ingredient.get("sku_id", ""), 0))
+		var state_text := "已有"
+		if not available:
+			if remaining > 0:
+				state_text = "余量不足"
+			else:
+				var supplies := get_node_or_null("/root/Supplies")
+				var discovered := supplies != null and bool(supplies.call("is_unlocked", str(ingredient.get("sku_id", ""))))
+				state_text = "已用完" if discovered else "缺少材料"
+		var state_label := _label(row, Rect2(273, 0, 53, 26), state_text, 12 if state_text.length() > 3 else 15, MUTED)
+		state_label.name = "IngredientStatus"
+		row.tooltip_text += "\n当前库存：" + amount_text({"amount": remaining, "unit": ingredient.get("inventory_unit", ingredient.get("unit", "")), "name": name_value})
 		if not ingredient.get("required", true):
 			row.tooltip_text += "（可选，不影响点亮）"
 			text.text += "＊"
