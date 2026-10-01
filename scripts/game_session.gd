@@ -132,7 +132,7 @@ func restart_game() -> bool:
 		last_error = "旧进度未能备份，暂未重新开始。"
 		return false
 	var index := 0
-	for path in [save_path, StoryDialogue.save_path, SlotWallet.save_path, MenuCatalog.save_path]:
+	for path in [save_path, StoryDialogue.save_path, SlotWallet.save_path, MenuCatalog.save_path, WorkbenchSession.save_path]:
 		if FileAccess.file_exists(path):
 			if DirAccess.copy_absolute(ProjectSettings.globalize_path(path), directory.path_join("%d-%s" % [index, path.get_file()])) != OK:
 				last_error = "旧进度未能备份，暂未重新开始。"
@@ -146,6 +146,9 @@ func restart_game() -> bool:
 func _finish_restart() -> bool:
 	resetting = true
 	writable = true
+	if not WorkbenchSession.reset_game():
+		last_error = "工作台试作尚未重置，请重试。"
+		return false
 	if not MenuCatalog.reset_game():
 		last_error = "酒单尚未重置，请重试。"
 		return false

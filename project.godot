@@ -24,6 +24,7 @@ SlotWallet="*res://scripts/slot_wallet.gd"
 StoryDialogue="*res://scripts/story_dialogue.gd"
 MenuCatalog="*res://scripts/menu_catalog.gd"
 MenuArt="*res://scripts/menu_art_provider.gd"
+WorkbenchSession="*res://scripts/workbench_session.gd"
 GameSession="*res://scripts/game_session.gd"
 SaloonAudio="*res://scripts/saloon_audio.gd"
 
