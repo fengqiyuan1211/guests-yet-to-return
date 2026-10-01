@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+CocktailDatabase="*res://scripts/cocktail_database.gd"
 Navigation="*res://scripts/navigation.gd"
 TimeManager="*res://scripts/time_manager.gd"
 SlotWallet="*res://scripts/slot_wallet.gd"

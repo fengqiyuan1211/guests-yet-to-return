@@ -216,7 +216,8 @@ func _refresh_cards() -> void:
 		card.add_theme_stylebox_override("normal", _style(Color(0.47, 0.3, 0.11, 0.1 if chosen else 0.015), Color(0.48, 0.3, 0.13, 0.65 if chosen else 0.15)))
 		_add_drink_art(card, Rect2(14, 14, 71, 75), recipe)
 		_label(card, Rect2(99, 22, 119, 32), "已选  ✓" if chosen else str(recipe.category), 17, INK if chosen else MUTED)
-		_label(card, Rect2(99, 57, 124, 26), "参考 %d 金币" % int(recipe.reference_price), 15, MUTED)
+		var price_hint := "售价由你定" if recipe.get("price_status", "") == "editor_starting_value" else "参考 %d 金币" % int(recipe.reference_price)
+		_label(card, Rect2(99, 57, 124, 26), price_hint, 15, MUTED)
 		_label(card, Rect2(17, 102, 203, 36), str(recipe.name), 23, INK)
 		_label(card, Rect2(17, 143, 204, 25), " · ".join(recipe.tags), 15, MUTED)
 		count += 1

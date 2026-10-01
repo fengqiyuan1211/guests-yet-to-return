@@ -39,7 +39,7 @@ func screenshot(filename: String) -> void:
 	if not capture:
 		return
 	await RenderingServer.frame_post_draw
-	var path := ProjectSettings.globalize_path("res://../output/codex-game-preview")
+	var path := ProjectSettings.globalize_path("res://../output/codex-classics-preview")
 	DirAccess.make_dir_recursive_absolute(path)
 	check(get_viewport().get_texture().get_image().save_png(path.path_join(filename)) == OK, "Screenshot saved")
 
@@ -64,11 +64,65 @@ func run() -> void:
 	check(Navigation.current_route == &"codex", "Native sidebar opens journal")
 	check(home.get_node("%HomeContent").visible, "Shared top and sidebar stay visible")
 	check(not home.find_child("GuestDialogue", true, false).visible, "Dialogue hidden on codex")
-	check(journal.page_content.find_children("EmptyCard*", "Control", true, false).size() == 6, "Six empty card positions")
+	check(journal.page_content.find_children("CardSlot*", "Button", true, false).size() == 6, "Six individual cocktail card positions")
 	check(journal.page_content.get_child(0).size == journal.PAGE_SIZE, "Paper texture respects journal bounds")
 	check(journal.previous_button.disabled and not journal.next_button.disabled, "First page bounds")
-	click(journal.page_content.find_child("EmptyCard1", true, false))
-	check(not journal.turning and journal.page_index == 0, "Clicking an empty card does not turn the page")
+	var tutorial: Button = journal.page_content.find_child("CardSlot1", true, false)
+	check(tutorial != null and tutorial.disabled and not tutorial.get_meta("has_recipe", false), "First position remains blank and disabled for the tutorial")
+	if tutorial != null:
+		click(tutorial)
+	check(not journal.turning and journal.page_index == 0 and journal.detail_id.is_empty(), "Clicking the tutorial placeholder does not open a drink or turn the page")
+	var cocktail_ids := ["last_word", "mojito", "gin_and_tonic", "long_island_iced_tea", "manhattan"]
+	for index in range(cocktail_ids.size()):
+		var expected_id: String = cocktail_ids[index]
+		var slot: Button = journal.page_content.find_child("CardSlot%d" % (index + 2), true, false)
+		check(slot != null and slot.get_meta("has_recipe", false) and slot.get_meta("cocktail_id", "") == expected_id, "Each card position holds one distinct cocktail: " + expected_id)
+		if slot == null:
+			continue
+		check(not slot.disabled and not MenuCatalog.get_recipe(expected_id).unlocked, "Locked drink is clickable for this test release: " + expected_id)
+		click(slot)
+		await settle(0.12)
+		check(journal.detail_id == expected_id, "Actual card click opens matching details: " + expected_id)
+		if journal.detail_id != expected_id:
+			continue
+		var title: Label = journal.page_content.find_child("RecipeTitle", true, false)
+		var ingredients: Control = journal.page_content.find_child("Ingredients", true, false)
+		var flavors: Control = journal.page_content.find_child("FlavorTags", true, false)
+		var recipe: Dictionary = MenuCatalog.get_recipe(expected_id)
+		check(title != null and title.text.contains(recipe.name), "Detail shows the selected drink name: " + expected_id)
+		check(ingredients != null and ingredients.get_child_count() == recipe.ingredients.size(), "Detail recipe includes all non-ice ingredients: " + expected_id)
+		check(flavors != null and flavors.get_child_count() == recipe.flavor_tags.size(), "Detail shows exactly the flavor tags: " + expected_id)
+		if flavors != null:
+			for tag in flavors.get_children():
+				check(tag is Label and recipe.flavor_tags.has(tag.text), "Flavor tags use text only")
+		await screenshot("11-detail-%s.png" % expected_id)
+		var back: Button = journal.page_content.find_child("BackToCodex", true, false)
+		check(back != null, "Detail has a return control")
+		if back != null:
+			click(back)
+		await settle(0.12)
+		check(journal.detail_id.is_empty() and journal.selected_filter == 0 and journal.page_index == 0, "Returning preserves current filter and page")
+	click(journal.tabs[2])
+	await settle(0.1)
+	click(journal.page_content.find_child("CardSlot2", true, false))
+	await settle(0.1)
+	check(journal.detail_id == "last_word", "Locked filter can still open preview details")
+	journal.close_detail()
+	await settle(0.1)
+	check(journal.selected_filter == 2 and journal.page_index == 0 and journal.detail_id.is_empty(), "Returning preserves the locked filter")
+	journal.allow_locked_details = false
+	journal._update_controls()
+	for slot_index in range(2, 7):
+		var locked_slot: Button = journal.page_content.find_child("CardSlot%d" % slot_index, true, false)
+		check(locked_slot != null and locked_slot.disabled, "Production lock gate disables card %d" % slot_index)
+		if locked_slot != null:
+			click(locked_slot)
+		check(journal.detail_id.is_empty(), "Disabled locked card cannot enter details")
+	journal.show_detail("mojito")
+	check(journal.detail_id.is_empty(), "Programmatic entry also respects the production lock gate")
+	journal.allow_locked_details = true
+	journal._update_controls()
+	click(journal.tabs[0])
 	click(journal.tabs[1])
 	check(journal.selected_filter == 1 and not journal.turning, "Ink filter remains independent of page turning")
 	click(journal.tabs[0])
@@ -114,7 +168,7 @@ func run() -> void:
 	await settle(1.1)
 	check(journal.page_index == 0, "Swipe returns to previous page")
 	click(journal.tabs[2])
-	check(journal.selected_filter == 2, "Empty filter tabs selectable")
+	check(journal.selected_filter == 2, "Locked filter remains selectable")
 	click(home.find_child("ShopButton", true, false))
 	await settle(0.2)
 	check(Navigation.current_route == &"shop", "Sidebar remains interactive from journal")
@@ -143,5 +197,5 @@ func run() -> void:
 		key(KEY_ESCAPE)
 		await settle(0.15)
 	check(SlotWallet.balance == balance, "UI browsing does not modify wallet")
-	print("CODEX VERIFICATION: ", "PASS" if failures.is_empty() else "FAIL", " — empty cards, curl, reverse, bounds, rapid clicks, swipe, sidebar, guest persistence, responsive layout")
+	print("CODEX VERIFICATION: ", "PASS" if failures.is_empty() else "FAIL", " — reserved tutorial, five cocktail details, lock gate, curl, reverse, bounds, rapid clicks, swipe, sidebar, guest persistence, responsive layout")
 	get_tree().quit(0 if failures.is_empty() else 1)

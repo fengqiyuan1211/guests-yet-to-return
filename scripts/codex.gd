@@ -1,5 +1,5 @@
 extends Control
-## Empty mounts remain blank until real catalogue data is supplied.
+## A reusable parchment journal: six independent data-driven card slots per page.
 signal close_requested
 signal page_turned(page: int)
 
@@ -12,6 +12,8 @@ const INK_BUTTON_SCRIPT := preload("res://scripts/journal_ink_button.gd")
 const CARD_SCRIPT := preload("res://scripts/journal_card.gd")
 const BINDING_SCRIPT := preload("res://scripts/journal_binding.gd")
 const TURN_SHADER := preload("res://assets/codex/page_turn.gdshader")
+const LOCKED_SHADER := preload("res://assets/codex/locked_drink.gdshader")
+const DETAIL_SCRIPT := preload("res://scripts/cocktail_detail.gd")
 
 var page_index := 0
 var selected_filter := 0
@@ -26,8 +28,13 @@ var turn_tween: Tween
 var paper: Texture2D
 var press_position := Vector2.ZERO
 var press_active := false
+var reserved_tutorial_slot := true
+var allow_locked_details := true
+var detail_id := ""
+var navigation_hint: Label
 
 func _ready() -> void:
+	_load_settings()
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	paper = load("res://assets/codex/journal-paper-v1.png")
 	_build_frame()
@@ -62,24 +69,38 @@ func _ready() -> void:
 	add_child(binding)
 	_update_controls()
 	MenuCatalog.changed.connect(_catalog_changed)
-	next_button.grab_focus()
+
+func _load_settings() -> void:
+	var settings: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/codex_settings.json"))
+	if settings is Dictionary:
+		reserved_tutorial_slot = settings.get("reserved_tutorial_slot", true) == true
+		allow_locked_details = settings.get("allow_locked_details", false) == true
 
 func _catalog_changed() -> void:
-	if not turning:
-		page_index = 0
-		_replace_page(0)
-		_update_controls()
+	if turning:
+		return
+	if not detail_id.is_empty():
+		var id := detail_id
+		if MenuCatalog.get_recipe(id).is_empty():
+			close_detail()
+		else:
+			show_detail(id)
+		return
+	page_index = mini(page_index, _page_count() - 1)
+	_replace_page(page_index)
+	_update_controls()
 
 func _visible_recipes() -> Array:
 	var records := MenuCatalog.all_recipes()
+	records.sort_custom(func(a: Dictionary, b: Dictionary): return int(a.get("codex_order", 99999)) < int(b.get("codex_order", 99999)))
 	if selected_filter == 0:
 		return records
 	return records.filter(func(recipe: Dictionary): return recipe.unlocked == (selected_filter == 1))
 
 func _page_count() -> int:
-	if MenuCatalog.all_recipes().is_empty():
-		return PAGE_COUNT
-	return maxi(1, ceili(_visible_recipes().size() / 6.0))
+	var count := _visible_recipes().size() + (1 if reserved_tutorial_slot else 0)
+	# Keep the existing empty leaves and their turning animation for future recipes.
+	return maxi(PAGE_COUNT, ceili(count / 6.0))
 
 func _style(fill: Color, border: Color, thickness := 1) -> StyleBoxFlat:
 	var result := StyleBoxFlat.new()
@@ -105,6 +126,8 @@ func _label(parent: Node, rect: Rect2, text_value: String, font_size: int, color
 	label.size = rect.size
 	label.text = text_value
 	label.add_theme_font_size_override("font_size", font_size)
+	if font_size >= 22:
+		label.add_theme_font_override("font", get_theme_font("font", "Button"))
 	label.add_theme_color_override("font_color", color)
 	label.horizontal_alignment = alignment
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -135,31 +158,115 @@ func _make_page(index: int) -> Control:
 	sheet.add_child(texture)
 	_label(sheet, Rect2(180, 15, 330, 61), "酒 馆 图 鉴", 38)
 	_label(sheet, Rect2(510, 32, 504, 31), "S A L O O N  R E C I P E  J O U R N A L", 16)
-	_label(sheet, Rect2(1030, 27, 166, 34), "已点亮  %d" % MenuCatalog.unlocked_recipes().size(), 22)
+	_label(sheet, Rect2(1030, 27, 166, 34), "已点亮 %d / %d" % [MenuCatalog.unlocked_recipes().size(), MenuCatalog.all_recipes().size()], 20)
 	var records := _visible_recipes()
+	var offset := 1 if reserved_tutorial_slot else 0
 	for i in range(6):
-		var card := Control.new()
+		var card := Button.new()
 		card.set_script(CARD_SCRIPT)
-		card.name = "EmptyCard%d" % i
-		card.position = Vector2(148 + (i % 3) * 328, 144 + (i / 3) * 246)
+		card.name = "CardSlot%d" % (i + 1)
+		card.position = Vector2(148 + (i % 3) * 328, 144 + floori(i / 3.0) * 246)
 		card.size = Vector2(300, 230)
+		card.clip_contents = true
+		card.set_meta("slot_number", index * 6 + i + 1)
+		var record_index := index * 6 + i - offset
+		var occupied := record_index >= 0 and record_index < records.size()
+		card.set("has_recipe", occupied)
+		card.set_meta("has_recipe", occupied)
+		card.disabled = not occupied
+		card.focus_mode = Control.FOCUS_NONE if not occupied else Control.FOCUS_ALL
 		sheet.add_child(card)
-		_label(card, Rect2(22, 12, 80, 28), "%03d" % (index * 6 + i + 1), 16, Color("8b6a45"))
-		var record_index := index * 6 + i
-		if record_index < records.size():
-			var recipe: Dictionary = records[record_index]
-			var ink := INK if recipe.unlocked else Color("8b8071")
-			_label(card, Rect2(28, 91, 256, 41), str(recipe.name), 27, ink)
-			_label(card, Rect2(28, 139, 256, 30), " · ".join(recipe.tags), 17, ink)
-			_label(card, Rect2(160, 14, 124, 26), "已点亮" if recipe.unlocked else "未点亮", 16, ink)
-			if not recipe.unlocked:
-				_label(card, Rect2(28, 179, 256, 29), str(recipe.get("unlock_hint", "备齐所需材料后点亮")), 15, ink)
-			else:
-				_label(card, Rect2(28, 179, 256, 29), "可加入今晚的酒单", 15, Color("8b6a45"))
+		if not occupied:
+			_label(card, Rect2(22, 12, 80, 28), "%03d" % (index * 6 + i + 1), 16, Color("8b6a45"))
+			continue
+		var recipe: Dictionary = records[record_index]
+		card.set_meta("cocktail_id", recipe.id)
+		card.set("is_locked", not recipe.unlocked)
+		card.disabled = not recipe.unlocked and not allow_locked_details
+		card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if not card.disabled else Control.CURSOR_ARROW
+		card.pressed.connect(show_detail.bind(str(recipe.id)))
+		card.tooltip_text = str(recipe.name) + (" · 备齐原料后点亮" if not recipe.unlocked else " · 查看酒谱")
+		_populate_card(card, recipe)
 	_label(sheet, Rect2(170, 638, 550, 36), "好酒的故事，等你写下。", 18, Color("795731"))
 	_label(sheet, Rect2(66, 230, 40, 290), "酒\n谱\n手\n记", 20, Color("947345"), HORIZONTAL_ALIGNMENT_CENTER)
 	_label(sheet, Rect2(948, 638, 220, 36), "—  %02d / %02d  —" % [index + 1, _page_count()], 19, Color("795731"), HORIZONTAL_ALIGNMENT_CENTER)
 	return sheet
+
+func _populate_card(card: Button, recipe: Dictionary) -> void:
+	var ink := INK if recipe.unlocked else Color("624e35")
+	_label(card, Rect2(29, 13, 80, 28), "%03d" % int(recipe.get("codex_order", card.get_meta("slot_number"))), 15, Color("8b6a45"))
+	var motif := str(recipe.get("decoration_id", "herbal"))
+	if motif not in ["herbal", "mint_citrus", "citrus", "cherry"]:
+		motif = "herbal"
+	var art_path := "res://assets/codex/decorations/%s.svg" % motif
+	if ResourceLoader.exists(art_path):
+		var decoration := TextureRect.new()
+		decoration.position = Vector2(15, 55)
+		decoration.size = Vector2(90, 127)
+		decoration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		decoration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		decoration.texture = load(art_path)
+		decoration.modulate.a = 0.65
+		decoration.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		card.add_child(decoration)
+	var drink := TextureRect.new()
+	drink.name = "DrinkPicture"
+	drink.position = Vector2(15, 36)
+	drink.size = Vector2(144, 155)
+	drink.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	drink.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	drink.texture = CocktailDatabase.get_image(str(recipe.id))
+	if drink.texture == null and ResourceLoader.exists(str(recipe.get("thumbnail", ""))):
+		drink.texture = load(str(recipe.thumbnail))
+	if not recipe.unlocked:
+		var material_instance := ShaderMaterial.new()
+		material_instance.shader = LOCKED_SHADER
+		drink.material = material_instance
+		drink.modulate.a = 0.82
+	drink.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(drink)
+	var stamp := _panel(card, Rect2(218, 14, 59, 29), _style(Color.TRANSPARENT, Color(0.40, 0.26, 0.11, 0.65)))
+	_label(stamp, Rect2(0, 0, 59, 29), str(recipe.get("type", recipe.category)), 17, ink, HORIZONTAL_ALIGNMENT_CENTER)
+	var title := _label(card, Rect2(153, 66, 133, 37), str(recipe.name), 24 if str(recipe.name).length() > 4 else 26, ink)
+	title.clip_text = true
+	var english := _label(card, Rect2(154, 106, 128, 41), str(recipe.get("english_name", "")), 12, Color("8b7354"))
+	english.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_label(card, Rect2(153, 153, 132, 28), " · ".join(recipe.get("mouthfeel_tags", [])), 16, ink)
+	_label(card, Rect2(43 if not recipe.unlocked else 25, 192, 127, 28), "已点亮" if recipe.unlocked else "未点亮", 16, ink)
+	var progress := MenuCatalog.ingredient_progress(recipe)
+	_label(card, Rect2(168, 193, 111, 27), "原料 %d / %d" % [progress.owned, progress.total], 15, ink, HORIZONTAL_ALIGNMENT_RIGHT)
+
+func show_detail(id: String) -> void:
+	if turning:
+		return
+	var recipe := MenuCatalog.get_recipe(id)
+	if recipe.is_empty() or (not recipe.unlocked and not allow_locked_details):
+		return
+	detail_id = id
+	press_active = false
+	var child_index := page_content.get_index()
+	remove_child(page_content)
+	page_content.queue_free()
+	var detail := Control.new()
+	detail.set_script(DETAIL_SCRIPT)
+	detail.name = "CocktailDetail"
+	detail.theme = theme
+	detail.position = PAGE_ORIGIN
+	detail.size = PAGE_SIZE
+	detail.set("recipe", recipe)
+	detail.set("paper", paper)
+	detail.connect("back_requested", close_detail)
+	page_content = detail
+	add_child(detail)
+	move_child(detail, child_index)
+	_update_controls()
+
+func close_detail() -> void:
+	if detail_id.is_empty():
+		return
+	detail_id = ""
+	_replace_page(page_index)
+	_update_controls()
 
 func _button(rect: Rect2, text_value: String) -> Button:
 	var button := Button.new()
@@ -198,10 +305,10 @@ func _build_controls() -> void:
 	next_button.name = "NextPage"
 	next_button.tooltip_text = "下一页 · →"
 	next_button.pressed.connect(turn_page.bind(1))
-	_label(self, Rect2(260, 860, 650, 28), ("尚未收录酒款  /  " if MenuCatalog.all_recipes().is_empty() else "") + "轻点纸张两侧，或左右滑动翻页", 15, Color("d2b789"))
+	navigation_hint = _label(self, Rect2(260, 860, 850, 28), "轻点卡片查看酒谱  ·  轻点纸张两侧，或左右滑动翻页", 15, Color("d2b789"))
 
 func _select_filter(index: int) -> void:
-	if turning:
+	if turning or not detail_id.is_empty():
 		return
 	selected_filter = index
 	page_index = 0
@@ -209,16 +316,29 @@ func _select_filter(index: int) -> void:
 	_update_controls()
 
 func _update_controls() -> void:
+	var overview := detail_id.is_empty()
+	if navigation_hint != null:
+		navigation_hint.text = "轻点卡片查看酒谱  ·  轻点纸张两侧，或左右滑动翻页" if overview else "滚动查看完整步骤与故事  ·  点击「返回图鉴」返回"
+	previous_button.visible = overview
+	next_button.visible = overview
 	previous_button.disabled = turning or page_index == 0
 	next_button.disabled = turning or page_index == _page_count() - 1
 	for i in range(tabs.size()):
+		tabs[i].visible = overview
 		tabs[i].disabled = turning
 		tabs[i].set("ink_selected", i == selected_filter)
 		tabs[i].add_theme_color_override("font_color", INK if i == selected_filter else Color("8b6a45"))
+	if overview:
+		for card in page_content.find_children("CardSlot*", "Button", false, false):
+			if not card.get_meta("has_recipe", false):
+				continue
+			var recipe := MenuCatalog.get_recipe(str(card.get_meta("cocktail_id", "")))
+			card.disabled = recipe.is_empty() or (not recipe.get("unlocked", false) and not allow_locked_details)
+			card.mouse_default_cursor_shape = Control.CURSOR_ARROW if card.disabled else Control.CURSOR_POINTING_HAND
 
 func turn_page(direction: int) -> void:
 	var target := page_index + direction
-	if turning or direction not in [-1, 1] or target < 0 or target >= _page_count():
+	if not detail_id.is_empty() or turning or direction not in [-1, 1] or target < 0 or target >= _page_count():
 		return
 	turning = true
 	press_active = false
@@ -262,6 +382,11 @@ func _set_curl_progress(value: float) -> void:
 	curl.material.set_shader_parameter("progress", value)
 
 func _input(event: InputEvent) -> void:
+	if not detail_id.is_empty():
+		if event is InputEventKey and event.pressed and event.keycode == KEY_ESCAPE:
+			close_detail()
+			get_viewport().set_input_as_handled()
+		return
 	# Navigation remains usable during a turn; destroying the page cancels its tween.
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode in [KEY_LEFT, KEY_RIGHT]:

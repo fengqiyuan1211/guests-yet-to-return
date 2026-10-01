@@ -64,7 +64,7 @@ func run() -> void:
 	await settle()
 	menu = home.active_page
 	check(menu != null and menu.has_method("_enter_samples"), "Menu route uses real editor")
-	check(menu.selected.is_empty() and MenuCatalog.all_recipes().is_empty(), "No invented unlocked recipes")
+	check(menu.selected.is_empty() and MenuCatalog.all_recipes().size() == 5 and MenuCatalog.unlocked_recipes().is_empty(), "Five catalogued classics remain locked and off the menu")
 	await capture("01-empty-catalog")
 	click(menu.find_child("PreviewSamples", true, false))
 	await settle()
