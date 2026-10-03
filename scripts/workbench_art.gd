@@ -9,15 +9,19 @@ const CELLS := {
 	"highball": "highball_glass", "spoon": "bar_spoon", "strainer": "strainer", "muddler": "muddler",
 	"gin": "gin_london_dry", "rum": "white_rum", "vodka": "vodka",
 	"lime": "lime_juice", "syrup": "simple_syrup", "soda": "soda_water",
-	"garnish": "lime_wedge", "cube": "standard_cube", "crushed": "crushed_ice"
+	"garnish": "lime_wedge", "lemon_slice":"lemon_slice", "cube": "standard_cube", "crushed": "crushed_ice"
 }
 static var cache: Dictionary = {}
+static var catalog=preload("res://scripts/supply_catalog.gd").new()
 
 static func texture(id: String) -> Texture2D:
 	if cache.has(id):
 		return cache[id]
 	if not CELLS.has(id):
-		return null
+		var item: Dictionary=catalog.get_item(id)
+		if item.is_empty(): return null
+		cache[id]=load(item.texture_resource_path)
+		return cache[id]
 	var path: String = SHARED_ROOT + CELLS[id] + ".tres"
 	if not ResourceLoader.exists(path):
 		return null

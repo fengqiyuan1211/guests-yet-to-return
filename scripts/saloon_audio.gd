@@ -11,6 +11,7 @@ const NIGHT_TRACKS := [
 	NIGHT_TRACK,
 	"res://assets/audio/music/night-laura-source.mp3",
 ]
+const WORKBENCH_TRACK := "res://assets/audio/music/workbench-george-street.mp3"
 const FADE_SECONDS := 3.5
 const DEFAULT_VOLUMES := {"Master": 80.0, "Music": 75.0, "SFX": 80.0}
 
@@ -19,6 +20,9 @@ var volumes: Dictionary = DEFAULT_VOLUMES.duplicate()
 var players: Array[AudioStreamPlayer] = []
 var active_index := -1
 var active_path := ""
+var workbench_owners: Dictionary = {}
+var hall_path := ""
+var hall_position := 0.0
 var night_mode := false
 var night_index := 0
 var day_index := 0
@@ -65,7 +69,9 @@ func _process(delta: float) -> void:
 	var desired_night := is_night(TimeManager.minutes_since_midnight)
 	if desired_night != night_mode:
 		night_mode = desired_night
-		if night_mode:
+		if not workbench_owners.is_empty():
+			hall_path="" # Resume the playlist for the new time of day when leaving.
+		elif night_mode:
 			night_index = 0
 			_play_path(NIGHT_TRACKS[night_index])
 		else:
@@ -74,7 +80,9 @@ func _process(delta: float) -> void:
 		return
 	var current := players[active_index]
 	if not current.playing or current.stream.get_length() - current.get_playback_position() <= FADE_SECONDS:
-		if night_mode:
+		if not workbench_owners.is_empty():
+			_play_path(WORKBENCH_TRACK)
+		elif night_mode:
 			night_index = (night_index + 1) % NIGHT_TRACKS.size()
 			_play_path(NIGHT_TRACKS[night_index])
 		else:
@@ -96,7 +104,7 @@ func _stream_for(path: String) -> AudioStream:
 	_streams[path] = stream
 	return stream
 
-func _play_path(path: String) -> void:
+func _play_path(path: String, from_position := 0.0) -> void:
 	var stream := _stream_for(path)
 	if stream == null:
 		return
@@ -114,7 +122,7 @@ func _play_path(path: String) -> void:
 		players[next_index].stream = stream
 		players[next_index].volume_linear = 0.0
 		players[next_index].pitch_scale = 0.94 if NIGHT_TRACKS.has(path) else 1.0
-		players[next_index].play()
+		players[next_index].play(from_position)
 	active_index = next_index
 	active_path = path
 	fade = create_tween().set_parallel(true)
@@ -171,3 +179,20 @@ func _exit_tree() -> void:
 		player.stop()
 		player.stream = null
 	_streams.clear()
+
+func acquire_workbench(owner: Node) -> void:
+	if workbench_owners.has(owner.get_instance_id()): return
+	var first:=workbench_owners.is_empty()
+	workbench_owners[owner.get_instance_id()]=true
+	if not first: return
+	hall_path=active_path
+	hall_position=players[active_index].get_playback_position() if active_index>=0 else 0.0
+	_play_path(WORKBENCH_TRACK)
+
+func release_workbench(owner: Node) -> void:
+	if not workbench_owners.has(owner.get_instance_id()): return
+	workbench_owners.erase(owner.get_instance_id())
+	if not workbench_owners.is_empty(): return
+	if not is_inside_tree() or is_queued_for_deletion(): return
+	var path: String=hall_path if not hall_path.is_empty() else (NIGHT_TRACKS[night_index] if night_mode else DAY_TRACKS[day_index])
+	_play_path(path,hall_position if not hall_path.is_empty() else 0.0)

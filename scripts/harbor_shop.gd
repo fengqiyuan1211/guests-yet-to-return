@@ -730,3 +730,21 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		close_requested.emit()
+
+## Optional deep link from a depleted workbench ingredient. Does not buy anything.
+func focus_item(id: String) -> bool:
+	var item: Dictionary=catalog.get_item(id)
+	if item.is_empty() or item.category not in CATEGORIES: return false
+	_cancel_page_turn()
+	category=item.category
+	page=0
+	packages=1
+	selected_id=id
+	_load_category()
+	for i in range(products.size()):
+		if products[i].id==id:
+			page=i/6
+			_render_shelves()
+			_update_receipt()
+			return true
+	return false

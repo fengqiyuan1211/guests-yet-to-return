@@ -79,6 +79,16 @@ func _build_audio_controls() -> void:
 			amount.text = "静音" if value == 0 else "%d%%" % int(value)
 		)
 
+	var credit:=RichTextLabel.new()
+	credit.custom_minimum_size=Vector2(816,48)
+	credit.bbcode_enabled=true
+	credit.fit_content=true
+	credit.add_theme_font_size_override("normal_font_size",15)
+	credit.add_theme_color_override("default_color",Color("654528"))
+	credit.text='调酒台音乐：George Street Shuffle — Kevin MacLeod (incompetech.com)\n[url=https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300035]曲目来源[/url] · [url=https://creativecommons.org/licenses/by/4.0/]CC BY 4.0[/url]'
+	credit.meta_clicked.connect(func(url): OS.shell_open(str(url)))
+	audio_controls.add_child(credit)
+
 func _style_slider(slider: HSlider) -> void:
 	var track := StyleBoxFlat.new()
 	track.bg_color = Color("bba17a")

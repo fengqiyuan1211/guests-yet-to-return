@@ -8,14 +8,15 @@ func run() -> void:
 	Navigation.go_to(&"mixing")
 	await settle()
 	bench=home.active_page
+	bench._act("cup",{"cup":"highball"})
 	await capture("14-mixing-empty")
 	from_pantry("gin","mixing")
 	bench.measure_waiting=false
 	bench.measure.set_process(false)
-	bench.measure.progress=.2
+	bench.measure.progress=.2 if bench.measure.precise else bench.measure.target*.3/bench.measure.volume_limit()
 	bench._process(0)
 	var low: float=Liquid.volume(bench.table.contents_for("mixing"))
-	bench.measure.progress=.67
+	bench.measure.progress=bench.measure.target/bench.measure.volume_limit()
 	bench._process(0)
 	var high: float=Liquid.volume(bench.table.contents_for("mixing"))
 	check(high>low and low>0,"direct pouring preview grows in mixing glass")
@@ -31,7 +32,7 @@ func run() -> void:
 	from_pantry("lime","jigger")
 	bench.measure_waiting=false
 	bench.measure.set_process(false)
-	bench.measure.progress=.67
+	bench.measure.progress=bench.measure.target/bench.measure.volume_limit()
 	space()
 	await get_tree().create_timer(1.2).timeout
 	var stock: Dictionary=WorkbenchSession.state.stock.duplicate(true)

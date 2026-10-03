@@ -1,0 +1,74 @@
+[
+  {
+    "file": "pour.wav",
+    "title": "Water pouring into glass bowl 01",
+    "author": "Rudmer_Rotteveel",
+    "page": "https://freesound.org/people/Rudmer_Rotteveel/sounds/700352/",
+    "download": "https://cdn.freesound.org/previews/700/700352_4921277-hq.mp3",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "retrieved": "2026-10-02",
+    "excerpt_seconds": [
+      0.6,
+      2.45
+    ],
+    "processing": "Public HQ preview decoded to mono PCM 16-bit / 44.1 kHz; trimmed, DC offset removed, gain adjusted; 70 ms loop crossfade (one-shot clink uses fades).",
+    "duration_seconds": 1.78,
+    "source_sha256": "3a12675454d83356987f2290e2b46bf7cf07f4a4ebe085712ef8b28e3d163937",
+    "sha256": "cc9f944883734bf844255ab498e11d665f44e2d245bce9688bca431fa2d5edbf"
+  },
+  {
+    "file": "stir.wav",
+    "title": "Water stirred in glass with metal spoon",
+    "author": "Tom_Kaszuba",
+    "page": "https://freesound.org/people/Tom_Kaszuba/sounds/657552/",
+    "download": "https://cdn.freesound.org/previews/657/657552_11673893-hq.mp3",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "retrieved": "2026-10-02",
+    "excerpt_seconds": [
+      3.8,
+      6.4
+    ],
+    "processing": "Public HQ preview decoded to mono PCM 16-bit / 44.1 kHz; trimmed, DC offset removed, gain adjusted; 70 ms loop crossfade (one-shot clink uses fades).",
+    "duration_seconds": 2.53,
+    "source_sha256": "dbca79ab315ea042c1bae67b89addf418e949031600290e688a3321a834f45e4",
+    "sha256": "1b5439107cef7194258b7f505b616afc4d4dcb4e6689bf203b3cd4739b3ac4f2"
+  },
+  {
+    "file": "shake.wav",
+    "title": "Cocktail Shaker.wav",
+    "author": "KenRT",
+    "page": "https://freesound.org/people/KenRT/sounds/319995/",
+    "download": "https://cdn.freesound.org/previews/319/319995_5440319-hq.mp3",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "retrieved": "2026-10-02",
+    "excerpt_seconds": [
+      0.45,
+      3.65
+    ],
+    "processing": "Public HQ preview decoded to mono PCM 16-bit / 44.1 kHz; trimmed, DC offset removed, gain adjusted; 70 ms loop crossfade (one-shot clink uses fades).",
+    "duration_seconds": 3.13,
+    "source_sha256": "2c69ea0f6a0eeb4ee438d11e6ae09b119f79be6ce659221d2204bd32a3c5b89f",
+    "sha256": "5d0d1ea4f5e3fd1cd53467975eab334dfe888823c912e180c685e840f85f7d88"
+  },
+  {
+    "file": "clink.wav",
+    "title": "Stirring glass",
+    "author": "ChrisGrundlingh",
+    "page": "https://freesound.org/people/ChrisGrundlingh/sounds/765653/",
+    "download": "https://cdn.freesound.org/previews/765/765653_15688696-hq.mp3",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "retrieved": "2026-10-02",
+    "excerpt_seconds": [
+      0.42,
+      1.08
+    ],
+    "processing": "Public HQ preview decoded to mono PCM 16-bit / 44.1 kHz; trimmed, DC offset removed, gain adjusted; 70 ms loop crossfade (one-shot clink uses fades).",
+    "duration_seconds": 0.66,
+    "source_sha256": "73627cc58dbcbc2501434d871c501ef6dc7666968ee9b60a313cd96615ec2a4c",
+    "sha256": "0745bf2e658df075250f1940869621adbaae6a90e5f30457b32eb9d3aee33268"
+  }
+]

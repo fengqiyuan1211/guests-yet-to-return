@@ -29,3 +29,10 @@ Create a TRANSPARENT RGBA game sprite atlas matching the attached approved warm 
 Create a square TRANSPARENT RGBA sprite atlas matching the reference warm painterly western tavern game. Exactly 3 columns x 3 rows, one isolated object centered in each equal cell, at least 12% clear transparent padding on all sides of each cell. No text, no labels with writing, no frames, no backdrop, no checkerboard drawn. Same perspective as reference bartender tabletop: see front and tops, warm golden light upper left, detailed hand-painted physical objects. Row 1: clear gin bottle with pour spout; amber rum bottle; clear vodka bottle. All three have plain blank parchment labels. Row 2: short bottle of cloudy pale green lime juice with spout; short amber sugar syrup bottle with spout; green-tinted soda siphon. Row 3: fresh lime wedge; cluster of three large clear ice cubes; small heap of crushed ice. Bottles and objects must stay fully inside their own cells with generous transparent gaps. No hands, no shadows outside the objects. Independent game cutouts, not a tabletop scene.
 
 图集实际生成的留白、间距和比例不完全等分，因此运行时使用独立区域定义，不简单按九宫格均切。
+
+
+## v0.9.0 昼夜背景（2026-10-03）
+
+新增 `background-day-v1.png`、`background-night-v1.png`、`background-dawn-v1.png`，均由内置 image_gen 以原 `background.png` 为编辑目标生成。原图继续作为黄昏版本，不覆盖。
+
+提示约束：只改变昼夜光照，保持第一人称构图、吧台、木纹、皮垫、器具摆放空间和固定灯具位置；不新增人物、文字、UI 或交互器具。白天蓝天自然光、油灯熄灭；夜晚深蓝室外与暖油灯；黎明淡紫天空、柔和冷光和微亮油灯。由 Godot 的现有昼夜 shader 连续混合，不生成独立时钟。

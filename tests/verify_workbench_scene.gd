@@ -15,6 +15,7 @@ func _ready() -> void:
 	if not WorkbenchSession.save_path.begins_with("/tmp/") or not GameSession.save_path.begins_with("/tmp/"):
 		get_tree().quit(2)
 		return
+	check(preload("res://tests/workbench_fixture.gd").seed(Supplies,WorkbenchSession),"isolated warehouse fixture")
 	TimeManager.set_process(false)
 	call_deferred("run")
 
@@ -89,7 +90,7 @@ func run() -> void:
 	check(is_instance_valid(bench.measure),"drag bottle starts measure without confirmation")
 	check(bench.table.pouring and WorkbenchSession.state.stock==stock,"pour animation does not commit preview dose")
 	bench.measure.set_process(false)
-	bench.measure.progress=.67
+	bench.measure.progress=bench.measure.target/bench.measure.volume_limit()
 	bench.measure.queue_redraw()
 	await capture("02-pouring")
 	var key:=InputEventKey.new()

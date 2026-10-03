@@ -948,7 +948,7 @@
           "number": 1,
           "operation": "加冰",
           "instruction": "杯中加入出品冰。",
-          "equipment": "球形杯",
+          "equipment": "高球杯",
           "min_seconds": null,
           "max_seconds": null,
           "planned_image_path": "notes/A3/01.png",
@@ -964,7 +964,7 @@
           "number": 2,
           "operation": "加料",
           "instruction": "量取金酒和汤力水，轻搅。",
-          "equipment": "球形杯",
+          "equipment": "高球杯",
           "min_seconds": null,
           "max_seconds": null,
           "planned_image_path": "notes/A3/02.png",
@@ -980,7 +980,7 @@
           "number": 3,
           "operation": "装饰",
           "instruction": "以青柠角装饰。",
-          "equipment": "球形杯",
+          "equipment": "高球杯",
           "min_seconds": null,
           "max_seconds": null,
           "planned_image_path": "notes/A3/03.png",
@@ -1011,7 +1011,7 @@
         {
           "number": 1,
           "operation": "加冰",
-          "instruction": "球形杯中加入 150 g 标准方冰。"
+          "instruction": "高球杯中加入 150 g 标准方冰。"
         },
         {
           "number": 2,
@@ -1025,8 +1025,8 @@
         }
       ],
       "equipment_status": "unspecified",
-      "glass": "球形杯",
-      "glass_status": "reference",
+      "glass": "高球杯",
+      "glass_status": "user_confirmed",
       "recipe_status": "参考配方；冰量草案",
       "recipe_review_status": "draft",
       "unlock": {

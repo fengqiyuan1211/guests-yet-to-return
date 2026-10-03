@@ -48,6 +48,16 @@
         "sheet": "原料商品",
         "row": 6,
         "status": "商品待定"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          230,
+          242,
+          247
+        ],
+        "strength": 0,
+        "turbidity": 0
       }
     },
     {
@@ -86,6 +96,16 @@
         "sheet": "原料商品",
         "row": 7,
         "status": "商品待定"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          133,
+          171,
+          48
+        ],
+        "strength": 0.8,
+        "turbidity": 0.04
       }
     },
     {
@@ -124,6 +144,16 @@
         "sheet": "原料商品",
         "row": 8,
         "status": "商品待定"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          230,
+          242,
+          247
+        ],
+        "strength": 0,
+        "turbidity": 0
       }
     },
     {
@@ -163,6 +193,16 @@
         "sheet": "原料商品",
         "row": 9,
         "status": "包装与金币价为演示值"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          164,
+          202,
+          66
+        ],
+        "strength": 0.65,
+        "turbidity": 0.65
       }
     },
     {
@@ -240,6 +280,16 @@
         "sheet": "原料商品",
         "row": 11,
         "status": "商品待定"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          227,
+          212,
+          82
+        ],
+        "strength": 0.65,
+        "turbidity": 0.68
       }
     },
     {
@@ -317,6 +367,16 @@
         "sheet": "原料商品",
         "row": 13,
         "status": "商品待定"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          230,
+          242,
+          247
+        ],
+        "strength": 0,
+        "turbidity": 0
       }
     },
     {
@@ -352,6 +412,16 @@
         "sheet": "原料商品",
         "row": 14,
         "status": "包装与金币价为演示值"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          230,
+          242,
+          247
+        ],
+        "strength": 0,
+        "turbidity": 0
       }
     },
     {
@@ -466,6 +536,16 @@
         "sheet": "原料商品",
         "row": 17,
         "status": "包装与金币价为演示值"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          230,
+          242,
+          247
+        ],
+        "strength": 0,
+        "turbidity": 0
       }
     },
     {
@@ -501,6 +581,16 @@
         "sheet": "原料商品",
         "row": 18,
         "status": "商品待定"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          230,
+          242,
+          247
+        ],
+        "strength": 0,
+        "turbidity": 0
       }
     },
     {
@@ -536,6 +626,16 @@
         "sheet": "原料商品",
         "row": 19,
         "status": "商品待定"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          230,
+          242,
+          247
+        ],
+        "strength": 0,
+        "turbidity": 0
       }
     },
     {
@@ -574,6 +674,16 @@
         "sheet": "原料商品",
         "row": 20,
         "status": "商品待定"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          230,
+          242,
+          247
+        ],
+        "strength": 0,
+        "turbidity": 0
       }
     },
     {
@@ -612,6 +722,16 @@
         "sheet": "原料商品",
         "row": 21,
         "status": "包装与金币价为演示值"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          230,
+          242,
+          247
+        ],
+        "strength": 0,
+        "turbidity": 0
       }
     },
     {
@@ -651,6 +771,16 @@
         "sheet": "原料商品",
         "row": 22,
         "status": "商品待定"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          74,
+          41,
+          18
+        ],
+        "strength": 1.6,
+        "turbidity": 0.05
       }
     },
     {
@@ -688,6 +818,16 @@
         "sheet": "原料商品",
         "row": 23,
         "status": "商品待定"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          184,
+          94,
+          20
+        ],
+        "strength": 0.7,
+        "turbidity": 0.02
       }
     },
     {
@@ -726,6 +866,16 @@
         "sheet": "原料商品",
         "row": 24,
         "status": "商品待定"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          125,
+          38,
+          26
+        ],
+        "strength": 1.1,
+        "turbidity": 0.04
       }
     },
     {
@@ -764,6 +914,16 @@
         "sheet": "原料商品",
         "row": 25,
         "status": "商品待定"
+      },
+      "liquid_appearance": {
+        "version": "appearance-playtest-1",
+        "rgb": [
+          77,
+          26,
+          15
+        ],
+        "strength": 3.0,
+        "turbidity": 0.05
       }
     },
     {

@@ -1,0 +1,218 @@
+{
+  "version": "quality-playtest-3-highball",
+  "status": "draft",
+  "note": "试玩感官、用量容差与有效操作时长；不是真实化学或物理压力。融水、温度和过度轻压尚未建模。",
+  "weights": [
+    0.6,
+    0.3,
+    0.1
+  ],
+  "attribute_gain": 1.5,
+  "profiles": {
+    "sku_gin_london_dry": [
+      90,
+      0,
+      0,
+      8
+    ],
+    "sku_white_rum": [
+      85,
+      4,
+      0,
+      2
+    ],
+    "sku_vodka": [
+      90,
+      0,
+      0,
+      0
+    ],
+    "sku_tequila": [
+      90,
+      3,
+      0,
+      9
+    ],
+    "sku_green_chartreuse": [
+      98,
+      65,
+      0,
+      50
+    ],
+    "sku_maraschino": [
+      65,
+      80,
+      4,
+      12
+    ],
+    "sku_cointreau": [
+      85,
+      85,
+      12,
+      8
+    ],
+    "sku_lime_juice": [
+      0,
+      4,
+      100,
+      4
+    ],
+    "sku_lemon_juice": [
+      0,
+      5,
+      95,
+      2
+    ],
+    "sku_simple_syrup": [
+      0,
+      100,
+      0,
+      0
+    ],
+    "sku_soda_water": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "sku_tonic_water": [
+      0,
+      28,
+      5,
+      48
+    ],
+    "sku_cola": [
+      0,
+      65,
+      12,
+      7
+    ],
+    "sku_rye_whiskey": [
+      95,
+      8,
+      0,
+      20
+    ],
+    "sku_sweet_red_vermouth": [
+      35,
+      70,
+      8,
+      38
+    ],
+    "sku_angostura_bitters": [
+      90,
+      3,
+      0,
+      100
+    ]
+  },
+  "rules": {
+    "workbench_practice": {
+      "mix": "shake",
+      "mix_ice": true,
+      "filter": true,
+      "cup": "coupe",
+      "time_window": [
+        6,
+        10
+      ]
+    },
+    "last_word": {
+      "mix": "shake",
+      "mix_ice": true,
+      "filter": true,
+      "cup": "glass_cocktail_glass",
+      "time_window": [
+        6,
+        10
+      ]
+    },
+    "mojito": {
+      "mix": "stir",
+      "serving_ice": "crushed",
+      "muddle": "sku_mint_leaf",
+      "cup": "highball",
+      "garnishes": {
+        "sku_mint_sprig": 1,
+        "sku_lime_wedge": 1
+      },
+      "time_window": [
+        3,
+        6
+      ]
+    },
+    "gin_and_tonic": {
+      "mix": "stir",
+      "serving_ice": "cube",
+      "cup": "highball",
+      "garnishes": {
+        "sku_lime_wedge": 1
+      },
+      "time_window": [
+        3,
+        6
+      ]
+    },
+    "long_island_iced_tea": {
+      "mix": "stir",
+      "serving_ice": "cube",
+      "cup": "highball",
+      "garnishes": {
+        "sku_lemon_slice": 1
+      },
+      "time_window": [
+        3,
+        6
+      ]
+    },
+    "manhattan": {
+      "mix": "stir",
+      "mix_ice": true,
+      "filter": true,
+      "cup": "glass_cocktail_glass",
+      "garnishes": {
+        "sku_cocktail_cherry": 1
+      },
+      "time_window": [
+        4,
+        8
+      ]
+    }
+  },
+  "tiers": [
+    {
+      "id": "perfect",
+      "title": "完美的",
+      "minimum": 95,
+      "color": "dbb455"
+    },
+    {
+      "id": "excellent",
+      "title": "优秀的",
+      "minimum": 80,
+      "color": "5fae99"
+    },
+    {
+      "id": "ordinary",
+      "title": "一般的",
+      "minimum": 60,
+      "color": "6a9bc7"
+    },
+    {
+      "id": "poor",
+      "title": "欠佳的",
+      "minimum": 35,
+      "color": "c48a58"
+    },
+    {
+      "id": "terrible",
+      "title": "糟糕的",
+      "minimum": 0,
+      "color": "604575"
+    }
+  ],
+  "dose_bands": {
+    "perfect": 0.02,
+    "recommended": 0.1
+  }
+}
