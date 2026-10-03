@@ -1,0 +1,354 @@
+{
+  "sku_gin_london_dry": {
+    "name": "伦敦干金酒",
+    "rgb": [
+      243,
+      246,
+      243
+    ],
+    "visual_hint": "Colorless transparent spirit; juniper flavor does not authorize green liquid, berries, herbs or extra garnish.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "gin_london_dry",
+    "measurement_unit": "ml",
+    "source_category": "基酒",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_green_chartreuse": {
+    "name": "绿查特酒",
+    "rgb": [
+      179,
+      197,
+      93
+    ],
+    "visual_hint": "Muted yellow-green herbal liqueur; contributes a soft jade tint, never fluorescent green and no visible herbs unless separately listed.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "green_chartreuse",
+    "measurement_unit": "ml",
+    "source_category": "利口酒",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_maraschino": {
+    "name": "马拉斯奇诺樱桃利口酒",
+    "rgb": [
+      248,
+      246,
+      240
+    ],
+    "visual_hint": "Nearly colorless transparent cherry liqueur; cherry flavor does not make the liquid red or authorize a cherry garnish.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "maraschino",
+    "measurement_unit": "ml",
+    "source_category": "利口酒",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_lime_juice": {
+    "name": "鲜榨青柠汁",
+    "rgb": [
+      235,
+      236,
+      192
+    ],
+    "visual_hint": "Pale yellow-green juice with mild citrus haze; juice alone does not authorize lime wedges, wheels or chunks; pulp depends on preparation.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "lime_juice",
+    "measurement_unit": "ml",
+    "source_category": "果汁",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_lime_wedge": {
+    "name": "青柠角",
+    "rgb": [
+      144,
+      166,
+      40
+    ],
+    "visual_hint": "A lime wedge with green rind and pale yellow-green flesh; show only the actual selected count and placement, not an additional wheel.",
+    "sparkling": false,
+    "phase": "solid",
+    "is_ice": false,
+    "ingredient_id": "lime_wedge",
+    "measurement_unit": "piece",
+    "source_category": "装饰",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_lemon_juice": {
+    "name": "鲜榨柠檬汁",
+    "rgb": [
+      246,
+      238,
+      184
+    ],
+    "visual_hint": "Pale straw-yellow citrus juice, mildly cloudy; do not add lemon slices unless separately selected as garnish.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "lemon_juice",
+    "measurement_unit": "ml",
+    "source_category": "果汁",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_lemon_slice": {
+    "name": "柠檬片",
+    "rgb": [
+      239,
+      208,
+      83
+    ],
+    "visual_hint": "Thin lemon slice with yellow peel and translucent pale flesh; only selected slices appear, with no automatic extra citrus garnish.",
+    "sparkling": false,
+    "phase": "solid",
+    "is_ice": false,
+    "ingredient_id": "lemon_slice",
+    "measurement_unit": "piece",
+    "source_category": "装饰",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_tonic_water": {
+    "name": "汤力水",
+    "rgb": [
+      246,
+      249,
+      247
+    ],
+    "visual_hint": "Colorless transparent mixer with fine carbonation bubbles; bitterness does not make the liquid brown or green.",
+    "sparkling": true,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "tonic_water",
+    "measurement_unit": "ml",
+    "source_category": "调和饮料",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_white_rum": {
+    "name": "白朗姆酒",
+    "rgb": [
+      247,
+      247,
+      241
+    ],
+    "visual_hint": "Nearly colorless transparent white rum; do not add amber aging color or a garnish solely from the ingredient name.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "white_rum",
+    "measurement_unit": "ml",
+    "source_category": "基酒",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_mint_sprig": {
+    "name": "薄荷枝",
+    "rgb": [
+      62,
+      105,
+      42
+    ],
+    "visual_hint": "Fresh green mint sprig; one sprig is a small connected stem with several leaves, not one isolated leaf; only show actual garnish count.",
+    "sparkling": false,
+    "phase": "solid",
+    "is_ice": false,
+    "ingredient_id": "mint_sprig",
+    "measurement_unit": "sprig",
+    "source_category": "香草",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_white_cane_sugar": {
+    "name": "白蔗糖",
+    "rgb": [
+      250,
+      249,
+      243
+    ],
+    "visual_hint": "White cane sugar crystals; normally dissolved during preparation, not a powder mound or sugar rim; show solid sugar only if explicitly retained.",
+    "sparkling": false,
+    "phase": "solid",
+    "is_ice": false,
+    "ingredient_id": "white_cane_sugar",
+    "measurement_unit": "g",
+    "source_category": "甜味料",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_soda_water": {
+    "name": "苏打水",
+    "rgb": [
+      247,
+      250,
+      249
+    ],
+    "visual_hint": "Colorless transparent soda with small bubbles; no intrinsic green or amber tint and no automatic fruit garnish.",
+    "sparkling": true,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "soda_water",
+    "measurement_unit": "ml",
+    "source_category": "调和饮料",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_vodka": {
+    "name": "伏特加",
+    "rgb": [
+      248,
+      249,
+      247
+    ],
+    "visual_hint": "Colorless transparent spirit; vodka alone does not add visible color, foam, fruit or garnish.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "vodka",
+    "measurement_unit": "ml",
+    "source_category": "基酒",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_tequila": {
+    "name": "龙舌兰酒",
+    "rgb": [
+      248,
+      245,
+      224
+    ],
+    "visual_hint": "Use a neutral nearly clear to faint straw game-art placeholder because the source does not select a tequila variety; no automatic salt rim or lime.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "tequila",
+    "measurement_unit": "ml",
+    "source_category": "基酒",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_cointreau": {
+    "name": "君度橙酒",
+    "rgb": [
+      248,
+      245,
+      235
+    ],
+    "visual_hint": "Nearly colorless transparent orange liqueur; orange aroma does not imply orange-colored liquid or an orange peel garnish.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "cointreau",
+    "measurement_unit": "ml",
+    "source_category": "利口酒",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_simple_syrup": {
+    "name": "糖浆",
+    "rgb": [
+      248,
+      241,
+      215
+    ],
+    "visual_hint": "Clear to faint straw syrup once mixed; no visible sugar crystals, syrup layer or sugar rim unless explicitly requested by preparation.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "simple_syrup",
+    "measurement_unit": "ml",
+    "source_category": "甜味料",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_cola": {
+    "name": "可乐",
+    "rgb": [
+      92,
+      46,
+      20
+    ],
+    "visual_hint": "Translucent deep brown carbonated mixer; dilution makes a warmer lighter amber-brown drink; do not show an opaque black block.",
+    "sparkling": true,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "cola",
+    "measurement_unit": "ml",
+    "source_category": "调和饮料",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_rye_whiskey": {
+    "name": "黑麦威士忌",
+    "rgb": [
+      176,
+      99,
+      32
+    ],
+    "visual_hint": "Transparent warm amber rye whiskey; only a liquid contribution, not a whiskey bottle, grain decoration or automatic ice.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "rye_whiskey",
+    "measurement_unit": "ml",
+    "source_category": "基酒",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_sweet_red_vermouth": {
+    "name": "甜红味美思",
+    "rgb": [
+      125,
+      48,
+      30
+    ],
+    "visual_hint": "Translucent red-brown sweet vermouth; contributes muted ruby and reddish amber tones without adding fruit or herb pieces.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "sweet_red_vermouth",
+    "measurement_unit": "ml",
+    "source_category": "加强葡萄酒",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_angostura_bitters": {
+    "name": "安格仕苦精",
+    "rgb": [
+      93,
+      39,
+      26
+    ],
+    "visual_hint": "Dark red-brown bitters used in a small dash; do not invent dash-to-ml conversion or turn a whole drink dark solely from one dash.",
+    "sparkling": false,
+    "phase": "liquid",
+    "is_ice": false,
+    "ingredient_id": "angostura_bitters",
+    "measurement_unit": "ml",
+    "source_category": "苦精",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_cocktail_cherry": {
+    "name": "鸡尾酒樱桃",
+    "rgb": [
+      112,
+      20,
+      24
+    ],
+    "visual_hint": "Dark red cocktail cherries; show exactly the quantity selected in the target recipe, whether one, two or more. Do not infer additional cherries, garnish picks, stems or citrus.",
+    "sparkling": false,
+    "phase": "solid",
+    "is_ice": false,
+    "ingredient_id": "cocktail_cherry",
+    "measurement_unit": "piece",
+    "source_category": "装饰",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  },
+  "sku_mint_leaf": {
+    "name": "薄荷叶",
+    "rgb": [
+      62,
+      105,
+      42
+    ],
+    "visual_hint": "Separate fresh green mint leaves; visible in the drink only when retained_solids says they remain; pressed leaves are not a garnish sprig.",
+    "sparkling": false,
+    "phase": "solid",
+    "is_ice": false,
+    "ingredient_id": "mint_leaf",
+    "measurement_unit": "piece",
+    "source_category": "香草",
+    "palette_basis": "game_art_approximation_not_chemical_simulation"
+  }
+}

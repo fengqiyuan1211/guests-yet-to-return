@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "request_id": "846e50a8-dc8f-4c32-99aa-21f3fb36b29b",
+  "recipe": {
+    "id": "diy_gin_tonic_example",
+    "revision": 1,
+    "name": "码头微风",
+    "story": "长途航行结束后，我想在码头坐一会儿。这杯酒是给终于靠岸的自己，清爽一点，安静一点。",
+    "ingredients": [
+      {
+        "sku_id": "sku_gin_london_dry",
+        "name": "伦敦干金酒",
+        "amount": 50,
+        "unit": "ml",
+        "use": "基酒"
+      },
+      {
+        "sku_id": "sku_tonic_water",
+        "name": "汤力水",
+        "amount": 150,
+        "unit": "ml",
+        "use": "配料"
+      },
+      {
+        "sku_id": "sku_lime_wedge",
+        "name": "青柠角",
+        "amount": 1,
+        "unit": "piece",
+        "use": "装饰"
+      }
+    ],
+    "glass": "球形杯",
+    "preparation": "加冰→加酒→轻搅→装饰",
+    "ice": [
+      {
+        "name": "标准方冰",
+        "amount": 150,
+        "unit": "g",
+        "use": "出品冰"
+      }
+    ],
+    "retained_solids": []
+  },
+  "style_id": "saloon-cocktail-cutout-v1"
+}

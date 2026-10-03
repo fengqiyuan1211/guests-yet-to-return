@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "request_id": "green-lantern-example-1",
+  "recipe": {
+    "id": "diy_green_lantern_example",
+    "revision": 1,
+    "name": "荒原绿灯",
+    "story": "赶了一整天的路，想在这里慢慢歇一会儿。希望这杯酒安静一点，让我不用急着出发。",
+    "ingredients": [
+      {"sku_id": "sku_green_chartreuse", "amount": 80, "unit": "ml", "use": "基酒"},
+      {"sku_id": "sku_vodka", "amount": 10, "unit": "ml", "use": "基酒"},
+      {"sku_id": "sku_lime_juice", "amount": 10, "unit": "ml", "use": "配料"},
+      {"sku_id": "sku_cocktail_cherry", "amount": 2, "unit": "piece", "use": "装饰"}
+    ],
+    "glass": "古典杯",
+    "preparation": "量取酒液和青柠汁，搅拌混合后倒入放着一块大方冰的古典杯，最后放上两颗鸡尾酒樱桃。不加薄荷、柠檬片、青柠角或气泡饮料。",
+    "ice": [{"name": "大方冰", "amount": 1, "unit": "piece", "use": "出品冰"}],
+    "retained_solids": []
+  },
+  "style_id": "saloon-cocktail-cutout-v1"
+}

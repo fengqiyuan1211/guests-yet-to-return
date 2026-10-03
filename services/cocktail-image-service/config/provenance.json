@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "config_version": "diy-cocktail-visual-config-v1",
+  "style_id": "saloon-cocktail-cutout-v1",
+  "sources": [
+    {
+      "file": "res://data/supplies/catalog.json",
+      "sha256": "7627ea11b2b747eedf6a922c5365ef143e23ce977fca4b25929011b3c5eddac4",
+      "role": "authoritative_consumable_sku_names_units_and_categories"
+    },
+    {
+      "file": "res://data/cocktails/catalog.json",
+      "sha256": "5aa7b9915597a3c3e61ef170fced8fb77d4661d68979006a4fb99b9e7d0e3881",
+      "role": "frozen_five_classic_recipes_ingredients_ice_preparation_and_story"
+    },
+    {
+      "file": "res://assets/art/cocktails/prompts.json",
+      "sha256": "a832d829ace69dc9c5948a091cdb98f9f73fbc652b43269480acd04672b471e6",
+      "role": "frozen_expected_visual_descriptions_and_shared_style"
+    }
+  ],
+  "visual_profiles_count": 22,
+  "few_shot_count": 5,
+  "source_recipe_ids": [
+    "last_word",
+    "mojito",
+    "gin_and_tonic",
+    "long_island_iced_tea",
+    "manhattan"
+  ],
+  "source_images_copied_without_modification": true,
+  "source_image_transparency": true,
+  "provider_reference_conversion": "PromptBuilder validates copied PNG hashes and composites thumbnails onto white for image-conditioned generation; original copied PNGs retain alpha.",
+  "color_policy": {
+    "basis": "游戏美术近似色；不是实测色值、ABV、配方评分或物理混色模拟。",
+    "profile_rgb_role": "relative_palette_hint_for_known_ingredients",
+    "few_shot_rgb_role": "deterministic_reference_selection_only",
+    "glass_lighting": "warm highlights and glass reflections do not redefine intrinsic ingredient color"
+  },
+  "recipe_policy": {
+    "story": "展示与示例叙事数据，不授权更改原料、杯型、用量、用冰或装饰。",
+    "target_priority": "目标实际配方与成品留杯信息优先；few-shot只示范绘画风格和配方到可见成品的对应关系。",
+    "ice": "制作冰与出品冰分开；过滤后的制作冰不画进成品。",
+    "optional_garnish": "长岛冰茶的冻结示例明确选择1片柠檬片；这不改变原表可选规则，目标DIY可以不选择。",
+    "unknown_dash_conversion": "曼哈顿保留1 dash；无ml换算，不自行补零或估算。",
+    "retained_solids": "莫吉托轻压薄荷叶且不滤去，其他示例无额外留杯制作固体。",
+    "source_quantities_status": "源配方仍保留原有草案/参考状态，few-shot冻结不代表试调定稿。"
+  },
+  "source_style_template": "Use case: stylized-concept. Asset type: individual finished cocktail illustration for a 2D western saloon game's parchment recipe journal and menu. Primary request: draw exactly ONE physically plausible {cocktail_name}, with {glass_shape}, {liquid_description}, {ice_description}, and {garnish_description}. Style/medium: refined hand-painted gouache and watercolor game item illustration, semi-realistic proportions, subtle natural paper-like brush texture INSIDE the painted object only, delicate warm dark-brown contour accents, restrained amber highlights, believable transparent glass, clearly readable silhouette. Composition: square canvas, full glass and entire stem/base and garnish visible, centered with generous clean 12 percent margins, slight elevated three-quarter front view that shows the rim ellipse and drink surface. Lighting: soft warm saloon light from upper left, subtle cool glass reflections, preserve the drink's true color. Backdrop: genuinely transparent alpha outside the object and through unpainted glass areas; no backdrop, no paper card, no tabletop, no cast floor shadow. Constraints: accurate finished serving presentation, no ingredients placed outside glass, no bottles, no bartending tools, no humans, no hats, no frame, no lettering, no labels, no logo, no watermark; no pixel art, no shiny 3D render, no comic face, no exaggerated fantasy shapes. Output: a crisp square transparent PNG suitable for small in-game catalogue cards."
+}
