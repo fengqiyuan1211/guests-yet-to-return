@@ -20,6 +20,9 @@ var _prices: Dictionary = {}
 var _pending: Dictionary = {}
 var _pending_before: Dictionary = {}
 var _busy := false
+# Inventory and workbench contents share one atomic file.
+var workbench: Dictionary = {}
+var workbench_initialized := false
 
 func _ready() -> void:
 	for prefix in ["--slot-wallet=", "--dialogue-save=", "--game-save=", "--menu-save="]:
@@ -219,10 +222,36 @@ func consume_many(amounts: Dictionary) -> bool:
 	shop_changed.emit()
 	return true
 
+func commit_workbench(next: Dictionary, amounts: Dictionary = {}) -> bool:
+	# Publish neither side until the one shared snapshot has been renamed successfully.
+	if not writable or _busy or not _pending.is_empty():
+		last_error="库存记录尚未就绪，请稍后重试。"
+		return false
+	var candidate: RefCounted=InventoryScript.new()
+	if not candidate.restore(inventory.serialize()): return false
+	for id in amounts:
+		if not id is String or not (amounts[id] is int or amounts[id] is float) or not candidate.consume(id,float(amounts[id])):
+			last_error=candidate.last_error if not candidate.last_error.is_empty() else "消耗内容无效。"
+			return false
+	_busy=true
+	var previous:=workbench
+	workbench=next.duplicate(true)
+	if not _write(candidate.serialize(),{}):
+		workbench=previous
+		_busy=false
+		return false
+	inventory.restore(candidate.serialize())
+	workbench_initialized=true
+	if not amounts.is_empty(): _sync_menu()
+	_busy=false
+	changed.emit()
+	shop_changed.emit()
+	return true
+
 func serialize() -> Dictionary:
 	# An unresolved intent is always paired with its original stock, even after debit.
 	var state: Dictionary = inventory.serialize() if _pending.is_empty() else _pending_before.duplicate(true)
-	return {"version": 1, "inventory": state, "pending": _pending.duplicate(true)}
+	return {"version": 1, "inventory": state, "pending": _pending.duplicate(true), "workbench": workbench.duplicate(true)}
 
 func _protect(message: String) -> bool:
 	writable = false
@@ -255,6 +284,8 @@ func _valid_pending(transaction: Variant, before: Dictionary) -> bool:
 	return after.restore(transaction.get("inventory_after")) and after.serialize() == candidate.serialize()
 
 func load_state() -> bool:
+	workbench={}
+	workbench_initialized=false
 	writable = true
 	last_error = ""
 	_pending = {}
@@ -269,6 +300,10 @@ func load_state() -> bool:
 		return _protect("上次的库存未能读取，原记录已保留。")
 	if not _valid_pending(data.get("pending", {}), candidate.serialize()):
 		return _protect("上次的购买记录不完整，原记录已保留。")
+	if not data.get("workbench", {}) is Dictionary:
+		return _protect("工作台记录不完整，原库存已保留。")
+	workbench=data.get("workbench", {}).duplicate(true)
+	workbench_initialized=data.has("workbench")
 	inventory.restore(candidate.serialize())
 	_pending = data.get("pending", {}).duplicate(true)
 	_pending_before = candidate.serialize() if not _pending.is_empty() else {}
@@ -322,8 +357,12 @@ func save_state() -> bool:
 func reset_game() -> bool:
 	# GameSession has already backed up every file after explicit confirmation.
 	var initial: RefCounted = InventoryScript.new()
+	var previous_workbench:=workbench
+	workbench={}
 	if not _write(initial.serialize(), {}):
+		workbench=previous_workbench
 		return false
+	workbench_initialized=true
 	inventory.restore(initial.serialize())
 	_pending = {}
 	_pending_before = {}
@@ -340,7 +379,7 @@ func _write(state: Dictionary, transaction: Dictionary) -> bool:
 	if file == null:
 		last_error = "库存未能保存，请检查存储空间后重试。"
 		return false
-	file.store_string(JSON.stringify({"version": 1, "inventory": state, "pending": transaction}))
+	file.store_string(JSON.stringify({"version": 1, "inventory": state, "pending": transaction, "workbench": workbench}))
 	file.flush()
 	var error := file.get_error()
 	file.close()

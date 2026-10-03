@@ -86,7 +86,7 @@ func run() -> void:
 	check(home.service_started, "Start service preview failed")
 	await screenshot("03-service-preview.png")
 	home.get_node("%OpenButton").pressed.emit()
-	check(Navigation.current_route == &"mixing", "Service action should route to mixing")
+	check(Navigation.current_route == &"drink_selection", "Service action should select a drink before mixing")
 	Navigation.go_to(&"home")
 	await settle()
 	check(home.service_started, "Returning must preserve service preview state")

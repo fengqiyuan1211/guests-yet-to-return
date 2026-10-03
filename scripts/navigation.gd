@@ -4,6 +4,7 @@ signal route_requested(route_id: StringName)
 signal page_changed(route_id: StringName)
 
 const ROUTES: Dictionary = {
+	&"drink_selection": {"title": "为客人选一杯"},
 	&"settings": {"title": "设置"},
 	&"backpack": {"title": "物品栏"},
 	&"slots": {"title": "幸运酒馆"},

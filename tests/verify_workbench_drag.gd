@@ -46,12 +46,12 @@ func run() -> void:
 	check(WorkbenchSession.state.stock==initial_stock,"starting animation never debits stock")
 	bench.measure_waiting=false
 	bench.measure.set_process(false)
-	bench.measure.progress=.67
+	bench.measure.progress=bench.measure.target/bench.measure.volume_limit()
 	await get_tree().create_timer(.35).timeout
 	check(bench.table.preview_amount>0 and bench.table.pour_blend>.9,"bottle tilt and preview liquid advance")
 	check(WorkbenchSession.amount(WorkbenchSession.state.session.vessels.jigger)==0,"preview liquid is not committed contents")
 	await capture("06-drag-measure")
-	bench.measure.progress=.67
+	bench.measure.progress=bench.measure.target/bench.measure.volume_limit()
 	space()
 	space()
 	check(WorkbenchSession.state.stock.gin==570,"space twice debits once")
@@ -76,7 +76,7 @@ func run() -> void:
 	check(is_instance_valid(bench.measure),"resident bottle can be reused by dragging")
 	bench.measure_waiting=false
 	bench.measure.set_process(false)
-	bench.measure.progress=.67
+	bench.measure.progress=bench.measure.target/bench.measure.volume_limit()
 	space()
 	await settle()
 	drag_between(local_point(bench.table.POS.jigger),local_point(bench.table.POS.glass))
@@ -121,12 +121,12 @@ func run() -> void:
 	await settle()
 	bench=home.active_page
 	check(WorkbenchSession.state==snapshot and bench.table.materials==snapshot.table_materials,"page round trip preserves bottles, contents and stock")
-	var disk: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(WorkbenchSession.save_path))
+	var disk: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(Supplies.save_path)).workbench
 	check(disk.table_materials==snapshot.table_materials,"table arrangement is persisted with production state")
-	var path: String=WorkbenchSession.save_path
-	WorkbenchSession.save_path=path+"/unwritable.json"
+	var path: String=Supplies.save_path
+	Supplies.save_path=path+"/unwritable.json"
 	check(not WorkbenchSession.set_table_materials([]) and WorkbenchSession.state==snapshot,"failed arrangement save preserves all existing state")
-	WorkbenchSession.save_path=path
+	Supplies.save_path=path
 	check(not WorkbenchSession.set_table_materials(["gin","gin"]),"duplicate bottles rejected by service")
 	await capture("09-final-table")
 	WorkbenchSession.last_error=""
@@ -141,7 +141,7 @@ func run() -> void:
 	bench.dose_overrides["lime"]=60
 	from_pantry("lime","jigger")
 	check(is_instance_valid(bench.measure) and bench.measure.target==60,"custom target survives direct drag flow")
-	bench.measure.progress=.67
+	bench.measure.progress=bench.measure.target/bench.measure.volume_limit()
 	space()
 	await settle()
 	drag_between(local_point(bench.table.POS.jigger),local_point(bench.table.POS.glass))

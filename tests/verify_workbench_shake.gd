@@ -1,5 +1,9 @@
 extends "res://tests/verify_workbench_scene.gd"
 
+func _ready() -> void:
+	if DisplayServer.get_name()!="headless": DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_NO_FOCUS,true)
+	super._ready()
+
 func point(local: Vector2) -> Vector2:
 	return bench.table.get_global_transform_with_canvas()*local
 
@@ -16,6 +20,13 @@ func shakes() -> int:
 	return result
 
 func run() -> void:
+	var recognizer=preload("res://scripts/workbench_shake_gesture.gd").new()
+	var false_positive:=false
+	for i in range(30): false_positive=false_positive or recognizer.sample(Vector2(25,0),.02,i*.02)
+	check(not false_positive,"fast one-way movement is carrying rather than shaking")
+	recognizer.reset()
+	for i in range(40): false_positive=false_positive or recognizer.sample(Vector2(1 if i%2==0 else -1,0),.003,i*.003)
+	check(not false_positive,"tiny high-speed pointer jitter cannot earn shake time")
 	WorkbenchSession.reset_game()
 	home=load("res://scenes/home.tscn").instantiate()
 	add_child(home)
@@ -38,24 +49,41 @@ func run() -> void:
 	await get_tree().create_timer(.3).timeout
 	check(bench.table.lift_blend>.95,"pressing closed shaker lifts it from the counter")
 	check(shakes()==0,"holding a lifted shaker does not count as shaking")
-	for i in range(20):
+	for i in range(30):
 		motion(center+Vector2(sin(i*.6)*60,0))
 		await get_tree().create_timer(.015).timeout
-	check(shakes()==0,"horizontal movement does not count as front-back shaking")
+	check(shakes()>0,"horizontal back-and-forth now counts as shaking")
 	for i in range(40):
 		motion(center+Vector2(0,sin(i*.5)*65))
 		await get_tree().create_timer(.02).timeout
 	check(shakes()>0,"vertical pointer strokes record front-back shaking")
-	motion(center+Vector2(0,-65))
-	await get_tree().create_timer(.15).timeout
-	var far: Transform2D=bench.table.shaker_pose()
-	await capture("11-shake-far")
-	motion(center+Vector2(0,65))
-	await get_tree().create_timer(.15).timeout
-	var near: Transform2D=bench.table.shaker_pose()
-	check(near.get_scale().x>far.get_scale().x,"shaker grows when pulled toward player")
-	check((near*center).y>(far*center).y,"front-back depth changes projected position")
-	check(not is_equal_approx(near.get_rotation(),far.get_rotation()),"fore-aft stroke changes whole-assembly tilt")
+	pointer(point(center),false)
+	await get_tree().create_timer(.4).timeout
+	var old_shakes:=shakes()
+	pointer(point(center),true)
+	await get_tree().create_timer(.3).timeout
+	for i in range(25):
+		motion(center+Vector2(i*2,0))
+		await get_tree().create_timer(.025).timeout
+	pointer(point(center+Vector2(48,0)),false)
+	check(shakes()==old_shakes,"slow one-way carry never counts as shaking")
+	await get_tree().create_timer(.4).timeout
+	pointer(point(center),true)
+	await get_tree().create_timer(.3).timeout
+	var elsewhere:=Vector2(865,340)
+	motion(elsewhere)
+	await get_tree().create_timer(.2).timeout
+	check((bench.table.shaker_pose()*center).distance_to(elsewhere+Vector2(0,-45))<15,"lifted shaker follows pointer into a different part of the table")
+	for i in range(32):
+		motion(elsewhere+Vector2(1,.8)*sin(i*.6)*55)
+		await get_tree().create_timer(.02).timeout
+	check(shakes()>old_shakes and not bench.table.moving_shaker,"diagonal oscillation far to the right remains shake rather than permanently switching to pour")
+	bench.table.set_process(false)
+	await capture("50-free-position-shake")
+	bench.table.set_process(true)
+	var active_shakes:=shakes()
+	await get_tree().create_timer(.3).timeout
+	check(not bench.table.motion_is_active() and shakes()==active_shakes,"pausing movement stops shake feedback and accounting")
 	check(WorkbenchSession.state.session.lid,"shaker remains assembled during movement")
 	await capture("12-shake-near")
 	pointer(point(center),false)

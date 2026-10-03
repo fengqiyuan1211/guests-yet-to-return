@@ -1,0 +1,7 @@
+{
+  "version": "layers-v1",
+  "status": "playtest_unconfirmed",
+  "stir_rate": 0.8,
+  "shake_rate": 1.4,
+  "uniform_tolerance": 0.015
+}

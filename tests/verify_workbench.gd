@@ -20,6 +20,7 @@ func _ready() -> void:
 	if not WorkbenchSession.save_path.begins_with("/tmp/") or not SlotWallet.save_path.begins_with("/tmp/") or not StoryDialogue.save_path.begins_with("/tmp/") or not GameSession.save_path.begins_with("/tmp/"):
 		get_tree().quit(2)
 		return
+	check(preload("res://tests/workbench_fixture.gd").seed(Supplies,WorkbenchSession),"isolated warehouse fixture")
 	TimeManager.set_process(false)
 	call_deferred("run")
 
@@ -58,7 +59,7 @@ func run() -> void:
 	check(WorkbenchSession.state.stock.gin == stock-18 and WorkbenchSession.amount(WorkbenchSession.state.session.vessels.shaker)==18,"transfer does not charge")
 	check(not command("shake-open","shake",{"vessel":"shaker","seconds":.25}),"cannot shake open shaker")
 	check(command("ice","ice",{"vessel":"shaker","ice":"cube"}),"add ice")
-	check(not command("ice-again","ice",{"vessel":"shaker","ice":"cube"}),"cannot add ice twice")
+	check(command("ice-again","ice",{"vessel":"shaker","ice":"cube"}),"can add another portion of ice")
 	check(command("lid","lid"),"close lid")
 	check(command("shake","shake",{"vessel":"shaker","seconds":.25}),"closed shaker accepts motion")
 	check(not command("filter-closed","filter",{"source":"shaker","vessel":"glass"}),"filter needs open lid")
@@ -78,11 +79,11 @@ func run() -> void:
 	var before := JSON.stringify(WorkbenchSession.state)
 	check(not command("overflow","withdraw",{"material":"gin","ml":1}),"overflow rejected")
 	check(JSON.stringify(WorkbenchSession.state)==before,"failed operation changes nothing")
-	var path := WorkbenchSession.save_path
-	WorkbenchSession.save_path = "/tmp/workbench-no-such-directory/record.json"
+	var path := Supplies.save_path
+	Supplies.save_path = "/tmp/workbench-no-such-directory/record.json"
 	check(not command("bad-disk","discard"),"save failure reported")
 	check(JSON.stringify(WorkbenchSession.state)==before,"disk failure does not mutate live state")
-	WorkbenchSession.save_path = path
+	Supplies.save_path = path
 	check(command("discard","discard") and command("newer","start"),"discard then restart")
 	check(WorkbenchSession.state.stock.gin==stock-108,"discard does not refund")
 	check(command("persist","withdraw",{"material":"lime","ml":20}),"new cup material")
@@ -113,7 +114,7 @@ func run() -> void:
 	await settle()
 	bench.measure_waiting=false
 	bench.measure.set_process(false)
-	bench.measure.progress=.67
+	bench.measure.progress=bench.measure.target/bench.measure.volume_limit()
 	bench.measure.queue_redraw()
 	await capture("03-measure")
 	var key := InputEventKey.new()
@@ -126,11 +127,11 @@ func run() -> void:
 	get_viewport().push_input(key,true)
 	check(WorkbenchSession.state.session.vessels.jigger.contents.gin==30,"second space no double pour")
 	# Under / over / timeout all record the indicated amount, never an extra charge.
-	for sample in [[.2,3],[.9,14],[1.0,15]]:
+	for sample in [[.2,3],[.9,13.5],[1.0,15]]:
 		bench._begin_measure("soda",10)
 		bench.measure.set_process(false)
 		bench.measure.progress=sample[0]
-		var soda_before: int = WorkbenchSession.state.stock.soda
+		var soda_before: float = WorkbenchSession.state.stock.soda
 		if sample[0] == 1.0:
 			bench.measure._process(5.0)
 		else:

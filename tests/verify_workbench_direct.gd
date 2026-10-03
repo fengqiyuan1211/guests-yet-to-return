@@ -3,7 +3,7 @@ extends "res://tests/verify_workbench_drag.gd"
 func dose() -> void:
 	bench.measure_waiting=false
 	bench.measure.set_process(false)
-	bench.measure.progress=.67
+	bench.measure.progress=bench.measure.target/bench.measure.volume_limit()
 	space()
 
 func run() -> void:
@@ -22,7 +22,7 @@ func run() -> void:
 	check(WorkbenchSession.state.stock.gin==600,"direct pour preview does not debit")
 	bench.measure_waiting=false
 	bench.measure.set_process(false)
-	bench.measure.progress=.67
+	bench.measure.progress=bench.measure.target/bench.measure.volume_limit()
 	await get_tree().create_timer(.4).timeout
 	await capture("11-direct-pour")
 	dose()
@@ -72,13 +72,14 @@ func run() -> void:
 	check(WorkbenchSession.command("direct-idempotent",sid,"withdraw",{"material":"soda","ml":90,"vessel":"glass"}),"direct command accepted")
 	before=WorkbenchSession.snapshot()
 	check(WorkbenchSession.command("direct-idempotent",sid,"withdraw",{"material":"soda","ml":90,"vessel":"glass"}) and WorkbenchSession.state==before,"direct command retry returns receipt without another debit")
-	check(WorkbenchSession.command("direct-fill",sid,"withdraw",{"material":"soda","ml":90,"vessel":"glass"}),"direct fill approaches ice-displaced capacity")
+	check(WorkbenchSession.command("direct-fill",sid,"withdraw",{"material":"soda","ml":130,"vessel":"glass"}),"direct fill approaches ice-displaced capacity")
 	before=WorkbenchSession.snapshot()
-	check(not WorkbenchSession.command("direct-overflow",sid,"withdraw",{"material":"soda","ml":40,"vessel":"glass"}) and WorkbenchSession.state==before,"overflow rejects atomically with ice displacement")
-	var path: String=WorkbenchSession.save_path
-	WorkbenchSession.save_path=path+"/unwritable.json"
-	check(not WorkbenchSession.command("direct-write-fail",sid,"withdraw",{"material":"gin","ml":5,"vessel":"glass"}) and WorkbenchSession.state==before,"failed direct save preserves stock contents and log")
-	WorkbenchSession.save_path=path
+	check(WorkbenchSession.command("direct-overflow",sid,"withdraw",{"material":"soda","ml":40,"vessel":"glass"}) and WorkbenchSession.amount(WorkbenchSession.state.session.vessels.glass)+WorkbenchSession.ice_volume(WorkbenchSession.state.session.vessels.glass)==350,"overflow pours only remaining room")
+	before=WorkbenchSession.snapshot()
+	var path: String=Supplies.save_path
+	Supplies.save_path=path+"/unwritable.json"
+	check(not WorkbenchSession.command("direct-write-fail",sid,"withdraw",{"material":"gin","ml":5,"vessel":"mixing"}) and WorkbenchSession.state==before,"failed direct save preserves stock contents and log")
+	Supplies.save_path=path
 	WorkbenchSession.last_error=""
 	# Explicit glass grip arms serving; dragging to the marked area serves immediately.
 	drag_between(local_point(bench.table._rect("glass").position+Vector2(85,220)),local_point(bench.table.SERVE_RECT.get_center()))

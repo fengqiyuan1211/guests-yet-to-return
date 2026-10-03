@@ -1,22 +1,43 @@
 extends Control
 signal close_requested
+const ToolHelp=preload("res://scripts/workbench_tool_help.gd")
+const ToolButton=preload("res://scripts/workbench_tool_button.gd")
+const Evaluation=preload("res://scripts/workbench_evaluation.gd")
+const ResultCard = preload("res://scripts/workbench_result_card.gd")
+const WorkbenchAudio = preload("res://scripts/workbench_audio.gd")
 const Table = preload("res://scripts/workbench_table.gd")
 const Art = preload("res://scripts/workbench_art.gd")
+const GarnishPreview = preload("res://scripts/workbench_garnish_preview.gd")
+const IcePreview = preload("res://scripts/workbench_ice_preview.gd")
 const Measure = preload("res://scripts/workbench_measure.gd")
 const PAPER = preload("res://assets/codex/journal-paper-v1.png")
 const INK := Color("573c28")
 const CREAM := Color("efdab3")
 var surface: Control
 var table: Control
-var note: Label
+var note: RichTextLabel
+var recipe_title: Label
+var recipe_subtitle: Label
 var status_label: Label
 var duration_label: Label
+var technique_panel: Panel
+var technique_title: Label
+var technique_detail: Label
+var technique_progress: ProgressBar
+var guidance_rule: Dictionary={}
+var guidance_trace: Dictionary={}
+var evaluation_model:=Evaluation.config()
 var footer: Label
 var context: Control
 var pantry: Control
 var pantry_items: Control
+var pantry_scroll: ScrollContainer
+var pantry_empty: Label
 var category_buttons: Array[Button] = []
 var item_buttons: Dictionary = {}
+var stock_labels: Dictionary = {}
+var gold_label: Label
+var external_page: Control
 var modal: Control
 var measure: Control
 var selected := ""
@@ -29,9 +50,17 @@ var counter := 0
 var dose_overrides: Dictionary = {}
 var measure_waiting := false
 var pending_confirm := Callable()
+var feedback_panel: Panel
+var feedback_text: Label
+var restock_button: Button
+var restock_material:=""
 var next_hint: Label
+var sfx: Node
 
 func _ready() -> void:
+	SaloonAudio.acquire_workbench(self)
+	sfx=WorkbenchAudio.new()
+	add_child(sfx)
 	surface=Control.new()
 	surface.size=Vector2(1600,900)
 	add_child(surface)
@@ -40,14 +69,17 @@ func _ready() -> void:
 	surface.add_child(table)
 	table.vessel_selected.connect(_select)
 	table.prop_selected.connect(_prop)
-	table.transfer_requested.connect(func(source, destination): _act("transfer",{"source":source,"vessel":destination}))
+	table.transfer_requested.connect(_transfer_vessel)
 	table.motion_completed.connect(_motion)
+	table.spoon_remove_requested.connect(func(): _act("spoon",{"target":""}))
 	table.item_dropped.connect(_dropped)
 	table.serve_requested.connect(_finish)
+	table.empty_requested.connect(_empty_vessel)
 	_build()
 	resized.connect(_fit)
 	_fit()
 	WorkbenchSession.changed.connect(_refresh)
+	SlotWallet.balance_changed.connect(func(_value): _update_stock_ui())
 	if WorkbenchSession.state.session.is_empty() or WorkbenchSession.state.session.get("status")=="discarded": _issue("start")
 	_refresh()
 	if data.get("status")=="finished": _result()
@@ -112,11 +144,32 @@ func _paper(parent: Node, rect: Rect2) -> TextureRect:
 	return paper
 
 func _build() -> void:
-	_paper(surface,Rect2(22,22,300,298))
-	_text(surface,Rect2(46,39,254,36),"试调订单",29,INK)
-	_text(surface,Rect2(46,79,254,28),"码头试作 · 配方参考",17,INK)
-	note=_text(surface,Rect2(46,114,258,125),"",21,INK)
-	_text(surface,Rect2(46,246,254,53),"量取 → 加冰 → 摇和 → 过滤\n允许改变用量与步骤",16,INK)
+	_paper(surface,Rect2(22,22,300,388))
+	recipe_title=_text(surface,Rect2(46,39,254,36),"试调配方",27,INK)
+	recipe_title.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
+	recipe_subtitle=_text(surface,Rect2(46,79,254,28),"",15,INK)
+	recipe_subtitle.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
+	var recipe_scroll:=ScrollContainer.new()
+	recipe_scroll.position=Vector2(46,114)
+	recipe_scroll.size=Vector2(258,248)
+	recipe_scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+	surface.add_child(recipe_scroll)
+	note=RichTextLabel.new()
+	note.bbcode_enabled=true
+	note.fit_content=true
+	note.scroll_active=false
+	note.add_theme_font_override("normal_font",preload("res://assets/fonts/NotoSerifSC.ttf"))
+	var adjustment_font:=SystemFont.new()
+	adjustment_font.font_names=PackedStringArray(["PingFang SC","Microsoft YaHei","Noto Sans CJK SC"])
+	adjustment_font.font_weight=600
+	note.add_theme_font_override("bold_font",adjustment_font)
+	note.add_theme_font_size_override("normal_font_size",17)
+	note.add_theme_color_override("default_color",INK)
+	recipe_scroll.add_child(note)
+	note.custom_minimum_size.x=236
+	note.size_flags_horizontal=Control.SIZE_EXPAND_FILL
+	note.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	_text(surface,Rect2(46,370,254,25),"滚动查看用料差异与步骤",14,INK)
 	pantry=_panel(surface,Rect2(1260,18,322,864),Color("382619"))
 	_paper(pantry,Rect2(10,10,302,844))
 	_text(pantry,Rect2(32,30,260,52),"备 料 柜",34,INK).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -125,21 +178,56 @@ func _build() -> void:
 		var b:=_button(pantry,Rect2(21+(i%3)*94,106+(i/3)*47,92,44),name,_show_category.bind(name))
 		b.add_theme_color_override("font_color",INK)
 		category_buttons.append(b)
+	pantry_scroll=ScrollContainer.new()
+	pantry_scroll.position=Vector2(20,217)
+	pantry_scroll.size=Vector2(282,510)
+	pantry_scroll.horizontal_scroll_mode=ScrollContainer.SCROLL_MODE_DISABLED
+	pantry.add_child(pantry_scroll)
 	pantry_items=Control.new()
-	pantry_items.position=Vector2(20,217)
-	pantry_items.size=Vector2(282,510)
-	pantry.add_child(pantry_items)
+	pantry_items.custom_minimum_size=Vector2(268,510)
+	pantry_scroll.add_child(pantry_items)
+	pantry_empty=_text(pantry,Rect2(30,270,260,110),"这一类还没有库存\n按 S 去商店补货",21,INK)
+	pantry_empty.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	_text(pantry,Rect2(27,758,273,47),"拖到杯子或制作容器\n空格停下 · 拖回收起",17,INK).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-	context=_panel(surface,Rect2(340,785,895,70),Color(.12,.085,.055,.85))
+	context=_panel(surface,Rect2(340,780,895,108),Color("f3e2c2"))
 	context.mouse_filter=Control.MOUSE_FILTER_IGNORE
-	status_label=_text(surface,Rect2(350,866,875,30),"",18)
-	duration_label=_text(surface,Rect2(880,835,350,26),"",16)
-	footer=_text(surface,Rect2(25,825,292,30),"Esc 返回 · 半成品自动保留",16)
+	status_label=_text(context,Rect2(16,76,863,27),"",19,INK)
+	technique_panel=_panel(surface,Rect2(350,78,690,127),Color("f3e2c2"))
+	technique_panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	technique_title=_text(technique_panel,Rect2(15,8,660,32),"",23,INK)
+	technique_detail=_text(technique_panel,Rect2(15,42,660,50),"",18,INK)
+	technique_progress=ProgressBar.new()
+	technique_progress.position=Vector2(15,105)
+	technique_progress.size=Vector2(660,24)
+	technique_progress.scale.y=.35
+	technique_progress.show_percentage=false
+	technique_progress.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	for key in ["background","fill"]:
+		var bar:=StyleBoxFlat.new()
+		bar.bg_color=Color("d8c8a9") if key=="background" else Color("b4924f")
+		bar.set_content_margin_all(0)
+		bar.set_corner_radius_all(4)
+		technique_progress.add_theme_stylebox_override(key,bar)
+	technique_panel.add_child(technique_progress)
+	var footer_panel:=_panel(surface,Rect2(22,817,300,71),Color("f3e2c2"))
+	footer_panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	footer=_text(footer_panel,Rect2(14,7,274,27),"Esc 返回 · 半成品自动保留",16,INK)
+	duration_label=_text(footer_panel,Rect2(14,37,274,26),"",18,INK)
 	_button(surface,Rect2(342,22,145,38),"返回 Esc",_leave)
 	_button(surface,Rect2(497,22,130,38),"记录 R",_log)
 	_button(surface,Rect2(637,22,130,38),"重做 N",_restart)
-	next_hint=_text(context,Rect2(12,4,871,62),"",20)
+	_button(surface,Rect2(777,22,120,38),"仓库 B",_open_storage.bind("backpack"))
+	_button(surface,Rect2(907,22,140,38),"商店 S",_open_storage.bind("shop"))
+	gold_label=_text(surface,Rect2(1060,26,190,30),"",20)
+	next_hint=_text(context,Rect2(16,6,863,65),"",23,Color("352416"))
 	next_hint.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	feedback_panel=_panel(surface,Rect2(350,200,690,80),Color("f3e2c2"))
+	feedback_panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	feedback_text=_text(feedback_panel,Rect2(15,8,660,64),"",21,INK)
+	feedback_text.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	restock_button=_button(feedback_panel,Rect2(510,18,165,44),"去商店补货",_open_restock)
+	restock_button.hide()
+	feedback_panel.hide()
 	_show_category("基酒")
 
 func _show_category(value: String) -> void:
@@ -152,40 +240,109 @@ func _show_category(value: String) -> void:
 		child.hide()
 		child.queue_free()
 	item_buttons.clear()
-	var items: Array=[]
-	match value:
-		"基酒": items=[["gin","金酒"],["rum","朗姆酒"],["vodka","伏特加"]]
-		"配料": items=[["lime","青柠汁"],["syrup","糖浆"],["soda","苏打水"]]
-		"装饰": items=[["garnish","青柠角"]]
-		"杯子": items=[["coupe","碟形杯"],["highball","高球杯"]]
-		"冰块": items=[["cube","标准方冰"],["crushed","碎冰"]]
-		"器具": items=[["shaker","摇壶"],["jigger","量酒器"],["spoon","吧勺"],["strainer","滤冰器"],["muddler","轻压棒"],["mixing","搅拌杯"]]
+	stock_labels.clear()
+	var items: Array=WorkbenchSession.pantry_items(value)
+	pantry_empty.visible=items.is_empty()
+	pantry_items.custom_minimum_size=Vector2(268,maxi(510,ceili(items.size()/2.0)*167))
+	pantry_scroll.scroll_vertical=0
 	for i in range(items.size()):
 		var id: String=items[i][0]
 		var label: String=items[i][1]
-		var b:=_button(pantry_items,Rect2((i%2)*142,(i/2)*167,140,165),"",func(): pass)
+		var b:=_button(pantry_items,Rect2((i%2)*136,(i/2)*167,132,165),"",func(): pass)
 		b.gui_input.connect(_pantry_input.bind(value,id))
 		b.add_theme_stylebox_override("normal",_style(Color(0,0,0,0),Color(.45,.32,.17,.25)))
 		b.add_theme_stylebox_override("hover",_style(Color(.89,.74,.44,.3),Color("b38d45")))
-		var art:=TextureRect.new()
-		art.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
-		art.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		art.texture=Art.texture(id)
+		var art: Control
+		if id in ["cube","crushed"]:
+			art=IcePreview.new()
+			art.kind=id
+		elif WorkbenchSession.GARNISHES.has(id) or id in ["sku_mint_leaf","sku_white_cane_sugar"]:
+			art=GarnishPreview.new()
+			art.kind=id
+		else:
+			var texture:=TextureRect.new()
+			texture.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+			texture.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			texture.texture=Art.texture(id)
+			art=texture
 		art.position=Vector2(26,8)
 		art.size=Vector2(88,111)
 		art.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		b.add_child(art)
-		_text(b,Rect2(4,117,132,28),label,20,INK).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-		if WorkbenchSession.MATERIALS.has(id):
-			_text(b,Rect2(4,142,132,20),"%d ml" % int(WorkbenchSession.state.stock.get(id,0)),14,INK).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+		var title:=_text(b,Rect2(4,111,124,34),label,16,INK)
+		title.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+		title.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
+		if value=="器具":
+			b.set_script(ToolButton)
+			b.tooltip_text=ToolHelp.description(id)
+		title.add_theme_font_size_override("font_size",14 if label.length()>8 else 17)
+		if WorkbenchSession.MATERIALS.has(id) or WorkbenchSession.GARNISHES.has(id) or WorkbenchSession.SOLIDS.has(id):
+			var quantity_label:=_text(b,Rect2(4,142,132,20),"",14,INK)
+			quantity_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+			stock_labels[id]=quantity_label
+		if value=="冰块":
+			title.text="方冰 · 4 块\n每份 50 g" if id=="cube" else "碎冰 · 1 铲\n每份 50 g"
+			title.add_theme_font_size_override("font_size",16)
+			title.size.y=48
 		item_buttons[id]=b
+	_update_stock_ui()
 
-func _process(_delta: float) -> void:
+func _update_stock_ui() -> void:
+	if not is_instance_valid(pantry_items): return
+	var available: Array=[]
+	for entry in WorkbenchSession.pantry_items(category): available.append(entry[0])
+	if available!=item_buttons.keys():
+		var previous_scroll:=pantry_scroll.scroll_vertical
+		_show_category(category)
+		pantry_scroll.set_deferred("scroll_vertical",previous_scroll)
+		return
+	if not restock_material.is_empty() and WorkbenchSession.remaining(restock_material)>=1 and is_instance_valid(restock_button):
+		restock_button.hide()
+		feedback_text.size.x=660
+		feedback_text.text="%s已补货，可以继续制作。" % _material_info(restock_material).name
+		restock_material=""
+	if is_instance_valid(gold_label): gold_label.text="金币 %d" % SlotWallet.balance
+	for id in stock_labels:
+		var left: float=WorkbenchSession.remaining(id)
+		var unit: String=WorkbenchSession.GARNISHES[id].unit if WorkbenchSession.GARNISHES.has(id) else (WorkbenchSession.SOLIDS[id].unit if WorkbenchSession.SOLIDS.has(id) else "ml")
+		stock_labels[id].text=("%s %s" % [str(int(left)) if is_equal_approx(left,round(left)) else "%.1f" % left,unit]) if left>0 else "缺货 · S 补货"
+		item_buttons[id].modulate=Color.WHITE if left>0 else Color(.7,.7,.7)
+
+func _open_storage(route: String) -> void:
+	if is_instance_valid(external_page): return
+	_clear_modal()
+	table.stop_gesture()
+	table.cancel_carry()
+	table.input_enabled=false
+	var paths: Dictionary={"shop":"res://scenes/harbor_shop.tscn","backpack":"res://scenes/backpack.tscn"}
+	external_page=load(paths[route]).instantiate()
+	external_page.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	external_page.size=Vector2(1600,900)
+	external_page.close_requested.connect(func():
+		external_page.hide()
+		external_page.queue_free()
+		external_page=null
+		table.input_enabled=true
+		_refresh()
+	)
+	surface.add_child(external_page)
+
+func _process(delta: float) -> void:
+	_update_technique_hint()
+	if is_instance_valid(feedback_panel): feedback_panel.position.y=214 if technique_panel.visible else 78
 	if is_instance_valid(measure):
 		if measure_waiting and table.pour_blend>.95:
 			measure_waiting=false
 			measure.set_process(true)
-		table.preview_amount=measure.progress*measure.target*1.5
+		table.preview_amount=measure.progress*measure.volume_limit()
+
+	if is_instance_valid(external_page) or (is_instance_valid(modal) and not is_instance_valid(measure)):
+		sfx.silence()
+		return
+	var direct_pour: bool=table.pouring and table.pour_blend>.94 and is_instance_valid(measure) and measure.active and measure.is_processing()
+	var transfer_pour: bool=not table.animated_source.is_empty() and table.animation_progress>.24 and table.animation_progress<.72
+	var motion: String=table.technique if table.motion_is_active() else ""
+	sfx.drive(delta,direct_pour or transfer_pour,motion,table.motion_energy)
 
 func _pantry_input(event: InputEvent, tab: String, id: String) -> void:
 	if is_instance_valid(modal): return
@@ -193,6 +350,9 @@ func _pantry_input(event: InputEvent, tab: String, id: String) -> void:
 		table.begin_item_drag(tab,id,table.get_global_transform_with_canvas().affine_inverse()*item_buttons[id].get_global_transform_with_canvas()*event.position)
 
 func _place_material(id: String) -> bool:
+	if WorkbenchSession.remaining(id)<.1:
+		_notify_empty(id)
+		return false
 	var items: Array = WorkbenchSession.state.get("table_materials",[]).duplicate()
 	if not items.has(id): items.append(id)
 	if not WorkbenchSession.set_table_materials(items):
@@ -218,15 +378,17 @@ func _dropped(tab: String, id: String, target: String, dragged: bool) -> void:
 				status_label.text="材料已收起，杯中已取用的酒液保留。"
 			else: status_label.text=WorkbenchSession.last_error
 		elif target in Table.POS:
-			_begin_measure(id,int(dose_overrides.get(id,data.recipe.ingredients.get(id,30))),target)
+			_begin_measure(id,float(dose_overrides.get(id,WorkbenchSession.dose_target(id,data))),target)
 		elif target.is_empty() or target.begins_with("bottle:"):
 			_choose_item("基酒",id)
 		else:
 			status_label.text="请拖到成品杯、量酒器或打开的制作容器。"
 		return
-	if tab=="冰块" and target in ["shaker","mixing","glass"]:
+	if WorkbenchSession.SOLIDS.has(id) and target in ["shaker","mixing","glass"]:
+		_act("add_solid",{"material":id,"vessel":target})
+	elif tab=="冰块" and target in ["shaker","mixing","glass"]:
 		_act("ice",{"vessel":target,"ice":id})
-	elif tab=="装饰" and target=="glass": _act("garnish")
+	elif tab=="装饰" and target=="glass": _act("garnish",{"material":id})
 	elif tab=="杯子" and target=="glass": _choose_item(tab,id)
 	elif tab=="器具":
 		if id in ["lid","cap"] and target in ["shaker","lid","cap"]:
@@ -245,7 +407,10 @@ func _choose_item(tab: String, id: String) -> void:
 		return
 	table.stop_gesture()
 	pending_item=""
-	if tab in ["基酒","配料"]:
+	if WorkbenchSession.SOLIDS.has(id):
+		pending_item=id
+		status_label.text="%s：拖入容器加入 1 %s。" % [WorkbenchSession.SOLIDS[id].name,WorkbenchSession.SOLIDS[id].unit]
+	elif tab in ["基酒","配料"]:
 		if not _place_material(id): return
 		selected="bottle"
 		table.selected="bottle"
@@ -253,9 +418,9 @@ func _choose_item(tab: String, id: String) -> void:
 		status_label.text=WorkbenchSession.MATERIALS[id].name+"已放到桌上，拖到杯子或制作容器开始倒入。"
 	elif tab in ["冰块","装饰"]:
 		pending_item=id
-		status_label.text="已取用%s，点击桌上%s。" % ["青柠角" if id=="garnish" else "冰块","成品杯放置" if id=="garnish" else "容器加入"]
+		status_label.text="已取用%s，点击桌上%s。" % [WorkbenchSession.GARNISHES[id].name if WorkbenchSession.GARNISHES.has(id) else "冰块","成品杯放置" if WorkbenchSession.GARNISHES.has(id) else "容器加入"]
 	elif tab=="杯子":
-		_act("cup",{"cup":"coupe" if id=="coupe" else "highball"})
+		_act("cup",{"cup":id})
 		_select("glass")
 	else:
 		if Table.POS.has(id): _select(id)
@@ -265,18 +430,37 @@ func _choose_item(tab: String, id: String) -> void:
 func _issue(kind: String, payload: Dictionary={}) -> bool:
 	counter+=1
 	var id:="%d-%d-%d" % [Time.get_unix_time_from_system(),Time.get_ticks_usec(),counter]
-	return WorkbenchSession.command(id,str(WorkbenchSession.state.session.get("id","")),kind,payload)
+	var before:=data.duplicate(true)
+	var success:=WorkbenchSession.command(id,str(WorkbenchSession.state.session.get("id","")),kind,payload)
+	if success: _addition_feedback(kind,payload,before)
+	elif payload.has("material") and WorkbenchSession.remaining(payload.material)<(.1 if WorkbenchSession.MATERIALS.has(payload.material) else 1): _notify_empty(payload.material)
+	return success
+
+func _transfer_vessel(source: String, destination: String) -> void:
+	var payload: Dictionary={"source":source,"vessel":destination}
+	if source=="shaker" and destination=="glass" and data.get("lid",false):
+		# The three-piece shaker pours through its built-in strainer after uncapping.
+		payload.integrated_strainer=true
+		_act("filter",payload)
+	else:
+		_act("transfer",payload)
 
 func _act(kind: String,payload: Dictionary={}) -> void:
 	table.stop_gesture()
+	if kind=="filter": table.mixing_pour_offset=Vector2.ZERO
 	if not _issue(kind,payload):
 		status_label.text=WorkbenchSession.last_error
 	else:
+		if kind in ["spoon","lid","cup","ice"]: sfx.tap()
+		if kind=="spoon" and data.get("spoon_vessel","").is_empty():
+			technique="shake"
+			table.technique=technique
 		if kind in ["transfer","filter"]:
 			table.animated_source=payload.get("source","")
 			table.animation_progress=0
 			table.animated_destination=payload.get("vessel","")
-		status_label.text={"transfer":"已倒入。","filter":"已过滤入杯，冰留在源容器。","ice":"冰已加入。","lid":"摇壶已盖好。" if data.get("lid",false) else "摇壶已打开。","garnish":"装饰已放好。"}.get(kind,"已保存。")
+			if table.animated_source=="shaker": table.begin_shaker_pour()
+		status_label.text={"spoon":"吧勺已收回。" if data.get("spoon_vessel","").is_empty() else "吧勺已插入。","transfer":"已倒入能容纳的部分，余量保留在原容器。","filter":"已过滤入杯，剩余酒液、冰和固体留在源容器。","ice":"已加冰 %s g；容器累计 %s g。" % [WorkbenchSession.format_amount(WorkbenchSession.ICE_PORTION_G),WorkbenchSession.format_amount(WorkbenchSession.ice_mass(data.vessels[payload.get("vessel","glass")]))],"lid":"摇壶已盖好。" if data.get("lid",false) else "摇壶已打开。","garnish":"第 %d 份装饰已放好。" % WorkbenchSession.garnishes(data.vessels.glass).size(),"cup":"杯型已更换 · 容量 %s ml。" % WorkbenchSession.format_amount(WorkbenchSession.capacity(data,"glass")),"add_solid":"已加入 1 份配料，并扣除对应库存。"}.get(kind,"已保存。")
 		_rebuild_context()
 
 func _refresh() -> void:
@@ -284,10 +468,16 @@ func _refresh() -> void:
 	table.materials=WorkbenchSession.state.get("table_materials",[]).duplicate()
 	table.apply_snapshot(data)
 	table.queue_redraw()
-	var lines: Array[String]=[]
-	for material in data.get("recipe",WorkbenchSession.RECIPE).ingredients:
-		lines.append("%s %d ml  ·  已取 %d" % [WorkbenchSession.MATERIALS[material].name,int(data.get("recipe",WorkbenchSession.RECIPE).ingredients[material]),int(data.get("withdrawn",{}).get(material,0))])
-	note.text="\n".join(lines)
+	var recipe: Dictionary=data.get("recipe",WorkbenchSession.RECIPE)
+	recipe_title.text=str(recipe.name)
+	recipe_title.tooltip_text=str(recipe.name)
+	recipe_subtitle.text=str(recipe.english_name)+" · 配方参考"
+	note.text=preload("res://scripts/workbench_notes.gd").text_for(data,WorkbenchSession)
+	guidance_rule=evaluation_model.rules.get(str(recipe.get("id","")),{}).duplicate(true)
+	if guidance_rule.get("mix")!=technique:
+		guidance_rule.mix=technique
+		guidance_rule.time_window=[6,10] if technique=="shake" else [4,8]
+	guidance_trace=Evaluation.replay(data.get("actions",[]),guidance_rule,WorkbenchSession.MATERIALS,selected if selected in Table.POS else "glass")
 	var duration:=0.0
 	for action in data.get("actions",[]):
 		if action.kind==technique: duration+=float(action.payload.get("seconds",0))
@@ -296,6 +486,7 @@ func _refresh() -> void:
 	elif data.get("status")=="finished": status_label.text="试作完成。可查看结果，或另起一杯。"
 	elif status_label.text.is_empty(): status_label.text="拖动材料到杯子或制作容器，按空格停止倒入。"
 	_rebuild_context()
+	_update_stock_ui()
 
 func _rebuild_context() -> void:
 	if not is_instance_valid(next_hint): return
@@ -303,34 +494,37 @@ func _rebuild_context() -> void:
 	if data.get("status")=="finished":
 		next_hint.text="这杯已完成 · 空格查看结果 · N 另起一杯"
 		return
+	if selected==data.get("spoon_vessel","") and not selected.is_empty():
+		next_hint.text="吧勺已插在%s里 · 按住杯口或勺柄移动鼠标控制转速\n松手暂停，勺子留在杯中；单击露出的勺柄收回。" % Table.NAMES[selected]
+		return
 	var vessels: Dictionary=data.vessels
 	var glass_amount:=WorkbenchSession.amount(vessels.glass)
 	var jigger_amount:=WorkbenchSession.amount(vessels.jigger)
 	var shaker_amount:=WorkbenchSession.amount(vessels.shaker)
 	var mixing_amount:=WorkbenchSession.amount(vessels.mixing)
 	if selected=="bottle" and not table.bottle.is_empty():
-		var ml: int=int(dose_overrides.get(table.bottle,data.recipe.ingredients.get(table.bottle,30)))
-		next_hint.text="%s · 目标 %d ml · 滚轮调剂量
-拖到成品杯、量酒器或打开的制作容器，空格停止倒入" % [WorkbenchSession.MATERIALS[table.bottle].name,ml]
+		var ml: float=float(dose_overrides.get(table.bottle,WorkbenchSession.dose_target(table.bottle,data)))
+		next_hint.text="%s · 量酒器目标 %s ml · 滚轮调剂量
+拖到量酒器按刻度取量；直接拖入杯中则凭感觉倒入" % [WorkbenchSession.MATERIALS[table.bottle].name,WorkbenchSession.format_amount(ml)]
+		if float(data.recipe.ingredients.get(table.bottle,0))>60: next_hint.text+=" · 按配方分次加入"
 	elif selected=="glass" and glass_amount>0:
 		var waste:=jigger_amount+shaker_amount+mixing_amount
-		next_hint.text="成品杯 %d ml · 拖冰块／装饰到杯中 · 点杯后空格出杯，或拖杯脚到出杯区" % glass_amount
-		if waste>0: next_hint.text+="
-出杯时，其他容器剩余 %d ml 将记为弃置。" % waste
+		next_hint.text="成品杯 %s ml · 冰 %s g · 装饰 %d 份 · 容量 %s ml\n继续加冰／装饰 · 空格或拖杯脚出杯" % [WorkbenchSession.format_amount(glass_amount),WorkbenchSession.format_amount(WorkbenchSession.ice_mass(vessels.glass)),WorkbenchSession.garnishes(vessels.glass).size(),WorkbenchSession.format_amount(WorkbenchSession.capacity(data,"glass"))]
+		if waste>0: next_hint.text+=" · 另有 %s ml 将弃置。" % WorkbenchSession.format_amount(waste)
 	elif selected=="jigger" and jigger_amount>0:
-		next_hint.text="量酒器已有 %d ml · 拖到摇壶、搅拌杯或成品杯，松手倒入" % jigger_amount
+		next_hint.text="量酒器已有 %s ml · 拖到摇壶、搅拌杯或成品杯，松手倒入" % WorkbenchSession.format_amount(jigger_amount)
 	elif selected=="shaker":
-		next_hint.text="壶盖已合上 · 按住壶身拿起，上下推拉前后摇和 · 空格打开盖子" if data.lid else "将材料和冰拖入摇壶 · 空格或拖盖子合盖 · 拖滤冰器到壶上过滤入杯"
+		next_hint.text="壶盖已合上 · 任意方向快速来回摇 · 拖到成品杯松手倒酒\n倒酒时自动取下小顶盖，冰留在摇壶内；空格可打开壶盖" if data.lid else "将材料和冰拖入摇壶 · 空格或拖盖子合盖\n拖摇壶到成品杯倒入；也可从器具菜单拖滤冰器到壶上过滤"
 	elif selected=="mixing":
-		next_hint.text="将材料拖入搅拌杯 · 拖旁边的吧勺到杯口，再按住杯口画圈 · 拖滤冰器到杯上出酒"
+		next_hint.text="将材料拖入搅拌杯 · 从器具菜单拖吧勺到杯口，按住移动控制转速 · 拖杯身下部直倒，或拖滤冰器到杯上过滤"
 	elif jigger_amount>0:
-		next_hint.text="下一步：量酒器已有 %d ml，拖到要接酒的容器。" % jigger_amount
+		next_hint.text="下一步：量酒器已有 %s ml，拖到要接酒的容器。" % WorkbenchSession.format_amount(jigger_amount)
 	elif glass_amount>0:
-		next_hint.text="杯中已有 %d ml · 可以继续直倒、加冰或装饰 · 点成品杯后空格出杯" % glass_amount
+		next_hint.text="杯中已有 %s ml · 可以继续直倒、加冰或装饰 · 点成品杯后空格出杯" % WorkbenchSession.format_amount(glass_amount)
 	elif shaker_amount>0:
 		next_hint.text="下一步：摇壶加冰、合盖，再拿起前后摇和。"
 	elif mixing_amount>0:
-		next_hint.text="下一步：把吧勺拖到搅拌杯，沿杯口画圈搅拌。"
+		next_hint.text="下一步：把吧勺拖到搅拌杯，按住杯口移动鼠标控制自动搅拌。"
 	else:
 		next_hint.text="从右侧拖材料到杯子或制作容器 · 空格停止倒入
 右上角是成品杯，点击菜单杯型即可替换；已有酒液会保留。"
@@ -339,15 +533,23 @@ func _select(id: String) -> void:
 	serve_armed=id=="glass"
 	selected=id
 	table.selected=id
+	if data.get("spoon_vessel","")==id:
+		technique="stir"
+		table.technique="stir"
+	elif technique=="stir":
+		technique="shake"
+		table.technique="shake"
 	if id=="shaker" and data.get("lid",false):
 		technique="shake"
 		table.technique="shake"
 	if not pending_item.is_empty():
 		var item:=pending_item
 		pending_item=""
-		if item=="garnish":
+		if WorkbenchSession.SOLIDS.has(item):
+			_act("add_solid",{"material":item,"vessel":id})
+		elif WorkbenchSession.GARNISHES.has(item):
 			if id!="glass": status_label.text="请把装饰放到成品杯。"
-			else: _act("garnish")
+			else: _act("garnish",{"material":item})
 		else: _act("ice",{"vessel":id,"ice":item})
 	_refresh()
 
@@ -367,18 +569,44 @@ func _prop(id: String) -> void:
 
 func _set_technique(value: String) -> void:
 	table.stop_gesture()
+	if value=="stir":
+		if selected not in ["mixing","glass","shaker"]: _select("mixing")
+		if data.get("spoon_vessel","")!=selected:
+			if not _issue("spoon",{"target":selected}):
+				status_label.text=WorkbenchSession.last_error
+				return
+			sfx.tap()
 	technique=value
 	table.technique=value
 	if value=="shake": _select("shaker")
 	elif selected not in ["mixing","glass","shaker"]: _select("mixing")
 	_refresh()
-	status_label.text="盖好壶盖，按住壶身拿起；鼠标上下推拉来前后摇和，松手放回。" if value=="shake" else ("按住杯口沿圆周拖动搅拌。" if value=="stir" else "按住杯子上下拖动轻压。")
+	status_label.text="盖好壶盖，按住壶身拿起；拖到任意位置快速来回摇动；拖到成品杯松手倒酒。" if value=="shake" else ("吧勺已插入 · 按住杯口或勺柄移动鼠标控制转速；单击勺柄收回。" if value=="stir" else "按住杯子上下拖动轻压。")
+
+func _update_technique_hint() -> void:
+	if not is_instance_valid(technique_panel): return
+	technique_panel.visible=data.get("status")=="mixing" and selected in ["shaker","mixing","glass"] and technique in ["shake","stir"] and float(guidance_trace.get("traced",0))>0 and not is_instance_valid(modal) and not is_instance_valid(external_page)
+	if not technique_panel.visible: return
+	var window: Array=guidance_rule.get("time_window",[6,10])
+	var elapsed: float=float(guidance_trace.get("min_seconds",0))+table.accumulated
+	var stage: String="继续混合" if elapsed<float(window[0]) else ("已到位，可停手" if elapsed<=float(window[1]) else "偏久，建议停手")
+	var longest: float=float(guidance_trace.get("max_seconds",0))+table.accumulated
+	if longest>float(window[1]): stage="已有材料偏久，建议停手"
+	var name: String="摇和" if technique=="shake" else "搅拌"
+	var required: String=evaluation_model.rules.get(str(data.recipe.get("id","")),{}).get("mix",technique)
+	if required!=technique: stage="本配方需"+("摇和" if required=="shake" else "搅拌")
+	technique_title.text="%s %.1f 秒 / 建议 %s–%s 秒  ·  %s" % [name,elapsed,WorkbenchSession.format_amount(float(window[0])),WorkbenchSession.format_amount(float(window[1])),stage]
+	technique_title.add_theme_color_override("font_color",Color("3e6344") if required==technique and elapsed>=float(window[0]) and longest<=float(window[1]) else INK)
+	technique_detail.text="节奏力度：%s · %s\n%s" % [table.pace_text(),WorkbenchSession.LiquidState.description(data.vessels[selected]),"盖好壶盖，按住快速来回摇" if technique=="shake" else "按住移动调速，无需画圆；松手暂停"]
+	technique_progress.max_value=float(window[1])*1.5
+	technique_progress.value=elapsed
+	technique_panel.tooltip_text="试玩推荐时长；只计有效动作，以最后加入材料的混合时间为准。力度按鼠标节奏估算。"
 
 func _motion(kind: String, seconds: float) -> void:
 	if data.get("status")!="mixing": return
-	if not _issue(kind,{"vessel":selected,"seconds":seconds}): status_label.text=WorkbenchSession.last_error
+	if not _issue(kind,{"vessel":selected,"seconds":seconds,"control":clampf(table.control_integral/maxf(.001,table.accumulated),0,1)}): status_label.text=WorkbenchSession.last_error
 
-func _dialog(title: String, height := 520.0) -> Panel:
+func _dialog(title: String, height := 520.0, width := 800.0) -> Panel:
 	table.stop_gesture()
 	_clear_modal()
 	table.input_enabled = false
@@ -390,12 +618,13 @@ func _dialog(title: String, height := 520.0) -> Panel:
 	dim.color = Color(0.06,.04,.025,.78)
 	dim.size = modal.size
 	modal.add_child(dim)
-	var p := _panel(modal,Rect2(400,(900-height)/2,800,height),Color("352a23"))
-	_text(p,Rect2(30,20,670,49),title,30)
-	_button(p,Rect2(706,20,65,46),"×",_clear_modal)
+	var p := _panel(modal,Rect2((1600-width)/2,(900-height)/2,width,height),Color("352a23"))
+	_text(p,Rect2(30,20,width-130,49),title,30)
+	_button(p,Rect2(width-94,20,65,46),"×",_clear_modal)
 	return p
 
 func _clear_modal() -> void:
+	sfx.silence()
 	pending_confirm=Callable()
 	if is_instance_valid(table):
 		table.pouring = false
@@ -425,17 +654,22 @@ func _dosing_panel(title: String) -> Panel:
 	surface.add_child(modal)
 	table.input_enabled=false
 	context.hide()
-	var p:=_panel(modal,Rect2(348,663,876,197),Color(.14,.095,.045,.95))
-	_text(p,Rect2(20,8,680,33),title,23)
+	var p:=_panel(modal,Rect2(348,92,876,197),Color("f3e2c2"))
+	_text(p,Rect2(20,8,680,33),title,23,INK)
 	_button(p,Rect2(807,8,51,36),"×",_clear_modal)
 	return p
 
-func _begin_measure(material: String, target: int, vessel := "jigger") -> void:
+func _begin_measure(material: String, target: float, vessel := "jigger") -> void:
 	if data.get("status")!="mixing" or not WorkbenchSession.writable: return
 	if not Table.POS.has(vessel) or (vessel=="shaker" and data.lid):
 		status_label.text="请先打开摇壶盖，或选择其他接酒容器。"
 		return
 	if not _place_material(material): return
+	var available:=minf(WorkbenchSession.remaining(material),WorkbenchSession.capacity(data,vessel)-WorkbenchSession.amount(data.vessels[vessel])-WorkbenchSession.ice_volume(data.vessels[vessel]))
+	if available<.1:
+		status_label.text="容器已满或原料不足，请换容器或补货。"
+		return
+	target=clampf(target,0.5,60.0)
 	var p:=_dosing_panel("倒入%s · %s" % [Table.NAMES[vessel],WorkbenchSession.MATERIALS[material].name])
 	table.pour_vessel=vessel
 	table.bottle=material
@@ -443,21 +677,26 @@ func _begin_measure(material: String, target: int, vessel := "jigger") -> void:
 	table.queue_redraw()
 	measure=Measure.new()
 	measure.target=target
+	measure.precise=vessel=="jigger"
+	measure.max_ml=minf(available,target*1.5) if measure.precise else available
+	# Free pouring has no target marker and its flow rate varies slightly per bottle lift.
+	if not measure.precise: measure.seconds=measure.max_ml/randf_range(22.0,29.0)
+	measure.reference=data.recipe.ingredients.has(material)
 	measure_waiting=true
 	measure.set_process(false)
 	measure.position=Vector2(45,43)
 	measure.size=Vector2(760,113)
 	p.add_child(measure)
 	measure.decided.connect(func(ml,golden):
-		var success:=_issue("withdraw",{"material":material,"ml":ml,"target_ml":target,"golden":golden,"vessel":vessel})
+		var success:=_issue("withdraw",{"material":material,"ml":ml,"target_ml":target,"golden":golden,"method":"jigger" if vessel=="jigger" else "free_pour","vessel":vessel})
 		_clear_modal()
-		status_label.text=(("黄金用量！" if golden else "已倒入。")+"%s %d ml → %s" % [WorkbenchSession.MATERIALS[material].name,ml,Table.NAMES[vessel]]) if success else WorkbenchSession.last_error
+		status_label.text=(("推荐范围内 · " if golden else "已倒入。")+"%s %s ml → %s" % [WorkbenchSession.MATERIALS[material].name,WorkbenchSession.format_amount(ml),Table.NAMES[vessel]]) if success else WorkbenchSession.last_error
 		if success:
 			_select(vessel)
 			serve_armed=false
 		_show_category(category)
 	)
-	_text(p,Rect2(200,150,600,35),"空格 停止倒入     ·     Esc 取消",22)
+	_text(p,Rect2(200,150,600,35),"空格 停止倒入     ·     Esc 取消",24,INK)
 
 func _finish() -> void:
 	table.stop_gesture()
@@ -467,23 +706,75 @@ func _finish() -> void:
 		status_label.text=WorkbenchSession.last_error
 
 func _result() -> void:
-	var p := _dialog("试作完成 · " + str(data.recipe.name),580)
-	var result: Dictionary = data.result
-	var rows := [str(data.recipe.english_name),"", "成品杯实际用量"]
-	for id in result.get("contents",{}).get("contents",{}):
-		rows.append("%s   %d ml" % [WorkbenchSession.MATERIALS[id].name,int(result.contents.contents[id])])
-	var waste := 0
-	for qty in result.get("waste",{}).values():
-		waste += int(qty)
-	rows.append("\n其他容器弃置：%d ml\n步骤、用量与动作时长已保存。\n味觉评分、成本和配方保存尚未接入。" % waste)
-	_text(p,Rect2(30,92,740,370),"\n".join(rows),22)
-	_text(p,Rect2(30,481,740,64),"空格 另起一杯     ·     Esc 返回桌面",23)
+	var p:=_dialog("",760,1020)
+	var evaluation: Dictionary=data.result.get("evaluation",{})
+	var accent:=Color(str(evaluation.get("color","8c9aa2")))
+	var style:=_style(Color("f1e2c3"),accent)
+	style.set_border_width_all(3)
+	style.set_corner_radius_all(12)
+	p.add_theme_stylebox_override("panel",style)
+	var paper:=TextureRect.new()
+	paper.texture=PAPER
+	paper.position=Vector2(6,6)
+	paper.size=Vector2(1008,748)
+	paper.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+	paper.modulate=Color(1,1,1,.16)
+	paper.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	p.add_child(paper)
+	p.move_child(paper,0)
+	var card:=ResultCard.new()
+	card.name="FinishedDrinkCard"
+	card.position=Vector2(20,65)
+	card.size=Vector2(980,630)
+	card.result=data.result.duplicate(true)
+	card.result["cup"]=data.result.get("cup",data.cup)
+	card.result["capacity_ml"]=data.result.get("capacity_ml",WorkbenchSession.capacity(data,"glass"))
+	p.add_child(card)
+	_text(p,Rect2(34,20,800,30),"这一杯的出品",23,INK)
+	_text(p,Rect2(45,704,930,38),"空格 另起一杯     ·     Esc 返回桌面     ·     R 查看依据",22,INK)
 	pending_confirm=func():
 		if _issue("start"): _clear_modal()
 
+func _result_details() -> void:
+	var p:=_dialog("这一杯的评价依据",700,1020)
+	var scroll:=ScrollContainer.new()
+	scroll.position=Vector2(30,85)
+	scroll.size=Vector2(960,525)
+	p.add_child(scroll)
+	var rows: Array[String]=[]
+	var evaluation: Dictionary=data.result.get("evaluation",{})
+	for reason in evaluation.get("reasons",[]): rows.append("· "+str(reason))
+	var flavours: Array[String]=[]
+	for tag in evaluation.get("tags",[]): flavours.append(str(tag.text))
+	if not flavours.is_empty(): rows.append("\n风味："+"、".join(flavours))
+	rows.append("\n成品实际用料")
+	for id in data.result.contents.contents:
+		rows.append("%s  %s ml" % [WorkbenchSession.MATERIALS[id].name,WorkbenchSession.format_amount(float(data.result.contents.contents[id]))])
+	for id in data.result.contents.get("solids",{}):
+		rows.append("%s  %s %s" % [WorkbenchSession.SOLIDS[id].name,WorkbenchSession.format_amount(float(data.result.contents.solids[id])),WorkbenchSession.SOLIDS[id].unit])
+	var decorations: Dictionary={}
+	for id in WorkbenchSession.garnishes(data.result.contents): decorations[id]=int(decorations.get(id,0))+1
+	for id in decorations: rows.append("%s  %d %s" % [WorkbenchSession.GARNISHES[id].name,decorations[id],WorkbenchSession.GARNISHES[id].unit])
+	rows.append("杯内冰：%s g" % WorkbenchSession.format_amount(WorkbenchSession.ice_mass(data.result.contents)))
+	var waste:=0.0
+	for amount in data.result.get("waste",{}).values(): waste+=float(amount)
+	rows.append("其他容器弃置：%s ml" % WorkbenchSession.format_amount(waste))
+	rows.append("\n评价说明")
+	for note_text in evaluation.get("notes",["旧记录没有评级，未追溯重算。"]): rows.append(str(note_text))
+	rows.append("本页为出品评价，尚未交付顾客或结算销售。")
+	var label:=Label.new()
+	label.custom_minimum_size=Vector2(930,0)
+	label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	label.text="\n".join(rows)
+	label.add_theme_font_size_override("font_size",22)
+	label.add_theme_color_override("font_color",CREAM)
+	scroll.add_child(label)
+	_text(p,Rect2(30,626,940,42),"空格 返回成品卡     ·     Esc 返回桌面",23)
+	pending_confirm=_result
+
 func _restart() -> void:
 	var p := _dialog("丢弃这一杯，重新试作？",320)
-	_text(p,Rect2(30,94,740,90),"已用材料不会退回；上一杯的动作记录会保留。\n新的试作仍使用剩余练习库存。",22)
+	_text(p,Rect2(30,94,740,90),"已用材料不会退回；上一杯的动作记录会保留。\n继续使用仓库剩余原料，缺料需到商店补货。",22)
 	_text(p,Rect2(30,222,740,61),"空格 确认重做     ·     Esc 继续当前制作",22)
 	pending_confirm=func():
 		if data.get("status")=="mixing" and not _issue("discard"):
@@ -501,13 +792,25 @@ func _log() -> void:
 	label.add_theme_font_size_override("font_size",21)
 	label.add_theme_color_override("font_color",CREAM)
 	var lines: Array[String] = []
-	var names := {"withdraw":"量取","transfer":"倒入","filter":"过滤","ice":"加冰","lid":"开合盖","cup":"选杯","garnish":"装饰","shake":"摇和","stir":"搅拌","muddle":"轻压","finish":"出杯","discard":"丢弃"}
+	var names := {"spoon":"取放吧勺","withdraw":"量取","transfer":"倒入","filter":"过滤","ice":"加冰","lid":"开合盖","cup":"选杯","garnish":"装饰","shake":"摇和","stir":"搅拌","muddle":"轻压","finish":"出杯","discard":"丢弃","empty":"倒空容器"}
 	var index := 0
 	for action in data.get("actions",[]):
 		index += 1
 		var detail := ""
 		if action.kind == "withdraw":
-			detail = "%s %d ml → %s" % [WorkbenchSession.MATERIALS[action.payload.material].name,int(action.payload.ml),Table.NAMES.get(action.payload.get("vessel","jigger"),"容器")]
+			detail = "%s %s ml → %s" % [WorkbenchSession.MATERIALS[action.payload.material].name,WorkbenchSession.format_amount(float(action.get("actual_ml",action.payload.ml))),Table.NAMES.get(action.payload.get("vessel","jigger"),"容器")]
+		elif action.kind=="add_solid":
+			var solid: Dictionary=WorkbenchSession.SOLIDS[action.payload.material]
+			detail="%s 1 %s" % [solid.name,solid.unit]
+		elif action.kind=="garnish":
+			var decoration: Dictionary=WorkbenchSession.GARNISHES.get(action.payload.get("material","garnish"),{})
+			detail="%s 1 %s" % [decoration.get("name","装饰"),decoration.get("unit","件")]
+		elif action.kind=="empty":
+			detail="%s · 损耗 %s ml · 冰 %s g" % [Table.NAMES[action.payload.vessel],WorkbenchSession.format_amount(WorkbenchSession.amount(action.removed)),WorkbenchSession.format_amount(WorkbenchSession.ice_mass(action.removed))]
+		elif action.has("pour"):
+			detail="%s → %s · %s ml · 冰 %s g" % [Table.NAMES[action.payload.source],Table.NAMES[action.payload.vessel],WorkbenchSession.format_amount(action.pour.ml),WorkbenchSession.format_amount(action.pour.ice_g)]
+		elif action.kind=="spoon":
+			detail="收回" if action.payload.get("target","").is_empty() else "插入"+Table.NAMES.get(action.payload.target,"容器")
 		elif action.payload.has("seconds"):
 			detail = "%.2f 秒" % action.payload.seconds
 		elif action.payload.has("source"):
@@ -517,10 +820,11 @@ func _log() -> void:
 	scroll.add_child(label)
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN] and not is_instance_valid(modal) and not table.bottle.is_empty():
+	if is_instance_valid(external_page): return
+	if event is InputEventMouseButton and event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN] and not is_instance_valid(modal) and not table.bottle.is_empty() and not Rect2(1260,18,322,864).has_point(table.get_global_transform_with_canvas().affine_inverse()*event.position) and not Rect2(22,22,300,298).has_point(table.get_global_transform_with_canvas().affine_inverse()*event.position):
 		var material: String=table.bottle
-		var previous: int=int(dose_overrides.get(material,data.recipe.ingredients.get(material,30)))
-		dose_overrides[material]=clampi(previous+(5 if event.button_index==MOUSE_BUTTON_WHEEL_UP else -5),5,60)
+		var previous: float=float(dose_overrides.get(material,WorkbenchSession.dose_target(material,data)))
+		dose_overrides[material]=clampf(previous+(5 if event.button_index==MOUSE_BUTTON_WHEEL_UP else -5),5,60)
 		selected="bottle"
 		_rebuild_context()
 		get_viewport().set_input_as_handled()
@@ -538,12 +842,19 @@ func _input(event: InputEvent) -> void:
 			elif is_instance_valid(modal): _clear_modal()
 			else: _leave()
 			get_viewport().set_input_as_handled()
-		elif not is_instance_valid(modal) and event.keycode in [KEY_R,KEY_N]:
-			if event.keycode==KEY_R: _log()
-			else: _restart()
+		elif event.keycode==KEY_R and is_instance_valid(modal) and data.get("status")=="finished":
+			_result_details()
+			get_viewport().set_input_as_handled()
+		elif not is_instance_valid(modal) and event.keycode in [KEY_R,KEY_N,KEY_B,KEY_S]:
+			match event.keycode:
+				KEY_R: _log()
+				KEY_N: _restart()
+				KEY_B: _open_storage("backpack")
+				KEY_S: _open_storage("shop")
 			get_viewport().set_input_as_handled()
 
 func _leave() -> void:
+	sfx.silence()
 	table.stop_gesture()
 	if close_requested.get_connections().is_empty():
 		get_tree().change_scene_to_file("res://scenes/home.tscn")
@@ -551,8 +862,78 @@ func _leave() -> void:
 		close_requested.emit()
 
 func _exit_tree() -> void:
+	SaloonAudio.release_workbench(self)
+	if is_instance_valid(sfx): sfx.silence()
 	if is_instance_valid(measure):
 		measure.active = false
 		measure.set_process(false)
 	if is_instance_valid(table):
 		table.stop_gesture()
+
+func _material_info(id: String) -> Dictionary:
+	return WorkbenchSession.MATERIALS.get(id,WorkbenchSession.SOLIDS.get(id,WorkbenchSession.GARNISHES.get(id,{})))
+
+func _notify_empty(id: String) -> void:
+	var info:=_material_info(id)
+	if info.is_empty(): return
+	restock_material=id
+	feedback_panel.show()
+	restock_button.show()
+	feedback_text.size.x=480
+	feedback_text.text="%s%s · 可去商店补货" % [info.name,"已用完" if WorkbenchSession.remaining(id)<=.001 else "不足一次用量"]
+	status_label.text=feedback_text.text
+
+func _addition_feedback(kind: String, payload: Dictionary, before: Dictionary) -> void:
+	if not is_instance_valid(feedback_panel): return
+	if kind in ["start","select_recipe"]:
+		feedback_panel.hide()
+		restock_material=""
+		return
+	var message:=""
+	var material:=str(payload.get("material","garnish" if kind=="garnish" else ""))
+	var vessel:=str(payload.get("vessel","glass"))
+	var info:=_material_info(material)
+	if kind=="withdraw": message="加入 %s %s ml → %s" % [info.name,WorkbenchSession.format_amount(WorkbenchSession.amount(data.vessels[vessel])-WorkbenchSession.amount(before.vessels[vessel])),Table.NAMES[vessel]]
+	elif kind in ["add_solid","garnish"]: message="加入 %s 1 %s → %s" % [info.name,info.get("unit","份"),Table.NAMES[vessel]]
+	elif kind=="ice": message="加入%s %s g → %s\n此容器累计冰量 %s g" % ["方冰" if payload.ice=="cube" else "碎冰",WorkbenchSession.format_amount(WorkbenchSession.ICE_PORTION_G),Table.NAMES[vessel],WorkbenchSession.format_amount(WorkbenchSession.ice_mass(data.vessels[vessel]))]
+	elif kind in ["transfer","filter"]:
+		var source: Dictionary=before.vessels[payload.source]
+		var left: Dictionary=data.vessels[payload.source]
+		var ml:=WorkbenchSession.amount(source)-WorkbenchSession.amount(left)
+		var ice:=WorkbenchSession.ice_mass(source)-WorkbenchSession.ice_mass(left)
+		message="倒入 %s ml%s → %s" % [WorkbenchSession.format_amount(ml)," · 冰 %s g" % WorkbenchSession.format_amount(ice) if ice>0 else "",Table.NAMES[vessel]]
+		message+="\n%s剩余 %s ml · 冰 %s g%s" % [Table.NAMES[payload.source],WorkbenchSession.format_amount(WorkbenchSession.amount(left)),WorkbenchSession.format_amount(WorkbenchSession.ice_mass(left)),"（过滤保留固体）" if kind=="filter" else ""]
+	elif kind=="empty":
+		message="已倒掉 %s ml · 冰 %s g 及容器内配料\n%s已清空，原料不退回库存" % [WorkbenchSession.format_amount(WorkbenchSession.amount(before.vessels[vessel])),WorkbenchSession.format_amount(WorkbenchSession.ice_mass(before.vessels[vessel])),Table.NAMES[vessel]]
+
+	if message.is_empty(): return
+	feedback_panel.show()
+	feedback_text.size.x=660
+	feedback_text.text=message
+	# Keep an unfilled restock shortcut available across subsequent additions.
+	if not material.is_empty() and not info.is_empty() and WorkbenchSession.remaining(material)<(.1 if WorkbenchSession.MATERIALS.has(material) else 1):
+		_notify_empty(material)
+		feedback_text.text=message+"\n"+feedback_text.text
+	elif not restock_material.is_empty() and WorkbenchSession.remaining(restock_material)<1:
+		feedback_text.size.x=480
+		restock_button.show()
+	else:
+		restock_material=""
+		restock_button.hide()
+
+func _open_restock() -> void:
+	var sku:=str(_material_info(restock_material).get("sku_id",""))
+	_open_storage("shop")
+	if is_instance_valid(external_page) and external_page.has_method("focus_item") and not sku.is_empty(): external_page.focus_item(sku)
+
+func _empty_vessel(vessel: String) -> void:
+	if data.get("status")!="mixing" or is_instance_valid(modal): return
+	table.stop_gesture()
+	if _issue("empty",{"vessel":vessel}):
+		table.animated_source=""
+		table.transition_progress=1.0
+		table.drain_flash=1.0
+		sfx.tap()
+		status_label.text="%s已倒空，材料记为损耗；其他容器保留。" % Table.NAMES[vessel]
+		_rebuild_context()
+	else: status_label.text=WorkbenchSession.last_error

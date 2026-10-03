@@ -15,6 +15,7 @@ var story_choices: HBoxContainer
 var _restoring_reception := false
 
 func _ready() -> void:
+	Navigation.register_page(&"drink_selection", preload("res://scenes/drink_selection.tscn"))
 	Navigation.register_page(&"mixing", preload("res://scenes/workbench.tscn"))
 	Navigation.register_page(&"slots", preload("res://scenes/slot_machine.tscn"))
 	Navigation.register_page(&"codex", preload("res://scenes/codex.tscn"))
@@ -84,7 +85,7 @@ func _on_open_pressed() -> void:
 	if TimeManager.fast_forwarding:
 		return
 	if service_started:
-		Navigation.go_to(&"mixing")
+		Navigation.go_to(&"drink_selection")
 		return
 	TimeManager.start_early()
 
@@ -124,7 +125,7 @@ func _on_business_opened(_day: int) -> void:
 func _on_business_closed(completed_day: int) -> void:
 	_show_closed_state(true, completed_day)
 	# Only an active service workbench ends with the shift. Daytime browsing stays open.
-	if Navigation.current_route == &"mixing":
+	if Navigation.current_route in [&"mixing", &"drink_selection"]:
 		Navigation.go_to(&"home")
 
 func _show_closed_state(just_closed: bool, completed_day: int) -> void:

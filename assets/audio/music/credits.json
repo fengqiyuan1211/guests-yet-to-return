@@ -71,6 +71,18 @@
       "processing": "In-game 94% playback slowdown with a slight pitch drop, 3.5 second crossfade, night playlist slot 2.",
       "checked_on": "2026-09-30",
       "edit_note": "Follows the nighttime jazz track and keeps the western acoustic mood for the rest of the night."
+    },
+    {
+      "id": "workbench-george-street",
+      "title": "George Street Shuffle",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "license": "CC BY 4.0",
+      "url": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300035",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "source_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/George%20Street%20Shuffle.mp3",
+      "source_sha256": "15ee9995e01ffe91678db6ba072ec13cf0bf258f17c01677c5367009932b9c07",
+      "processing": "Original recording; shared Music bus and 3.5 second crossfade.",
+      "checked_on": "2026-10-03"
     }
   ]
 }
