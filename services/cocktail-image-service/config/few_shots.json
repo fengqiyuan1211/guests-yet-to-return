@@ -1,0 +1,445 @@
+[
+  {
+    "id": "last_word",
+    "glass_shape": "coupe",
+    "rgb": [
+      213,
+      222,
+      165
+    ],
+    "rgb_basis": "game_art_approximation_for_example_selection_not_a_measured_color_or_chemical_simulation",
+    "recipe": {
+      "id": "last_word",
+      "revision": 1,
+      "name": "遗言",
+      "story": "遗言曾出现在底特律运动俱乐部的酒单上，后来被西雅图的调酒师重新带回吧台。金酒、绿查特、樱桃利口酒和青柠汁各占一份，四种等量材料至今仍是它的特色。",
+      "ingredients": [
+        {
+          "sku_id": "sku_gin_london_dry",
+          "name": "伦敦干金酒",
+          "amount": 22.5,
+          "unit": "ml",
+          "use": "基酒"
+        },
+        {
+          "sku_id": "sku_green_chartreuse",
+          "name": "绿查特酒",
+          "amount": 22.5,
+          "unit": "ml",
+          "use": "配料"
+        },
+        {
+          "sku_id": "sku_maraschino",
+          "name": "马拉斯奇诺樱桃利口酒",
+          "amount": 22.5,
+          "unit": "ml",
+          "use": "配料"
+        },
+        {
+          "sku_id": "sku_lime_juice",
+          "name": "鲜榨青柠汁",
+          "amount": 22.5,
+          "unit": "ml",
+          "use": "配料"
+        }
+      ],
+      "ice": [
+        {
+          "name": "标准方冰",
+          "amount": 150,
+          "unit": "g",
+          "use": "制作冰"
+        }
+      ],
+      "retained_solids": [],
+      "glass": "碟形杯",
+      "preparation": "冷杯→量取→加冰→摇和→过滤"
+    },
+    "expected_visual": {
+      "glass": "a delicate thin-stemmed classic coupe cocktail glass with a shallow rounded bowl, short-medium stem and circular foot",
+      "liquid": "a softly cloudy pale jade-green cocktail, subtle grey-green citrus hue, NOT luminous neon green, filled just below the rim",
+      "ice": "NO ice remaining in the serving glass; this is shaken with ice and strained",
+      "garnish": "NO garnish, matching this game's source recipe",
+      "style_id": "saloon-cocktail-cutout-v1",
+      "story_affects_recipe": false,
+      "reference_role": "demonstrate_style_and_recipe_to_visible_serving_facts_not_a_target_recipe"
+    },
+    "image_file": "config/reference_images/last_word.png",
+    "image_sha256": "f09c8fb5bc8569f37d421be6ce6680337db26f3dd238551622e2052c0945e892",
+    "source": {
+      "catalog_record_id": "last_word",
+      "source_code": "A1",
+      "source_glass": "冷却鸡尾酒杯",
+      "original_image_path": "res://assets/art/cocktails/last_word.png",
+      "original_prompt_record_id": "last_word",
+      "original_prompt_sha256": "bda21d9baa0869877c0847dda75a9f241fa34a02ebcf3a6917d70b8dc00bc826",
+      "optional_garnishes_selected": [],
+      "serving_solids_basis": "No retained preparation solids in this frozen serving example."
+    }
+  },
+  {
+    "id": "mojito",
+    "glass_shape": "highball",
+    "rgb": [
+      240,
+      243,
+      221
+    ],
+    "rgb_basis": "game_art_approximation_for_example_selection_not_a_measured_color_or_chemical_simulation",
+    "recipe": {
+      "id": "mojito",
+      "revision": 1,
+      "name": "莫吉托",
+      "story": "莫吉托来自古巴的调酒文化。当地调酒师以轻盈的朗姆酒搭配薄荷、青柠与苏打水，让这杯清爽的长饮从哈瓦那的吧台走向世界，也让薄荷和青柠成为人们熟悉的夏日味道。",
+      "ingredients": [
+        {
+          "sku_id": "sku_white_rum",
+          "name": "白朗姆酒",
+          "amount": 45,
+          "unit": "ml",
+          "use": "基酒"
+        },
+        {
+          "sku_id": "sku_simple_syrup",
+          "name": "糖浆",
+          "amount": 15,
+          "unit": "ml",
+          "use": "配料"
+        },
+        {
+          "sku_id": "sku_lime_juice",
+          "name": "鲜榨青柠汁",
+          "amount": 20,
+          "unit": "ml",
+          "use": "配料"
+        },
+        {
+          "sku_id": "sku_soda_water",
+          "name": "苏打水",
+          "amount": 60,
+          "unit": "ml",
+          "use": "配料"
+        },
+        {
+          "sku_id": "sku_mint_leaf",
+          "name": "薄荷叶",
+          "amount": 6,
+          "unit": "piece",
+          "use": "制作香草"
+        },
+        {
+          "sku_id": "sku_mint_sprig",
+          "name": "薄荷枝",
+          "amount": 1,
+          "unit": "sprig",
+          "use": "装饰"
+        },
+        {
+          "sku_id": "sku_lime_wedge",
+          "name": "青柠角",
+          "amount": 1,
+          "unit": "piece",
+          "use": "装饰"
+        }
+      ],
+      "ice": [
+        {
+          "name": "碎冰",
+          "amount": 150,
+          "unit": "g",
+          "use": "出品冰"
+        }
+      ],
+      "retained_solids": [
+        "薄荷叶"
+      ],
+      "glass": "高球杯",
+      "preparation": "轻压薄荷→加冰→加酒→轻搅→装饰"
+    },
+    "expected_visual": {
+      "glass": "a tall straight-sided transparent highball glass with a solid clear base and realistic proportions",
+      "liquid": "a nearly colorless faintly pale yellow-green sparkling drink, with a few lightly pressed green mint leaves naturally dispersed mainly in the lower part and delicate soda bubbles",
+      "ice": "clear-white crushed ice loosely filling the highball, irregular small fragments, NOT large square cubes",
+      "garnish": "exactly one fresh mint sprig protruding at the rim and exactly one lime wedge resting on the rim; no extra whole lime slices submerged because this recipe uses lime juice",
+      "style_id": "saloon-cocktail-cutout-v1",
+      "story_affects_recipe": false,
+      "reference_role": "demonstrate_style_and_recipe_to_visible_serving_facts_not_a_target_recipe"
+    },
+    "image_file": "config/reference_images/mojito.png",
+    "image_sha256": "d179b8882e8d039437b1400c9235e5e95e8099748076ad1ddc2aa068b560b7ac",
+    "source": {
+      "catalog_record_id": "mojito",
+      "source_code": "A2",
+      "source_glass": "高球杯",
+      "original_image_path": "res://assets/art/cocktails/mojito.png",
+      "original_prompt_record_id": "mojito",
+      "original_prompt_sha256": "bdd2ea4efd8f34b31a59c294eb0175dd1cd81698836c0e87273aa1ad15683c2f",
+      "optional_garnishes_selected": [],
+      "serving_solids_basis": "Original Mojito notes lightly press mint without straining; other examples have no retained preparation solids."
+    }
+  },
+  {
+    "id": "gin_and_tonic",
+    "glass_shape": "balloon",
+    "rgb": [
+      246,
+      249,
+      247
+    ],
+    "rgb_basis": "game_art_approximation_for_example_selection_not_a_measured_color_or_chemical_simulation",
+    "recipe": {
+      "id": "gin_and_tonic",
+      "revision": 1,
+      "name": "金汤力",
+      "story": "金汤力的故事常被追溯到英属印度：人们为缓和奎宁的苦味，加入金酒、糖与柑橘。如今它成了简洁的酒吧经典，杜松子香、微苦与气泡构成了熟悉的清爽风味。",
+      "ingredients": [
+        {
+          "sku_id": "sku_gin_london_dry",
+          "name": "伦敦干金酒",
+          "amount": 50,
+          "unit": "ml",
+          "use": "基酒"
+        },
+        {
+          "sku_id": "sku_tonic_water",
+          "name": "汤力水",
+          "amount": 150,
+          "unit": "ml",
+          "use": "配料"
+        },
+        {
+          "sku_id": "sku_lime_wedge",
+          "name": "青柠角",
+          "amount": 1,
+          "unit": "piece",
+          "use": "装饰"
+        }
+      ],
+      "ice": [
+        {
+          "name": "标准方冰",
+          "amount": 150,
+          "unit": "g",
+          "use": "出品冰"
+        }
+      ],
+      "retained_solids": [],
+      "glass": "球形杯",
+      "preparation": "加冰→加酒→轻搅→装饰"
+    },
+    "expected_visual": {
+      "glass": "a large round balloon-shaped Copa gin glass, a wide rounded bowl narrowing slightly toward its rim, an elegant stem and circular foot",
+      "liquid": "a truly clear colorless sparkling liquid with delicate tonic bubbles, NOT green or amber liquid",
+      "ice": "several transparent standard cubed ice pieces floating naturally in the glass",
+      "garnish": "exactly one green lime wedge on the rim; no mint, no rosemary, no lemon wheel, no straw",
+      "style_id": "saloon-cocktail-cutout-v1",
+      "story_affects_recipe": false,
+      "reference_role": "demonstrate_style_and_recipe_to_visible_serving_facts_not_a_target_recipe"
+    },
+    "image_file": "config/reference_images/gin_and_tonic.png",
+    "image_sha256": "e8aa0d440f78821c3162502c337109db31570e193fea0b18a41e815b549e9be9",
+    "source": {
+      "catalog_record_id": "gin_and_tonic",
+      "source_code": "A3",
+      "source_glass": "球形杯",
+      "original_image_path": "res://assets/art/cocktails/gin_and_tonic.png",
+      "original_prompt_record_id": "gin_and_tonic",
+      "original_prompt_sha256": "b96d5cdccbe672d8869458dcd1c48ff883499ea9469073ff429d5ff604226780",
+      "optional_garnishes_selected": [],
+      "serving_solids_basis": "No retained preparation solids in this frozen serving example."
+    }
+  },
+  {
+    "id": "long_island_iced_tea",
+    "glass_shape": "highball",
+    "rgb": [
+      180,
+      102,
+      35
+    ],
+    "rgb_basis": "game_art_approximation_for_example_selection_not_a_measured_color_or_chemical_simulation",
+    "recipe": {
+      "id": "long_island_iced_tea",
+      "revision": 1,
+      "name": "长岛冰茶",
+      "story": "长岛冰茶看起来像一杯冰茶，杯中却没有茶叶。伏特加、金酒、朗姆、龙舌兰与橙味利口酒汇在一起，可乐给它添上茶色；这份容易误认的外表，也成了它最鲜明的记忆点。",
+      "ingredients": [
+        {
+          "sku_id": "sku_vodka",
+          "name": "伏特加",
+          "amount": 15,
+          "unit": "ml",
+          "use": "基酒"
+        },
+        {
+          "sku_id": "sku_tequila",
+          "name": "龙舌兰酒",
+          "amount": 15,
+          "unit": "ml",
+          "use": "基酒"
+        },
+        {
+          "sku_id": "sku_white_rum",
+          "name": "白朗姆酒",
+          "amount": 15,
+          "unit": "ml",
+          "use": "基酒"
+        },
+        {
+          "sku_id": "sku_gin_london_dry",
+          "name": "伦敦干金酒",
+          "amount": 15,
+          "unit": "ml",
+          "use": "基酒"
+        },
+        {
+          "sku_id": "sku_cointreau",
+          "name": "君度橙酒",
+          "amount": 15,
+          "unit": "ml",
+          "use": "配料"
+        },
+        {
+          "sku_id": "sku_lemon_juice",
+          "name": "鲜榨柠檬汁",
+          "amount": 25,
+          "unit": "ml",
+          "use": "配料"
+        },
+        {
+          "sku_id": "sku_simple_syrup",
+          "name": "糖浆",
+          "amount": 30,
+          "unit": "ml",
+          "use": "配料"
+        },
+        {
+          "sku_id": "sku_cola",
+          "name": "可乐",
+          "amount": 60,
+          "unit": "ml",
+          "use": "配料"
+        },
+        {
+          "sku_id": "sku_lemon_slice",
+          "name": "柠檬片",
+          "amount": 1,
+          "unit": "piece",
+          "use": "装饰"
+        }
+      ],
+      "ice": [
+        {
+          "name": "标准方冰",
+          "amount": 150,
+          "unit": "g",
+          "use": "出品冰"
+        }
+      ],
+      "retained_solids": [],
+      "glass": "高球杯",
+      "preparation": "加冰→量取→补可乐→轻搅→装饰"
+    },
+    "expected_visual": {
+      "glass": "a tall straight-sided transparent highball glass with a sturdy clear base and realistic proportions",
+      "liquid": "a translucent warm amber-brown cola-and-citrus drink with a subtle lighter gold upper area and tiny bubbles, visually like light iced tea but not opaque black cola",
+      "ice": "several clear standard square ice cubes in the finished drink",
+      "garnish": "exactly one thin yellow lemon slice on the rim, shown as this recipe's optional garnish; no mint, no cherry, no straw",
+      "style_id": "saloon-cocktail-cutout-v1",
+      "story_affects_recipe": false,
+      "reference_role": "demonstrate_style_and_recipe_to_visible_serving_facts_not_a_target_recipe"
+    },
+    "image_file": "config/reference_images/long_island_iced_tea.png",
+    "image_sha256": "ee32590c9a45547c2945512ab50101c6c45c8665515b4b9630e711aca29f4e55",
+    "source": {
+      "catalog_record_id": "long_island_iced_tea",
+      "source_code": "A4",
+      "source_glass": "高球杯",
+      "original_image_path": "res://assets/art/cocktails/long_island_iced_tea.png",
+      "original_prompt_record_id": "long_island_iced_tea",
+      "original_prompt_sha256": "9b034efd131c5d69e7b6be290b124fbac4462ec830123eae94b4f8e501c3c03b",
+      "optional_garnishes_selected": [
+        "sku_lemon_slice"
+      ],
+      "serving_solids_basis": "No retained preparation solids in this frozen serving example."
+    }
+  },
+  {
+    "id": "manhattan",
+    "glass_shape": "coupe",
+    "rgb": [
+      154,
+      62,
+      28
+    ],
+    "rgb_basis": "game_art_approximation_for_example_selection_not_a_measured_color_or_chemical_simulation",
+    "recipe": {
+      "id": "manhattan",
+      "revision": 1,
+      "name": "曼哈顿",
+      "story": "十九世纪的纽约报纸已记下曼哈顿的名字，那时威士忌、味美思与苦精的组合还曾用过其他称呼。今天，黑麦威士忌仍是它的经典主角，搅拌后配上一颗樱桃，保留了简洁的做法。",
+      "ingredients": [
+        {
+          "sku_id": "sku_rye_whiskey",
+          "name": "黑麦威士忌",
+          "amount": 50,
+          "unit": "ml",
+          "use": "基酒"
+        },
+        {
+          "sku_id": "sku_sweet_red_vermouth",
+          "name": "甜红味美思",
+          "amount": 20,
+          "unit": "ml",
+          "use": "配料"
+        },
+        {
+          "sku_id": "sku_angostura_bitters",
+          "name": "安格仕苦精",
+          "amount": 1,
+          "unit": "dash",
+          "use": "配料"
+        },
+        {
+          "sku_id": "sku_cocktail_cherry",
+          "name": "鸡尾酒樱桃",
+          "amount": 1,
+          "unit": "piece",
+          "use": "装饰"
+        }
+      ],
+      "ice": [
+        {
+          "name": "标准方冰",
+          "amount": 150,
+          "unit": "g",
+          "use": "制作冰"
+        }
+      ],
+      "retained_solids": [],
+      "glass": "碟形杯",
+      "preparation": "冷杯→量取→加冰→搅拌→过滤→装饰"
+    },
+    "expected_visual": {
+      "glass": "a delicate thin-stemmed classic coupe cocktail glass with a shallow rounded bowl, short-medium stem and circular foot, matching the Last Word glass proportions",
+      "liquid": "a clear rich reddish amber-brown whiskey-and-vermouth cocktail, warm deep ruby highlights, filled just below the rim",
+      "ice": "NO ice remaining in the serving glass; this is stirred with ice and strained",
+      "garnish": "exactly one dark red cocktail cherry resting visibly near the inner rim in the drink; no orange peel, no lemon, no mint, no garnish pick",
+      "style_id": "saloon-cocktail-cutout-v1",
+      "story_affects_recipe": false,
+      "reference_role": "demonstrate_style_and_recipe_to_visible_serving_facts_not_a_target_recipe"
+    },
+    "image_file": "config/reference_images/manhattan.png",
+    "image_sha256": "770eca59c7d351a471b280580906ca4ad6f8b4cec7f208daa929d96aedb549a0",
+    "source": {
+      "catalog_record_id": "manhattan",
+      "source_code": "A5",
+      "source_glass": "冷却鸡尾酒杯",
+      "original_image_path": "res://assets/art/cocktails/manhattan.png",
+      "original_prompt_record_id": "manhattan",
+      "original_prompt_sha256": "1e658ecccbcd6e05c94dd408219b09ea6fed861c3670106c5f48294aa006aa97",
+      "optional_garnishes_selected": [],
+      "serving_solids_basis": "No retained preparation solids in this frozen serving example."
+    }
+  }
+]
