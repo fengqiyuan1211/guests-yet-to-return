@@ -5,6 +5,7 @@ signal vessel_selected(id: String)
 signal prop_selected(id: String)
 signal transfer_requested(source: String, destination: String)
 signal spoon_remove_requested
+signal muddle_contact(pressure: float)
 signal motion_completed(kind: String, seconds: float)
 signal empty_requested(vessel: String)
 signal serve_requested
@@ -25,6 +26,10 @@ const RECTS := {
 	"muddler":Rect2(1160,535,66,180)
 }
 var materials: Array = []
+var material_origins: Dictionary={}
+var retired_materials: Array=[]
+var material_transition:=1.0
+var materials_initialized:=false
 var carry_id := ""
 var carry_tab := ""
 var carry_start := Vector2.ZERO
@@ -42,6 +47,7 @@ var ice_effects: Dictionary = {}
 var ice_batch_effects: Dictionary = {}
 var garnish_effects: Dictionary = {}
 var mint_effects: Dictionary = {}
+var mint_display: Dictionary={}
 var shake_trail: Array = []
 var clock := 0.0
 var selected := ""
@@ -56,6 +62,11 @@ var stir_pointer_time:=-10.0
 var motion_energy := 0.0
 var pointer_speed:=0.0
 var control_integral:=0.0
+var pressure_integral:=0.0
+var muddle_down_played:=false
+var muddler_vessel:=""
+var muddle_gripped:=false
+var muddle_depth:=0.5
 var last_motion_time := -10.0
 var returning_spoon: Dictionary = {}
 var spoon_change_time := -10.0
@@ -93,6 +104,9 @@ var _font: Font = preload("res://assets/fonts/NotoSerifSC.ttf")
 var background: Texture2D
 var lighting: TextureRect
 
+func _init() -> void:
+	texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+
 func _ready() -> void:
 	if ResourceLoader.exists(Art.ROOT+"background.png"):
 		background = load(Art.ROOT+"background.png")
@@ -108,6 +122,13 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	clock += delta
+	for id in data.get("vessels",{}):
+		var rows:=WorkbenchSession.Muddle.leaves(data.vessels[id])
+		if not mint_display.has(id) or mint_display[id].size()!=rows.size(): mint_display[id]=rows.duplicate(true)
+		for i in range(rows.size()): mint_display[id][i].work=move_toward(float(mint_display[id][i].work),float(rows[i].work),delta*5)
+
+	material_transition=minf(1,material_transition+delta/.38)
+	if material_transition>=1: retired_materials.clear()
 	drain_flash=maxf(0,drain_flash-delta)
 	_advance_stir(delta)
 	stir_energy=move_toward(stir_energy,0,delta*4)
@@ -134,6 +155,8 @@ func apply_snapshot(snapshot: Dictionary) -> void:
 		ice_batch_effects.clear()
 		garnish_effects.clear()
 		mint_effects.clear()
+		mint_display.clear()
+		muddler_vessel=""
 		returning_spoon={}
 		stir_energy=0
 	if data.get("spoon_vessel","")!=snapshot.get("spoon_vessel",""):
@@ -179,7 +202,7 @@ func apply_snapshot(snapshot: Dictionary) -> void:
 func contents_for(id: String) -> Dictionary:
 	var actual: Dictionary = data.get("vessels",{}).get(id,{}).get("contents",{})
 	var blend:=transition_progress
-	if animated_source=="shaker" and id in ["shaker","glass"]:
+	if animated_source=="shaker" and id in ["shaker",animated_destination]:
 		blend=smoothstep(.24,.72,animation_progress)
 	var result := Liquid.interpolate(transition_from.get(id,actual),actual,blend)
 	if pouring and id==pour_vessel and not bottle.is_empty():
@@ -196,7 +219,7 @@ func layers_for(id: String) -> Array:
 		return preview.layers
 	var before: Array=transition_layers.get(id,stack)
 	var blend:=transition_progress
-	if animated_source=="shaker" and id in ["shaker","glass"]: blend=smoothstep(.24,.72,animation_progress)
+	if animated_source=="shaker" and id in ["shaker",animated_destination]: blend=smoothstep(.24,.72,animation_progress)
 	# Resample both stacks by volume coordinates, so merges and partial pours animate continuously.
 	return Liquid.display_layers(before,stack,blend)
 
@@ -213,9 +236,31 @@ func stream_color() -> Color:
 		if cursor<=0: return Liquid.color(layer.contents,data.get("liquid_profiles",{}))
 	return Liquid.color(stream.back().contents if not stream.is_empty() else contents_for(animated_destination),data.get("liquid_profiles",{}))
 
-func bottle_rect(id: String) -> Rect2:
-	var index := materials.find(id)
+func _bottle_slot(index: int) -> Rect2:
+	if data.get("mode")=="research_diy": return Rect2(445+maxi(0,index)*118,280,108,270)
 	return Rect2(330+maxi(0,index)*128,280,108,270)
+
+func set_materials(next: Array) -> void:
+	if materials==next: return
+	var origins: Dictionary={}
+	for id in materials: origins[id]=bottle_rect(id)
+	retired_materials.clear()
+	if materials_initialized and not next.is_empty():
+		for id in materials:
+			if not next.has(id): retired_materials.append({"id":id,"rect":origins[id]})
+	materials=next.duplicate()
+	material_origins.clear()
+	for i in range(materials.size()):
+		var slot:=_bottle_slot(i)
+		material_origins[materials[i]]=origins.get(materials[i],Rect2(slot.position+Vector2(35,-22),slot.size))
+	material_transition=0.0 if materials_initialized else 1.0
+	materials_initialized=true
+
+func bottle_rect(id: String) -> Rect2:
+	var slot:=_bottle_slot(materials.find(id))
+	if material_transition>=1: return slot
+	var origin: Rect2=material_origins.get(id,slot)
+	return Rect2(origin.position.lerp(slot.position,smoothstep(0,1,material_transition)),slot.size)
 
 func begin_item_drag(tab: String, id: String, point: Vector2) -> void:
 	if not input_enabled or data.get("status")!="mixing": return
@@ -243,10 +288,14 @@ func can_target(id: String, tab: String, target: String) -> bool:
 
 func _destination(point: Vector2) -> String:
 	if DRAIN_RECT.has_point(point): return "drain"
-	if dragging and selected=="shaker" and _rect("glass").has_point(point): return "glass"
+	if dragging and selected in POS:
+		# Test stationary receiving vessels before the lifted source and its tools.
+		for id in POS:
+			if id!=selected and _rect(id).has_point(point): return id
 	if SERVE_RECT.has_point(point): return "serve"
 	if Rect2(1260,18,322,864).has_point(point): return "pantry"
-	return _hit(point)
+	var hit:=_hit(point)
+	return selected if hit=="muddler" else hit
 
 func _rect(id: String) -> Rect2:
 	if data.get("lid",false):
@@ -258,10 +307,11 @@ func _rect(id: String) -> Rect2:
 func prop_visible(id: String) -> bool:
 	if id=="strainer": return false
 	if id=="spoon": return not str(data.get("spoon_vessel","")).is_empty()
-	if id=="muddler": return dragging and technique=="muddle" and selected in ["mixing","glass","shaker"]
+	if id=="muddler": return not (moving_glass or moving_mixing or moving_shaker) and animated_source!=selected and technique=="muddle" and muddler_vessel==selected and selected in ["mixing","glass","shaker"] and not (selected=="shaker" and data.get("lid",false))
 	return true
 
 func _hit(point: Vector2) -> String:
+	if prop_visible("muddler") and Rect2(muddler_rect().position,Vector2(52,95)).grow(9).has_point(point): return "muddler"
 	if DRAIN_RECT.has_point(point): return "drain"
 	if prop_visible("spoon"):
 		var geometry:=spoon_geometry()
@@ -300,8 +350,8 @@ func _sprite(id: String, rect: Rect2, angle := 0.0, tint := Color.WHITE, group :
 	draw_texture_rect(texture,Rect2(Vector2(-extent.x*.5,-extent.y),extent),false,tint)
 	draw_set_transform(Vector2.ZERO)
 
-func _ellipse(center: Vector2, radii: Vector2, color: Color) -> void:
-	draw_set_transform(center,0,radii)
+func _ellipse(center: Vector2, radii: Vector2, color: Color, group:=Transform2D.IDENTITY) -> void:
+	draw_set_transform_matrix(group*Transform2D(0,radii,0,center))
 	draw_circle(Vector2.ZERO,1,color)
 	draw_set_transform(Vector2.ZERO)
 
@@ -335,8 +385,13 @@ func _draw() -> void:
 		if id=="bottle" and pouring:
 			rect=Rect2(840,352,115,265)
 			angle=-1.0
-		if id=="muddler" and dragging and technique=="muddle" and POS.has(selected):
-			rect.position=last_point-Vector2(25,145)
+		if id=="muddler": rect=muddler_rect()
+		if id=="muddler" and muddle_gripped:
+			var rail:=rect.position+Vector2(65,25)
+			draw_line(rail,rail+Vector2(0,85),Color(.92,.83,.62,.65),5,true)
+			draw_circle(rail+Vector2(0,85*muddle_depth),6,Color("c89544") if motion_is_active() else Color("f0dab0"))
+			if motion_is_active():
+				_ellipse(rect.end-Vector2(rect.size.x*.5,8),Vector2(22,5),Color(.53,.72,.30,.18))
 		_ellipse(rect.position+Vector2(rect.size.x*.53,rect.size.y-3),Vector2(rect.size.x*.44,9),Color(0,0,0,.23))
 		var vessel: Dictionary = data.get("vessels",{}).get(id,{})
 		var contents := contents_for(id)
@@ -352,9 +407,14 @@ func _draw() -> void:
 		var ripple := stir_energy if id==data.get("spoon_vessel","") else (absf(sin(clock*9)) if dragging or transition_progress<1 or (pouring and pour_vessel==id) else 0.0)
 		if id==data.get("spoon_vessel","") and id!="mixing": _draw_attached_spoon(spoon_geometry())
 		if qty>0 and id=="glass":
+			var pivot:=rect.position+Vector2(rect.size.x*.5,rect.size.y)
+			draw_set_transform_matrix(Transform2D(0,pivot)*Transform2D(angle,Vector2.ZERO)*Transform2D(0,-pivot))
 			Liquid.draw(self,fill_rect,contents,WorkbenchSession.capacity(data,id),coupe_shape,ripple,vessel.get("ice","none")!="none",clock,false,ice_fraction,shape,layers_for(id),data.get("liquid_profiles",{}))
+			draw_set_transform(Vector2.ZERO)
+		if id=="glass": _draw_mint_vessel(id,fill_rect,rect,angle,contents,coupe_shape,ice_fraction,ripple,shape,0)
 		if id=="glass" and vessel.get("ice","none")!="none":
 			_draw_ice(fill_rect,rect,angle,str(vessel.ice),contents,WorkbenchSession.capacity(data,id),coupe_shape,false,ice_age,ripple,false,id)
+		if id=="glass": _draw_mint_vessel(id,fill_rect,rect,angle,contents,coupe_shape,ice_fraction,ripple,shape,1)
 		_sprite(texture_id,rect,angle)
 		if id=="mixing" and id==data.get("spoon_vessel",""): _draw_attached_spoon(spoon_geometry())
 		if qty>0 and id=="mixing":
@@ -365,14 +425,17 @@ func _draw() -> void:
 			Liquid.draw(self,liquid_rect,contents,WorkbenchSession.capacity(data,id),false,ripple,vessel.get("ice","none")!="none",clock,true,ice_fraction,shape,layers_for(id),data.get("liquid_profiles",{}))
 			draw_set_transform(Vector2.ZERO)
 		if qty>0 and id=="jigger":
-			_ellipse(rect.position+Vector2(rect.size.x*.5,rect.size.y*.10),Vector2(rect.size.x*.29,3+9*minf(qty/90,1)),Liquid.color(layers_for(id).back().contents if not layers_for(id).is_empty() else contents,data.get("liquid_profiles",{})))
+			var pivot:=rect.position+Vector2(rect.size.x*.5,rect.size.y)
+			var group:=Transform2D(0,pivot)*Transform2D(angle,Vector2.ZERO)*Transform2D(0,-pivot)
+			_ellipse(rect.position+Vector2(rect.size.x*.5,rect.size.y*.10),Vector2(rect.size.x*.29,3+9*minf(qty/90,1)),Liquid.color(layers_for(id).back().contents if not layers_for(id).is_empty() else contents,data.get("liquid_profiles",{})),group)
 		if id==animated_source and RECTS.has(animated_destination) and animation_progress>.2 and animation_progress<.8:
 			var mouth := transfer_lip(id,rect,angle)
 			var target := liquid_impact_point(animated_destination)
 			var flow:=smoothstep(.20,.29,animation_progress)*(1-smoothstep(.64,.78,animation_progress))
 			Liquid.stream(self,mouth,target,stream_color(),clock,flow,maxf(0,(animation_progress-.64)/.20))
-		if id in ["mixing","shaker"] and vessel.get("ice","none")!="none" and not (id=="shaker" and data.get("lid",false)):
-			_draw_ice(fill_rect,rect,angle,str(vessel.ice),contents,WorkbenchSession.capacity(data,id),false,id=="mixing",ice_age,ripple,id=="shaker",id)
+		if id=="mixing": _draw_mint_vessel(id,fill_rect,rect,angle,contents,coupe_shape,ice_fraction,ripple,shape,0)
+		if id in ["mixing","shaker","jigger"] and vessel.get("ice","none")!="none" and not (id=="shaker" and data.get("lid",false)):
+			_draw_ice(fill_rect,rect,angle,str(vessel.ice),contents,WorkbenchSession.capacity(data,id),false,id=="mixing",ice_age,ripple,id in ["shaker","jigger"],id)
 		if id==data.get("spoon_vessel","") and stir_energy>.01 and qty>0:
 			_draw_stir_swirl(fill_rect,contents,WorkbenchSession.capacity(data,id),coupe_shape,id=="mixing",vessel.get("ice","none")!="none",ice_fraction,shape)
 		var solid_index := 0
@@ -384,13 +447,7 @@ func _draw() -> void:
 				Garnish.piece(self,solid_point,13,"sku_white_cane_sugar",0)
 			else: _sprite(solid,Rect2(solid_point-Vector2(0,18),Vector2(27,25)))
 			solid_index+=1
-		if int(vessel.get("solids",{}).get("sku_mint_leaf",0))>0 and not (id=="shaker" and data.get("lid",false)):
-			var ages: Array=[]
-			for time in mint_effects.get(id,[]): ages.append(clock-float(time))
-			var pivot:=rect.position+Vector2(rect.size.x*.5,rect.size.y)
-			draw_set_transform_matrix(Transform2D(0,pivot)*Transform2D(angle,Vector2.ZERO)*Transform2D(0,-pivot))
-			Mint.in_vessel(self,fill_rect,int(vessel.solids.sku_mint_leaf),contents,WorkbenchSession.capacity(data,id),coupe_shape,id=="mixing",ice_fraction,clock,ages,ripple,id=="shaker",shape)
-			draw_set_transform(Vector2.ZERO)
+		if id!="glass": _draw_mint_vessel(id,fill_rect,rect,angle,contents,coupe_shape,ice_fraction,ripple,shape,1 if id=="mixing" else -1)
 		if vessel.get("garnish",false):
 			var ages: Array=[]
 			for time in garnish_effects.get(id,[]): ages.append(clock-float(time))
@@ -475,6 +532,7 @@ func motion_is_active() -> bool:
 	if not dragging or moving_shaker or moving_glass or moving_mixing or clock-last_motion_time>.16: return false
 	var vessel: Dictionary=data.get("vessels",{}).get(selected,{})
 	if vessel.is_empty() or (Liquid.volume(vessel.contents)<=0 and vessel.get("solids",{}).is_empty()): return false
+	if technique=="muddle": return selected in ["glass","mixing","shaker"] and not (selected=="shaker" and data.get("lid",false))
 	if technique=="stir": return data.get("spoon_vessel","")==selected
 	return technique=="shake" and selected=="shaker" and data.get("lid",false)
 
@@ -513,7 +571,21 @@ func _tooltip_style() -> StyleBoxFlat:
 	style.set_corner_radius_all(4)
 	return style
 
+func _draw_mint_vessel(id: String,fill: Rect2,rect: Rect2,angle: float,contents: Dictionary,coupe: bool,ice_fraction: float,motion: float,shape: String,depth_pass: int) -> void:
+	var count:=int(data.get("vessels",{}).get(id,{}).get("solids",{}).get("sku_mint_leaf",0))
+	if count<=0 or (id=="shaker" and data.get("lid",false)): return
+	var ages: Array=[]
+	for time in mint_effects.get(id,[]): ages.append(clock-float(time))
+	var pivot:=rect.position+Vector2(rect.size.x*.5,rect.size.y)
+	draw_set_transform_matrix(Transform2D(0,pivot)*Transform2D(angle,Vector2.ZERO)*Transform2D(0,-pivot))
+	Mint.in_vessel(self,fill,count,contents,WorkbenchSession.capacity(data,id),coupe,id=="mixing",ice_fraction,clock,ages,motion,id=="shaker",shape,depth_pass,data.get("liquid_profiles",{}),mint_display.get(id,WorkbenchSession.Muddle.leaves(data.vessels[id])))
+	draw_set_transform(Vector2.ZERO)
+
 func _draw_bottles() -> void:
+	for retired in retired_materials:
+		var rect: Rect2=retired.rect
+		rect.position+=Vector2(100,-55)*smoothstep(0,1,material_transition)
+		_sprite(retired.id,rect,0,Color(1,1,1,1-material_transition))
 	for id in materials:
 		var rect := bottle_rect(id)
 		if (id==bottle and pour_blend>0) or id==carry_id: continue
@@ -580,8 +652,10 @@ func shaker_pour_pose(progress: float=-1.0) -> Transform2D:
 	if progress<0: progress=animation_progress
 	var rest: Vector2=POS.shaker
 	var mouth: Vector2=Vector2(465,440) if data.get("lid",false) else Vector2(465,546)
-	var angle:=1.05
-	var destination:=rim_point("glass")+Vector2(-38,-72)
+	var target_id:=animated_destination if animated_destination in POS else "glass"
+	var side:=1.0 if rim_point(target_id).x>rest.x else -1.0
+	var angle:=side*1.05
+	var destination:=rim_point(target_id)+Vector2(-side*38,-72)
 	var tilt:=Transform2D(angle,destination-(mouth-rest).rotated(angle))*Transform2D(0,-rest)
 	if progress<.24: return shaker_pour_start.interpolate_with(tilt,smoothstep(0,.24,progress))
 	if progress<.72: return tilt
@@ -600,12 +674,13 @@ func _draw_pourable_shaker() -> void:
 	if pouring_now and animation_progress>.24 and animation_progress<.82:
 		var mouth: Vector2=Vector2(465,440) if data.get("lid",false) else Vector2(465,546)
 		var flow:=smoothstep(.24,.32,animation_progress)*(1-smoothstep(.62,.72,animation_progress))
-		Liquid.stream(self,(pose if animation_progress<.72 else shaker_pour_pose(.65))*mouth,liquid_impact_point("glass"),stream_color(),clock,flow,maxf(0,(animation_progress-.62)/.20))
+		Liquid.stream(self,(pose if animation_progress<.72 else shaker_pour_pose(.65))*mouth,liquid_impact_point(animated_destination),stream_color(),clock,flow,maxf(0,(animation_progress-.62)/.20))
 	elif moving_shaker:
-		var target:=_rect("glass")
-		_ellipse(rim_point("glass"),Vector2(target.size.x*.45,10),Color(.94,.79,.38,.65))
+		for id in POS:
+			if id=="shaker": continue
+			_ellipse(rim_point(id),Vector2(_rect(id).size.x*.45,10),Color(.94,.79,.38,.65))
 		draw_style_box(_tooltip_style(),Rect2(800,264,420,42))
-		draw_string(_font,Vector2(815,293),"拖到成品杯，松手倒酒",HORIZONTAL_ALIGNMENT_LEFT,-1,23,Color("eed7a5"))
+		draw_string(_font,Vector2(815,293),"拖到另一容器，松手倒酒",HORIZONTAL_ALIGNMENT_LEFT,-1,23,Color("eed7a5"))
 
 func _draw_held_shaker() -> void:
 	# All three pieces share one transform: the lid never drifts away from the body.
@@ -629,7 +704,23 @@ func _draw_held_shaker() -> void:
 		_sprite("cap",_rect("cap"),0,Color.WHITE,pose)
 	if dragging:
 		draw_style_box(_tooltip_style(),Rect2(422,218,575,40))
-		draw_string(_font,Vector2(440,245),"摇和中 · 快速来回拖动 · 松手放回" if motion_is_active() else ("松手倒入成品杯" if _rect("glass").has_point(last_point) else "已拿起 · 任意方向快速来回摇 · 拖到杯子松手倒酒"),HORIZONTAL_ALIGNMENT_LEFT,-1,20,Color("eed7a5"))
+		var target:=_destination(last_point)
+		draw_string(_font,Vector2(440,245),"松手倒入"+str(NAMES[target]) if target in POS and target!="shaker" else ("摇和中 · 快速来回拖动 · 松手放回" if motion_is_active() else "已拿起 · 来回摇和 · 拖到另一容器倒酒"),HORIZONTAL_ALIGNMENT_LEFT,-1,20,Color("eed7a5"))
+
+func muddler_rect() -> Rect2:
+	var vessel:=_rect(selected)
+	var base:=vessel.position+vessel.size*Vector2(.5,.87)
+	return Rect2(base-Vector2(26,245+(1-muddle_depth)*65),Vector2(52,245))
+
+func grip_muddler(point: Vector2) -> void:
+	stop_gesture()
+	muddle_gripped=true
+	dragging=true
+	press_point=point
+	last_point=point
+	last_tick=Time.get_ticks_msec()
+	travel=0
+	shake_direction=0
 
 func _gui_input(event: InputEvent) -> void:
 	if not input_enabled: return
@@ -642,6 +733,10 @@ func _gui_input(event: InputEvent) -> void:
 		var id := _hit(event.position)
 		if id.is_empty() or (animated_source=="shaker" and id in ["shaker","lid","cap"]): return
 		stop_gesture()
+		if id=="muddler":
+			grip_muddler(event.position)
+			accept_event()
+			return
 		if id=="spoon":
 			spoon_pressed=true
 			spoon_moved=false
@@ -681,6 +776,13 @@ func _input(event: InputEvent) -> void:
 		if event is InputEventMouseMotion:
 			carry_point=get_global_transform_with_canvas().affine_inverse()*event.position
 			drop_target=_destination(carry_point)
+			if carry_id=="muddler" and drop_target in ["glass","mixing","shaker"] and not (drop_target=="shaker" and data.get("lid",false)):
+				var target:=drop_target
+				cancel_carry()
+				item_dropped.emit("器具","muddler",target,true)
+				if technique=="muddle" and muddler_vessel==target:
+					muddle_depth=.25
+					grip_muddler(carry_point)
 		elif event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_LEFT and not event.pressed:
 			var point: Vector2 = get_global_transform_with_canvas().affine_inverse()*event.position
 			var tab := carry_tab
@@ -694,11 +796,12 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_LEFT and not event.pressed:
 		var point: Vector2=get_global_transform_with_canvas().affine_inverse()*event.position
 		var destination := _destination(point)
-		var should_empty:=destination=="drain" and point.distance_to(press_point)>25 and (selected=="jigger" or moving_glass or moving_mixing or selected=="shaker")
+		var should_empty:=not muddle_gripped and destination=="drain" and point.distance_to(press_point)>25 and (selected=="jigger" or moving_glass or moving_mixing or selected=="shaker")
 		var should_serve := moving_glass and destination=="serve" and movement.length()>25
 		var remove_spoon:=spoon_pressed and not spoon_moved and point.distance_to(press_point)<7
 		var source:=selected
-		var should_transfer: bool=(source=="jigger" and destination in ["shaker","mixing","glass"] or (source=="shaker" or (source=="mixing" and moving_mixing)) and destination=="glass") and point.distance_to(press_point)>25
+		var held_vessel: bool=not muddle_gripped and (source=="jigger" or moving_glass or moving_mixing or (source=="shaker" and not spoon_pressed and (moving_shaker or data.get("lid",false))))
+		var should_transfer: bool=held_vessel and destination in POS and destination!=source and point.distance_to(press_point)>25
 		if moving_mixing: mixing_pour_offset=movement if should_transfer else Vector2.ZERO
 		released_shaker_pose=(shaker_drag_pose() if moving_shaker else shaker_pose()) if source=="shaker" else Transform2D.IDENTITY
 		stop_gesture()
@@ -735,20 +838,33 @@ func _input(event: InputEvent) -> void:
 				travel=0
 				shake_direction=direction
 			travel+=absf(axis)
-			valid=valid and absf(axis)>3 and travel<160
+			var previous_depth:=muddle_depth
+			if muddle_gripped: muddle_depth=clampf(muddle_depth+axis/100.0,0,1)
+			valid=muddle_gripped and muddle_depth>previous_depth and axis>.5 and delta.length()<180 and absf(axis)>absf(delta.x)*1.2 and travel<160
+			var vessel: Dictionary=data.get("vessels",{}).get(selected,{})
+			valid=valid and not (selected=="shaker" and data.get("lid",false)) and not vessel.get("solids",{}).is_empty()
+			if axis< -.5: muddle_down_played=false
+			if valid and travel>8 and not muddle_down_played:
+				muddle_down_played=true
+				muddle_contact.emit(muddle_pressure())
 			movement=(point-press_point).limit_length(40)
 		if valid:
 			last_motion_time=clock
 			motion_energy=1.0
 			control_integral+=seconds*control_quality()
+			pressure_integral+=seconds*muddle_pressure()
 			accumulated+=seconds
 			if accumulated>=.25:
 				motion_completed.emit(technique,minf(accumulated,.5))
 				accumulated=0
 				control_integral=0
+				pressure_integral=0
 		last_point=point
 		last_tick=now
 		queue_redraw()
+
+func muddle_pressure() -> float:
+	return clampf(pointer_speed/650.0,0,1)
 
 func control_quality() -> float:
 	var low:=260.0 if technique=="shake" else 100.0
@@ -758,6 +874,9 @@ func control_quality() -> float:
 	return 1.0
 
 func pace_text() -> String:
+	if technique=="muddle":
+		if not motion_is_active(): return "握住棒柄 · 向上提起，再向下轻压"
+		return "偏重 · 放慢下压" if muddle_pressure()>.72 else ("轻柔 · 保持节奏" if muddle_pressure()>.12 else "很轻 · 稍加深下压")
 	if not dragging or clock-last_motion_time>.18: return "等待来回摇动" if technique=="shake" else "按住杯口或勺柄移动鼠标"
 	var low:=260.0 if technique=="shake" else 100.0
 	var high:=1200.0 if technique=="shake" else 500.0
@@ -767,6 +886,9 @@ func stop_gesture() -> void:
 	if accumulated>.01: motion_completed.emit(technique,minf(accumulated,.5))
 	accumulated=0
 	control_integral=0
+	pressure_integral=0
+	muddle_down_played=false
+	muddle_gripped=false
 	pointer_speed=0
 	shake_gesture.reset()
 	dragging=false

@@ -8,6 +8,9 @@ var result: Dictionary={}
 var accent:=Color("dbb455")
 var clock:=0.0
 
+func _init() -> void:
+	texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+
 func _process(delta: float) -> void:
 	clock+=delta
 	queue_redraw()
@@ -41,11 +44,12 @@ func _draw() -> void:
 	var batches:=WorkbenchSession.ice_batches(vessel)
 	var displacement:=WorkbenchSession.ice_volume(vessel)/40.0
 	Liquid.draw(self,fill,contents,capacity,coupe,.06,not batches.is_empty(),clock,false,displacement,cup,Liquid.State.layers(vessel),result.get("liquid_profiles",{}))
+	var solids: Dictionary=vessel.get("solids",{})
+	Mint.in_vessel(self,fill,int(solids.get("sku_mint_leaf",0)),contents,capacity,coupe,false,displacement,clock,[],0,false,cup,0,result.get("liquid_profiles",{}),WorkbenchSession.Muddle.leaves(vessel))
 	for i in range(batches.size()):
 		Ice.draw(self,fill,batches[i].kind,contents,capacity,coupe,false,10,clock,0,false,i,displacement,cup,int(batches[i].get("pieces",4 if batches[i].kind=="cube" else 10)))
+	Mint.in_vessel(self,fill,int(solids.get("sku_mint_leaf",0)),contents,capacity,coupe,false,displacement,clock,[],0,false,cup,1,result.get("liquid_profiles",{}),WorkbenchSession.Muddle.leaves(vessel))
 	draw_texture_rect(texture,rect,false)
-	var solids: Dictionary=vessel.get("solids",{})
-	Mint.in_vessel(self,fill,int(solids.get("sku_mint_leaf",0)),contents,capacity,coupe,false,displacement,clock,[],0,false,cup)
 	Garnish.draw(self,fill,WorkbenchSession.garnishes(vessel),[],clock,coupe,cup)
 	if result.get("evaluation",{}).get("tier","")=="perfect":
 		for i in range(5):

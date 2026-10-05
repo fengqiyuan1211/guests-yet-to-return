@@ -83,6 +83,31 @@
       "source_sha256": "15ee9995e01ffe91678db6ba072ec13cf0bf258f17c01677c5367009932b9c07",
       "processing": "Original recording; shared Music bus and 3.5 second crossfade.",
       "checked_on": "2026-10-03"
+    },
+    {
+      "id": "shop-carpe-diem",
+      "title": "Carpe Diem",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "url": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1600023",
+      "source_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Carpe%20Diem.mp3",
+      "source_sha256": "b6be2c037058349a3e53eb4410e079835ce6ef69f937e890fcb94548c55712ae",
+      "processing": "Original recording, original pitch and tempo; shared Music bus, 3.5 second crossfade.",
+      "checked_on": "2026-10-05",
+      "scene_note": "Bright, relaxed harbor market direction: clarinet, ukulele, flute, guitar, xylophone, percussion and bass; 96 BPM."
+    },
+    {
+      "id": "research-bossa-antigua",
+      "title": "Bossa Antigua",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "url": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1700069",
+      "source_url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Bossa%20Antigua.mp3",
+      "source_sha256": "322103dd6ac5fae4872122f91d32cccd4d964b86d300585a5a0cdfaf7048af5d",
+      "processing": "Original recording; shared Music bus, 3.5 second crossfade.",
+      "checked_on": "2026-10-05"
     }
   ]
 }

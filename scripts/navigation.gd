@@ -19,6 +19,8 @@ const ROUTES: Dictionary = {
 
 var registered_pages: Dictionary = {}
 var current_route: StringName = &"home"
+var research_view := "entry"
+var research_base_id := ""
 
 func register_page(route_id: StringName, scene: PackedScene) -> void:
 	assert(ROUTES.has(route_id), "Unknown route: %s" % route_id)

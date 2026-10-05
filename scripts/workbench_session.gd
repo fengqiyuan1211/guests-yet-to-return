@@ -1,10 +1,12 @@
 extends Node
+const Muddle=preload("res://scripts/workbench_muddle.gd")
 const LiquidState=preload("res://scripts/workbench_liquid_state.gd")
 const LiquidAppearance=preload("res://scripts/workbench_liquid_appearance.gd")
 ## Production actions and warehouse stock commit together through Supplies.
 ## No sale or guest settlement is performed here.
 signal changed
 const Evaluation=preload("res://scripts/workbench_evaluation.gd")
+const Research=preload("res://scripts/research_data.gd")
 const RECIPE := {"id": "workbench_practice", "version": 1, "name": "码头试作", "english_name": "Dockside Practice", "practice_only": true, "ingredients": {"gin": 30, "lime": 20, "syrup": 10}}
 var MATERIALS := {
 	"gin": {"name": "金酒", "en": "GIN", "sku_id": "sku_gin_london_dry"},
@@ -96,7 +98,41 @@ func pantry_items(tab: String) -> Array:
 	return result
 
 func _fresh() -> Dictionary:
-	return {"schema":2,"table_materials":[],"serial":0,"session":{},"receipts":{},"history":[]}
+	return {"schema":2,"table_materials":[],"serial":0,"session":{},"receipts":{},"history":[],"research":Research.fresh()}
+
+func research_state() -> Dictionary:
+	return state.get("research",Research.fresh()).duplicate(true)
+
+func is_research(session: Dictionary) -> bool:
+	return session.get("mode","") in ["research_diy","research_legendary"]
+
+func research_recipes() -> Array:
+	var records: Array=research_state().recipes.values()
+	records.sort_custom(func(a: Dictionary,b: Dictionary): return int(str(a.id).trim_prefix("diy_"))<int(str(b.id).trim_prefix("diy_")))
+	return records
+
+func research_note(session: Dictionary) -> String:
+	var rows: Array[String]=["[b]本杯制作笔记[/b]", "实际取料 / 已进入成品"]
+	var glass: Dictionary=session.vessels.glass
+	for sku in session.get("consumed",{}):
+		var definition: Dictionary=Supplies.get_item(str(sku))
+		var material: String=ITEM_ALIASES.get(sku,sku)
+		var served:=float(glass.contents.get(material,glass.get("solids",{}).get(material,0)))
+		for garnish in garnishes(glass):
+			if garnish==material: served+=1
+		var unit:=str(definition.get("quantity_unit","份")) if definition.get("storage_mode")=="quantity" else str(definition.get("measurement_unit","份"))
+		rows.append("%s：%s / %s %s" % [str(definition.get("name",sku)).replace("[","[lb]"),format_amount(float(session.consumed[sku])),format_amount(served),unit])
+	if session.get("consumed",{}).is_empty(): rows.append("从右侧取料开始，配方由你创造。")
+	rows.append("\n成品冰量 %s g\n属性在结束试调后揭晓。" % format_amount(ice_mass(glass)))
+	var techniques: Dictionary={}
+	for action in session.actions:
+		if action.kind in ["shake","stir","muddle"]: techniques[action.kind]=float(techniques.get(action.kind,0))+float(action.payload.seconds)
+	for kind in techniques: rows.append("%s %.1f 秒" % [{"shake":"摇和","stir":"搅拌","muddle":"轻压"}[kind],techniques[kind]])
+	var base: Dictionary=session.get("base_recipe",{})
+	if not base.is_empty():
+		rows.append("\n[b]改编起点（仅供参考）[/b]\n"+str(base.name).replace("[","[lb]"))
+		for row in base.get("ingredients",[]): rows.append("%s %s %s" % [str(row.name).replace("[","[lb]"),format_amount(float(row.amount)),row.unit])
+	return "\n".join(rows)
 
 func remaining(material: String) -> float:
 	var definition: Dictionary=MATERIALS.get(material,GARNISHES.get(material,SOLIDS.get(material,{})))
@@ -146,6 +182,11 @@ func _valid(data: Variant) -> bool:
 			return false
 	if not data.get("history") is Array or not _number(data.get("serial"), 1000000000):
 		return false
+	if data.has("research"):
+		if not Research.valid(data.research): return false
+		for record in data.research.recipes.values():
+			if not _valid_vessel(record.result.get("contents"),1000) or not Evaluation.valid(record.result.get("evaluation",{})): return false
+			if record.result.has("draft") and not valid_draft(record.result.draft): return false
 	if data.schema==1:
 		if not data.get("stock") is Dictionary or not _number(data.get("garnish_stock"),20): return false
 		for id in ["gin","rum","vodka","lime","syrup","soda"]:
@@ -167,6 +208,17 @@ func _valid_table_materials(value: Variant) -> bool:
 		seen[id] = true
 	return true
 
+## Table slots are presentation state; replacing a bottle never consumes or refunds stock.
+func place_table_material(id: String) -> bool:
+	if not writable: return _error("存档不可写，请先恢复存档。")
+	if state.get("session",{}).get("status")!="mixing": return _error("请先开始制作。")
+	if not MATERIALS.has(id) or remaining(id)<.1: return _error("这款原料不足，请先补货。")
+	var materials: Array=state.get("table_materials",[]).duplicate()
+	if materials.has(id): return true
+	if materials.size()==5: materials.pop_front()
+	materials.append(id)
+	return set_table_materials(materials)
+
 func set_table_materials(materials: Array) -> bool:
 	if not writable or not _valid_table_materials(materials):
 		return _error("桌上最多摆放五款不同材料，请先拖回一款。")
@@ -181,8 +233,24 @@ func _valid_session(value: Variant) -> bool:
 	var s: Dictionary = value
 	if s.is_empty():
 		return true
-	if not s.get("id") is String or s.get("mode") not in ["practice","workbench"] or s.get("status") not in ["mixing", "finished", "discarded"]:
+	if not s.get("id") is String or s.get("mode") not in ["practice","workbench","research_diy","research_legendary"] or s.get("status") not in ["mixing", "finished", "discarded"]:
 		return false
+	if not s.get("guest",{}) is Dictionary: return false
+	if s.has("base_recipe"):
+		var base: Variant=s.base_recipe
+		if not base is Dictionary or not base.get("id") is String or not base.get("name") is String or not base.get("ingredients") is Array: return false
+		if not (base.get("version") is String or Research.whole(base.get("version"))): return false
+		for row in base.ingredients:
+			if not row is Dictionary or not row.get("name") is String or not row.get("unit") is String or not _number(row.get("amount"),2000): return false
+		if base.has("ice"):
+			if not base.ice is Array: return false
+			for row in base.ice:
+				if not row is Dictionary or not row.get("name") is String or not row.get("unit") is String or not _number(row.get("amount"),2000): return false
+	if is_research(s):
+		if not s.get("inspiration_charged") is bool or not Research.valid_model(s.get("sensory_model")): return false
+		if not _number(s.get("inspiration_cost"),1000) or not s.get("guest",{}).is_empty(): return false
+		if s.has("quality_model") and (not s.quality_model is Dictionary or not s.quality_model.get("rules") is Dictionary or not s.quality_model.get("tiers") is Array): return false
+	if s.has("draft") and not valid_draft(s.draft): return false
 	if not s.get("recipe") is Dictionary or not s.get("actions") is Array or not s.get("result") is Dictionary or not s.get("withdrawn") is Dictionary or not s.get("lid") is bool or s.get("cup") not in CUPS:
 		return false
 	if s.has("liquid_profiles") and not LiquidAppearance.valid_snapshot(s.liquid_profiles): return false
@@ -200,7 +268,6 @@ func _valid_session(value: Variant) -> bool:
 			if not _number(s.vessel_capacities.get(id),1000) or s.vessel_capacities[id]<=0: return false
 	if s.get("spoon_vessel","") not in ["","mixing","glass","shaker"]: return false
 	if s.get("spoon_vessel","")=="shaker" and s.lid: return false
-	if not s.get("guest",{}) is Dictionary: return false
 	if not s.get("consumed",{}) is Dictionary: return false
 	for sku in s.get("consumed",{}):
 		if Supplies.get_item(str(sku)).get("kind")!="ingredient" or not _number(s.consumed[sku],2000): return false
@@ -220,6 +287,7 @@ func _valid_session(value: Variant) -> bool:
 			if not _number(action.pour.get("ml"),1000) or not _number(action.pour.get("fraction"),1) or not _number(action.pour.get("ice_g"),1000) or not action.pour.get("source_ice_left") is bool or not action.pour.get("solids") is Dictionary: return false
 		if action.has("actual_ml") and (action.kind!="withdraw" or not _number(action.actual_ml,1000) or action.actual_ml<=0 or action.actual_ml>action.payload.ml): return false
 		if action.payload.has("control") and not _number(action.payload.control,1): return false
+		if action.payload.has("pressure") and not _number(action.payload.pressure,1): return false
 		if action.has("transfers_ice") and (action.kind!="transfer" or not action.transfers_ice is bool): return false
 		if action.has("mass_g") and (action.kind!="ice" or not _number(action.mass_g,ICE_PORTION_G) or action.mass_g<=0): return false
 		if action.kind=="spoon" and action.payload.get("target","") not in ["","mixing","glass","shaker"]: return false
@@ -245,6 +313,7 @@ func _valid_session(value: Variant) -> bool:
 			return false
 	if s.status == "finished":
 		if s.result.has("evaluation") and not Evaluation.valid(s.result.evaluation): return false
+		if s.result.has("draft") and not valid_draft(s.result.draft): return false
 		if not _valid_vessel(s.result.get("contents"),int(capacity(s,"glass"))) or not s.result.get("waste") is Dictionary or not s.result.get("drink_id") is String:
 			return false
 		for material in s.result.waste:
@@ -270,7 +339,7 @@ func recipe_snapshot(reference: Dictionary) -> Dictionary:
 
 func _valid_recipe_snapshot(recipe: Dictionary) -> bool:
 	if recipe.get("practice_only")==true: return true
-	if recipe.get("source_kind")!="menu_catalog" or not recipe.get("id") is String or not recipe.get("ingredient_rows") is Array: return false
+	if recipe.get("source_kind") not in ["menu_catalog","research_diy","research_legendary"] or not recipe.get("id") is String or not recipe.get("ingredient_rows") is Array: return false
 	if not recipe.get("version") is String and not recipe.get("version") is int and not recipe.get("version") is float: return false
 	for row in recipe.ingredient_rows:
 		if not row is Dictionary or not row.get("name") is String or not row.get("unit") is String or not row.get("sku_id") is String or not _number(row.get("amount"),2000): return false
@@ -282,7 +351,54 @@ func _valid_recipe_snapshot(recipe: Dictionary) -> bool:
 		if not row is Dictionary or not row.get("name") is String or not row.get("unit") is String or not _number(row.get("amount"),2000): return false
 	return true
 
+func draft_definitions() -> Dictionary:
+	var definitions:=MATERIALS.duplicate(true)
+	definitions.merge(SOLIDS)
+	definitions.merge(GARNISHES)
+	definitions["ice:cube"]={"name":"标准方冰","unit":"g"}
+	definitions["ice:crushed"]={"name":"碎冰","unit":"g"}
+	return definitions
+
+func valid_draft(value: Variant) -> bool:
+	if not value is Dictionary or value.get("version")!=1 or not Research.whole(value.get("revision")) or not value.get("targets") is Dictionary: return false
+	var definitions:=draft_definitions()
+	for material in value.targets:
+		if not material is String or not definitions.has(material) or not _number(value.targets[material],2000) or value.targets[material]<=0: return false
+		if GARNISHES.has(material) and not Research.whole(value.targets[material],MAX_GARNISHES): return false
+		if SOLIDS.has(material) and definitions[material].get("unit")!="g" and not Research.whole(value.targets[material],2000): return false
+	return true
+
+func draft_from_reference(base: Dictionary) -> Dictionary:
+	var draft:={"version":1,"revision":0,"targets":{}}
+	var definitions:=draft_definitions()
+	for row in base.get("ingredients",[]):
+		var material: String=ITEM_ALIASES.get(str(row.get("sku_id","")),str(row.get("sku_id","")))
+		var quantity:=float(row.get("inventory_amount",row.get("amount",0)))
+		if definitions.has(material) and quantity>0: draft.targets[material]=float(draft.targets.get(material,0))+quantity
+	for row in base.get("ice",[]):
+		if row.get("unit")=="g":
+			var material:="ice:crushed" if "碎" in str(row.get("name","")) else "ice:cube"
+			draft.targets[material]=float(draft.targets.get(material,0))+float(row.amount)
+	return draft
+
+# Count physical contents across the table once. Transfers do not consume the
+# target twice; discarded liquid no longer occupies the planned quantity.
+func draft_amounts(session: Dictionary) -> Dictionary:
+	var amounts: Dictionary={}
+	for vessel in session.get("vessels",{}).values():
+		for key in ["contents","solids"]:
+			for material in vessel.get(key,{}): amounts[material]=float(amounts.get(material,0))+float(vessel[key][material])
+		for material in garnishes(vessel): amounts[material]=float(amounts.get(material,0))+1
+		for batch in ice_batches(vessel):
+			var material:="ice:"+str(batch.kind)
+			amounts[material]=float(amounts.get(material,0))+float(batch.get("mass_g",batch.volume))
+	return amounts
+
 func dose_target(material: String, session: Dictionary) -> float:
+	if session.get("mode")=="research_diy":
+		var planned: Dictionary=session.get("draft",{}).get("targets",{})
+		if not planned.has(material): return 30.0
+		return minf(60.0,maxf(0,float(planned[material])-float(draft_amounts(session).get(material,0))))
 	var targets: Dictionary=session.get("recipe",RECIPE).ingredients
 	if not targets.has(material): return 30.0
 	var required := float(targets[material])
@@ -321,7 +437,7 @@ func recipe_note(session: Dictionary) -> String:
 func _valid_vessel(v: Variant, capacity: int) -> bool:
 	if not v is Dictionary or not v.get("contents") is Dictionary or v.get("ice") not in ["none", "cube", "crushed"] or not v.get("garnish") is bool:
 		return false
-	if not LiquidState.valid(v): return false
+	if not LiquidState.valid(v) or not Muddle.valid(v): return false
 	if not v.get("solids",{}) is Dictionary: return false
 	for material in v.get("solids",{}):
 		if not SOLIDS.has(material) or not _number(v.solids[material],2000): return false
@@ -410,10 +526,77 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 		last_error = "操作编号已经使用，请重新操作。"
 		return false
 	var next := state.duplicate(true)
+	if not next.has("research"): next.research=Research.fresh()
 	var consumption := {}
 	var outcome: Dictionary={}
 	var s: Dictionary = next.session
-	if kind == "select_recipe":
+	if kind=="refresh_appearance":
+		if s.get("id")!=session_id or s.get("status")!="mixing": return _error("只更新正在制作这一杯的液体配色。")
+		s.liquid_profiles=LiquidAppearance.profiles()
+	elif kind=="edit_draft":
+		if s.get("id")!=session_id or s.get("mode")!="research_diy" or s.get("status")!="mixing": return _error("只能编辑正在试调的 DIY 草稿。")
+		var draft: Dictionary=s.get("draft",{"version":1,"revision":0,"targets":{}}).duplicate(true)
+		if payload.get("revision")!=draft.revision: return _error("草稿已经更新，请按最新用量重新编辑。")
+		var material:=str(payload.get("material",""))
+		if not draft_definitions().has(material): return _error("请选择可用的原料或冰型。")
+		if payload.get("remove",false)==true: draft.targets.erase(material)
+		else: draft.targets[material]=payload.get("amount")
+		draft.revision+=1
+		if not valid_draft(draft): return _error("用量应大于 0、不超过 2000；按块或枝计数的原料请填整数。")
+		s.draft=draft
+	elif kind=="grant_legendary":
+		var ref:=Research.legendary(str(payload.get("recipe_id","")))
+		if ref.is_empty(): return _error("没有这份传说配方，等待剧情配方接入。")
+		next.research.acquired[ref.id]=id
+	elif kind=="save_research":
+		if s.get("id")!=session_id or s.get("mode")!="research_diy" or s.get("status")!="finished": return _error("请先完成一杯 DIY 试调。")
+		var drink: String=s.result.drink_id
+		if next.research.saved_drinks.has(drink):
+			next.receipts[id]=signature
+			return _commit(next) # Keep the retry receipt without creating a second recipe.
+		if not s.result.evaluation.get("data_complete",false): return _error("部分材料的感官数据未配置，暂不能保存配方。")
+		var title:=str(payload.get("name","")).strip_edges()
+		var english:=str(payload.get("english_name","")).strip_edges()
+		var memo:=str(payload.get("notes","")).strip_edges()
+		if title.is_empty() or title.length()>40 or english.length()>70 or memo.length()>500: return _error("请填写酒名（最多40字）；英文名最多70字，笔记最多500字。")
+		next.research.serial+=1
+		var recipe_id:="diy_%d" % int(next.research.serial)
+		var record:=_research_record(s,recipe_id,title,english,memo)
+		next.research.recipes[recipe_id]=record
+		next.research.saved_drinks[drink]=recipe_id
+	elif kind=="begin_research":
+		if not s.is_empty() and s.status=="mixing" and (not s.actions.is_empty() or not s.get("draft",{}).get("targets",{}).is_empty()): return _error("桌上还有草稿或半成品，请先继续制作，或在工作台明确丢弃。")
+		var mode:=str(payload.get("mode","research_diy"))
+		if mode not in ["research_diy","research_legendary"]: return _error("研发模式无效。")
+		var recipe:=Research.blank_recipe()
+		var base: Dictionary={}
+		var base_id:=str(payload.get("base_recipe_id",""))
+		if mode=="research_diy" and not base_id.is_empty():
+			base=next.research.recipes.get(base_id,MenuCatalog.get_recipe(base_id)).duplicate(true)
+			if base.is_empty() or not base.get("unlocked",false): return _error("这款基础配方尚未获得，请重新选择研发起点。")
+			# Keep only a compact immutable reference, not another nested image/history tree.
+			base={"id":base.id,"version":base.get("version",JSON.stringify(base).sha256_text()),"name":base.name,"ingredients":base.ingredients.duplicate(true),"ice":base.get("ice",[]).duplicate(true)}
+		if mode=="research_legendary":
+			var ref:=Research.legendary(str(payload.get("recipe_id","")))
+			if ref.is_empty() or not next.research.acquired.has(ref.get("id","")): return _error("请先获得这份传说配方。")
+			recipe=recipe_snapshot(ref)
+			recipe.source_kind="research_legendary"
+			if not recipe.get("quality_rule") is Dictionary or recipe.quality_rule.is_empty(): return _error("这份配方的研习标准尚未配置。")
+		if not s.is_empty(): next.history.append(s.duplicate(true))
+		next.serial+=1
+		next.session=_session(int(next.serial))
+		next.session.mode=mode
+		next.session.guest={}
+		next.session.recipe=recipe
+		if not base.is_empty(): next.session.base_recipe=base
+		if mode=="research_diy": next.session.draft=draft_from_reference(base)
+		next.session.sensory_model=Research.sensory_snapshot()
+		next.session.quality_model=Evaluation.config().duplicate(true)
+		next.session.inspiration_charged=false
+		next.session.inspiration_cost=int(Research.config().diy_cost) if mode=="research_diy" else 0
+		set_cup(next.session,"highball" if mode=="research_diy" else recommended_cup(recipe))
+		next.table_materials=[]
+	elif kind == "select_recipe":
 		var replacing: bool=not s.is_empty() and s.status=="mixing" and not s.actions.is_empty()
 		if payload.has("replace_session_id") and str(payload.replace_session_id)!=str(s.get("id","")):
 			return _error("桌上这一杯已变化，请重新选择后开工。")
@@ -454,6 +637,15 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 			next.session.recipe = s.recipe.duplicate(true)
 			set_cup(next.session,recommended_cup(s.recipe))
 			next.session.guest = s.get("guest",{}).duplicate(true)
+			if is_research(s):
+				next.session.mode=s.mode
+				next.session.sensory_model=s.sensory_model.duplicate(true)
+				next.session.quality_model=s.get("quality_model",Evaluation.config()).duplicate(true)
+				next.session.inspiration_charged=false
+				next.session.inspiration_cost=s.inspiration_cost
+				set_cup(next.session,s.cup)
+				if s.has("base_recipe"): next.session.base_recipe=s.base_recipe.duplicate(true)
+				if s.has("draft"): next.session.draft=s.draft.duplicate(true)
 	else:
 		if s.is_empty() or s.id != session_id or s.status != "mixing":
 			return _error("这一杯已经结束或已被替换。")
@@ -490,6 +682,7 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 				if float(s.get("consumed",{}).get(SOLIDS[material].sku_id,0))>=2000: return _error("容器中这份配料已达到上限。")
 				if not v.has("solids"): v.solids={}
 				v.solids[material]=float(v.solids.get(material,0))+1
+				if material==Muddle.LEAF: Muddle.add(v)
 				consumption[SOLIDS[material].sku_id]=1
 			"transfer", "filter":
 				var source_id := str(payload.get("source", "jigger"))
@@ -498,13 +691,11 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 				var source: Dictionary = s.vessels[source_id]
 				if amount(source) <= 0 and (kind=="filter" or (source.get("solids",{}).is_empty() and ice_batches(source).is_empty() and garnishes(source).is_empty())):
 					return _error("源容器中还没有液体。")
-				var built_in_filter: bool=kind=="filter" and source_id=="shaker" and vessel_id=="glass" and payload.get("integrated_strainer")==true
+				var built_in_filter: bool=kind=="filter" and source_id=="shaker" and vessel_id!="shaker" and payload.get("integrated_strainer")==true
 				if (vessel_id == "shaker" or source_id == "shaker") and s.lid and not built_in_filter:
 					return _error("先打开摇壶盖，再倒入或过滤。")
-				if kind == "filter" and (vessel_id != "glass" or source_id not in ["shaker", "mixing"]):
-					return _error("使用滤冰器将摇壶或搅拌杯倒入成品杯。")
-				var incoming_ice:=ice_volume(source) if kind=="transfer" else 0.0
-				if kind=="transfer" and vessel_id=="jigger" and (incoming_ice>0 or not source.get("solids",{}).is_empty() or not garnishes(source).is_empty()): return _error("量酒器仅接收酒液，请使用制作容器或成品杯。")
+				if kind == "filter" and source_id not in ["shaker", "mixing"]:
+					return _error("滤冰器用于摇壶或搅拌杯出酒。")
 				var free:=maxf(0,capacity(s,vessel_id)-amount(v)-ice_volume(v))
 				if free<.00001: return _error("接酒容器已满，余量保留在原容器；可拖到左下方倒掉。")
 				outcome.pour=_pour_contents(source,v,free,kind=="filter")
@@ -519,6 +710,7 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 				v.contents={}
 				v.layers=[]
 				v.solids={}
+				v.mint_processing=[]
 				v.ice_batches=[]
 				v.ice="none"
 				v.garnishes=[]
@@ -556,9 +748,11 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 					return _error("请选摇壶并盖好盖子。")
 				if kind != "shake" and (vessel_id not in ["glass", "mixing", "shaker"] or (vessel_id == "shaker" and s.lid)):
 					return _error("请选打开的容器。")
+				if payload.has("pressure") and not _number(payload.pressure,1): return _error("轻压力度数据无效。")
 				if payload.has("control") and not _number(payload.control,1): return _error("动作节奏数据无效。")
 				if not _number(payload.get("seconds"), 0.5) or payload.seconds <= 0:
 					return _error("没有检测到有效动作。")
+				if kind=="muddle": Muddle.press(v,float(payload.seconds),float(payload.get("pressure",.4)))
 				if kind in ["stir","shake"]:
 					LiquidState.mix(v,float(payload.seconds),kind,float(payload.get("control",1)),s.liquid_model)
 					outcome.liquid_model=s.liquid_model.duplicate(true)
@@ -588,14 +782,21 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 				definitions.merge(GARNISHES)
 				var evaluation:=Evaluation.evaluate(s,definitions)
 				s.result = {"liquid_profiles":s.liquid_profiles.duplicate(true),"liquid_model":s.liquid_model.duplicate(true),"evaluation":evaluation,"drink_id": s.id + "-drink", "guest":s.get("guest",{}).duplicate(true), "recipe": s.recipe.duplicate(true), "contents": s.vessels.glass.duplicate(true), "cup":s.cup,"capacity_ml":capacity(s,"glass"), "withdrawn": s.withdrawn.duplicate(true), "waste": waste, "actions": s.actions.duplicate(true), "consumed":s.get("consumed",{}).duplicate(true), "sales": false}
-				var sensory := preload("res://scripts/customer_evaluation.gd").sensory(s.result, definitions, JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_mechanics/settlement_rules.json")))
-				s.result["customer_sensory"] = sensory
+				if s.has("draft"): s.result.draft=s.draft.duplicate(true)
+				if s.mode=="research_legendary":
+					if not next.research.acquired.has(s.recipe.id): return _error("未找到这份传说配方的获得记录，请保留试调并检查存档。")
+					s.result.research_success=evaluation.tier=="perfect"
+					if s.result.research_success and not next.research.mastered.has(s.recipe.id): next.research.mastered[s.recipe.id]=s.result.drink_id
 			"discard":
 				s.status = "discarded"
 				s.spoon_vessel=""
 				s.result = {"withdrawn": s.withdrawn.duplicate(true), "waste": s.withdrawn.duplicate(true), "consumed":s.get("consumed",{}).duplicate(true), "sales": false}
 			_:
 				return _error("未知操作。")
+		if s.get("mode")=="research_diy" and not consumption.is_empty() and not s.inspiration_charged:
+			if next.research.inspiration<s.inspiration_cost: return _error("灵感不足，无法开始新的 DIY 试调。")
+			next.research.inspiration-=s.inspiration_cost
+			s.inspiration_charged=true
 		if not s.has("consumed"): s.consumed={}
 		for sku in consumption: s.consumed[sku]=float(s.consumed.get(sku,0))+float(consumption[sku])
 		var action:={"command_id": id, "kind": kind, "payload": payload.duplicate(true)}
@@ -605,6 +806,35 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 		s.actions.append(action)
 	next.receipts[id] = signature
 	return _commit(next,consumption)
+
+func _research_record(s: Dictionary, id: String, title: String, english: String, memo: String) -> Dictionary:
+	var ingredients: Array=[]
+	var glass: Dictionary=s.result.contents
+	var amounts: Dictionary=glass.contents.duplicate(true)
+	amounts.merge(glass.get("solids",{}))
+	for garnish in garnishes(glass): amounts[garnish]=float(amounts.get(garnish,0))+1
+	for material in amounts:
+		var definition: Dictionary=MATERIALS.get(material,SOLIDS.get(material,GARNISHES.get(material,{})))
+		var unit: String="ml" if MATERIALS.has(material) else str(definition.get("unit","份"))
+		var inventory_unit: String=str(Supplies.get_item(definition.sku_id).get("measurement_unit",unit))
+		ingredients.append({"sku_id":definition.sku_id,"name":definition.name,"amount":amounts[material],"unit":unit,"inventory_amount":amounts[material],"inventory_unit":inventory_unit,"required":true,"use":"装饰" if GARNISHES.has(material) else "原料"})
+	var instructions: Array=["按成品用量取料；损耗和留在其他容器的材料不写入配方。"]
+	var used: Dictionary={}
+	for action in s.actions:
+		if action.kind in ["shake","stir","muddle"]: used[action.kind]=true
+	for kind in used: instructions.append("试调使用过%s；请在复做笔记中记录你的顺序与时长。" % {"shake":"摇和","stir":"搅拌","muddle":"轻压"}[kind])
+	instructions.append("出品冰 %s g；以成品预览中的杯型和装饰为参考。" % format_amount(ice_mass(glass)))
+	var record: Dictionary={"id":id,"version":1,"name":title,"english_name":english,"notes":memo,"drink_id":s.result.drink_id,"ingredients":ingredients,"instructions":instructions,"result":s.result.duplicate(true),"attributes":s.result.evaluation.attributes.duplicate(true),"model_version":s.result.evaluation.version,"source_kind":"diy","unlocked":true,"type":"DIY","category":"DIY","tags":[],"mouthfeel_tags":[],"flavor_tags":[],"preview_only":true}
+	record.merge(record.attributes)
+	record.story=memo if not memo.is_empty() else "这页记录了你的实际试调。可在研发室查看原杯和复做参考；不自动加入营业酒单。"
+	record.preparation="试调成品用量已记录。请结合右侧参考步骤与笔记再次调制。"
+	if s.has("base_recipe"): record.base_recipe_ref={"id":s.base_recipe.id,"version":s.base_recipe.version}
+	record.glass={"highball":"高球杯","coupe":"碟形杯","rocks":"古典杯","glass_cocktail_glass":"鸡尾酒杯","glass_balloon_glass":"球形杯"}[s.cup]
+	record.display_steps=[]
+	for line in instructions: record.display_steps.append({"number":record.display_steps.size()+1,"instruction":line})
+	record.ice=[]
+	for batch in ice_batches(glass): record.ice.append({"name":"方冰" if batch.kind=="cube" else "碎冰","amount":batch.get("mass_g",batch.volume),"unit":"g"})
+	return record
 
 func _error(message: String) -> bool:
 	last_error = message
@@ -653,6 +883,7 @@ func _pour_contents(source: Dictionary, target: Dictionary, free: float, filtere
 			var moved:=float(source.solids[material]) if fraction>=.999999 else floorf(float(source.solids[material])*fraction)
 			if moved<=0: continue
 			solids[material]=moved
+			if material==Muddle.LEAF: Muddle.transfer(source,target,int(moved))
 			target.solids[material]=float(target.solids.get(material,0))+moved
 			source.solids[material]-=moved
 			if source.solids[material]<.000001: source.solids.erase(material)

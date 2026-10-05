@@ -24,3 +24,8 @@ https://creativecommons.org/licenses/by/4.0/
 来源：https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300035
 文件：`workbench-george-street.mp3`，原始录音，未剪辑。游戏设置的声音区域提供署名及来源链接。
 进入工作台后以现有双音轨交叉淡化 3.5 秒切换；退出恢复大厅曲目。音量沿用 Music 总线。
+
+
+商店：Carpe Diem；研发：Bossa Antigua。两曲均为 Kevin MacLeod (incompetech.com)，CC BY 4.0，原始录音未剪辑。出处、许可链接及 SHA-256 见 credits.json；游戏设置页提供署名。与大厅、工作台共用 Music 音量及 3.5 秒渐变。
+
+2026-10-05 商店试听调整：Carpe Diem 以木管、尤克里里、吉他、木琴和轻打击乐构成明亮的港口市集方向，原速 96 BPM，保持原调。替换此前 Local Forecast - Elevator，不再使用该曲作为商店 BGM。

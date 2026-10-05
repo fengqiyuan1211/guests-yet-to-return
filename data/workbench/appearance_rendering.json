@@ -1,0 +1,31 @@
+{
+  "version": "liquid-render-2",
+  "status": "art_direction_playtest",
+  "clear_rgb": [
+    237,
+    247,
+    255
+  ],
+  "opacity_base": 0.16,
+  "opacity_pigment": 0.56,
+  "pigment_response": 2.0,
+  "opacity_cloud": 0.2,
+  "opacity_max": 0.82,
+  "cloud_warmth": 0.08,
+  "surface_lighten": 0.16,
+  "bottom_darken": 0.035,
+  "bubbles": {
+    "max_count": 42,
+    "radius_min": 1.2,
+    "radius_max": 2.8,
+    "rise_seconds": 3.6,
+    "opacity": 0.76,
+    "surface_pops": 7
+  },
+  "layer_edges": {
+    "width_fraction": 0.048,
+    "max_neighbor_fraction": 0.3,
+    "wave_fraction": 0.22,
+    "mesh_columns": 8
+  }
+}

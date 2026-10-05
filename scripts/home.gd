@@ -18,6 +18,7 @@ var _dialogue_pointer := -2
 
 func _ready() -> void:
 	Navigation.register_page(&"drink_selection", preload("res://scenes/drink_selection.tscn"))
+	Navigation.register_page(&"research", preload("res://scenes/research.tscn"))
 	Navigation.register_page(&"mixing", preload("res://scenes/workbench.tscn"))
 	Navigation.register_page(&"slots", preload("res://scenes/slot_machine.tscn"))
 	Navigation.register_page(&"codex", preload("res://scenes/codex.tscn"))
