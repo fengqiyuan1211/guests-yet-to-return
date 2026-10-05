@@ -50,14 +50,17 @@
         "status": "商品待定"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          230,
-          242,
-          247
+          237,
+          247,
+          255
         ],
         "strength": 0,
-        "turbidity": 0
+        "turbidity": 0,
+        "color_basis": "realistic_approximation",
+        "reference_note": "透明无色",
+        "carbonation": 0.0
       }
     },
     {
@@ -98,14 +101,17 @@
         "status": "商品待定"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          133,
-          171,
-          48
+          184,
+          224,
+          67
         ],
         "strength": 0.8,
-        "turbidity": 0.04
+        "turbidity": 0.04,
+        "color_basis": "realistic_approximation",
+        "reference_note": "自然黄绿色",
+        "carbonation": 0.0
       }
     },
     {
@@ -146,14 +152,17 @@
         "status": "商品待定"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          230,
-          242,
-          247
+          255,
+          139,
+          181
         ],
-        "strength": 0,
-        "turbidity": 0
+        "strength": 0.65,
+        "turbidity": 0.025,
+        "color_basis": "user_art_direction",
+        "reference_note": "现实为透明无色；粉色为用户指定的游戏辨识色",
+        "carbonation": 0.0
       }
     },
     {
@@ -195,14 +204,17 @@
         "status": "包装与金币价为演示值"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          164,
-          202,
-          66
+          210,
+          232,
+          122
         ],
         "strength": 0.65,
-        "turbidity": 0.65
+        "turbidity": 0.65,
+        "color_basis": "realistic_approximation",
+        "reference_note": "浅黄绿色、略浑浊",
+        "carbonation": 0.0
       }
     },
     {
@@ -282,14 +294,17 @@
         "status": "商品待定"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          227,
-          212,
-          82
+          255,
+          236,
+          139
         ],
         "strength": 0.65,
-        "turbidity": 0.68
+        "turbidity": 0.68,
+        "color_basis": "realistic_approximation",
+        "reference_note": "浅黄色、略浑浊",
+        "carbonation": 0.0
       }
     },
     {
@@ -369,14 +384,17 @@
         "status": "商品待定"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          230,
-          242,
-          247
+          237,
+          247,
+          255
         ],
         "strength": 0,
-        "turbidity": 0
+        "turbidity": 0,
+        "color_basis": "realistic_approximation",
+        "reference_note": "透明无色",
+        "carbonation": 0.9
       }
     },
     {
@@ -414,14 +432,17 @@
         "status": "包装与金币价为演示值"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          230,
-          242,
-          247
+          237,
+          247,
+          255
         ],
         "strength": 0,
-        "turbidity": 0
+        "turbidity": 0,
+        "color_basis": "realistic_approximation",
+        "reference_note": "透明无色",
+        "carbonation": 0.0
       }
     },
     {
@@ -538,14 +559,17 @@
         "status": "包装与金币价为演示值"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          230,
-          242,
-          247
+          237,
+          247,
+          255
         ],
         "strength": 0,
-        "turbidity": 0
+        "turbidity": 0,
+        "color_basis": "realistic_approximation",
+        "reference_note": "透明无色",
+        "carbonation": 1.0
       }
     },
     {
@@ -583,14 +607,17 @@
         "status": "商品待定"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          230,
-          242,
-          247
+          237,
+          247,
+          255
         ],
         "strength": 0,
-        "turbidity": 0
+        "turbidity": 0,
+        "color_basis": "realistic_approximation",
+        "reference_note": "透明无色",
+        "carbonation": 0.0
       }
     },
     {
@@ -628,14 +655,17 @@
         "status": "商品待定"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          230,
-          242,
-          247
+          237,
+          247,
+          255
         ],
         "strength": 0,
-        "turbidity": 0
+        "turbidity": 0,
+        "color_basis": "realistic_approximation",
+        "reference_note": "透明无色；白龙舌兰为暂定商品类型",
+        "carbonation": 0.0
       }
     },
     {
@@ -676,14 +706,17 @@
         "status": "商品待定"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          230,
-          242,
-          247
+          255,
+          167,
+          54
         ],
-        "strength": 0,
-        "turbidity": 0
+        "strength": 0.75,
+        "turbidity": 0.015,
+        "color_basis": "user_art_direction",
+        "reference_note": "现实为透明无色；橙色为用户指定的游戏辨识色",
+        "carbonation": 0.0
       }
     },
     {
@@ -724,14 +757,17 @@
         "status": "包装与金币价为演示值"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          230,
-          242,
-          247
+          237,
+          247,
+          255
         ],
         "strength": 0,
-        "turbidity": 0
+        "turbidity": 0,
+        "color_basis": "realistic_approximation",
+        "reference_note": "透明无色",
+        "carbonation": 0.0
       }
     },
     {
@@ -773,14 +809,17 @@
         "status": "商品待定"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          74,
-          41,
-          18
+          154,
+          85,
+          34
         ],
         "strength": 1.6,
-        "turbidity": 0.05
+        "turbidity": 0.05,
+        "color_basis": "realistic_approximation",
+        "reference_note": "深焦糖棕色；为暖色背景适度提亮",
+        "carbonation": 0.8
       }
     },
     {
@@ -820,14 +859,17 @@
         "status": "商品待定"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          184,
-          94,
-          20
+          247,
+          178,
+          69
         ],
         "strength": 0.7,
-        "turbidity": 0.02
+        "turbidity": 0.02,
+        "color_basis": "realistic_approximation",
+        "reference_note": "琥珀金色；商品未定，使用类别代表色",
+        "carbonation": 0.0
       }
     },
     {
@@ -868,14 +910,17 @@
         "status": "商品待定"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          125,
-          38,
-          26
+          206,
+          75,
+          68
         ],
         "strength": 1.1,
-        "turbidity": 0.04
+        "turbidity": 0.04,
+        "color_basis": "realistic_approximation",
+        "reference_note": "深红至红棕色；商品未定，使用类别代表色",
+        "carbonation": 0.0
       }
     },
     {
@@ -916,14 +961,17 @@
         "status": "商品待定"
       },
       "liquid_appearance": {
-        "version": "appearance-playtest-1",
+        "version": "appearance-playtest-2",
         "rgb": [
-          77,
-          26,
-          15
+          166,
+          65,
+          31
         ],
-        "strength": 3.0,
-        "turbidity": 0.05
+        "strength": 3,
+        "turbidity": 0.05,
+        "color_basis": "realistic_approximation",
+        "reference_note": "浓红棕色；高染色强度",
+        "carbonation": 0.0
       }
     },
     {

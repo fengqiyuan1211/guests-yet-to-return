@@ -164,6 +164,7 @@ class ShelfProduct extends Button:
 
 
 func _ready() -> void:
+	SaloonAudio.acquire_scene(self,"shop")
 	mouse_filter = MOUSE_FILTER_STOP
 	supplies = get_node_or_null("/root/Supplies")
 	wallet = get_node_or_null("/root/SlotWallet")
@@ -428,6 +429,7 @@ func _build_receipt() -> void:
 	receipt_total.name = "TotalLabel"
 	receipt_total.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	buy_button = _button(canvas, Rect2(1291, 833, 255, 45), "购买", _purchase)
+	buy_button.set_meta("custom_audio",true)
 	buy_button.name = "BuyButton"
 	buy_button.add_theme_font_size_override("font_size", 25)
 	# Keep the theme's wood/brass button without its large vertical content margins.
@@ -554,6 +556,7 @@ func _render_shelves() -> void:
 			continue
 		var item: Dictionary = products[index]
 		var button := ShelfProduct.new()
+		button.set_meta("custom_audio",true)
 		button.name = "Product_" + str(item.id)
 		button.position = Vector2((i % 3) * 276, floori(i / 3.0) * 252)
 		button.size = Vector2(258, 319)
@@ -606,6 +609,7 @@ func _select_item(id: String) -> void:
 	if page_turning:
 		return
 	selected_id = id
+	SaloonAudio.ui.product(_selected_item())
 	packages = 1
 	for button: ShelfProduct in slot_buttons:
 		button.selected = button.name == "Product_" + id
@@ -691,10 +695,12 @@ func _purchase() -> void:
 	var item := _selected_item()
 	var bought := packages
 	if bool(supplies.call("purchase", selected_id, packages)):
+		SaloonAudio.ui.product(item,true)
 		merchant_line.text = "给你收好了。下回缺什么，再来找我。"
 		_show_toast("已买入 %s%s" % [str(item.name), " × %d" % bought if bought > 1 else ""])
 		_load_category()
 	else:
+		SaloonAudio.ui.play("click")
 		var message := str(supplies.get("last_error"))
 		_show_toast(message if not message.is_empty() else "这笔没买成，稍后再试。")
 		_update_receipt()

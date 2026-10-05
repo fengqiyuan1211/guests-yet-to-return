@@ -1,0 +1,98 @@
+extends RefCounted
+## Research lives inside the existing atomic stock/workbench save, never a second wallet.
+const CONFIG_PATH := "res://data/research.json"
+const ATTRS := ["alcohol_intensity", "sweetness", "sourness", "bitterness"]
+
+static func config() -> Dictionary:
+	return JSON.parse_string(FileAccess.get_file_as_string(CONFIG_PATH))
+
+static func fresh() -> Dictionary:
+	return {"version":1,"inspiration":int(config().initial_inspiration),"serial":0,"recipes":{},"saved_drinks":{},"acquired":{},"mastered":{}}
+
+static func whole(value: Variant, maximum: int = 1000000000) -> bool:
+	return (value is int or value is float) and is_finite(float(value)) and value >= 0 and value <= maximum and value == floor(value)
+
+static func valid(value: Variant) -> bool:
+	if not value is Dictionary or value.get("version") != 1: return false
+	if not whole(value.get("inspiration")) or not whole(value.get("serial")): return false
+	for key in ["recipes","saved_drinks","acquired","mastered"]:
+		if not value.get(key) is Dictionary: return false
+	for id in value.recipes:
+		var r: Variant = value.recipes[id]
+		if not id is String or not r is Dictionary or r.get("id") != id or not id.begins_with("diy_"): return false
+		if not r.get("name") is String or r.name.is_empty() or r.name.length() > 40: return false
+		if not r.get("english_name") is String or r.english_name.length() > 70 or not r.get("notes") is String or r.notes.length() > 500: return false
+		if not whole(r.get("version")) or r.version < 1 or not r.get("drink_id") is String or not r.get("result") is Dictionary: return false
+		if not r.get("ingredients") is Array or not r.get("instructions") is Array: return false
+		if not r.get("attributes") is Dictionary or not r.get("model_version") is String: return false
+		for attr in ATTRS:
+			var v: Variant=r.attributes.get(attr)
+			if not (v is float or v is int) or not is_finite(float(v)) or v<0 or v>100: return false
+		for line in r.instructions:
+			if not line is String: return false
+		for row in r.ingredients:
+			if not row is Dictionary: return false
+			for key in ["sku_id","name","unit","inventory_unit"]:
+				if not row.get(key) is String: return false
+			for key in ["amount","inventory_amount"]:
+				var v: Variant=row.get(key)
+				if not (v is float or v is int) or not is_finite(float(v)) or v<=0 or v>2000: return false
+	for drink in value.saved_drinks:
+		if not drink is String or not value.saved_drinks[drink] is String or not value.recipes.has(value.saved_drinks[drink]): return false
+		if value.recipes[value.saved_drinks[drink]].drink_id!=drink: return false
+	for key in ["acquired", "mastered"]:
+		for id in value[key]:
+			if not id is String or not value[key][id] is String: return false
+	return true
+
+static func blank_recipe() -> Dictionary:
+	return {"id":"research_blank","version":1,"name":"自由 DIY","english_name":"FREE EXPLORATION","source_kind":"research_diy","ingredients":{},"ingredient_rows":[],"display_steps":[],"ice":[]}
+
+static func sensory_snapshot() -> Dictionary:
+	var legacy: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/workbench/evaluation.json"))
+	return {"version":"research-sensory-1","profiles":legacy.profiles.duplicate(true)}
+
+static func valid_model(model: Variant) -> bool:
+	if not model is Dictionary or model.get("version")!="research-sensory-1" or not model.get("profiles") is Dictionary: return false
+	for id in model.profiles:
+		var p: Variant=model.profiles[id]
+		if not id is String or not p is Array or p.size()!=4: return false
+		for v in p:
+			if not (v is float or v is int) or not is_finite(float(v)) or v<0 or v>100: return false
+	return true
+
+static func attributes(session: Dictionary, definitions: Dictionary) -> Dictionary:
+	var serving: Dictionary=session.vessels.glass
+	var model: Dictionary=session.get("sensory_model",sensory_snapshot())
+	var values: Array=[0.0,0.0,0.0,0.0]
+	var volume:=0.0
+	var missing: Array=[]
+	for id in serving.contents:
+		var ml:=float(serving.contents[id])
+		volume+=ml
+		var sku:=str(definitions.get(id,{}).get("sku_id",id))
+		if not model.profiles.has(sku):
+			missing.append(sku)
+			continue
+		for i in range(4): values[i]+=ml*float(model.profiles[sku][i])
+	var result: Dictionary={}
+	for i in range(4): result[ATTRS[i]]=roundi(clampf(values[i]/maxf(volume,.001),0,100))
+	# Coarse playtest sugar contribution only. No fabricated melting or ABV.
+	var sugar:=float(serving.get("solids",{}).get("sku_white_cane_sugar",0))
+	result.sweetness=mini(100,int(result.sweetness)+roundi(100*sugar/maxf(20,volume)))
+	return {"attributes":result,"missing":missing,"version":model.version}
+
+static func trial(session: Dictionary, definitions: Dictionary) -> Dictionary:
+	var sensory:=attributes(session,definitions)
+	var tags: Array=[]
+	var labels: Array=["酒感明显","甜味突出","酸味突出","苦味突出"]
+	for i in range(4):
+		if sensory.attributes[ATTRS[i]]>=40: tags.append({"text":labels[i],"color":"ad8b57"})
+	if session.vessels.glass.get("layers",[]).size()>1: tags.append({"text":"层次分明","color":"7f9c83"})
+	if tags.is_empty(): tags.append({"text":"轻柔的","color":"7f9c83"})
+	return {"version":sensory.version,"draft":true,"tier":"trial","title":"试调完成","color":"78a99b","score":null,"attributes":sensory.attributes,"targets":sensory.attributes.duplicate(),"has_target":false,"tags":tags,"reasons":["属性按实际成品计算；自由试调没有经典配方还原分。","可将成品用量整理成配方，再填写你的复做笔记。"],"notes":["感官试玩模型；不是真实 ABV。未模拟温度、融水、香气萃取。","感官描述不等于已获得配方 Buff。"],"subscores":{"recipe":0,"process":0,"finish":0},"trace":{},"recipe_version":session.recipe.version,"data_complete":sensory.missing.is_empty(),"missing_profiles":sensory.missing}
+
+static func legendary(id: String) -> Dictionary:
+	for r in config().legendary_recipes:
+		if r.get("id")==id: return r.duplicate(true)
+	return {}

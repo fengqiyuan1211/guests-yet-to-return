@@ -12,6 +12,11 @@ const NIGHT_TRACKS := [
 	"res://assets/audio/music/night-laura-source.mp3",
 ]
 const WORKBENCH_TRACK := "res://assets/audio/music/workbench-george-street.mp3"
+const SCENE_TRACKS := {
+	"workbench": WORKBENCH_TRACK,
+	"shop": "res://assets/audio/music/shop-carpe-diem.mp3",
+	"research": "res://assets/audio/music/research-bossa-antigua.mp3",
+}
 const FADE_SECONDS := 3.5
 const DEFAULT_VOLUMES := {"Master": 80.0, "Music": 75.0, "SFX": 80.0}
 
@@ -21,6 +26,8 @@ var players: Array[AudioStreamPlayer] = []
 var active_index := -1
 var active_path := ""
 var workbench_owners: Dictionary = {}
+var scene_owners: Dictionary = {}
+var ui: Node
 var hall_path := ""
 var hall_position := 0.0
 var night_mode := false
@@ -39,6 +46,8 @@ func _ready() -> void:
 	_ensure_bus("Music")
 	_ensure_bus("SFX")
 	load_settings()
+	ui=preload("res://scripts/saloon_ui_audio.gd").new()
+	add_child(ui)
 	for i in range(2):
 		var player := AudioStreamPlayer.new()
 		player.name = "MusicDeck%d" % i
@@ -69,7 +78,7 @@ func _process(delta: float) -> void:
 	var desired_night := is_night(TimeManager.minutes_since_midnight)
 	if desired_night != night_mode:
 		night_mode = desired_night
-		if not workbench_owners.is_empty():
+		if not scene_owners.is_empty():
 			hall_path="" # Resume the playlist for the new time of day when leaving.
 		elif night_mode:
 			night_index = 0
@@ -80,8 +89,8 @@ func _process(delta: float) -> void:
 		return
 	var current := players[active_index]
 	if not current.playing or current.stream.get_length() - current.get_playback_position() <= FADE_SECONDS:
-		if not workbench_owners.is_empty():
-			_play_path(WORKBENCH_TRACK)
+		if not scene_owners.is_empty():
+			_play_path(_scene_track())
 		elif night_mode:
 			night_index = (night_index + 1) % NIGHT_TRACKS.size()
 			_play_path(NIGHT_TRACKS[night_index])
@@ -181,18 +190,33 @@ func _exit_tree() -> void:
 	_streams.clear()
 
 func acquire_workbench(owner: Node) -> void:
-	if workbench_owners.has(owner.get_instance_id()): return
-	var first:=workbench_owners.is_empty()
 	workbench_owners[owner.get_instance_id()]=true
-	if not first: return
-	hall_path=active_path
-	hall_position=players[active_index].get_playback_position() if active_index>=0 else 0.0
-	_play_path(WORKBENCH_TRACK)
+	acquire_scene(owner,"workbench")
 
 func release_workbench(owner: Node) -> void:
-	if not workbench_owners.has(owner.get_instance_id()): return
 	workbench_owners.erase(owner.get_instance_id())
-	if not workbench_owners.is_empty(): return
+	_release_scene(owner.get_instance_id())
+
+func _scene_track() -> String:
+	return SCENE_TRACKS[scene_owners.values().back()] if not scene_owners.is_empty() else ""
+
+func acquire_scene(owner: Node, context: String) -> void:
+	var id:=owner.get_instance_id()
+	if not SCENE_TRACKS.has(context) or scene_owners.has(id): return
+	if scene_owners.is_empty():
+		hall_path=active_path
+		hall_position=players[active_index].get_playback_position() if active_index>=0 else 0.0
+	scene_owners[id]=context
+	owner.tree_exiting.connect(_release_scene.bind(id),CONNECT_ONE_SHOT)
+	if active_path!=_scene_track(): _play_path(_scene_track())
+
+func _release_scene(id: int) -> void:
+	if not scene_owners.has(id): return
+	scene_owners.erase(id)
+	workbench_owners.erase(id)
 	if not is_inside_tree() or is_queued_for_deletion(): return
+	if not scene_owners.is_empty():
+		if active_path!=_scene_track(): _play_path(_scene_track())
+		return
 	var path: String=hall_path if not hall_path.is_empty() else (NIGHT_TRACKS[night_index] if night_mode else DAY_TRACKS[day_index])
 	_play_path(path,hall_position if not hall_path.is_empty() else 0.0)

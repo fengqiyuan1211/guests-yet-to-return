@@ -89,6 +89,9 @@ func run() -> void:
 	await settle()
 	check(is_instance_valid(bench.measure),"drag bottle starts measure without confirmation")
 	check(bench.table.pouring and WorkbenchSession.state.stock==stock,"pour animation does not commit preview dose")
+	# Freeze both the delayed animation gate and the gauge before the screenshot.
+	# Otherwise the gate restarts the gauge during capture and changes the dose.
+	bench.measure_waiting=false
 	bench.measure.set_process(false)
 	bench.measure.progress=bench.measure.target/bench.measure.volume_limit()
 	bench.measure.queue_redraw()

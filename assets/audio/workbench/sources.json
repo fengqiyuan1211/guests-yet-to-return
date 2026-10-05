@@ -70,5 +70,17 @@
     "duration_seconds": 0.66,
     "source_sha256": "73627cc58dbcbc2501434d871c501ef6dc7666968ee9b60a313cd96615ec2a4c",
     "sha256": "0745bf2e658df075250f1940869621adbaae6a90e5f30457b32eb9d3aee33268"
+  },
+  {
+    "file": "muddle.wav",
+    "title": "Wet muddler contact — composite game foley",
+    "author": "Project synthesis + Tom_Kaszuba water recording",
+    "source_file": "stir.wav",
+    "source_page": "https://freesound.org/people/Tom_Kaszuba/sounds/657552/",
+    "source_license": "CC0-1.0",
+    "created": "2026-10-05",
+    "processing": "0.23 s mono PCM 16-bit 44.1 kHz; existing stir.wav starting at 0.13 s, one-pole lowpass alpha .24, combined with original 160 Hz descending damped contact and seeded noise rustle, exponential attack/decay and 25 ms end fade. Not a recording of actual mint.",
+    "duration_seconds": 0.23,
+    "sha256": "ba4cf0fc4c8d59af4cd07c6a64ffa5c44de06fd7cfd7d597a76da74a59d26aef"
   }
 ]

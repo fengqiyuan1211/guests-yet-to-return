@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "status": "playtest",
+  "initial_inspiration": 999,
+  "diy_cost": 1,
+  "legendary_recipes": [],
+  "note": "传说正式配方及道具映射待内容接入；不将经典酒自动改成传说。"
+}

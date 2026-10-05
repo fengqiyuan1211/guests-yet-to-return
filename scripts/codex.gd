@@ -33,6 +33,7 @@ var reserved_tutorial_slot := true
 var allow_locked_details := false
 var detail_id := ""
 var navigation_hint: Label
+var research_button: Button
 
 func _ready() -> void:
 	_load_settings()
@@ -70,6 +71,12 @@ func _ready() -> void:
 	add_child(binding)
 	_update_controls()
 	MenuCatalog.changed.connect(_catalog_changed)
+	WorkbenchSession.changed.connect(_catalog_changed)
+
+func _recipe(id: String) -> Dictionary:
+	var r:=MenuCatalog.get_recipe(id)
+	if r.is_empty(): r=WorkbenchSession.research_state().recipes.get(id,{}).duplicate(true)
+	return r
 
 func _load_settings() -> void:
 	var settings: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/codex_settings.json"))
@@ -84,7 +91,7 @@ func _catalog_changed() -> void:
 	_catalog_refresh_pending = false
 	if not detail_id.is_empty():
 		var id := detail_id
-		if MenuCatalog.get_recipe(id).is_empty():
+		if _recipe(id).is_empty():
 			close_detail()
 		else:
 			show_detail(id)
@@ -94,14 +101,16 @@ func _catalog_changed() -> void:
 	_update_controls()
 
 func _visible_recipes() -> Array:
+	if selected_filter==3: return WorkbenchSession.research_recipes()
 	var records := MenuCatalog.all_recipes()
+	records.append_array(WorkbenchSession.research_recipes())
 	records.sort_custom(func(a: Dictionary, b: Dictionary): return int(a.get("codex_order", 99999)) < int(b.get("codex_order", 99999)))
 	if selected_filter == 0:
 		return records
 	return records.filter(func(recipe: Dictionary): return recipe.unlocked == (selected_filter == 1))
 
 func _page_count() -> int:
-	var count := _visible_recipes().size() + (1 if reserved_tutorial_slot else 0)
+	var count := _visible_recipes().size() + (1 if reserved_tutorial_slot and selected_filter!=3 else 0)
 	# Keep the existing empty leaves and their turning animation for future recipes.
 	return maxi(PAGE_COUNT, ceili(count / 6.0))
 
@@ -161,9 +170,9 @@ func _make_page(index: int) -> Control:
 	sheet.add_child(texture)
 	_label(sheet, Rect2(180, 15, 330, 61), "酒 馆 图 鉴", 38)
 	_label(sheet, Rect2(510, 32, 504, 31), "S A L O O N  R E C I P E  J O U R N A L", 16)
-	_label(sheet, Rect2(1030, 27, 166, 34), "已点亮 %d / %d" % [MenuCatalog.unlocked_recipes().size(), MenuCatalog.all_recipes().size()], 20)
+	_label(sheet, Rect2(1030, 27, 166, 34), ("原创配方 %d 款" % WorkbenchSession.research_recipes().size()) if selected_filter==3 else "已点亮 %d / %d" % [MenuCatalog.unlocked_recipes().size(), MenuCatalog.all_recipes().size()], 20)
 	var records := _visible_recipes()
-	var offset := 1 if reserved_tutorial_slot else 0
+	var offset := 1 if reserved_tutorial_slot and selected_filter!=3 else 0
 	for i in range(6):
 		var card := Button.new()
 		card.set_script(CARD_SCRIPT)
@@ -230,7 +239,7 @@ func _populate_card(card: Button, recipe: Dictionary) -> void:
 	drink.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	drink.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	drink.texture = CocktailDatabase.get_image(str(recipe.id))
-	if drink.texture == null and ResourceLoader.exists(str(recipe.get("thumbnail", ""))):
+	if drink.texture == null and not str(recipe.get("thumbnail", "")).is_empty() and ResourceLoader.exists(str(recipe.get("thumbnail", ""))):
 		drink.texture = load(str(recipe.thumbnail))
 	if not recipe.unlocked:
 		var material_instance := ShaderMaterial.new()
@@ -239,6 +248,13 @@ func _populate_card(card: Button, recipe: Dictionary) -> void:
 		drink.modulate.a = 0.82
 	drink.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(drink)
+	if recipe.get("source_kind")=="diy":
+		var preview:=preload("res://scripts/workbench_drink_preview.gd").new()
+		preview.position=drink.position
+		preview.size=drink.size
+		preview.result=recipe.result
+		preview.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		card.add_child(preview)
 	var stamp := _panel(card, Rect2(218, 14, 59, 29), _style(Color.TRANSPARENT, Color(0.40, 0.26, 0.11, 0.65)))
 	_label(stamp, Rect2(0, 0, 59, 29), str(recipe.get("type", recipe.category)), 17, ink, HORIZONTAL_ALIGNMENT_CENTER)
 	var title := _label(card, Rect2(153, 66, 133, 37), str(recipe.name), 24 if str(recipe.name).length() > 4 else 26, ink)
@@ -253,7 +269,7 @@ func _populate_card(card: Button, recipe: Dictionary) -> void:
 func show_detail(id: String) -> void:
 	if turning:
 		return
-	var recipe := MenuCatalog.get_recipe(id)
+	var recipe := _recipe(id)
 	if recipe.is_empty() or (not recipe.unlocked and not allow_locked_details):
 		return
 	detail_id = id
@@ -302,8 +318,8 @@ func _button(rect: Rect2, text_value: String) -> Button:
 	return button
 
 func _build_controls() -> void:
-	for i in range(3):
-		var tab := _button(Rect2(PAGE_ORIGIN + Vector2(430 + i * 146, 88), Vector2(134, 44)), ["全部", "已点亮", "未点亮"][i])
+	for i in range(4):
+		var tab := _button(Rect2(PAGE_ORIGIN + Vector2(350 + i * 146, 88), Vector2(134, 44)), ["全部", "已点亮", "未点亮", "DIY"][i])
 		tab.name = "Filter%d" % i
 		tab.pressed.connect(_select_filter.bind(i))
 		tabs.append(tab)
@@ -320,6 +336,13 @@ func _build_controls() -> void:
 	next_button.tooltip_text = "下一页 · →"
 	next_button.pressed.connect(turn_page.bind(1))
 	navigation_hint = _label(self, Rect2(260, 860, 850, 28), "轻点卡片查看酒谱  ·  轻点纸张两侧，或左右滑动翻页", 15, Color("d2b789"))
+	research_button=_button(Rect2(1245,853,280,42),"以此研发 →")
+	for color_key in ["font_color","font_hover_color","font_pressed_color"]: research_button.add_theme_color_override(color_key,Color("efdab3"))
+	research_button.pressed.connect(func():
+		Navigation.research_view="entry"
+		Navigation.research_base_id=detail_id
+		Navigation.go_to(&"research")
+	)
 
 func _select_filter(index: int) -> void:
 	if turning or not detail_id.is_empty():
@@ -330,6 +353,7 @@ func _select_filter(index: int) -> void:
 	_update_controls()
 
 func _update_controls() -> void:
+	if is_instance_valid(research_button): research_button.visible=not detail_id.is_empty() and _recipe(detail_id).get("unlocked",false)
 	var overview := detail_id.is_empty()
 	if navigation_hint != null:
 		navigation_hint.text = "轻点卡片查看酒谱  ·  轻点纸张两侧，或左右滑动翻页" if overview else "滚动查看完整步骤与故事  ·  点击「返回图鉴」返回"
@@ -346,7 +370,7 @@ func _update_controls() -> void:
 		for card in page_content.find_children("CardSlot*", "Button", false, false):
 			if not card.get_meta("has_recipe", false):
 				continue
-			var recipe := MenuCatalog.get_recipe(str(card.get_meta("cocktail_id", "")))
+			var recipe := _recipe(str(card.get_meta("cocktail_id", "")))
 			card.disabled = recipe.is_empty() or (not recipe.get("unlocked", false) and not allow_locked_details)
 			card.mouse_default_cursor_shape = Control.CURSOR_ARROW if card.disabled else Control.CURSOR_POINTING_HAND
 

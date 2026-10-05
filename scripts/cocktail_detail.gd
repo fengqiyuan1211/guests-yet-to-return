@@ -83,6 +83,7 @@ func _header() -> void:
 	back.pressed.connect(func(): back_requested.emit())
 	add_child(back)
 	var title := _label(self, Rect2(425, 15, 485, 55), str(recipe.name), 39, INK, HORIZONTAL_ALIGNMENT_CENTER)
+	title.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
 	title.name = "RecipeTitle"
 	_label(self, Rect2(420, 69, 500, 25), str(recipe.get("english_name", "")), 14, MUTED, HORIZONTAL_ALIGNMENT_CENTER)
 	var stamp := Panel.new()
@@ -103,6 +104,13 @@ func _header() -> void:
 
 func _left_column() -> void:
 	_texture(self, Rect2(142, 115, 302, 277), CocktailDatabase.get_image(str(recipe.id)))
+	if recipe.get("source_kind")=="diy":
+		var preview:=preload("res://scripts/workbench_drink_preview.gd").new()
+		preview.position=Vector2(142,115)
+		preview.size=Vector2(302,277)
+		preview.result=recipe.result
+		preview.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		add_child(preview)
 	_label(self, Rect2(145, 397, 95, 32), "口感", 23)
 	_label(self, Rect2(242, 401, 200, 30), " · ".join(recipe.get("mouthfeel_tags", recipe.get("tags", []))), 19, MUTED)
 	_rule(self, Rect2(140, 430, 298, 5))

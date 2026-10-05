@@ -85,7 +85,7 @@ func _build_audio_controls() -> void:
 	credit.fit_content=true
 	credit.add_theme_font_size_override("normal_font_size",15)
 	credit.add_theme_color_override("default_color",Color("654528"))
-	credit.text='调酒台音乐：George Street Shuffle — Kevin MacLeod (incompetech.com)\n[url=https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300035]曲目来源[/url] · [url=https://creativecommons.org/licenses/by/4.0/]CC BY 4.0[/url]'
+	credit.text='音乐：Kevin MacLeod (incompetech.com) · [url=https://creativecommons.org/licenses/by/4.0/]CC BY 4.0[/url]\n调酒台：[url=https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300035]George Street Shuffle[/url]\n商店：[url=https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1600023]Carpe Diem[/url] · 研发：[url=https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1700069]Bossa Antigua[/url]'
 	credit.meta_clicked.connect(func(url): OS.shell_open(str(url)))
 	audio_controls.add_child(credit)
 
@@ -127,8 +127,8 @@ func _button(label: String, action: Callable) -> Button:
 func _show_menu() -> void:
 	confirming = false
 	audio_controls.show()
-	%Tabs.position.y = 510
-	%Description.position.y = 588
+	%Tabs.position.y = 538
+	%Description.position.y = 612
 	%Description.size.y = 42
 	%PageTitle.text = "设置"
 	%PageSubtitle.text = "歇一会儿，再继续今晚的故事。"

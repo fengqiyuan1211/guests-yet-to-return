@@ -1,6 +1,7 @@
 extends RefCounted
 ## Pure, deterministic evaluator. Never writes inventory, recipes, or customer settlement.
 const LiquidState=preload("res://scripts/workbench_liquid_state.gd")
+const Research=preload("res://scripts/research_data.gd")
 const CONFIG_PATH := "res://data/workbench/evaluation.json"
 const ATTRS := ["alcohol_intensity","sweetness","sourness","bitterness"]
 const CARBONATED := ["sku_soda_water","sku_tonic_water","sku_cola"]
@@ -157,14 +158,15 @@ static func replay(actions: Array, rule: Dictionary, definitions: Dictionary, ve
 	return result
 
 static func evaluate(session: Dictionary, definitions: Dictionary) -> Dictionary:
-	var model:=config()
+	if session.get("mode")=="research_diy": return Research.trial(session,definitions)
+	var model: Dictionary=session.get("quality_model",config())
 	var recipe: Dictionary=session.recipe
 	var serving: Dictionary=session.vessels.glass
 	var actual:=canonical(serving.contents,definitions)
 	var expected:=canonical(recipe.ingredients,definitions)
 	var actual_volume:=total(actual)
 	var expected_volume:=total(expected)
-	var rule: Dictionary=model.rules.get(str(recipe.get("id","")),{})
+	var rule: Dictionary=recipe.get("quality_rule",model.rules.get(str(recipe.get("id","")),{}))
 	var trace:=replay(session.get("actions",[]),rule,definitions)
 	var reasons: Array=[]
 	var notes: Array=["试玩评分；酒感不等于 ABV。有效混合时长与节奏采用试玩范围；融水与温度未计分。"]
@@ -321,6 +323,8 @@ static func evaluate(session: Dictionary, definitions: Dictionary) -> Dictionary
 	var research: bool=session.get("mode","") in ["research","development"] or recipe.get("source_kind","")=="diy"
 	if research:
 		tier={"id":"trial","title":"试调完成","color":"78a99b"}
+	if session.get("mode")=="research_legendary":
+		attributes=Research.attributes(session,definitions).attributes
 	reasons.sort_custom(func(a,b): return _reason_priority(str(a))<_reason_priority(str(b)))
 	if reasons.is_empty(): reasons.append("用料贴合目标，关键操作和出品要求均已完成。")
 	return {"version":model.version,"draft":true,"tier":tier.id,"title":tier.title,"color":tier.color,"score":null if research else roundi(score),"attributes":attributes,"targets":targets,"tags":tags,"reasons":reasons,"notes":notes,"subscores":{"recipe":roundi(recipe_score),"process":roundi(process_score),"finish":roundi(finish_score)},"trace":trace,"recipe_version":recipe.get("version",1)}

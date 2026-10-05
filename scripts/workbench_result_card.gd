@@ -23,7 +23,7 @@ func _ready() -> void:
 	add_child(preview)
 	var amount:=WorkbenchSession.amount(result.get("contents",{"contents":{}}))
 	_label(Rect2(22,450,310,32),"实际出品 %s ml" % WorkbenchSession.format_amount(amount),21,Color("493523"),true)
-	_label(Rect2(380,107,540,28),"实际属性  /  短线为配方目标",18,Color("816b4d"))
+	_label(Rect2(380,107,540,28),"试调揭晓 / 实际成品属性" if not evaluation.get("has_target",true) else "实际属性  /  短线为配方目标",18,Color("816b4d"))
 	if evaluation.is_empty():
 		_label(Rect2(382,158,530,210),"这杯完成于评价系统接入之前。\n保留原成品与制作记录，不按新规则追溯打分。",22,Color("574332"))
 	else:
@@ -31,14 +31,14 @@ func _ready() -> void:
 			var y:=147+i*53
 			_label(Rect2(382,y,75,34),LABELS[i],22,Color("493523"))
 			_label(Rect2(826,y,58,34),str(roundi(float(evaluation.attributes[KEYS[i]]))),24,Color("493523"))
-			_label(Rect2(884,y+4,92,30),"目标 %s" % str(roundi(float(evaluation.targets[KEYS[i]]))),16,Color("816b4d"))
+			if evaluation.get("has_target",true): _label(Rect2(884,y+4,92,30),"目标 %s" % str(roundi(float(evaluation.targets[KEYS[i]]))),16,Color("816b4d"))
 		for i in range(mini(2,evaluation.tags.size())):
 			var tag: Dictionary=evaluation.tags[i]
 			_label(Rect2(393+i*178,370,160,36),tag.text,21,Color(str(tag.color)).darkened(.35),true)
 		var score: Variant=evaluation.get("score")
-		_label(Rect2(382,420,580,32),("品质 %d / 100" % int(score)) if score!=null else "研发试调 · 不按经典偏离判失败",24,accent.darkened(.25))
+		_label(Rect2(382,420,580,32),("品质 %d / 100" % int(score)) if score!=null else "自由试调 · 记录这一杯的味道",24,accent.darkened(.25))
 		var subs: Dictionary=evaluation.subscores
-		_label(Rect2(382,458,580,28),"配方 %d   ·   制作 %d   ·   出品 %d" % [subs.recipe,subs.process,subs.finish],18,Color("816b4d"))
+		_label(Rect2(382,458,580,28),"风味印象 · 试调记录" if not evaluation.get("has_target",true) else "配方 %d   ·   制作 %d   ·   出品 %d" % [subs.recipe,subs.process,subs.finish],18,Color("816b4d"))
 		for i in range(mini(3,evaluation.reasons.size())):
 			_label(Rect2(28,503+i*29,920,28),"· "+str(evaluation.reasons[i]),18,Color("574332"))
 	_label(Rect2(28,599,922,26),"试玩参数 · 四项属性 0—100 · 酒感不等于 ABV · R 查看全部依据",16,Color("816b4d"))
@@ -69,7 +69,7 @@ func _draw() -> void:
 		if value>0: draw_style_box(_bar(colors[i]),Rect2(466,y,340*value/100,11))
 		var reference:=clampf(float(evaluation.targets[KEYS[i]]),0,100)
 		var x:=466+340*reference/100
-		draw_line(Vector2(x,y-5),Vector2(x,y+16),Color("554330"),2,true)
+		if evaluation.get("has_target",true): draw_line(Vector2(x,y-5),Vector2(x,y+16),Color("554330"),2,true)
 	for i in range(mini(2,evaluation.tags.size())):
 		var color:=Color(str(evaluation.tags[i].color))
 		draw_style_box(_bar(Color(color,.18)),Rect2(385+i*178,369,168,36))
