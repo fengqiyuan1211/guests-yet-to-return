@@ -5,6 +5,7 @@ var confirming := false
 var was_running := true
 var continue_button: Button
 var restart_button: Button
+var memory_button: Button
 var audio_controls: VBoxContainer
 var volume_sliders: Dictionary = {}
 
@@ -26,6 +27,7 @@ func _ready() -> void:
 	)
 	continue_button = _button("继续游戏", _resume)
 	restart_button = _button("重新开始", _ask_restart)
+	memory_button = _button("童年球场 · 练习", _launch_memory)
 	_build_audio_controls()
 	_show_menu()
 
@@ -126,6 +128,7 @@ func _button(label: String, action: Callable) -> Button:
 
 func _show_menu() -> void:
 	confirming = false
+	memory_button.show()
 	audio_controls.show()
 	%Tabs.position.y = 538
 	%Description.position.y = 612
@@ -147,6 +150,7 @@ func _ask_restart() -> void:
 			%Description.text = GameSession.last_error
 		return
 	confirming = true
+	memory_button.hide()
 	audio_controls.hide()
 	%Tabs.position.y = 440
 	%Description.position.y = 250
@@ -156,6 +160,13 @@ func _ask_restart() -> void:
 	%Description.text = "将回到第 1 天傍晚，金币恢复为 300。\n人物相识、故事进度、老虎机保底和奖励记录都会重置。"
 	continue_button.text = "取消，继续游戏"
 	restart_button.text = "确认重新开始"
+
+func _launch_memory() -> void:
+	if confirming or GameSession.resetting: return
+	Navigation.memory_match_context = {"mode":"practice", "visit_id":""}
+	Navigation.memory_resume_running = was_running
+	was_running = false # This retiring settings page must not unpause the new match.
+	Navigation.go_to(&"stick_badminton")
 
 func _resume() -> void:
 	if GameSession.resetting:

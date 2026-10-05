@@ -33,3 +33,9 @@
 构建验证 5 款稳定 ID、27 条原料、5 条冰、22 个原步骤、2–6 卡位、分值和来源用量一致，保留可选柠檬片及未知 dash 换算。SQLite 执行完整性、外键和完整 JSON 对照检查。
 
 SQL 明细表包括 `cocktail_ingredients`、`cocktail_ice`、`cocktail_steps`、`cocktail_tags`、`cocktail_equipment`、`cocktail_codex_presentation`、`cocktail_unlock_reference` 及来源表。`record_json` 与正式 JSON 的每杯记录相同，`PRAGMA user_version=1`。
+
+## 2026-10-06 共享属性模型
+
+标准杯已按 `data/sensory/model.json` 校准，图鉴、工作台、DIY 和顾客评价使用 `scripts/sensory_model.gd`。曼哈顿苦精 1 dash 对应库存 1 ml，不再保留未知换算。长岛酸度 47，其余经典标准值保持原数值；原策划值留在 `reference_attributes`。
+
+修改配方后调用 `tools/calibrate_cocktails.gd` 更新 JSON，再运行 `tools/sync_cocktail_sqlite.py` 同步对照库。详见工程 `docs/酒品属性统一与校准.md`。不要用旧工作簿导出覆盖校准后的运行时数据。

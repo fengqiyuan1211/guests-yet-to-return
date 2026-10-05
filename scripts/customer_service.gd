@@ -2,6 +2,9 @@ extends Node
 ## Durable sale intent -> idempotent wallet credit -> review -> short feedback.
 signal changed
 const Evaluation := preload("res://scripts/customer_evaluation.gd")
+const MemoryProgress := preload("res://scripts/stick_memory_progress.gd")
+const LEGACY_RULES := "res://data/guest_mechanics/settlement_rules_legacy_v1.json"
+const Buffs := preload("res://scripts/cocktail_buffs.gd")
 var rules: Dictionary
 var profiles: Dictionary = {}
 var events: Array = []
@@ -14,10 +17,52 @@ var request: HTTPRequest
 var generation := 0
 
 func _ready() -> void:
+	StoryDialogue.story_finished.connect(_on_story_finished)
 	rules = JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_mechanics/settlement_rules.json"))
-	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_mechanics/guest_profiles.json"))
-	for profile in data.profiles: profiles[profile.guest_id] = profile
-	events = JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_mechanics/visit_events.json")).events
+	if rules.get("sensory", {}) is Dictionary:
+		rules.sensory = Evaluation.resolved_sensory(rules)
+	if not Evaluation.rules_valid(rules):
+		writable = false
+		last_error = "评分配置 settlement_rules.json 不完整，请保留存档。"
+		return
+	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_mechanics/guest_profiles.json"))
+	if not data is Dictionary or data.get("schema_version") != 1 or not data.get("profiles") is Array:
+		writable = false
+		last_error = "客人偏好 guest_profiles.json 的格式或版本无法读取。"
+		return
+	for profile: Variant in data.profiles:
+		if not profile is Dictionary or not profile.get("guest_id") is String or profiles.has(profile.guest_id) or not _profile_valid(profile):
+			writable = false
+			last_error = "guest_profiles.json 包含缺失、无效或重复的客人偏好。"
+			return
+		profiles[profile.guest_id] = profile
+	var event_data: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_mechanics/visit_events.json"))
+	if not event_data is Dictionary or event_data.get("schema_version") != 1 or not event_data.get("events") is Array:
+		writable = false
+		last_error = "来访事件 visit_events.json 的格式或版本无法读取。"
+		return
+	var event_ids: Dictionary = {}
+	var episode_events: Dictionary = {}
+	for event: Variant in event_data.events:
+		if not event is Dictionary or not event.get("event_id") is String or event_ids.has(event.event_id) or not profiles.has(event.get("guest_id")) or not event.get("story_episode_id") is String or not _delta_valid(event.get("preference_delta", {})) or not event.get("buff_affinity_overrides", {}) is Dictionary or not event.get("soft_state_penalty_additions", []) is Array:
+			writable = false
+			last_error = "visit_events.json 包含无效或重复事件。"
+			return
+		var chapter_exists := false
+		for chapter: Dictionary in StoryDialogue.catalog.get(event.guest_id, []): chapter_exists = chapter_exists or chapter.id == event.story_episode_id
+		var key := str(event.guest_id) + ":" + str(event.story_episode_id)
+		if not chapter_exists or episode_events.has(key):
+			writable = false
+			last_error = "visit_events.json 的故事引用不存在，或一章配置了多个主要事件。"
+			return
+		for points: Variant in event.get("buff_affinity_overrides", {}).values():
+			if not Evaluation.number(points):
+				writable = false
+				last_error = "visit_events.json 的 Buff 亲和度必须是非负有限数值。"
+				return
+		event_ids[event.event_id] = true
+		episode_events[key] = true
+	events = event_data.events
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--slot-wallet="): save_path = arg.trim_prefix("--slot-wallet=") + ".customers"
 		if arg.begins_with("--feedback-url="): endpoint = arg.trim_prefix("--feedback-url=")
@@ -35,11 +80,36 @@ func _ready() -> void:
 				writable = false
 				last_error = "客人的结算记录不完整，请保留存档。"
 				return
+	if not _cap_saved_scores(): return
 	for id in state.deliveries:
 		if state.deliveries[id].status == "prepared": _commit_delivery(str(id))
 
+# The 100-point ceiling also applies to reviews made before this display rule.
+# Keep receipts, cup signatures, preferences and individual modifiers unchanged.
+func _cap_saved_scores() -> bool:
+	var changed_score := false
+	for record: Dictionary in state.deliveries.values():
+		var review: Dictionary = record.review
+		if review.get("satisfaction") != null and float(review.satisfaction) > 100:
+			review.satisfaction = 100.0
+			changed_score = true
+	if changed_score and not _write():
+		writable = false
+		return false
+	return true
+
 func _number(value: Variant, minimum: float, maximum: float) -> bool:
 	return (value is int or value is float) and is_finite(float(value)) and float(value) >= minimum and float(value) <= maximum
+
+func _delta_valid(value: Variant) -> bool:
+	if not value is Dictionary: return false
+	for key: Variant in value:
+		if key not in Evaluation.ATTRS or not Evaluation.number(value[key], -INF): return false
+	return true
+
+func _profile_valid(profile: Dictionary) -> bool:
+	if not StoryDialogue.catalog.has(profile.guest_id) or not profile.get("profile_version") is String or not _delta_valid(profile.get("permanent_delta", {})): return false
+	return Evaluation.demand_valid({"target":profile.get("base_preferences"), "weights":profile.get("weights"), "tolerances":profile.get("tolerances"), "constraints":profile.get("constraints", []), "soft_state_penalties":profile.get("soft_state_penalties", []), "buff_affinities":profile.get("buff_affinities", {})})
 
 func _valid_saved_state(data: Variant) -> bool:
 	if not data is Dictionary or data.get("version") != 1 or not data.get("active") is Dictionary or not data.get("deliveries") is Dictionary or not data.get("last_drinks") is Dictionary: return false
@@ -51,21 +121,34 @@ func _valid_saved_state(data: Variant) -> bool:
 			if not active.get(key) is Dictionary: return false
 		if not profiles.has(active.guest_id) or active.profile.get("id") != active.guest_id: return false
 		if not _number(active.get("day"), 1, 1000000000) or not _number(active.get("visit"), 1, 1000000000): return false
+		if active.has("story_completed") and not active.story_completed is bool: return false
+		if active.has("story_episode_id") and not active.story_episode_id is String: return false
+		if active.has("rules_snapshot") and (not active.rules_snapshot is Dictionary or not Evaluation.rules_valid(active.rules_snapshot)): return false
 		if not active.delivery_id.is_empty() and not data.deliveries.has(active.delivery_id): return false
 	for id in data.deliveries:
 		var record: Variant = data.deliveries[id]
 		if not id is String or not record is Dictionary or record.get("id") != id or record.get("status") not in ["prepared", "settled"]: return false
 		if not profiles.has(record.get("guest_id")) or not _number(record.get("amount"), 1, 1000000000) or float(record.amount) != floor(float(record.amount)): return false
+		if record.has("story_completed") and not record.story_completed is bool: return false
+		if record.has("story_episode_id") and not record.story_episode_id is String: return false
+		if record.has("visit_serial") and (not _number(record.visit_serial, 1, 1000000000) or record.visit_serial != floor(record.visit_serial)): return false
+		if record.has("visit_id") and (not record.visit_id is String or record.visit_id.is_empty() or not str(id).begins_with(record.visit_id + ":")): return false
+		if record.has("cup_signature") and (not record.cup_signature is String or record.cup_signature.length() != 64): return false
+		if record.has("cup_signature_format") and record.cup_signature_format != "json-roundtrip-v2": return false
 		for key in ["actual", "review", "feedback", "previous_drink", "demand"]:
 			if not record.get(key) is Dictionary: return false
 		var feedback: Dictionary = record.feedback
 		if not _number(feedback.get("round"), 0, 3) or float(feedback.round) != floor(float(feedback.round)): return false
 		if not feedback.get("pending") is bool or not feedback.get("done") is bool or not feedback.get("messages") is Array or feedback.messages.size() > 6 or not feedback.get("pending_reply") is String: return false
+		if feedback.has("story_resumed") and (not feedback.story_resumed is bool or (feedback.story_resumed and (not feedback.done or feedback.pending))): return false
 		if not feedback.get("turn") is Dictionary: return false
 		if int(feedback.round) > 0 and not _valid_turn(feedback.turn, int(feedback.round)): return false
 		for message in feedback.messages:
 			if not message is Dictionary or message.get("speaker") not in ["guest", "player"] or not message.get("text") is String: return false
 		if record.review.get("status") not in ["scored", "rejected", "data_incomplete"]: return false
+		if record.review.get("satisfaction") != null and not _number(record.review.satisfaction, 0, INF): return false
+		if record.has("craft") and not record.craft is Dictionary: return false
+		if record.get("craft", {}).get("score") != null and not _number(record.craft.score, 0, 100): return false
 		if record.review.get("stars") != null and (not _number(record.review.stars, 1, 5) or float(record.review.stars) != floor(float(record.review.stars))): return false
 	return true
 
@@ -92,17 +175,67 @@ func _cancel_request() -> void:
 		request.queue_free()
 	request = null
 
+func _rules_snapshot(source: Dictionary) -> Dictionary:
+	var snapshot := source.duplicate(true)
+	snapshot.sensory = Evaluation.resolved_sensory(source)
+	snapshot.sensory["ingredient_facts"] = {}
+	for item: Dictionary in Supplies.catalog.list_items():
+		if item.get("kind") == "ingredient": snapshot.sensory.ingredient_facts[item.id] = {"contains_alcohol":item.get("contains_alcohol")}
+	if Evaluation.scoring(snapshot).version != "guest-match-playtest-1" and FileAccess.file_exists("res://data/guest_mechanics/buffs.json"):
+		snapshot["buff_rules"] = JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_mechanics/buffs.json"))
+		if snapshot.buff_rules is Dictionary and snapshot.buff_rules.get("recipes") is Dictionary:
+			for recipe_id in snapshot.buff_rules.recipes:
+				var reference := MenuCatalog.get_recipe(str(recipe_id))
+				if not reference.is_empty():
+					reference["unlocked"] = true
+					snapshot.buff_rules.recipes[recipe_id]["allowed_versions"] = [WorkbenchSession.recipe_snapshot(reference).version]
+	return snapshot
+
+func _ensure_rules_snapshot() -> bool:
+	if state.active.has("rules_snapshot"):
+		if state.active.rules_snapshot is Dictionary and Evaluation.rules_valid(state.active.rules_snapshot): return true
+		last_error = "本次订单的评分规则不完整，请保留酒杯和记录。"
+		return false
+	var locked: bool = not state.active.get("order", {}).is_empty()
+	var source: Variant = JSON.parse_string(FileAccess.get_file_as_string(LEGACY_RULES)) if locked else rules
+	if not source is Dictionary or not Evaluation.rules_valid(source):
+		last_error = "旧订单的评分规则无法恢复，请保留酒杯和记录。"
+		return false
+	var previous: Dictionary = state.active.duplicate(true)
+	state.active["rules_snapshot"] = _rules_snapshot(source)
+	state.active["rules_migration"] = {"source":LEGACY_RULES if locked else "current_rules_before_order", "satisfaction_version":Evaluation.scoring(source).version, "kind":"baseline_v1_locked_order" if locked else "unlocked_visit"}
+	if not _write():
+		state.active = previous
+		return false
+	return true
+
+func _effective_demand(source: Dictionary, guest: String, snapshot: Dictionary) -> Dictionary:
+	var demand := source.duplicate(true)
+	if Evaluation.scoring(snapshot).version == "guest-match-playtest-1": return demand
+	# Adapt the old explicit no-alcohol intent without editing the authored profile or its targets.
+	if guest == "yellow_creature":
+		var constraints: Array = []
+		for item: Dictionary in demand.get("constraints", []):
+			if item.get("kind") == "max_attribute" and item.get("attribute") == "alcohol_intensity" and item.get("maximum") == 0:
+				constraints.append({"id":"yellow_no_alcohol", "kind":"forbid_fact", "scope":"served_contents", "fact":"contains_alcohol", "operator":"eq", "value":true, "on_violation":"reject", "label":item.get("label", "不喝含酒精的饮品"), "legacy_source":item.duplicate(true)})
+			else: constraints.append(item)
+		demand.constraints = constraints
+	return demand
+
 func begin_guest(profile: Dictionary, visit: int, restoring: bool) -> bool:
 	if not writable: return false
 	if restoring and state.active.get("guest_id") == profile.id and int(state.active.get("day", -1)) == TimeManager.day and int(state.active.get("visit", -1)) == visit:
+		if not _ensure_rules_snapshot(): return false
 		call_deferred("_resume_feedback")
 		return true
 	_cancel_request()
 	var number := int(StoryDialogue.progress.get(str(profile.id), {}).get("completed", 0)) + 1
+	if restoring and StoryDialogue.guest_id == str(profile.id) and not StoryDialogue.episode.is_empty(): number = int(StoryDialogue.episode.get("episode", number))
 	var episode_id := "%s_%02d" % [profile.id, number]
 	var p: Dictionary = profiles[str(profile.id)].duplicate(true)
 	var demand: Dictionary = {"target": p.base_preferences.duplicate(true), "weights": p.weights.duplicate(true),
 		"tolerances": p.tolerances.duplicate(true), "constraints": p.get("constraints", []).duplicate(true),
+		"buff_affinities":p.get("buff_affinities", {}).duplicate(true),
 		"soft_state_penalties": p.get("soft_state_penalties", []).duplicate(true), "episode_id": episode_id,
 		"mood_note": "", "requested_recipe_id": "", "profile_version": p.profile_version}
 	for key in Evaluation.ATTRS: demand.target[key] = clampf(float(demand.target[key]) + float(p.get("permanent_delta", {}).get(key, 0)), 0, 100)
@@ -112,10 +245,17 @@ func begin_guest(profile: Dictionary, visit: int, restoring: bool) -> bool:
 			demand.soft_state_penalties.append_array(event.get("soft_state_penalty_additions", []))
 			demand.mood_note = event.get("mood_note", "")
 			demand.requested_recipe_id = event.get("requested_recipe_id", "")
+			demand.buff_affinities.merge(event.get("buff_affinity_overrides", {}), true)
+	if not Evaluation.demand_valid(demand):
+		last_error = "这位客人的口味数据不完整，暂不能创建订单。"
+		return false
+	demand = _effective_demand(demand, str(profile.id), rules)
+	demand["ruleset_manifest"] = {"profile_version":p.profile_version, "sensory_version":rules.sensory.version, "satisfaction_version":Evaluation.scoring(rules).version}
 	var previous: Dictionary = state.active.duplicate(true)
 	state.active = {"id": Crypto.new().generate_random_bytes(16).hex_encode(), "guest_id": profile.id,
 		"day": TimeManager.day, "visit": visit, "demand": demand, "order": {}, "delivery_id": "",
-		"profile": profile.duplicate(true)}
+		"profile": profile.duplicate(true), "story_episode_id": episode_id if number <= StoryDialogue.catalog.get(str(profile.id), []).size() else "",
+		"story_completed": number > StoryDialogue.catalog.get(str(profile.id), []).size(), "rules_snapshot":_rules_snapshot(rules)}
 	if not _write():
 		state.active = previous
 		return false
@@ -124,6 +264,7 @@ func begin_guest(profile: Dictionary, visit: int, restoring: bool) -> bool:
 
 func prepare_order(recipe_id: String) -> Dictionary:
 	if not writable or state.active.is_empty() or not TimeManager.is_open or has_delivery(): return {}
+	if not _ensure_rules_snapshot(): return {}
 	var price := -1
 	for entry in MenuCatalog.entries:
 		if entry.id == recipe_id: price = int(entry.price)
@@ -131,11 +272,66 @@ func prepare_order(recipe_id: String) -> Dictionary:
 	var old: Dictionary = state.active.order.duplicate(true)
 	var started := int(old.get("started_minute", TimeManager.minutes_since_midnight))
 	state.active.order = {"recipe_id": recipe_id, "price": price, "started_minute": started,
-		"time_limit_minutes": int(rules.order_time_limit_minutes), "demand": state.active.demand.duplicate(true)}
+		"time_limit_minutes": int(state.active.rules_snapshot.order_time_limit_minutes), "demand": state.active.demand.duplicate(true)}
 	if not _write():
 		state.active.order = old
 		return {}
-	return {"visit_id": state.active.id, "recipe_id": recipe_id, "price": price}
+	var quote := {"visit_id": state.active.id, "recipe_id": recipe_id, "price": price}
+	if state.active.rules_snapshot.sensory.version == "sensory-calibrated-1":
+		quote["sensory_model"] = state.active.rules_snapshot.sensory.duplicate(true)
+	else:
+		quote["sensory_legacy"] = true
+	return quote
+
+func _on_story_finished(guest: String, chapter_id: String) -> void:
+	if state.active.get("guest_id") != guest or state.active.get("story_episode_id", state.active.get("demand", {}).get("episode_id", "")) != chapter_id: return
+	var previous := state.duplicate(true)
+	state.active.story_completed = true
+	state.active.story_episode_id = chapter_id
+	var record := current_record()
+	if not record.is_empty():
+		record.story_completed = true
+		record.story_episode_id = chapter_id
+		record.story = StoryDialogue.history.duplicate(true)
+		record.known = StoryDialogue.is_known(guest)
+	if not _write():
+		state = previous
+		return
+	changed.emit()
+	call_deferred("_resume_feedback")
+
+func _visit_story_completed() -> bool:
+	if state.active.get("story_completed", false): return true
+	var chapter_id := str(state.active.get("story_episode_id", state.active.get("demand", {}).get("episode_id", "")))
+	var profile: Dictionary = StoryDialogue.progress.get(str(state.active.get("guest_id", "")), {})
+	for chapter: Dictionary in StoryDialogue.catalog.get(str(state.active.get("guest_id", "")), []):
+		if chapter.id == chapter_id: return int(profile.get("completed", 0)) >= int(chapter.episode) and StoryDialogue.phase != "story"
+	return StoryDialogue.phase != "story"
+
+func memory_summary() -> Dictionary:
+	return MemoryProgress.summarize(StoryDialogue.progress.get("stick", {}), state.deliveries)
+
+func can_award_memory(visit_id: String) -> bool:
+	var record := current_record()
+	return (writable and not visit_id.is_empty() and state.active.get("id") == visit_id
+		and state.active.get("guest_id") == "stick" and StoryDialogue.guest_id == "stick" and StoryDialogue.phase == "idle"
+		and not record.is_empty() and record.status == "settled" and record.feedback.done and memory_summary().eligible)
+
+func memory_match_context() -> Dictionary:
+	var visit_id := str(state.active.get("id", ""))
+	return {"mode":"story" if can_award_memory(visit_id) else "practice", "visit_id":visit_id}
+
+func _cup_signature(result: Dictionary) -> String:
+	# Godot reads JSON numbers back as floats. Normalize that representation
+	# before signing, so an unchanged persisted cup keeps the same fingerprint.
+	var normalized: Variant = JSON.parse_string(JSON.stringify(_cup_signature_payload(result)))
+	return JSON.stringify(normalized).sha256_text()
+
+func _cup_signature_payload(result: Dictionary) -> Array:
+	return [result.get("drink_id"), result.get("guest"), result.get("recipe"), result.get("contents"), result.get("cup"), result.get("actions"), result.get("evaluation")]
+
+func _legacy_cup_signature(result: Dictionary) -> String:
+	return JSON.stringify(_cup_signature_payload(result)).sha256_text()
 
 func has_delivery() -> bool:
 	return not str(state.active.get("delivery_id", "")).is_empty()
@@ -154,24 +350,51 @@ func deliver(result: Dictionary) -> bool:
 		return false
 	var id := "%s:%s" % [state.active.id, drink_id]
 	if state.deliveries.has(id):
+		if state.deliveries[id].has("cup_signature") and state.deliveries[id].cup_signature not in [_cup_signature(result), _legacy_cup_signature(result)]:
+			last_error = "这一杯的记录已经变化，请保留原来的酒。"
+			return false
 		return _commit_delivery(id)
 	if has_delivery() or state.active.order.is_empty() or result.get("recipe", {}).get("id") != state.active.order.recipe_id:
 		last_error = "这一桌已经结过账，或者酒款已变更。"
 		return false
+	if not _ensure_rules_snapshot(): return false
+	var session: Dictionary = WorkbenchSession.snapshot().session
+	var finished: Dictionary = session.get("result", {})
+	if session.get("status") != "finished" or finished.get("drink_id") != drink_id or _cup_signature(finished) != _cup_signature(result):
+		last_error = "请先完成当前这杯酒，再送给客人。"
+		return false
+	# Use the durable real workbench cup, including its computed craft score.
+	result = finished.duplicate(true)
 	var definitions := WorkbenchSession.MATERIALS.duplicate(true)
 	definitions.merge(WorkbenchSession.SOLIDS)
 	definitions.merge(WorkbenchSession.GARNISHES)
-	var actual := Evaluation.sensory(result, definitions, rules)
+	var snapshot: Dictionary = state.active.rules_snapshot
+	var actual := Evaluation.sensory(result, definitions, snapshot)
+	if actual.status != "complete":
+		last_error = "这一杯缺少必要的感官数据，尚未售出。" if actual.get("reason") != "empty_cup" else "空杯不能送给客人，尚未售出。"
+		return false
 	var waited := posmod(TimeManager.minutes_since_midnight - int(state.active.order.started_minute), 1440)
-	var review := Evaluation.evaluate(state.active.order.demand, actual, waited > int(state.active.order.time_limit_minutes), rules)
+	var demand := _effective_demand(state.active.order.demand, str(state.active.guest_id), snapshot)
+	var buffs := Buffs.resolve(result, actual, snapshot.get("buff_rules", {}))
+	var review := Evaluation.evaluate(demand, actual, waited > int(state.active.order.time_limit_minutes), snapshot, buffs)
+	if review.status == "data_incomplete":
+		last_error = "这杯酒的评价缺少必要数据，尚未售出。"
+		return false
+	if review.status == "rejected":
+		for buff: Dictionary in buffs.active: buffs.inactive.append({"id":buff.id, "reason":"hard_constraint_rejected"})
+		buffs.active = []
+	var serial := 0
+	for saved: Dictionary in state.deliveries.values(): serial = maxi(serial, MemoryProgress.sequence(saved))
 	var record := {"id": id, "status": "prepared", "guest_id": state.active.guest_id,
+		"visit_id":state.active.id, "visit_serial":serial + 1, "cup_signature":_cup_signature(result), "cup_signature_format":"json-roundtrip-v2",
+		"story_episode_id":state.active.get("story_episode_id", state.active.demand.episode_id), "story_completed":_visit_story_completed(),
 		"day": TimeManager.day, "drink_id": drink_id, "recipe_id": state.active.order.recipe_id,
 		"recipe_name": result.get("recipe", {}).get("name", "这一杯"), "amount": int(state.active.order.price),
-		"demand": state.active.order.demand.duplicate(true), "actual": actual, "review": review,
+		"demand": demand, "actual": actual, "review": review, "buffs":buffs, "rules_snapshot":snapshot.duplicate(true),
 		"craft": result.get("evaluation", {}).duplicate(true), "waited_minutes": waited,
 		"previous_drink": state.last_drinks.get(str(state.active.guest_id), {}).duplicate(true),
 		"story": StoryDialogue.history.duplicate(true), "known": StoryDialogue.is_known(str(state.active.guest_id)),
-		"feedback": {"round": 0, "pending": false, "pending_reply": "", "messages": [], "turn": {}, "done": false}}
+		"feedback": {"round": 0, "pending": false, "pending_reply": "", "messages": [], "turn": {}, "done": false, "story_resumed": false}}
 	state.deliveries[id] = record
 	state.active.delivery_id = id
 	if not _write():
@@ -183,6 +406,7 @@ func deliver(result: Dictionary) -> bool:
 func _commit_delivery(id: String) -> bool:
 	var record: Dictionary = state.deliveries[id]
 	if record.status == "settled":
+		last_error = ""
 		_resume_feedback()
 		return true
 	if not SlotWallet.credit_sale(id, int(record.amount)):
@@ -201,7 +425,11 @@ func _commit_delivery(id: String) -> bool:
 
 func _resume_feedback() -> void:
 	var record := current_record()
-	if record.is_empty() or record.status != "settled" or record.feedback.done or is_instance_valid(request): return
+	if record.is_empty() or record.status != "settled" or is_instance_valid(request): return
+	if not record.get("story_completed", false) and _visit_story_completed() and StoryDialogue.episode.get("id") == record.get("story_episode_id", record.demand.episode_id):
+		_on_story_finished(str(record.guest_id), str(StoryDialogue.episode.id))
+		return
+	if record.feedback.done: return
 	if record.feedback.pending or int(record.feedback.round) == 0:
 		_request_feedback(str(record.feedback.get("pending_reply", "")))
 
@@ -212,9 +440,24 @@ func choose_feedback(index: int, expected_round: int) -> void:
 	if index < 0 or index >= replies.size(): return
 	_request_feedback(str(replies[index]))
 
+func resume_served_story(expected_delivery_id: String) -> bool:
+	# Resume the existing story cursor only after this cup's feedback is complete.
+	# The acknowledgement survives page changes and process restart; it does not
+	# complete a chapter, start another one, or create another sale.
+	var record := current_record()
+	if record.is_empty() or record.id != expected_delivery_id or record.status != "settled" or not record.feedback.done or record.feedback.pending: return false
+	if StoryDialogue.guest_id != record.guest_id or StoryDialogue.phase != "story": return false
+	if record.feedback.get("story_resumed", false): return true
+	record.feedback.story_resumed = true
+	if not _write():
+		record.feedback.story_resumed = false
+		return false
+	changed.emit()
+	return true
+
 func _request_feedback(reply: String) -> void:
 	var record := current_record()
-	if record.is_empty() or record.feedback.done or int(record.feedback.round) >= 3: return
+	if record.is_empty() or record.feedback.done or int(record.feedback.round) >= 3 or is_instance_valid(request): return
 	var feedback: Dictionary = record.feedback
 	feedback.pending = true
 	feedback.pending_reply = reply
@@ -226,8 +469,9 @@ func _request_feedback(reply: String) -> void:
 	var context := {"request_id": record.id + ":%d" % round_number, "round": round_number,
 		"guest": {"id": record.guest_id, "name": state.active.profile.name if record.known else "来客",
 			"bio": state.active.profile.bio if record.known else "身份尚未介绍，不要自报名字或泄露身份"},
-		"story": record.story, "demand": record.demand, "drink": {"name": record.recipe_name, "actual": record.actual},
-		"previous_drink": record.previous_drink, "review": record.review,
+		"story": record.story, "story_completed": record.get("story_completed", StoryDialogue.phase != "story"),
+		"demand": record.demand, "drink": {"name": record.recipe_name, "actual": record.actual},
+		"previous_drink": record.previous_drink, "craft": record.get("craft", {}), "buffs":record.get("buffs", {}), "review": record.review,
 		"history": feedback.messages, "player_reply": reply, "draft_sensory_model": true}
 	request = HTTPRequest.new()
 	request.timeout = 12.0
@@ -237,7 +481,7 @@ func _request_feedback(reply: String) -> void:
 	var delivery_id := str(record.id)
 	var current_request := request
 	current_request.request_completed.connect(func(status: int, code: int, _headers: PackedStringArray, body: PackedByteArray):
-		if generation != epoch or state.active.get("delivery_id") != delivery_id: return
+		if generation != epoch or state.active.get("delivery_id") != delivery_id or request != current_request: return
 		request = null
 		current_request.queue_free()
 		var response: Variant = JSON.parse_string(body.get_string_from_utf8()) if status == HTTPRequest.RESULT_SUCCESS and code == 200 else null
@@ -261,6 +505,9 @@ func _valid_turn(turn: Dictionary, round_number: int) -> bool:
 func _accept_turn(id: String, round_number: int, reply: String, turn: Dictionary) -> void:
 	if state.active.get("delivery_id") != id: return
 	var record: Dictionary = state.deliveries[id]
+	# A failed request can also schedule its completed callback. Commit a round
+	# once, and ignore stale responses from a previous round or restored request.
+	if record.feedback.done or not record.feedback.pending or int(record.feedback.round) + 1 != round_number: return
 	var old: Dictionary = record.feedback.duplicate(true)
 	if not reply.is_empty(): record.feedback.messages.append({"speaker": "player", "text": reply})
 	record.feedback.messages.append({"speaker": "guest", "text": turn.text, "emotion": turn.emotion})
@@ -278,6 +525,9 @@ func retry_feedback() -> void:
 	if is_instance_valid(request): return
 	var record := current_record()
 	if not record.is_empty() and record.status == "settled" and not record.feedback.done:
+		if not record.get("story_completed", false) and _visit_story_completed():
+			_resume_feedback()
+			return
 		_request_feedback(str(record.feedback.get("pending_reply", "")))
 
 func _fallback(record: Dictionary, round_number: int) -> Dictionary:
@@ -289,13 +539,18 @@ func _fallback(record: Dictionary, round_number: int) -> Dictionary:
 	elif round_number == 1 and record.review.status == "scored":
 		var difference: Dictionary = record.review.differences
 		var key := "alcohol_intensity"
+		var breakdown: Dictionary = record.review.get("attribute_breakdown", {})
 		for attribute in Evaluation.ATTRS:
-			if absf(float(difference[attribute])) > absf(float(difference[key])): key = attribute
+			var impact := float(breakdown.get(attribute, {}).get("deduction", absf(float(difference[attribute]))))
+			var current := float(breakdown.get(key, {}).get("deduction", absf(float(difference[key]))))
+			if impact > current: key = attribute
 		var high: Dictionary = {"alcohol_intensity": "酒味有点重了，我今天想喝得轻些。", "sweetness": "这杯有点甜了，我今天不太想喝这么甜的。", "sourness": "酸味比我想要的重一些。", "bitterness": "这杯苦味有点重，我想要柔和些的。"}
 		var low: Dictionary = {"alcohol_intensity": "酒味有点轻了，我今天想喝得更有劲些。", "sweetness": "要是再甜一点就好了。", "sourness": "我想要的酸味还差一点。", "bitterness": "再有一点苦味就更对了。"}
 		var tolerance := float(record.demand.tolerances.get(key, 5))
 		if absf(float(difference[key])) > tolerance:
 			text = high[key] if float(difference[key]) > 0 else low[key]
+			if record.review.satisfied:
+				text = "今天这杯整体挺合我心意。" + text
 			emotion = "thoughtful" if record.review.satisfied else "disappointed"
 		else:
 			text = "对，就是这个味道。今天这杯挺合我心意。"
@@ -309,7 +564,7 @@ func _fallback(record: Dictionary, round_number: int) -> Dictionary:
 		else: text = "能有人记得我想喝什么，感觉挺好的。" if record.review.get("satisfied", false) else "我口味可能挑了点。下次我们再试试。"
 		emotion = "thoughtful"
 	elif round_number == 3:
-		text = "今晚先到这里吧。我该走了，下次见。"
+		text = "刚才的事还没说完。我接着讲，你再听一会儿？" if StoryDialogue.guest_id == record.guest_id and StoryDialogue.phase == "story" else "今晚先到这里吧。我该走了，下次见。"
 		emotion = "pleased" if record.review.get("satisfied", false) else "neutral"
 	if record.guest_id == "yellow_creature": return {"text": "我是奶龙", "emotion": "neutral", "replies": [], "end": true}
 	return {"text": text, "emotion": emotion, "replies": ["这个味道你喜欢吗？", "下次我记着你的口味。"] if round_number < 3 else [], "end": round_number >= 3}

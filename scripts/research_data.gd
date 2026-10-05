@@ -1,5 +1,6 @@
 extends RefCounted
 ## Research lives inside the existing atomic stock/workbench save, never a second wallet.
+const Sensory=preload("res://scripts/sensory_model.gd")
 const CONFIG_PATH := "res://data/research.json"
 const ATTRS := ["alcohol_intensity", "sweetness", "sourness", "bitterness"]
 
@@ -7,7 +8,7 @@ static func config() -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string(CONFIG_PATH))
 
 static func fresh() -> Dictionary:
-	return {"version":1,"inspiration":int(config().initial_inspiration),"serial":0,"recipes":{},"saved_drinks":{},"acquired":{},"mastered":{}}
+	return {"version":1,"inspiration":int(config().initial_inspiration),"serial":0,"recipes":{},"saved_drinks":{},"acquired":{},"mastered":{},"memory_matches":{},"story_items":{}}
 
 static func whole(value: Variant, maximum: int = 1000000000) -> bool:
 	return (value is int or value is float) and is_finite(float(value)) and value >= 0 and value <= maximum and value == floor(value)
@@ -17,6 +18,15 @@ static func valid(value: Variant) -> bool:
 	if not whole(value.get("inspiration")) or not whole(value.get("serial")): return false
 	for key in ["recipes","saved_drinks","acquired","mastered"]:
 		if not value.get(key) is Dictionary: return false
+	if not value.get("memory_matches", {}) is Dictionary: return false
+	for id in value.get("memory_matches", {}):
+		if not preload("res://scripts/stick_memory_rules.gd").valid_result(value.memory_matches[id]) or value.memory_matches[id].match_id != id: return false
+	if not value.get("story_items", {}) is Dictionary: return false
+	for id in value.get("story_items", {}):
+		var item: Variant = value.story_items[id]
+		if id != preload("res://scripts/stick_memory_rules.gd").ITEM_ID or not item is Dictionary: return false
+		if item.get("owned") != true or item.get("unlocked") != true or item.get("quantity") != 1 or not item.get("awarded_by") is String: return false
+		if not value.get("memory_matches", {}).has(item.awarded_by) or value.memory_matches[item.awarded_by].outcome != "win": return false
 	for id in value.recipes:
 		var r: Variant = value.recipes[id]
 		if not id is String or not r is Dictionary or r.get("id") != id or not id.begins_with("diy_"): return false
@@ -49,10 +59,10 @@ static func blank_recipe() -> Dictionary:
 	return {"id":"research_blank","version":1,"name":"自由 DIY","english_name":"FREE EXPLORATION","source_kind":"research_diy","ingredients":{},"ingredient_rows":[],"display_steps":[],"ice":[]}
 
 static func sensory_snapshot() -> Dictionary:
-	var legacy: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/workbench/evaluation.json"))
-	return {"version":"research-sensory-1","profiles":legacy.profiles.duplicate(true)}
+	return Sensory.snapshot()
 
 static func valid_model(model: Variant) -> bool:
+	if Sensory.valid_model(model): return true
 	if not model is Dictionary or model.get("version")!="research-sensory-1" or not model.get("profiles") is Dictionary: return false
 	for id in model.profiles:
 		var p: Variant=model.profiles[id]
@@ -64,6 +74,9 @@ static func valid_model(model: Variant) -> bool:
 static func attributes(session: Dictionary, definitions: Dictionary) -> Dictionary:
 	var serving: Dictionary=session.vessels.glass
 	var model: Dictionary=session.get("sensory_model",sensory_snapshot())
+	if Sensory.valid_model(model):
+		return Sensory.evaluate(serving.contents,serving.get("solids",{}),definitions,model)
+	# Frozen research-sensory-1 sessions retain their original calculations.
 	var values: Array=[0.0,0.0,0.0,0.0]
 	var volume:=0.0
 	var missing: Array=[]
@@ -90,7 +103,7 @@ static func trial(session: Dictionary, definitions: Dictionary) -> Dictionary:
 		if sensory.attributes[ATTRS[i]]>=40: tags.append({"text":labels[i],"color":"ad8b57"})
 	if session.vessels.glass.get("layers",[]).size()>1: tags.append({"text":"层次分明","color":"7f9c83"})
 	if tags.is_empty(): tags.append({"text":"轻柔的","color":"7f9c83"})
-	return {"version":sensory.version,"draft":true,"tier":"trial","title":"试调完成","color":"78a99b","score":null,"attributes":sensory.attributes,"targets":sensory.attributes.duplicate(),"has_target":false,"tags":tags,"reasons":["属性按实际成品计算；自由试调没有经典配方还原分。","可将成品用量整理成配方，再填写你的复做笔记。"],"notes":["感官试玩模型；不是真实 ABV。未模拟温度、融水、香气萃取。","感官描述不等于已获得配方 Buff。"],"subscores":{"recipe":0,"process":0,"finish":0},"trace":{},"recipe_version":session.recipe.version,"data_complete":sensory.missing.is_empty(),"missing_profiles":sensory.missing}
+	return {"version":sensory.version,"draft":true,"tier":"trial","title":"试调完成","color":"78a99b","score":null,"attributes":sensory.attributes,"targets":sensory.attributes.duplicate(),"has_target":false,"tags":tags,"reasons":["属性按实际成品计算；自由试调没有经典配方还原分。","可将成品用量整理成配方，再填写你的复做笔记。"],"notes":["感官试玩模型；不是真实 ABV。未模拟温度、融水、香气萃取。","感官描述不等于已获得配方 Buff。"],"subscores":{"recipe":0,"process":0,"finish":0},"trace":{},"recipe_version":session.recipe.version,"data_complete":sensory.get("data_complete",sensory.missing.is_empty()),"missing_profiles":sensory.missing}
 
 static func legendary(id: String) -> Dictionary:
 	for r in config().legendary_recipes:

@@ -15,10 +15,13 @@ var story_choices: HBoxContainer
 var _restoring_reception := false
 var _dialogue_press_revision := -1
 var _dialogue_pointer := -2
+var _memory_invitation_declined := false
+var _memory_inviting := false
 
 func _ready() -> void:
 	Navigation.register_page(&"drink_selection", preload("res://scenes/drink_selection.tscn"))
 	Navigation.register_page(&"research", preload("res://scenes/research.tscn"))
+	Navigation.register_page(&"stick_badminton", preload("res://scenes/stick_badminton.tscn"))
 	Navigation.register_page(&"mixing", preload("res://scenes/workbench.tscn"))
 	Navigation.register_page(&"slots", preload("res://scenes/slot_machine.tscn"))
 	Navigation.register_page(&"codex", preload("res://scenes/codex.tscn"))
@@ -51,6 +54,7 @@ func _ready() -> void:
 	TimeManager.business_opened.connect(_on_business_opened)
 	TimeManager.business_closed.connect(_on_business_closed)
 	TimeManager.fast_forward_changed.connect(_on_fast_forward_changed)
+	TimeManager.closing_wait_changed.connect(_on_fast_forward_changed)
 	TimeManager.time_changed.connect(_on_time_changed)
 	GameSession.bind_home(self)
 	if TimeManager.is_open:
@@ -181,17 +185,67 @@ func _sync_service_controls() -> void:
 		%ShiftStatus.text = "快进至 20:00"
 	elif service_started:
 		%OpenButton.text = "前往调酒台    →"
-		%ShiftStatus.text = "营业中 · 04:00 歇业"
+		%ShiftStatus.text = "打烊中 · 等最后一位客人" if TimeManager.closing_pending else "营业中 · 04:00 停止接客"
+		%NextGuestButton.text = "送客，结束营业" if TimeManager.closing_pending else "送客，迎接下一位"
 	else:
 		%OpenButton.text = "提前开始营业  →"
 		%ShiftStatus.text = "备料中 · 20:00 开门"
 
 func _on_next_guest_pressed() -> void:
 	if service_started and Navigation.current_route == &"home":
+		if _memory_invitation_available():
+			_show_memory_invitation()
+			return
 		on_drink_served()
+
+func _memory_invitation_available() -> bool:
+	var record := CustomerService.current_record()
+	return (not _memory_invitation_declined and guest_profile.get("id") == "stick"
+		and CustomerService.memory_summary().eligible
+		and not WorkbenchSession.research_state().get("story_items", {}).has("item_recipe_after_school")
+		and not record.is_empty() and record.status == "settled" and record.feedback.done)
+
+func _maybe_offer_memory() -> void:
+	if Navigation.current_route == &"home" and not _memory_inviting and _memory_invitation_available(): _show_memory_invitation()
+
+func _show_memory_invitation() -> void:
+	if Navigation.current_route != &"home" or not _memory_invitation_available(): return
+	_memory_inviting = true
+	_clear_story_choices()
+	_layout_dialogue(true)
+	%GuestSpeech.text = "对了。以前那一局还没打完。你想不想[b]陪我打一局羽毛球[/b]？赢了，我把[b]《童年拾忆》那张旧酒单[/b]给你。"
+	%TalkButton.hide()
+	%GuestTags.hide()
+	%NextGuestButton.disabled = true
+	story_choices.show()
+	for item in [["来吧，球拍给我。", true], ["下次再打，你先歇歇。", false]]:
+		var button := Button.new()
+		button.text = item[0]
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.custom_minimum_size = Vector2(0, 68)
+		button.add_theme_font_size_override("font_size", 18)
+		button.focus_mode = Control.FOCUS_NONE
+		for style in ["normal", "hover", "pressed"]: button.add_theme_stylebox_override(style, %NextGuestButton.get_theme_stylebox(style))
+		button.pressed.connect(func():
+			if item[1]:
+				var context := CustomerService.memory_match_context()
+				if context.mode != "story":
+					_memory_inviting = false
+					_render_dialogue()
+					return
+				Navigation.memory_match_context = context
+				Navigation.go_to(&"stick_badminton")
+			else:
+				_memory_invitation_declined = true
+				_memory_inviting = false
+				_render_dialogue()
+		)
+		story_choices.add_child(button)
 
 func _on_guest_spawned(profile: Dictionary) -> void:
 	guest_profile = profile
+	_memory_inviting = false
+	_memory_invitation_declined = false
 	%NextGuestButton.disabled = false
 	%GuestPortrait.modulate = Color.WHITE
 	if not _restoring_reception:
@@ -238,7 +292,10 @@ func _setup_dialogue_input() -> void:
 	%GuestSpeech.add_theme_font_override("bold_font", bold)
 
 func _can_advance_dialogue() -> bool:
-	return (not CustomerService.has_delivery() and service_started and not guest_profile.is_empty()
+	var record := CustomerService.current_record()
+	var resumed_story: bool = (not record.is_empty() and record.feedback.done
+		and record.feedback.get("story_resumed", false) and StoryDialogue.phase == "story")
+	return ((not CustomerService.has_delivery() or resumed_story) and service_started and not guest_profile.is_empty()
 		and Navigation.current_route == &"home"
 		and StoryDialogue.guest_id == str(guest_profile.id)
 		and StoryDialogue.phase in ["story", "idle"]
@@ -308,7 +365,11 @@ func _layout_dialogue(telling_story: bool) -> void:
 func _render_dialogue() -> void:
 	if guest_profile.is_empty() or StoryDialogue.guest_id != str(guest_profile.id):
 		return
-	if CustomerService.has_delivery():
+	if _memory_inviting and Navigation.current_route == &"home": return
+	var record := CustomerService.current_record()
+	var resumed_story: bool = (not record.is_empty() and record.feedback.done
+		and record.feedback.get("story_resumed", false) and StoryDialogue.phase == "story")
+	if CustomerService.has_delivery() and not resumed_story:
 		_render_customer_feedback()
 		return
 	var known := StoryDialogue.is_known(str(guest_profile.id))
@@ -319,6 +380,7 @@ func _render_dialogue() -> void:
 	%NoteRole.text = guest_profile.role if known else "？"
 	%NoteBody.text = guest_profile.bio if known else "？"
 	_clear_story_choices()
+	%NextGuestButton.disabled = CustomerService.has_delivery()
 	_layout_dialogue(StoryDialogue.phase == "story")
 	%GuestSpeech.text = StoryDialogue.speech
 	%GuestTags.text = StoryDialogue.progress_label()
@@ -360,8 +422,13 @@ func on_drink_served() -> void:
 	if not service_started:
 		return
 	var record := CustomerService.current_record()
-	if not record.is_empty() and (record.status != "settled" or not record.feedback.done): return
+	if not record.is_empty() and (record.status != "settled" or not record.feedback.done or StoryDialogue.phase == "story"): return
 	if not CustomerService.end_guest(): return
+	if TimeManager.closing_pending:
+		StoryDialogue.end_guest()
+		TimeManager.finish_closing()
+		GameSession.save_game()
+		return
 	Navigation.go_to(&"home")
 	if Navigation.current_route == &"home":
 		%GuestLayer.spawn_random_guest()
@@ -371,10 +438,10 @@ func _on_customer_changed() -> void:
 	%ReputationValue.text = "%.1f ★" % stars if stars >= 0 else "暂无评分"
 	if not guest_profile.is_empty():
 		_sync_service_controls()
-		if CustomerService.has_delivery(): _render_customer_feedback()
-		elif StoryDialogue.guest_id == str(guest_profile.id): _render_dialogue()
+		if StoryDialogue.guest_id == str(guest_profile.id): _render_dialogue()
 
 func _render_customer_feedback() -> void:
+	if _memory_inviting and Navigation.current_route == &"home": return
 	var record := CustomerService.current_record()
 	if record.is_empty() or record.guest_id != guest_profile.get("id"): return
 	var known := StoryDialogue.is_known(str(guest_profile.id))
@@ -390,7 +457,8 @@ func _render_customer_feedback() -> void:
 	%GuestSpeech.scroll_active = true
 	%GuestTags.position.y = 160
 	%GuestTags.size.y = 22
-	%GuestTags.add_theme_font_size_override("font_size", 16)
+	%GuestTags.tooltip_text = ""
+	%GuestTags.add_theme_font_size_override("font_size", 18)
 	var feedback: Dictionary = record.feedback
 	var turn: Dictionary = feedback.get("turn", {})
 	%GuestSpeech.text = ("客人端起杯子，尝了一口……" if record.status != "settled" or feedback.pending or turn.is_empty() else str(turn.text).replace("[", "［").replace("]", "］"))
@@ -399,15 +467,30 @@ func _render_customer_feedback() -> void:
 	%GuestPortrait.modulate = Color("ffe9c5") if turn.get("emotion") == "pleased" else Color.WHITE
 	%GuestTags.show()
 	var review: Dictionary = record.review
-	%GuestTags.text = "收入 +%d 金币" % int(record.amount) if record.status == "settled" else "正在结账……"
+	%GuestTags.text = "正在结账……"
+	if record.status == "settled":
+		%GuestTags.text = "总评分 %.1f" % float(review.satisfaction) if review.get("satisfaction") != null else "未满足要求"
+		%GuestTags.text += "    收入 +%d 金币" % int(record.amount)
 	if record.status == "settled" and review.get("stars") != null:
 		%GuestTags.text += "    " + "★".repeat(int(review.stars)) + "☆".repeat(5 - int(review.stars))
-		if review.get("satisfaction") != null: %GuestTags.text += "    满意度 %.1f" % float(review.satisfaction)
 	%OrderKicker.hide()
 	%NoteOrder.hide()
-	%NextGuestButton.disabled = record.status != "settled" or not feedback.done
-	%NextGuestButton.text = "送客，迎接下一位"
+	%NextGuestButton.disabled = record.status != "settled" or not feedback.done or StoryDialogue.phase == "story"
+	%NextGuestButton.text = "送客，结束营业" if TimeManager.closing_pending else "送客，迎接下一位"
+	if feedback.done: call_deferred("_maybe_offer_memory")
 	find_child("GuestDialogue", true, false).mouse_default_cursor_shape = Control.CURSOR_ARROW
+	if feedback.done and StoryDialogue.guest_id == record.guest_id and StoryDialogue.phase == "story":
+		story_choices.show()
+		var resume := Button.new()
+		resume.text = "接着听你说"
+		resume.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		resume.custom_minimum_size = Vector2(0, 68)
+		resume.add_theme_font_size_override("font_size", 18)
+		resume.focus_mode = Control.FOCUS_NONE
+		for style in ["normal", "hover", "pressed"]: resume.add_theme_stylebox_override(style, %NextGuestButton.get_theme_stylebox(style))
+		resume.pressed.connect(CustomerService.resume_served_story.bind(str(record.id)))
+		story_choices.add_child(resume)
+		return
 	if not CustomerService.last_error.is_empty() and not feedback.pending and not feedback.done:
 		story_choices.show()
 		var retry := Button.new()
@@ -437,7 +520,7 @@ func _update_bottom_status() -> void:
 		%BottomStatus.text = "白天备料  /  %s  /  营业时间 20:00—04:00" % TimeManager.formatted_time()
 	else:
 		var display_name: String = guest_profile.name if StoryDialogue.is_known(str(guest_profile.id)) else "？"
-		%BottomStatus.text = "营业中  /  %s  /  正在接待 %s" % [TimeManager.formatted_time(), display_name]
+		%BottomStatus.text = "%s  /  %s  /  正在接待 %s" % ["最后一位客人" if TimeManager.closing_pending else "营业中", TimeManager.formatted_time(), display_name]
 
 func _on_time_changed(day: int, minutes: int) -> void:
 	%TimeValue.text = TimeManager.formatted_time()
@@ -473,6 +556,10 @@ func _on_route_requested(route_id: StringName) -> void:
 		%HomeButton.add_theme_stylebox_override("normal", selected_navigation_style)
 	if route_id == &"home":
 		%HomeContent.visible = true
+		if _memory_inviting:
+			_memory_inviting = false
+			_memory_invitation_declined = true # A returned match must not immediately invite again.
+			_render_dialogue()
 		if is_instance_valid(previous_focus) and previous_focus.is_inside_tree() and previous_focus.is_visible_in_tree():
 			previous_focus.grab_focus()
 		return

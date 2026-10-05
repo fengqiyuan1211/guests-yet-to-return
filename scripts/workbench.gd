@@ -813,10 +813,23 @@ func _begin_measure(material: String, target: float, vessel := "jigger") -> void
 
 func _finish() -> void:
 	table.stop_gesture()
+	if data.get("status") == "finished":
+		if _service_cup(): _send_finished_drink()
+		else: _result()
+		return
 	if _issue("finish"):
-		_result()
+		if _service_cup(): _send_finished_drink()
+		else: _result()
 	else:
 		status_label.text=WorkbenchSession.last_error
+
+func _service_cup() -> bool:
+	return not WorkbenchSession.is_research(data) and not str(data.get("guest", {}).get("visit_id", "")).is_empty()
+
+func _send_finished_drink() -> void:
+	if data.get("status") != "finished" or not _service_cup(): return
+	if CustomerService.deliver(data.result): Navigation.go_to(&"home")
+	else: _result()
 
 func _result() -> void:
 	var p:=_dialog("",760,1020)
@@ -855,6 +868,13 @@ func _result() -> void:
 		)
 		_button(p,Rect2(730,697,245,44),"返回研发室",func(): Navigation.go_to(&"research"))
 		pending_confirm=_research_library if saved else (_save_research_dialog if data.mode=="research_diy" else _result_details)
+		return
+	if _service_cup():
+		_text(p,Rect2(45,667,930,26),CustomerService.last_error if not CustomerService.last_error.is_empty() else "这一杯已经做好，送给正在等你的客人。",18,INK)
+		_button(p,Rect2(40,705,275,44),"送给客人",_send_finished_drink,true)
+		_button(p,Rect2(340,705,275,44),"查看制作评价",_result_details)
+		_button(p,Rect2(640,705,310,44),"返回酒馆",func(): Navigation.go_to(&"home"))
+		pending_confirm = _send_finished_drink
 		return
 	_text(p,Rect2(45,704,930,38),"空格 另起一杯     ·     Esc 返回桌面     ·     R 查看依据",22,INK)
 	pending_confirm=func():

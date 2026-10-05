@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "minigame_id": "stick_memory_badminton",
+  "display_name": "童年拾忆",
+  "target_score": 5,
+  "victory_required": true,
+  "time_limit_seconds": null,
+  "pause_tavern_clock": true,
+  "practice_rallies": 2,
+  "reward_item_id": "item_recipe_after_school",
+  "assist_preserves_rewards": true,
+  "buff_awarded_by_match": false,
+  "recipe_content_status": "reserved_empty",
+  "required_story_episodes": 5,
+  "required_scores": 5,
+  "score_source": "review.satisfaction",
+  "score_window": "story_five",
+  "settings_entry_mode": "practice",
+  "story_entry_mode": "story",
+  "minimum_average_total_score": 60,
+  "rejected_score_for_gate": 0
+}

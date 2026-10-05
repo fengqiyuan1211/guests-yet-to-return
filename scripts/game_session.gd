@@ -58,6 +58,9 @@ func _valid(data: Variant) -> bool:
 		return false
 	if not _whole(clock.get("fast_total"), 0, 1439) or not _whole(clock.get("fast_applied"), 0, int(clock.fast_total)):
 		return false
+	if not clock.get("closing_pending", false) is bool: return false
+	if clock.get("closing_pending", false):
+		if int(clock.minutes) != TimeManager.CLOSE_MINUTE or clock.fast_forwarding or not data.get("active") is Dictionary or str(data.active.get("guest_id", "")).is_empty(): return false
 	if not StoryDialogue._valid_save(data.get("story")) or not StoryDialogue.valid_session(data.get("active")):
 		return false
 	var reception = data.get("visit")

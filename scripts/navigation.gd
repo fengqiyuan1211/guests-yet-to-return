@@ -4,6 +4,7 @@ signal route_requested(route_id: StringName)
 signal page_changed(route_id: StringName)
 
 const ROUTES: Dictionary = {
+	&"stick_badminton": {"title": "童年拾忆"},
 	&"drink_selection": {"title": "为客人选一杯"},
 	&"settings": {"title": "设置"},
 	&"backpack": {"title": "物品栏"},
@@ -19,6 +20,8 @@ const ROUTES: Dictionary = {
 
 var registered_pages: Dictionary = {}
 var current_route: StringName = &"home"
+var memory_resume_running: Variant = null
+var memory_match_context: Dictionary = {}
 var research_view := "entry"
 var research_base_id := ""
 

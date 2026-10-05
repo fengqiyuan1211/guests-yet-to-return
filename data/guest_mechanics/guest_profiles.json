@@ -34,7 +34,11 @@
         "bitterness": 0
       },
       "long_term_changes_enabled": false,
-      "buff_affinities": {},
+      "buff_affinities": {
+        "buff.refreshing": 5,
+        "buff.bubbles": 5,
+        "buff.juniper": 3
+      },
       "soft_state_penalties": [
         {
           "id": "stick_dislikes_pulp",

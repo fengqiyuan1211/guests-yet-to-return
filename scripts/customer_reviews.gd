@@ -36,7 +36,7 @@ func _ready() -> void:
 	column.add_theme_constant_override("separation", 22)
 	scroll.add_child(column)
 	var records: Array = CustomerService.state.deliveries.values()
-	records.reverse()
+	records.sort_custom(func(a,b): return preload("res://scripts/stick_memory_progress.gd").sequence(a) > preload("res://scripts/stick_memory_progress.gd").sequence(b))
 	if records.is_empty(): _label(column, "还没有客人留下评价。", 24)
 	var guests: Array = JSON.parse_string(FileAccess.get_file_as_string("res://data/guests.json"))
 	for record in records:
@@ -49,6 +49,12 @@ func _ready() -> void:
 			stars = "★".repeat(int(record.review.stars)) + "☆".repeat(5 - int(record.review.stars))
 		_label(column, "%s   %s   第%d天" % [guest_name, stars, int(record.day)], 24)
 		_label(column, "%s    收入 %d 金币" % [record.recipe_name, int(record.amount)], 19)
+		var scoring := "总评分 %.1f" % float(record.review.satisfaction) if record.review.get("satisfaction") != null else "未满足要求" if record.review.get("status") == "rejected" else "暂无评分"
+		_label(column, scoring, 26)
+		var buff_names: Array[String] = []
+		for buff: Dictionary in record.get("buffs", {}).get("active", []): buff_names.append(str(buff.get("name", buff.id)))
+		if not buff_names.is_empty():
+			_label(column, "风味  " + " · ".join(buff_names), 19)
 		var messages: Array = record.feedback.get("messages", [])
 		var said := "客人收下了这一杯。"
 		for message in messages:
