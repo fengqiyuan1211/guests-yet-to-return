@@ -14,6 +14,7 @@ const BINDING_SCRIPT := preload("res://scripts/journal_binding.gd")
 const TURN_SHADER := preload("res://assets/codex/page_turn.gdshader")
 const LOCKED_SHADER := preload("res://assets/codex/locked_drink.gdshader")
 const DETAIL_SCRIPT := preload("res://scripts/cocktail_detail.gd")
+const ART_LAYOUT := preload("res://scripts/cocktail_art_layout.gd")
 
 var page_index := 0
 var selected_filter := 0
@@ -215,23 +216,21 @@ func _populate_card(card: Button, recipe: Dictionary) -> void:
 	var art_path := "res://assets/codex/decorations/%s.svg" % motif
 	if ResourceLoader.exists(art_path):
 		var decoration := TextureRect.new()
-		decoration.position = Vector2(15, 55)
-		decoration.size = Vector2(90, 127)
+		decoration.position = Vector2(22, 91)
+		decoration.size = Vector2(72, 88)
 		decoration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		decoration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		decoration.texture = load(art_path)
-		decoration.modulate.a = 0.65
+		decoration.modulate.a = 0.30
 		decoration.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		card.add_child(decoration)
 	var drink := TextureRect.new()
 	drink.name = "DrinkPicture"
-	drink.position = Vector2(15, 36)
-	drink.size = Vector2(144, 155)
-	drink.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	drink.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	drink.texture = CocktailDatabase.get_image(str(recipe.id))
-	if drink.texture == null and ResourceLoader.exists(str(recipe.get("thumbnail", ""))):
-		drink.texture = load(str(recipe.thumbnail))
+	var art := CocktailDatabase.get_image(str(recipe.id))
+	if art == null and ResourceLoader.exists(str(recipe.get("thumbnail", ""))):
+		art = load(str(recipe.thumbnail)) as Texture2D
+	# The visible glass, rather than its square PNG padding, fills this common area.
+	ART_LAYOUT.fit(drink, art, Rect2(20, 26, 132, 158), str(recipe.id))
 	if not recipe.unlocked:
 		var material_instance := ShaderMaterial.new()
 		material_instance.shader = LOCKED_SHADER
@@ -241,11 +240,11 @@ func _populate_card(card: Button, recipe: Dictionary) -> void:
 	card.add_child(drink)
 	var stamp := _panel(card, Rect2(218, 14, 59, 29), _style(Color.TRANSPARENT, Color(0.40, 0.26, 0.11, 0.65)))
 	_label(stamp, Rect2(0, 0, 59, 29), str(recipe.get("type", recipe.category)), 17, ink, HORIZONTAL_ALIGNMENT_CENTER)
-	var title := _label(card, Rect2(153, 66, 133, 37), str(recipe.name), 24 if str(recipe.name).length() > 4 else 26, ink)
+	var title := _label(card, Rect2(160, 66, 119, 37), str(recipe.name), 22 if str(recipe.name).length() > 4 else 25, ink)
 	title.clip_text = true
-	var english := _label(card, Rect2(154, 106, 128, 41), str(recipe.get("english_name", "")), 12, Color("8b7354"))
+	var english := _label(card, Rect2(160, 106, 119, 41), str(recipe.get("english_name", "")), 12, Color("8b7354"))
 	english.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_label(card, Rect2(153, 153, 132, 28), " · ".join(recipe.get("mouthfeel_tags", [])), 16, ink)
+	_label(card, Rect2(160, 153, 119, 28), " · ".join(recipe.get("mouthfeel_tags", [])), 16, ink)
 	_label(card, Rect2(43 if not recipe.unlocked else 25, 192, 127, 28), "已点亮" if recipe.unlocked else "未点亮", 16, ink)
 	var progress := MenuCatalog.ingredient_progress(recipe)
 	_label(card, Rect2(168, 193, 111, 27), "原料 %d / %d" % [progress.owned, progress.total], 15, ink, HORIZONTAL_ALIGNMENT_RIGHT)

@@ -588,6 +588,8 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 				definitions.merge(GARNISHES)
 				var evaluation:=Evaluation.evaluate(s,definitions)
 				s.result = {"liquid_profiles":s.liquid_profiles.duplicate(true),"liquid_model":s.liquid_model.duplicate(true),"evaluation":evaluation,"drink_id": s.id + "-drink", "guest":s.get("guest",{}).duplicate(true), "recipe": s.recipe.duplicate(true), "contents": s.vessels.glass.duplicate(true), "cup":s.cup,"capacity_ml":capacity(s,"glass"), "withdrawn": s.withdrawn.duplicate(true), "waste": waste, "actions": s.actions.duplicate(true), "consumed":s.get("consumed",{}).duplicate(true), "sales": false}
+				var sensory := preload("res://scripts/customer_evaluation.gd").sensory(s.result, definitions, JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_mechanics/settlement_rules.json")))
+				s.result["customer_sensory"] = sensory
 			"discard":
 				s.status = "discarded"
 				s.spoon_vessel=""

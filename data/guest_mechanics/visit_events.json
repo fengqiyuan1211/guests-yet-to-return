@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "status": "runtime_playtest",
+  "events": [
+    {
+      "event_id": "stick_visit_01",
+      "event_version": "0.3",
+      "guest_id": "stick",
+      "story_episode_id": "stick_01",
+      "preference_delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "expected_target": {
+        "alcohol_intensity": 35,
+        "sweetness": 25,
+        "sourness": 20,
+        "bitterness": 30
+      },
+      "persistent": false,
+      "mood_note": "初次见面，直接点金汤力",
+      "demand_line_ref": {
+        "episode_id": "stick_01",
+        "node_id": "order_request"
+      },
+      "lock_before": "first_order_clue_displayed",
+      "reroll_on_screen_change": false,
+      "soft_state_penalty_additions": [],
+      "buff_affinity_overrides": {},
+      "requested_recipe_id": "gin_and_tonic"
+    },
+    {
+      "event_id": "stick_visit_02",
+      "event_version": "0.3",
+      "guest_id": "stick",
+      "story_episode_id": "stick_02",
+      "preference_delta": {
+        "alcohol_intensity": 20,
+        "sweetness": -10,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "expected_target": {
+        "alcohol_intensity": 55,
+        "sweetness": 15,
+        "sourness": 20,
+        "bitterness": 30
+      },
+      "persistent": false,
+      "mood_note": "想起没有再来的玩家",
+      "demand_line_ref": {
+        "episode_id": "stick_02",
+        "node_id": "start"
+      },
+      "lock_before": "first_order_clue_displayed",
+      "reroll_on_screen_change": false,
+      "soft_state_penalty_additions": [
+        {
+          "id": "stick_visit_02_fruit_heavy",
+          "state_id": "flavor.fruit_intensity",
+          "operator": "eq",
+          "value": "heavy",
+          "penalty": -5,
+          "dedup_group": "stick_fruit_intensity"
+        }
+      ],
+      "buff_affinity_overrides": {},
+      "flavor_note": "浓郁果味必须由实际成品状态提供。酸度不等于果味强度，少量青柠装饰不直接视为浓郁果味。"
+    },
+    {
+      "event_id": "stick_visit_03",
+      "event_version": "0.3",
+      "guest_id": "stick",
+      "story_episode_id": "stick_03",
+      "preference_delta": {
+        "alcohol_intensity": 0,
+        "sweetness": -10,
+        "sourness": 15,
+        "bitterness": 0
+      },
+      "expected_target": {
+        "alcohol_intensity": 35,
+        "sweetness": 15,
+        "sourness": 35,
+        "bitterness": 30
+      },
+      "persistent": false,
+      "mood_note": "整理旧物后想换个酸一点的口味",
+      "demand_line_ref": {
+        "episode_id": "stick_03",
+        "node_id": "start"
+      },
+      "lock_before": "first_order_clue_displayed",
+      "reroll_on_screen_change": false,
+      "soft_state_penalty_additions": [],
+      "buff_affinity_overrides": {}
+    },
+    {
+      "event_id": "stick_visit_04",
+      "event_version": "0.3",
+      "guest_id": "stick",
+      "story_episode_id": "stick_04",
+      "preference_delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 10,
+        "sourness": 0,
+        "bitterness": -10
+      },
+      "expected_target": {
+        "alcohol_intensity": 35,
+        "sweetness": 35,
+        "sourness": 20,
+        "bitterness": 20
+      },
+      "persistent": false,
+      "mood_note": "排练有了进展",
+      "demand_line_ref": {
+        "episode_id": "stick_04",
+        "node_id": "start"
+      },
+      "lock_before": "first_order_clue_displayed",
+      "reroll_on_screen_change": false,
+      "soft_state_penalty_additions": [],
+      "buff_affinity_overrides": {}
+    },
+    {
+      "event_id": "stick_visit_05",
+      "event_version": "0.3",
+      "guest_id": "stick",
+      "story_episode_id": "stick_05",
+      "preference_delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "expected_target": {
+        "alcohol_intensity": 35,
+        "sweetness": 25,
+        "sourness": 20,
+        "bitterness": 30
+      },
+      "persistent": false,
+      "mood_note": "想喝第一次来时的味道",
+      "demand_line_ref": {
+        "episode_id": "stick_05",
+        "node_id": "order_request"
+      },
+      "lock_before": "first_order_clue_displayed",
+      "reroll_on_screen_change": false,
+      "soft_state_penalty_additions": [],
+      "buff_affinity_overrides": {}
+    }
+  ],
+  "demand_policy": {
+    "start_from_base_each_visit": true,
+    "max_primary_events": 1,
+    "persist_snapshot_before_clue": true,
+    "on_missing_sensory_state": "report_data_incomplete; never assume absent"
+  },
+  "implementation_note": "描述拟接入的需求事件；当前StoryDialogue不会自动读取本文件。",
+  "runtime_enabled": true
+}

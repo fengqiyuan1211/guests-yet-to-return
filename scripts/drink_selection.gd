@@ -215,6 +215,12 @@ func _start() -> void:
 		return
 	starting=true
 	var command_id:="select-recipe-%d" % Time.get_ticks_usec()
+	var quote := CustomerService.prepare_order(selected_id)
+	if quote.is_empty():
+		starting = false
+		status.text = CustomerService.last_error if not CustomerService.last_error.is_empty() else "客人已离店，或这桌已经结账。"
+		return
+	guest["visit_id"] = quote.visit_id
 	var payload: Dictionary={"recipe_id":selected_id,"guest":guest}
 	if not replacing_id.is_empty(): payload.replace_session_id=replacing_id
 	if WorkbenchSession.command(command_id,"","select_recipe",payload):

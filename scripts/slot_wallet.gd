@@ -15,6 +15,7 @@ var spin_count := 0
 var hidden_prizes: Array = []
 ## Short-lived receipts make shop debits recoverable without charging twice.
 var purchase_receipts: Dictionary = {}
+var sale_receipts: Dictionary = {}
 var save_path := "user://wallet.json"
 var rng := RandomNumberGenerator.new()
 var writable := true
@@ -44,7 +45,7 @@ func load_wallet() -> void:
 		writable = false
 		last_error = "存档版本不兼容，请保留存档。"
 		return
-	if not _valid_purchase_receipts(data.get("purchase_receipts", {})):
+	if not _valid_purchase_receipts(data.get("purchase_receipts", {})) or not _valid_sale_receipts(data.get("sale_receipts", {})):
 		writable = false
 		last_error = "购买记录不完整，请保留存档后重试。"
 		return
@@ -62,6 +63,7 @@ func load_wallet() -> void:
 	spin_count = int(data.get("spin_count", 0))
 	hidden_prizes = data.get("hidden_prizes", []).duplicate(true)
 	purchase_receipts = data.get("purchase_receipts", {}).duplicate(true)
+	sale_receipts = data.get("sale_receipts", {}).duplicate(true)
 	recovered_payout = -1
 	recovered_hidden = false
 	if not pending.is_empty():
@@ -79,7 +81,7 @@ func persist() -> bool:
 		return false
 	file.store_string(JSON.stringify({"version": 2, "balance": balance, "pending": pending,
 		"hidden_misses": hidden_misses, "spin_count": spin_count, "hidden_prizes": hidden_prizes,
-		"purchase_receipts": purchase_receipts}))
+		"purchase_receipts": purchase_receipts, "sale_receipts": sale_receipts}))
 	file.flush()
 	var error := file.get_error()
 	file.close()
@@ -87,6 +89,29 @@ func persist() -> bool:
 		last_error = "金币未能保存，请重试。"
 		return false
 	last_error = ""
+	return true
+
+func _valid_sale_receipts(value: Variant) -> bool:
+	if not value is Dictionary: return false
+	for id in value:
+		if not id is String or id.is_empty() or id.length() > 128 or not _whole_number(value[id], 1, 1000000000): return false
+	return true
+
+func credit_sale(id: String, amount: int) -> bool:
+	if not writable or id.is_empty() or id.length() > 128 or amount < 1 or amount > 1000000000:
+		last_error = "这次收款暂时无法结算。"
+		return false
+	if sale_receipts.has(id):
+		if int(sale_receipts[id]) == amount: return true
+		last_error = "收款记录不一致，请保留存档。"
+		return false
+	balance += amount
+	sale_receipts[id] = amount
+	if not persist():
+		balance -= amount
+		sale_receipts.erase(id)
+		return false
+	balance_changed.emit(balance)
 	return true
 
 func _valid_purchase_receipts(value: Variant) -> bool:

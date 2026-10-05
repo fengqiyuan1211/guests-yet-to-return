@@ -13,6 +13,8 @@ var journal_hidden_nodes: Dictionary = {}
 var selected_navigation_style: StyleBox
 var story_choices: HBoxContainer
 var _restoring_reception := false
+var _dialogue_press_revision := -1
+var _dialogue_pointer := -2
 
 func _ready() -> void:
 	Navigation.register_page(&"drink_selection", preload("res://scenes/drink_selection.tscn"))
@@ -23,6 +25,7 @@ func _ready() -> void:
 	Navigation.register_page(&"shop", preload("res://scenes/harbor_shop.tscn"))
 	Navigation.register_page(&"settings", preload("res://scenes/settings_menu.tscn"))
 	Navigation.register_page(&"backpack", preload("res://scenes/backpack.tscn"))
+	Navigation.register_page(&"reviews", preload("res://scenes/customer_reviews.tscn"))
 	_setup_settings_button()
 	selected_navigation_style = %HomeButton.get_theme_stylebox("normal")
 	SlotWallet.balance_changed.connect(_on_balance_changed)
@@ -33,9 +36,11 @@ func _ready() -> void:
 		button.pressed.connect(Navigation.go_to.bind(StringName(button.get_meta("route"))))
 	%OpenButton.pressed.connect(_on_open_pressed)
 	%NextGuestButton.pressed.connect(_on_next_guest_pressed)
-	%TalkButton.pressed.connect(_on_talk_pressed)
+	_setup_dialogue_input()
 	_setup_story_choices()
 	StoryDialogue.changed.connect(_render_dialogue)
+	CustomerService.changed.connect(_on_customer_changed)
+	_on_customer_changed()
 	%GuestLayer.guest_spawned.connect(_on_guest_spawned)
 	%NextGuestButton.hide()
 	%TalkButton.hide()
@@ -130,6 +135,7 @@ func _on_business_closed(completed_day: int) -> void:
 
 func _show_closed_state(just_closed: bool, completed_day: int) -> void:
 	var arrivals := guest_count
+	CustomerService.end_guest()
 	StoryDialogue.end_guest()
 	_clear_story_choices()
 	%GuestTags.show()
@@ -137,6 +143,8 @@ func _show_closed_state(just_closed: bool, completed_day: int) -> void:
 	%NoteOrder.show()
 	_layout_dialogue(false)
 	service_started = false
+	_dialogue_press_revision = -1
+	find_child("GuestDialogue", true, false).mouse_default_cursor_shape = Control.CURSOR_ARROW
 	guest_profile = {}
 	dialogue_index = 0
 	%GuestLayer.clear_guest()
@@ -166,7 +174,7 @@ func _on_fast_forward_changed(_active: bool) -> void:
 	_sync_service_controls()
 
 func _sync_service_controls() -> void:
-	%OpenButton.disabled = TimeManager.fast_forwarding
+	%OpenButton.disabled = TimeManager.fast_forwarding or CustomerService.has_delivery()
 	if TimeManager.fast_forwarding:
 		%OpenButton.text = "时钟快转中…"
 		%ShiftStatus.text = "快进至 20:00"
@@ -183,9 +191,12 @@ func _on_next_guest_pressed() -> void:
 
 func _on_guest_spawned(profile: Dictionary) -> void:
 	guest_profile = profile
+	%NextGuestButton.disabled = false
+	%GuestPortrait.modulate = Color.WHITE
 	if not _restoring_reception:
 		guest_count += 1
 	dialogue_index = 0
+	CustomerService.begin_guest(profile, guest_count, _restoring_reception)
 	%GuestName.text = profile.name
 	%GuestRole.text = profile.role
 	%GuestPortrait.texture = %GuestLayer.portrait_texture(profile)
@@ -202,16 +213,70 @@ func _on_guest_spawned(profile: Dictionary) -> void:
 	_update_bottom_status()
 
 func _on_talk_pressed() -> void:
-	if guest_profile.is_empty():
+	if not _can_advance_dialogue():
 		return
 	StoryDialogue.continue_talking()
 	dialogue_index = StoryDialogue.idle_index
 
+func _setup_dialogue_input() -> void:
+	var panel: Control = find_child("GuestDialogue", true, false)
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	panel.gui_input.connect(_on_dialogue_gui_input)
+	# Decorations pass clicks to the panel; action and choice buttons consume theirs.
+	for child in panel.get_children():
+		if child is Control and not child is BaseButton:
+			child.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	%TalkButton.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	%TalkButton.focus_mode = Control.FOCUS_NONE
+	%TalkButton.text = ""
+	for style in ["normal", "hover", "pressed", "focus"]:
+		%TalkButton.add_theme_stylebox_override(style, StyleBoxEmpty.new())
+	var bold := FontVariation.new()
+	bold.base_font = %GuestSpeech.get_theme_font("normal_font")
+	bold.variation_embolden = 1.1
+	%GuestSpeech.add_theme_font_override("bold_font", bold)
+
+func _can_advance_dialogue() -> bool:
+	return (not CustomerService.has_delivery() and service_started and not guest_profile.is_empty()
+		and Navigation.current_route == &"home"
+		and StoryDialogue.guest_id == str(guest_profile.id)
+		and StoryDialogue.phase in ["story", "idle"]
+		and StoryDialogue.current_choices().is_empty())
+
+func _on_dialogue_gui_input(event: InputEvent) -> void:
+	var pressed := false
+	var pointer := -1
+	if event is InputEventMouseButton:
+		if event.button_index != MOUSE_BUTTON_LEFT or event.device == -1:
+			return # Touch-generated mouse events would otherwise advance twice.
+		if event.double_click:
+			_dialogue_press_revision = -1
+			return
+		pressed = event.pressed
+	elif event is InputEventScreenTouch:
+		pointer = event.index
+		pressed = event.pressed
+	else:
+		return
+	var panel: Control = find_child("GuestDialogue", true, false)
+	panel.accept_event()
+	if pressed:
+		_dialogue_pointer = pointer
+		_dialogue_press_revision = StoryDialogue.revision if _can_advance_dialogue() else -1
+		return
+	var valid_click := (pointer == _dialogue_pointer
+		and _dialogue_press_revision == StoryDialogue.revision)
+	_dialogue_press_revision = -1
+	_dialogue_pointer = -2
+	if valid_click and _can_advance_dialogue():
+		_on_talk_pressed()
+
 func _setup_story_choices() -> void:
 	story_choices = HBoxContainer.new()
 	story_choices.name = "StoryChoices"
+	story_choices.mouse_filter = Control.MOUSE_FILTER_PASS
 	story_choices.position = Vector2(180, 184)
-	story_choices.size = Vector2(802, 68)
+	story_choices.size = Vector2(834, 68)
 	story_choices.add_theme_constant_override("separation", 12)
 	find_child("GuestDialogue", true, false).add_child(story_choices)
 	story_choices.hide()
@@ -226,16 +291,24 @@ func _clear_story_choices() -> void:
 
 func _layout_dialogue(telling_story: bool) -> void:
 	var panel: Control = find_child("GuestDialogue", true, false)
-	panel.position.y = 570 if telling_story else 618
+	panel.position.y = 594 if telling_story else 642
 	panel.size.y = 272 if telling_story else 224
 	%GuestSpeech.position.y = 82 if telling_story else 86
 	%GuestSpeech.size.y = 94 if telling_story else 90
-	%GuestSpeech.add_theme_font_size_override("font_size", 22)
-	%GuestSpeech.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	%GuestSpeech.scroll_active = false
+	%GuestTags.size.y = 27
+	%GuestTags.add_theme_font_size_override("font_size", 18)
+	%GuestSpeech.add_theme_font_size_override("normal_font_size", 22)
+	%GuestSpeech.add_theme_font_size_override("bold_font_size", 22)
+	%TalkButton.position = Vector2((panel.size.x - 36.0) * 0.5, panel.size.y - 35.0)
+	%TalkButton.size = Vector2(36, 24)
 	%GuestTags.position.y = 238 if telling_story else 181
 
 func _render_dialogue() -> void:
 	if guest_profile.is_empty() or StoryDialogue.guest_id != str(guest_profile.id):
+		return
+	if CustomerService.has_delivery():
+		_render_customer_feedback()
 		return
 	var known := StoryDialogue.is_known(str(guest_profile.id))
 	%GuestName.text = guest_profile.name if known else "？"
@@ -252,12 +325,10 @@ func _render_dialogue() -> void:
 	%OrderKicker.hide()
 	%NoteOrder.text = ""
 	%NoteOrder.hide()
-	%TalkButton.show()
-	%TalkButton.text = "再聊一句" if StoryDialogue.phase == "idle" else "接着听"
-	if StoryDialogue.phase == "story":
-		var node: Dictionary = StoryDialogue.episode.nodes[StoryDialogue.node_id]
-		if node.has("transition"):
-			%TalkButton.text = "先聊到这"
+	_dialogue_press_revision = -1
+	%TalkButton.visible = _can_advance_dialogue()
+	var panel: Control = find_child("GuestDialogue", true, false)
+	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if _can_advance_dialogue() else Control.CURSOR_ARROW
 	var options := StoryDialogue.current_choices()
 	if not options.is_empty():
 		%TalkButton.hide()
@@ -274,21 +345,91 @@ func _render_dialogue() -> void:
 			button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 			button.focus_mode = Control.FOCUS_NONE
 			for style in ["normal", "hover", "pressed"]:
-				button.add_theme_stylebox_override(style, %TalkButton.get_theme_stylebox(style))
+				button.add_theme_stylebox_override(style, %NextGuestButton.get_theme_stylebox(style))
 			button.pressed.connect(_choose_story.bind(str(choice.id), revision))
 			story_choices.add_child(button)
 	_update_bottom_status()
 
 func _choose_story(choice_id: String, revision: int) -> void:
+	_dialogue_press_revision = -1
 	StoryDialogue.choose(choice_id, revision)
 
 func on_drink_served() -> void:
-	# Public handoff for the future workbench; the current home send-off uses it too.
+	# Departure only. Receiving the actual cup is CustomerService.deliver().
 	if not service_started:
 		return
+	var record := CustomerService.current_record()
+	if not record.is_empty() and (record.status != "settled" or not record.feedback.done): return
+	if not CustomerService.end_guest(): return
 	Navigation.go_to(&"home")
 	if Navigation.current_route == &"home":
 		%GuestLayer.spawn_random_guest()
+
+func _on_customer_changed() -> void:
+	var stars := CustomerService.average_stars()
+	%ReputationValue.text = "%.1f ★" % stars if stars >= 0 else "暂无评分"
+	if not guest_profile.is_empty():
+		_sync_service_controls()
+		if CustomerService.has_delivery(): _render_customer_feedback()
+		elif StoryDialogue.guest_id == str(guest_profile.id): _render_dialogue()
+
+func _render_customer_feedback() -> void:
+	var record := CustomerService.current_record()
+	if record.is_empty() or record.guest_id != guest_profile.get("id"): return
+	var known := StoryDialogue.is_known(str(guest_profile.id))
+	%GuestName.text = guest_profile.name if known else "？"
+	%GuestRole.text = guest_profile.role if known else "？"
+	%NoteTitle.text = guest_profile.name if known else "？"
+	%NoteRole.text = guest_profile.role if known else "？"
+	%NoteBody.text = guest_profile.bio if known else "？"
+	%TalkButton.hide()
+	_clear_story_choices()
+	_layout_dialogue(true)
+	%GuestSpeech.size.y = 76
+	%GuestSpeech.scroll_active = true
+	%GuestTags.position.y = 160
+	%GuestTags.size.y = 22
+	%GuestTags.add_theme_font_size_override("font_size", 16)
+	var feedback: Dictionary = record.feedback
+	var turn: Dictionary = feedback.get("turn", {})
+	%GuestSpeech.text = ("客人端起杯子，尝了一口……" if record.status != "settled" or feedback.pending or turn.is_empty() else str(turn.text).replace("[", "［").replace("]", "］"))
+	var emotion: String = {"pleased": "满意", "disappointed": "有些失望", "thoughtful": "若有所思", "neutral": "平静"}.get(str(turn.get("emotion", "neutral")), "平静")
+	%GuestRole.text += " · " + emotion if known and not feedback.pending else ""
+	%GuestPortrait.modulate = Color("ffe9c5") if turn.get("emotion") == "pleased" else Color.WHITE
+	%GuestTags.show()
+	var review: Dictionary = record.review
+	%GuestTags.text = "收入 +%d 金币" % int(record.amount) if record.status == "settled" else "正在结账……"
+	if record.status == "settled" and review.get("stars") != null:
+		%GuestTags.text += "    " + "★".repeat(int(review.stars)) + "☆".repeat(5 - int(review.stars))
+		if review.get("satisfaction") != null: %GuestTags.text += "    满意度 %.1f" % float(review.satisfaction)
+	%OrderKicker.hide()
+	%NoteOrder.hide()
+	%NextGuestButton.disabled = record.status != "settled" or not feedback.done
+	%NextGuestButton.text = "送客，迎接下一位"
+	find_child("GuestDialogue", true, false).mouse_default_cursor_shape = Control.CURSOR_ARROW
+	if not CustomerService.last_error.is_empty() and not feedback.pending and not feedback.done:
+		story_choices.show()
+		var retry := Button.new()
+		retry.text = "听听客人怎么说"
+		retry.custom_minimum_size = Vector2(300, 68)
+		retry.pressed.connect(CustomerService.retry_feedback)
+		story_choices.add_child(retry)
+		return
+	if not feedback.pending and not feedback.done:
+		story_choices.show()
+		var round_number := int(feedback.round)
+		var replies: Array = turn.get("replies", [])
+		for i in range(replies.size()):
+			var button := Button.new()
+			button.text = str(replies[i])
+			button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			button.custom_minimum_size = Vector2(0, 68)
+			button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			button.add_theme_font_size_override("font_size", 18)
+			button.focus_mode = Control.FOCUS_NONE
+			for style in ["normal", "hover", "pressed"]: button.add_theme_stylebox_override(style, %NextGuestButton.get_theme_stylebox(style))
+			button.pressed.connect(CustomerService.choose_feedback.bind(i, round_number))
+			story_choices.add_child(button)
 
 func _update_bottom_status() -> void:
 	if guest_profile.is_empty():

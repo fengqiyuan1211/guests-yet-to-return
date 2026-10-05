@@ -254,10 +254,10 @@ mouse_filter = 2
 
 [node name="TopBar" type="Panel" parent="Stage/HomeContent" unique_id=839591559]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 18.0
-offset_right = 1576.0
-offset_bottom = 110.0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 1588.0
+offset_bottom = 100.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("wood")
 script = ExtResource("ornament")
@@ -306,18 +306,18 @@ vertical_alignment = 1
 
 [node name="GoldDivider" type="ColorRect" parent="Stage/HomeContent/TopBar" unique_id=1762895070]
 layout_mode = 0
-offset_left = 623.0
+offset_left = 647.0
 offset_top = 23.0
-offset_right = 624.0
+offset_right = 648.0
 offset_bottom = 69.0
 mouse_filter = 2
 color = Color(0.6784, 0.5373, 0.3176, 0.302)
 
 [node name="GoldIcon" type="TextureRect" parent="Stage/HomeContent/TopBar" unique_id=1560213068]
 layout_mode = 0
-offset_left = 640.0
+offset_left = 664.0
 offset_top = 29.0
-offset_right = 670.0
+offset_right = 694.0
 offset_bottom = 59.0
 mouse_filter = 2
 texture = ExtResource("icon_coin")
@@ -326,9 +326,9 @@ stretch_mode = 5
 
 [node name="GoldLabel" type="Label" parent="Stage/HomeContent/TopBar" unique_id=1554500088]
 layout_mode = 0
-offset_left = 683.0
+offset_left = 707.0
 offset_top = 14.0
-offset_right = 825.0
+offset_right = 849.0
 offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.7059, 0.6039, 0.4706, 1)
 theme_override_font_sizes/font_size = 14
@@ -338,9 +338,9 @@ vertical_alignment = 1
 [node name="GoldValue" type="Label" parent="Stage/HomeContent/TopBar" unique_id=1550660042]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 683.0
+offset_left = 707.0
 offset_top = 40.0
-offset_right = 829.0
+offset_right = 853.0
 offset_bottom = 74.0
 theme_override_colors/font_color = Color(0.9451, 0.8745, 0.7412, 1)
 theme_override_font_sizes/font_size = 24
@@ -349,18 +349,18 @@ vertical_alignment = 1
 
 [node name="ReputationDivider" type="ColorRect" parent="Stage/HomeContent/TopBar" unique_id=381792925]
 layout_mode = 0
-offset_left = 823.0
+offset_left = 847.0
 offset_top = 23.0
-offset_right = 824.0
+offset_right = 848.0
 offset_bottom = 69.0
 mouse_filter = 2
 color = Color(0.6784, 0.5373, 0.3176, 0.302)
 
 [node name="ReputationIcon" type="TextureRect" parent="Stage/HomeContent/TopBar" unique_id=74396725]
 layout_mode = 0
-offset_left = 840.0
+offset_left = 864.0
 offset_top = 29.0
-offset_right = 870.0
+offset_right = 894.0
 offset_bottom = 59.0
 mouse_filter = 2
 texture = ExtResource("icon_home")
@@ -369,9 +369,9 @@ stretch_mode = 5
 
 [node name="ReputationLabel" type="Label" parent="Stage/HomeContent/TopBar" unique_id=1694379092]
 layout_mode = 0
-offset_left = 883.0
+offset_left = 907.0
 offset_top = 14.0
-offset_right = 1025.0
+offset_right = 1049.0
 offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.7059, 0.6039, 0.4706, 1)
 theme_override_font_sizes/font_size = 14
@@ -381,9 +381,9 @@ vertical_alignment = 1
 [node name="ReputationValue" type="Label" parent="Stage/HomeContent/TopBar" unique_id=866130333]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 883.0
+offset_left = 907.0
 offset_top = 40.0
-offset_right = 1029.0
+offset_right = 1053.0
 offset_bottom = 74.0
 theme_override_colors/font_color = Color(0.9451, 0.8745, 0.7412, 1)
 theme_override_font_sizes/font_size = 24
@@ -392,18 +392,18 @@ vertical_alignment = 1
 
 [node name="DayDivider" type="ColorRect" parent="Stage/HomeContent/TopBar" unique_id=416923802]
 layout_mode = 0
-offset_left = 1023.0
+offset_left = 1047.0
 offset_top = 23.0
-offset_right = 1024.0
+offset_right = 1048.0
 offset_bottom = 69.0
 mouse_filter = 2
 color = Color(0.6784, 0.5373, 0.3176, 0.302)
 
 [node name="DayIcon" type="TextureRect" parent="Stage/HomeContent/TopBar" unique_id=1183998325]
 layout_mode = 0
-offset_left = 1040.0
+offset_left = 1064.0
 offset_top = 29.0
-offset_right = 1070.0
+offset_right = 1094.0
 offset_bottom = 59.0
 mouse_filter = 2
 texture = ExtResource("icon_sun")
@@ -412,9 +412,9 @@ stretch_mode = 5
 
 [node name="DayLabel" type="Label" parent="Stage/HomeContent/TopBar" unique_id=1903313636]
 layout_mode = 0
-offset_left = 1083.0
+offset_left = 1107.0
 offset_top = 14.0
-offset_right = 1225.0
+offset_right = 1249.0
 offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.7059, 0.6039, 0.4706, 1)
 theme_override_font_sizes/font_size = 14
@@ -424,9 +424,9 @@ vertical_alignment = 1
 [node name="DayValue" type="Label" parent="Stage/HomeContent/TopBar" unique_id=1074480029]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1083.0
+offset_left = 1107.0
 offset_top = 40.0
-offset_right = 1229.0
+offset_right = 1253.0
 offset_bottom = 74.0
 theme_override_colors/font_color = Color(0.9451, 0.8745, 0.7412, 1)
 theme_override_font_sizes/font_size = 24
@@ -435,18 +435,18 @@ vertical_alignment = 1
 
 [node name="TimeDivider" type="ColorRect" parent="Stage/HomeContent/TopBar" unique_id=1473865385]
 layout_mode = 0
-offset_left = 1223.0
+offset_left = 1247.0
 offset_top = 23.0
-offset_right = 1224.0
+offset_right = 1248.0
 offset_bottom = 69.0
 mouse_filter = 2
 color = Color(0.6784, 0.5373, 0.3176, 0.302)
 
 [node name="TimeIcon" type="Control" parent="Stage/HomeContent/TopBar" unique_id=1122088994]
 anchors_preset = 0
-offset_left = 1240.0
+offset_left = 1264.0
 offset_top = 27.0
-offset_right = 1274.0
+offset_right = 1298.0
 offset_bottom = 61.0
 mouse_filter = 2
 script = ExtResource("clock_face")
@@ -454,9 +454,9 @@ script = ExtResource("clock_face")
 [node name="TimeLabel" type="Label" parent="Stage/HomeContent/TopBar" unique_id=1800780205]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1283.0
+offset_left = 1307.0
 offset_top = 14.0
-offset_right = 1402.0
+offset_right = 1426.0
 offset_bottom = 38.0
 theme_override_colors/font_color = Color(0.7059, 0.6039, 0.4706, 1)
 theme_override_font_sizes/font_size = 14
@@ -466,9 +466,9 @@ vertical_alignment = 1
 [node name="TimeValue" type="Label" parent="Stage/HomeContent/TopBar" unique_id=1312508303]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1283.0
+offset_left = 1307.0
 offset_top = 40.0
-offset_right = 1402.0
+offset_right = 1426.0
 offset_bottom = 74.0
 theme_override_colors/font_color = Color(0.9451, 0.8745, 0.7412, 1)
 theme_override_font_sizes/font_size = 24
@@ -478,9 +478,9 @@ vertical_alignment = 1
 [node name="SlotsButton" type="Button" parent="Stage/HomeContent/TopBar" unique_id=218730549 groups=["route_buttons"]]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1409.0
+offset_left = 1433.0
 offset_top = 17.0
-offset_right = 1467.0
+offset_right = 1491.0
 offset_bottom = 75.0
 tooltip_text = "老虎机 · 20 金币一次"
 mouse_default_cursor_shape = 2
@@ -492,9 +492,9 @@ metadata/route = "slots"
 [node name="BackpackButton" type="Button" parent="Stage/HomeContent/TopBar" unique_id=307820574 groups=["route_buttons"]]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1479.0
+offset_left = 1503.0
 offset_top = 17.0
-offset_right = 1537.0
+offset_right = 1561.0
 offset_bottom = 75.0
 tooltip_text = "物品栏"
 mouse_default_cursor_shape = 2
@@ -505,19 +505,19 @@ metadata/route = "backpack"
 
 [node name="Navigation" type="Panel" parent="Stage/HomeContent" unique_id=106723954]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 132.0
-offset_right = 216.0
-offset_bottom = 842.0
+offset_left = 12.0
+offset_top = 120.0
+offset_right = 196.0
+offset_bottom = 866.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("wood")
 script = ExtResource("ornament")
 
 [node name="RailTitle" type="Label" parent="Stage/HomeContent/Navigation" unique_id=897037137]
 layout_mode = 0
-offset_left = 20.0
+offset_left = 16.0
 offset_top = 23.0
-offset_right = 172.0
+offset_right = 168.0
 offset_bottom = 50.0
 theme_override_colors/font_color = Color(0.7412, 0.6275, 0.4627, 1)
 theme_override_font_sizes/font_size = 15
@@ -527,9 +527,9 @@ vertical_alignment = 1
 
 [node name="RailRule" type="ColorRect" parent="Stage/HomeContent/Navigation" unique_id=2122688149]
 layout_mode = 0
-offset_left = 29.0
+offset_left = 25.0
 offset_top = 66.0
-offset_right = 163.0
+offset_right = 159.0
 offset_bottom = 67.0
 mouse_filter = 2
 color = Color(0.6784, 0.5373, 0.3176, 0.302)
@@ -537,9 +537,9 @@ color = Color(0.6784, 0.5373, 0.3176, 0.302)
 [node name="HomeButton" type="Button" parent="Stage/HomeContent/Navigation" unique_id=1312623409]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 14.0
+offset_left = 10.0
 offset_top = 85.0
-offset_right = 178.0
+offset_right = 174.0
 offset_bottom = 152.0
 mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 19
@@ -550,9 +550,9 @@ icon = ExtResource("icon_home")
 
 [node name="CodexButton" type="Button" parent="Stage/HomeContent/Navigation" unique_id=1874714354 groups=["route_buttons"]]
 layout_mode = 0
-offset_left = 14.0
+offset_left = 10.0
 offset_top = 168.0
-offset_right = 178.0
+offset_right = 174.0
 offset_bottom = 235.0
 mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 19
@@ -563,9 +563,9 @@ metadata/route = "codex"
 
 [node name="ShopButton" type="Button" parent="Stage/HomeContent/Navigation" unique_id=65245246 groups=["route_buttons"]]
 layout_mode = 0
-offset_left = 14.0
+offset_left = 10.0
 offset_top = 251.0
-offset_right = 178.0
+offset_right = 174.0
 offset_bottom = 318.0
 mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 19
@@ -576,9 +576,9 @@ metadata/route = "shop"
 
 [node name="ResearchButton" type="Button" parent="Stage/HomeContent/Navigation" unique_id=849775559 groups=["route_buttons"]]
 layout_mode = 0
-offset_left = 14.0
+offset_left = 10.0
 offset_top = 334.0
-offset_right = 178.0
+offset_right = 174.0
 offset_bottom = 401.0
 mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 19
@@ -589,9 +589,9 @@ metadata/route = "research"
 
 [node name="MenuButton" type="Button" parent="Stage/HomeContent/Navigation" unique_id=284859651 groups=["route_buttons"]]
 layout_mode = 0
-offset_left = 14.0
+offset_left = 10.0
 offset_top = 417.0
-offset_right = 178.0
+offset_right = 174.0
 offset_bottom = 484.0
 mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 19
@@ -602,9 +602,9 @@ metadata/route = "menu"
 
 [node name="ReviewsButton" type="Button" parent="Stage/HomeContent/Navigation" unique_id=196001327 groups=["route_buttons"]]
 layout_mode = 0
-offset_left = 14.0
+offset_left = 10.0
 offset_top = 500.0
-offset_right = 178.0
+offset_right = 174.0
 offset_bottom = 567.0
 mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 19
@@ -615,19 +615,19 @@ metadata/route = "reviews"
 
 [node name="RailBottomRule" type="ColorRect" parent="Stage/HomeContent/Navigation" unique_id=1466792119]
 layout_mode = 0
-offset_left = 29.0
-offset_top = 601.0
-offset_right = 163.0
-offset_bottom = 602.0
+offset_left = 25.0
+offset_top = 637.0
+offset_right = 159.0
+offset_bottom = 638.0
 mouse_filter = 2
 color = Color(0.6784, 0.5373, 0.3176, 0.302)
 
 [node name="RailMotto" type="Label" parent="Stage/HomeContent/Navigation" unique_id=1295680839]
 layout_mode = 0
-offset_left = 23.0
-offset_top = 615.0
-offset_right = 169.0
-offset_bottom = 663.0
+offset_left = 19.0
+offset_top = 651.0
+offset_right = 165.0
+offset_bottom = 699.0
 theme_override_colors/font_color = Color(0.7412, 0.6275, 0.4627, 1)
 theme_override_font_sizes/font_size = 15
 text = "好酒，值得等待。"
@@ -636,10 +636,10 @@ vertical_alignment = 1
 
 [node name="HelpButton" type="Button" parent="Stage/HomeContent/Navigation" unique_id=1629867028 groups=["route_buttons"]]
 layout_mode = 0
-offset_left = 35.0
-offset_top = 657.0
-offset_right = 157.0
-offset_bottom = 691.0
+offset_left = 31.0
+offset_top = 693.0
+offset_right = 153.0
+offset_bottom = 727.0
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("compact")
@@ -651,10 +651,10 @@ metadata/route = "help"
 [node name="SceneKicker" type="Label" parent="Stage/HomeContent" unique_id=755118818]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 250.0
-offset_top = 142.0
-offset_right = 710.0
-offset_bottom = 173.0
+offset_left = 230.0
+offset_top = 130.0
+offset_right = 690.0
+offset_bottom = 161.0
 theme_override_colors/font_color = Color(0.9333, 0.8275, 0.6275, 1)
 theme_override_font_sizes/font_size = 15
 text = "落 日 已 至  /  SUNSET HOURS"
@@ -663,10 +663,10 @@ vertical_alignment = 1
 [node name="SceneTitle" type="Label" parent="Stage/HomeContent" unique_id=860539975]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 248.0
-offset_top = 175.0
-offset_right = 1148.0
-offset_bottom = 226.0
+offset_left = 228.0
+offset_top = 163.0
+offset_right = 1128.0
+offset_bottom = 214.0
 theme_override_colors/font_color = Color(1, 0.9412, 0.8235, 1)
 theme_override_font_sizes/font_size = 30
 text = "给远道而来的人，留一杯好酒。"
@@ -674,19 +674,19 @@ vertical_alignment = 1
 
 [node name="SceneRule" type="ColorRect" parent="Stage/HomeContent" unique_id=514563509]
 layout_mode = 0
-offset_left = 250.0
-offset_top = 238.0
-offset_right = 314.0
-offset_bottom = 240.0
+offset_left = 230.0
+offset_top = 226.0
+offset_right = 294.0
+offset_bottom = 228.0
 mouse_filter = 2
 color = Color(0.8235, 0.6471, 0.3608, 1)
 
 [node name="ShiftBadge" type="Panel" parent="Stage/HomeContent" unique_id=1686154982]
 layout_mode = 0
-offset_left = 1350.0
-offset_top = 142.0
-offset_right = 1576.0
-offset_bottom = 186.0
+offset_left = 1362.0
+offset_top = 130.0
+offset_right = 1588.0
+offset_bottom = 174.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("small")
 script = ExtResource("ornament")
@@ -706,10 +706,10 @@ vertical_alignment = 1
 
 [node name="GuestNote" type="Panel" parent="Stage/HomeContent" unique_id=1401635279]
 layout_mode = 0
-offset_left = 1242.0
-offset_top = 208.0
-offset_right = 1576.0
-offset_bottom = 560.0
+offset_left = 1254.0
+offset_top = 196.0
+offset_right = 1588.0
+offset_bottom = 548.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("paper")
 script = ExtResource("ornament")
@@ -799,10 +799,10 @@ vertical_alignment = 1
 
 [node name="GuestDialogue" type="Panel" parent="Stage/HomeContent" unique_id=1649131046]
 layout_mode = 0
-offset_left = 248.0
-offset_top = 618.0
-offset_right = 1576.0
-offset_bottom = 842.0
+offset_left = 228.0
+offset_top = 642.0
+offset_right = 1588.0
+offset_bottom = 866.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("wood")
 script = ExtResource("ornament")
@@ -835,7 +835,7 @@ unique_name_in_owner = true
 layout_mode = 0
 offset_left = 390.0
 offset_top = 33.0
-offset_right = 840.0
+offset_right = 872.0
 offset_bottom = 60.0
 theme_override_colors/font_color = Color(0.7412, 0.6275, 0.4627, 1)
 theme_override_font_sizes/font_size = 15
@@ -844,46 +844,50 @@ vertical_alignment = 1
 
 [node name="TalkButton" type="Button" parent="Stage/HomeContent/GuestDialogue" unique_id=591374856]
 unique_name_in_owner = true
+visible = false
 layout_mode = 0
-offset_left = 858.0
+offset_left = 890.0
 offset_top = 27.0
-offset_right = 982.0
+offset_right = 1014.0
 offset_bottom = 66.0
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("compact")
 theme_override_styles/pressed = SubResource("compact_pressed")
 theme_override_styles/hover = SubResource("compact_hover")
-text = "再聊一句"
+text = ""
 
 [node name="DialogueRule" type="ColorRect" parent="Stage/HomeContent/GuestDialogue" unique_id=1602931704]
 layout_mode = 0
 offset_left = 180.0
 offset_top = 77.0
-offset_right = 982.0
+offset_right = 1014.0
 offset_bottom = 78.0
 mouse_filter = 2
 color = Color(0.6784, 0.5373, 0.3176, 0.302)
 
-[node name="GuestSpeech" type="Label" parent="Stage/HomeContent/GuestDialogue" unique_id=457308229]
+[node name="GuestSpeech" type="RichTextLabel" parent="Stage/HomeContent/GuestDialogue" unique_id=457308229]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 180.0
 offset_top = 92.0
-offset_right = 982.0
+offset_right = 1014.0
 offset_bottom = 164.0
-theme_override_colors/font_color = Color(0.9647, 0.8941, 0.7686, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_colors/default_color = Color(0.9647, 0.8941, 0.7686, 1)
+theme_override_font_sizes/normal_font_size = 24
 text = "推开店门，迎接今晚的第一位客人。"
-vertical_alignment = 1
 autowrap_mode = 2
+bbcode_enabled = true
+scroll_active = false
+selection_enabled = false
+mouse_filter = 2
 
 [node name="GuestTags" type="Label" parent="Stage/HomeContent/GuestDialogue" unique_id=351792391]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 181.0
 offset_top = 181.0
-offset_right = 983.0
+offset_right = 1015.0
 offset_bottom = 208.0
 theme_override_colors/font_color = Color(0.8471, 0.7059, 0.4431, 1)
 theme_override_font_sizes/font_size = 18
@@ -892,9 +896,9 @@ vertical_alignment = 1
 
 [node name="ActionDivider" type="ColorRect" parent="Stage/HomeContent/GuestDialogue" unique_id=1547134998]
 layout_mode = 0
-offset_left = 1013.0
+offset_left = 1045.0
 offset_top = 28.0
-offset_right = 1014.0
+offset_right = 1046.0
 offset_bottom = 196.0
 mouse_filter = 2
 color = Color(0.6784, 0.5373, 0.3176, 0.302)
@@ -902,9 +906,9 @@ color = Color(0.6784, 0.5373, 0.3176, 0.302)
 [node name="OpenButton" type="Button" parent="Stage/HomeContent/GuestDialogue" unique_id=1666596134]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1033.0
+offset_left = 1065.0
 offset_top = 49.0
-offset_right = 1308.0
+offset_right = 1340.0
 offset_bottom = 109.0
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("primary")
@@ -915,9 +919,9 @@ text = "开始营业    →"
 [node name="NextGuestButton" type="Button" parent="Stage/HomeContent/GuestDialogue" unique_id=164216822]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1033.0
+offset_left = 1065.0
 offset_top = 134.0
-offset_right = 1308.0
+offset_right = 1340.0
 offset_bottom = 180.0
 mouse_default_cursor_shape = 2
 theme_override_font_sizes/font_size = 16
@@ -929,9 +933,9 @@ text = "送客，迎接下一位"
 [node name="ActionCaption" type="Label" parent="Stage/HomeContent/GuestDialogue" unique_id=1726086225]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 1033.0
+offset_left = 1065.0
 offset_top = 144.0
-offset_right = 1308.0
+offset_right = 1340.0
 offset_bottom = 171.0
 theme_override_colors/font_color = Color(0.7412, 0.6275, 0.4627, 1)
 theme_override_font_sizes/font_size = 14
@@ -942,10 +946,10 @@ vertical_alignment = 1
 [node name="BottomStatus" type="Label" parent="Stage/HomeContent" unique_id=296780318]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 29.0
-offset_top = 857.0
-offset_right = 939.0
-offset_bottom = 883.0
+offset_left = 17.0
+offset_top = 872.0
+offset_right = 927.0
+offset_bottom = 894.0
 theme_override_colors/font_color = Color(0.8275, 0.7176, 0.5608, 1)
 theme_override_font_sizes/font_size = 14
 text = "准备营业  /  第一个夜晚，等一位远道而来的客人。"
@@ -953,10 +957,10 @@ vertical_alignment = 1
 
 [node name="Version" type="Label" parent="Stage/HomeContent" unique_id=563779727]
 layout_mode = 0
-offset_left = 1110.0
-offset_top = 857.0
-offset_right = 1573.0
-offset_bottom = 883.0
+offset_left = 1122.0
+offset_top = 872.0
+offset_right = 1585.0
+offset_bottom = 894.0
 theme_override_colors/font_color = Color(0.7255, 0.5961, 0.4275, 1)
 theme_override_font_sizes/font_size = 13
 text = "酒谱手记  ·  鼠标 / 触屏  ·  v0.9"
@@ -966,6 +970,7 @@ vertical_alignment = 1
 [node name="PageHost" type="Control" parent="Stage" unique_id=969052715]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_right = 1616.0
-offset_bottom = 906.0
+offset_left = 0.0
+offset_right = 1600.0
+offset_bottom = 900.0
 mouse_filter = 2

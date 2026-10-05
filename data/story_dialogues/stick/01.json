@@ -7,45 +7,40 @@
   "title": "以前演过不少",
   "entry": "start",
   "nodes": {
-    "start_reply1": {
-      "speaker": "guest",
-      "text": "逃跑的，爬飞艇的，什么活都接过。有时候一天换三个地方，球拍都来不及放下就去演特工了。",
-      "next": "beat2"
-    },
-    "start_reply2": {
-      "speaker": "guest",
-      "text": "最近活没那么多，出来转转。路过看见屋里有人，我就进来问问，没想好还真招不招人。",
-      "next": "beat2"
-    },
     "start": {
       "speaker": "guest",
-      "text": "这里招演员吗？我以前演过乒乓球运动员，也演过打羽毛球的。你要是玩过那些火柴人小游戏，说不定见过我。",
+      "text": "这里招演员吗？我以前演过乒乓球运动员，也演过打羽毛球的。跑酷、逃狱这些也接过。",
       "choices": [
         {
           "id": "stick_01.start.c1",
-          "text": "还真有点眼熟，你还演过什么？",
+          "text": "你是不是游戏里那个？",
           "next": "start_reply1"
         },
         {
           "id": "stick_01.start.c2",
-          "text": "演员啊，那你怎么跑这儿来了？",
+          "text": "我们这是酒馆。",
           "next": "start_reply2"
         }
       ]
     },
-    "beat2_reply1": {
+    "start_reply1": {
       "speaker": "guest",
-      "text": "多的时候我都数不清。道具师看我老摔同一个地方，后来偷偷给墙垫厚了一点。",
-      "next": "beat3"
+      "text": "对。你要是干过把错误选项挨个点一遍这种事，咱俩应该挺熟。有时候一天换三个地方，球拍还没放下就得去逃狱。",
+      "next": "order_request"
     },
-    "beat2_reply2": {
+    "start_reply2": {
       "speaker": "guest",
-      "text": "想啊。但当时好不容易有人肯用我，我怕一说不干，下次就真没我的事了。",
-      "next": "beat3"
+      "text": "我知道，就是顺口问问。最近问了好几家，进门就想说这句。反正今天也没什么事，先坐会儿吧。",
+      "next": "order_request"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "给我来杯[b]金汤力[/b]吧。[b]别带果肉[/b]。以前收工后常喝，最近活少了，好些天没出来坐坐。",
+      "next": "beat2"
     },
     "beat2": {
       "speaker": "guest",
-      "text": "刚开始可轮不到我打球。我专门给人当替身，跑两步撞墙，再爬起来。通告上都懒得写名字，就写要个火柴人。",
+      "text": "刚开始可轮不到我打球。我专门给人当替身。别人跑过去没事，我跑过去就得撞墙。通告上也不写名字，就写要个火柴人。",
       "choices": [
         {
           "id": "stick_01.beat2.c1",
@@ -59,19 +54,19 @@
         }
       ]
     },
-    "beat3_reply1": {
+    "beat2_reply1": {
       "speaker": "guest",
-      "text": "可不是。练了好几天才改过来。等我真会打了，反倒比原来那些活轻松，也认识了几个老搭档。",
-      "next": "closing"
+      "text": "多的时候我都数不清。道具师看我老摔在同一个地方，后来偷偷给墙垫厚了一点。",
+      "next": "beat3"
     },
-    "beat3_reply2": {
+    "beat2_reply2": {
       "speaker": "guest",
-      "text": "还行，至少不用一直捡球了。来玩的人也多，有两个小孩常来，我到现在还记着他们。",
-      "next": "closing"
+      "text": "想啊。但那时候好不容易有人肯用我，总怕说不干了，下回就真没我的事了。",
+      "next": "beat3"
     },
     "beat3": {
       "speaker": "guest",
-      "text": "后来总算轮到我上球场。头一天紧张得很，球飞过来，我还下意识想往地上倒。搭档说今天用不着这招，我才反应过来。",
+      "text": "后来球场缺个人，才叫我顶上。头一天球飞过来，我下意识往地上倒。搭档把我拉起来，说今天这个得接住。",
       "choices": [
         {
           "id": "stick_01.beat3.c1",
@@ -85,9 +80,45 @@
         }
       ]
     },
+    "beat3_reply1": {
+      "speaker": "guest",
+      "text": "可不是。练了好几天才改过来。刚会接球那阵，只要撑到三四个来回，我就觉得自己打得挺好。",
+      "next": "regular_players"
+    },
+    "beat3_reply2": {
+      "speaker": "guest",
+      "text": "还不错，至少能多打几个来回了。后来在那儿待得久，连常来的人有什么习惯都记住了。",
+      "next": "regular_players"
+    },
+    "regular_players": {
+      "speaker": "guest",
+      "text": "有两个小孩总来，一人按字母，一人按方向键，挤在一张键盘前面。右边那个一输就说左边挤他。人家把椅子搬开，他又嫌够不着键盘。",
+      "choices": [
+        {
+          "id": "stick_01.regular_players.c1",
+          "text": "你连这个都记得。",
+          "next": "regular_players_reply1"
+        },
+        {
+          "id": "stick_01.regular_players.c2",
+          "text": "后来他们还来吗？",
+          "next": "regular_players_reply2"
+        }
+      ]
+    },
+    "regular_players_reply1": {
+      "speaker": "guest",
+      "text": "几乎天天见，连他们什么时候该吵架我都能猜着。后来有回打到一半，外面有人喊，他们说下次接着打就走了。",
+      "next": "closing"
+    },
+    "regular_players_reply2": {
+      "speaker": "guest",
+      "text": "后来有回没打完就走了，说下次接着打。之后一直没再凑齐。我连那局谁领先都还记着。",
+      "next": "closing"
+    },
     "closing": {
       "speaker": "guest",
-      "text": "那时候有两个小孩总来玩，我记到现在。后来有一回他们走了，就一直没再来。这个下回再跟你讲，我今天先歇会儿。",
+      "text": "这事下回来再讲吧。你这儿离我住的地方不远，以后没事我就过来坐坐。今天先尝尝你的金汤力。",
       "transition": "resume_existing_dialogue_loop"
     }
   },

@@ -26,6 +26,7 @@ MenuCatalog="*res://scripts/menu_catalog.gd"
 Supplies="*res://scripts/supplies.gd"
 MenuArt="*res://scripts/menu_art_provider.gd"
 WorkbenchSession="*res://scripts/workbench_session.gd"
+CustomerService="*res://scripts/customer_service.gd"
 GameSession="*res://scripts/game_session.gd"
 SaloonAudio="*res://scripts/saloon_audio.gd"
 

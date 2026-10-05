@@ -85,6 +85,7 @@ func load_game() -> bool:
 		return _finish_restart()
 	TimeManager.restore(data.clock)
 	StoryDialogue.progress = data.story.guests.duplicate(true)
+	StoryDialogue.migrate_content_progress()
 	StoryDialogue.restore_session(data.active)
 	visit = data.visit.duplicate(true)
 	dirty = false
@@ -132,7 +133,7 @@ func restart_game() -> bool:
 		last_error = "旧进度未能备份，暂未重新开始。"
 		return false
 	var index := 0
-	var restart_paths := [save_path, StoryDialogue.save_path, SlotWallet.save_path, MenuCatalog.save_path]
+	var restart_paths := [save_path, StoryDialogue.save_path, SlotWallet.save_path, MenuCatalog.save_path, CustomerService.save_path]
 	var supplies := get_node_or_null("/root/Supplies")
 	if supplies != null:
 		restart_paths.append(supplies.save_path)
@@ -163,11 +164,15 @@ func _finish_restart() -> bool:
 	SlotWallet.spin_count = 0
 	SlotWallet.hidden_prizes = []
 	SlotWallet.purchase_receipts = {}
+	SlotWallet.sale_receipts = {}
 	SlotWallet.recovered_payout = -1
 	SlotWallet.recovered_hidden = false
 	SlotWallet.writable = true
 	if not SlotWallet.persist():
 		last_error = "重新开始尚未完成，请重试。"
+		return false
+	if not CustomerService.reset_game():
+		last_error = "客人记录尚未重置，请重试。"
 		return false
 	StoryDialogue.progress = {}
 	StoryDialogue.end_guest()

@@ -4,48 +4,43 @@
   "guest_id": "stick",
   "guest_name": "小线",
   "episode": 5,
-  "title": "请谁来看这场戏",
+  "title": "致未归的客人",
   "entry": "start",
   "nodes": {
-    "start_reply1": {
-      "speaker": "guest",
-      "text": "他说还以为自己哪里没做好，回去练了好久。我听得挺不好意思，原来我那点别扭，真让人家当回事了。",
-      "next": "beat2"
-    },
-    "start_reply2": {
-      "speaker": "guest",
-      "text": "损了，说我终于肯让别人演完了。我本来想回嘴，想了想，这回让他说吧。",
-      "next": "beat2"
-    },
     "start": {
       "speaker": "guest",
-      "text": "没跟圆头吵起来，你放心。昨天又排了一回，这次让新人照他的办法来，真比老版本好笑。我也跟他道歉了，前回不该一直打断。",
+      "text": "邀请写好了，你看看。这已经是第三版了。圆头嫌第一版太长，阿尺嫌第二版连地方都没写。",
       "choices": [
         {
           "id": "stick_05.start.c1",
-          "text": "新人怎么说？",
+          "text": "给圆头一改还剩几句？",
           "next": "start_reply1"
         },
         {
           "id": "stick_05.start.c2",
-          "text": "圆头没再损你两句？",
+          "text": "幸亏先让阿尺看了。",
           "next": "start_reply2"
         }
       ]
     },
-    "beat2_reply1": {
+    "start_reply1": {
       "speaker": "guest",
-      "text": "想啊，尤其那两个打球的小孩。可人家现在忙什么，我都不知道。真没空，也不能因为一张邀请就让他为难。",
-      "next": "beat3"
+      "text": "没删多少，就让我把以前怎么认识的那一大段收起来。他说人先来了再聊，纸上快写不下了。",
+      "next": "order_request"
     },
-    "beat2_reply2": {
+    "start_reply2": {
       "speaker": "guest",
-      "text": "请了，新人还带了朋友来看排练。他们没看过老版本，照样笑得挺开心，我那会儿就没顾上想别的。",
-      "next": "beat3"
+      "text": "是啊。我还认真写了在哪站下车，就是忘了写站名。他问我是不是想让客人在街上找一晚上。",
+      "next": "order_request"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "今天还是想喝[b]第一次来的那种，清爽，甜味轻一点，也带一点苦[/b]。你慢慢做，我给你念念邀请。",
+      "next": "beat2"
     },
     "beat2": {
       "speaker": "guest",
-      "text": "邀请也写好了，开头还是致未归的客人。下面就说我们又凑起来演戏了，有时间可以来看看。我没再写什么一定要回来。",
+      "text": "开头写的是“致未归的客人”。下面是：“我们最近又排了一出戏，还是原来那几个，也来了个新人。以前看过的可能认得出几段。没看过也没关系，从头看就行。”",
       "choices": [
         {
           "id": "stick_05.beat2.c1",
@@ -54,40 +49,107 @@
         },
         {
           "id": "stick_05.beat2.c2",
-          "text": "现在也可以请些新观众。",
+          "text": "新人也请朋友来看了？",
           "next": "beat2_reply2"
+        }
+      ]
+    },
+    "beat2_reply1": {
+      "speaker": "guest",
+      "text": "想，尤其那两个打球的小孩。还有以前老在逃狱那场里乱选的人。我一拿到道具，就知道今天又得晚收工。",
+      "next": "invitation_last_line"
+    },
+    "beat2_reply2": {
+      "speaker": "guest",
+      "text": "请了，有几个已经来看过排练。他们没看过老版本，照样笑得挺开心。新人还问我们能不能再多排一场。",
+      "next": "invitation_last_line"
+    },
+    "invitation_last_line": {
+      "speaker": "guest",
+      "text": "最后这句是阿尺加的：“有空来坐坐。朋友能来就一起，一个人来也行。”他说现在约人多难，别让人以为非得凑齐才能来。",
+      "next": "beat3"
+    },
+    "beat3": {
+      "speaker": "guest",
+      "text": "这张给你。听我讲了这么多，总得给你留个位置。背面也能写两句，免得放久了想不起是谁给的。",
+      "choices": [
+        {
+          "id": "stick_05.beat3.c1",
+          "text": "我可能没玩过你演的那些游戏。",
+          "next": "beat3_reply1"
+        },
+        {
+          "id": "stick_05.beat3.c2",
+          "text": "隔太久可能真会忘。",
+          "next": "beat3_reply2"
+        },
+        {
+          "id": "stick_05.beat3.c3",
+          "text": "可我现在就在这里。",
+          "next": "beat3_reply3"
         }
       ]
     },
     "beat3_reply1": {
       "speaker": "guest",
-      "text": "先问现在还打不打羽毛球吧。不打也行，坐着聊会儿。我还有点想问，当年最后那局到底谁领先。",
-      "next": "closing"
+      "text": "那你玩过这间酒馆，也认识我了。以后再见着我，至少知道这人点酒不要果肉。",
+      "next": "invitation_note"
     },
     "beat3_reply2": {
       "speaker": "guest",
-      "text": "约了下周再合一遍，正式哪天还得看阿尺换班。这回每个人要做什么都说好了，不是一句有空再说就散了。",
-      "next": "closing"
+      "text": "我给你写上：小线，演过球员，来找过工作。下次问问他，那场戏演得怎么样了。",
+      "next": "invitation_note"
     },
-    "beat3": {
+    "beat3_reply3": {
       "speaker": "guest",
-      "text": "我以前一直觉得，得把老样子全找回来，这戏才算接上。昨天排完跟他们收东西，大家又为谁搬箱子吵起来，我反倒觉得挺熟悉。",
+      "text": "先收着嘛，又不是催你走。你也会有忙别的事的时候。哪天隔了很久再点开这间酒馆，看见它就能想起来。",
+      "next": "invitation_note"
+    },
+    "invitation_note": {
+      "speaker": "guest",
+      "text": "以前来过的留一张，现在还在玩的也给一张。谁知道以后会忙成什么样。我那箱东西放了这么久，前两天才想起来翻。",
       "choices": [
         {
-          "id": "stick_05.beat3.c1",
+          "id": "stick_05.invitation_note.c1",
           "text": "那两个孩子要是来了，你准备说什么？",
-          "next": "beat3_reply1"
+          "next": "invitation_note_reply1"
         },
         {
-          "id": "stick_05.beat3.c2",
+          "id": "stick_05.invitation_note.c2",
           "text": "演出的日子商量好了吗？",
-          "next": "beat3_reply2"
+          "next": "invitation_note_reply2"
+        }
+      ]
+    },
+    "invitation_note_reply1": {
+      "speaker": "guest",
+      "text": "先问现在还打不打球吧。我还想问右边那个，最后那局明明落后一分，怎么就不肯认。隔了这么多年，他总该有个新说法了。",
+      "next": "drink_callback"
+    },
+    "invitation_note_reply2": {
+      "speaker": "guest",
+      "text": "约了下周再合一遍，正式演哪天还得等阿尺换班。日期那个位置先空着，定好了我就来告诉你。",
+      "next": "drink_callback"
+    },
+    "drink_callback": {
+      "speaker": "guest",
+      "text": "光顾着念了，你还记得我第一次点的什么吗？",
+      "choices": [
+        {
+          "id": "stick_05.drink_callback.c1",
+          "text": "记得，给你做老样子。",
+          "next": "closing"
+        },
+        {
+          "id": "stick_05.drink_callback.c2",
+          "text": "记得，你慢慢抄，我来调。",
+          "next": "closing"
         }
       ]
     },
     "closing": {
       "speaker": "guest",
-      "text": "这回总算把这点事跟你讲明白了。下次来给你说说真演起来怎么样，今天先歇会儿。",
+      "text": "对，就是[b]金汤力[/b]，[b]别带果肉[/b]。你还记着呢。我再抄几张，坐这儿等你。",
       "transition": "resume_existing_dialogue_loop"
     }
   },

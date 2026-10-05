@@ -4,74 +4,69 @@
   "guest_id": "stick",
   "guest_name": "小线",
   "episode": 3,
-  "title": "拍砸了也得接着拍",
+  "title": "箱子里还有一本旧戏",
   "entry": "start",
   "nodes": {
-    "start_reply1": {
-      "speaker": "guest",
-      "text": "我猜也是。你们看见不靠谱的东西，偏想点一下。我上工前都得先看看附近哪儿好摔。",
-      "next": "beat2"
-    },
-    "start_reply2": {
-      "speaker": "guest",
-      "text": "对，再来一遍。有些人错一次就记住，有些人还想再看一次。我都能背下他下一步要选什么。",
-      "next": "beat2"
-    },
     "start": {
       "speaker": "guest",
-      "text": "上回说那几个老搭档，是拍冒险游戏时认识的。我拍《火柴人逃脱记》那阵，有人把道具挨个试，就为了看我能倒多大霉。",
+      "text": "东西拿回来了，就这箱。今天想喝[b]酸一点的，甜味少些[/b]。昨天收拾得太晚，走到这儿还没缓过来。",
       "choices": [
         {
           "id": "stick_03.start.c1",
-          "text": "这种事我好像也干过。",
+          "text": "那张比分纸找到了吗？",
           "next": "start_reply1"
         },
         {
           "id": "stick_03.start.c2",
-          "text": "试错了就重新来？",
+          "text": "这么大一箱都是你的？",
           "next": "start_reply2"
+        }
+      ]
+    },
+    "start_reply1": {
+      "speaker": "guest",
+      "text": "没找到。翻出一张以前举过的P2牌子，还有几本通告。圆头让我扔，我嘴上答应，最后又全装回来了。",
+      "next": "beat2"
+    },
+    "start_reply2": {
+      "speaker": "guest",
+      "text": "还没拿完呢。圆头问我折腾一晚上到底搬走了什么，我说灰尘，架子都擦干净了。",
+      "next": "beat2"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "后来聊起那两个孩子。我说那阵子他们总讲考试，也不知道后来考得怎么样。圆头问是哪一年的事，听完就说，人家可能都工作了。",
+      "choices": [
+        {
+          "id": "stick_03.beat2.c1",
+          "text": "你才想起过去这么久了？",
+          "next": "beat2_reply1"
+        },
+        {
+          "id": "stick_03.beat2.c2",
+          "text": "他们最后来的时候有变化吗？",
+          "next": "beat2_reply2"
         }
       ]
     },
     "beat2_reply1": {
       "speaker": "guest",
-      "text": "他会提醒，提醒我落地别压着道具。有回我急了，说你倒先关心关心演员啊，他笑得手都拿不稳。",
-      "next": "beat3"
+      "text": "嗯。我这边还是那张球场，球拍坏了就换一把，总觉得没什么变化。昨天听他一说，才坐下来好好算了算。",
+      "next": "remember_school"
     },
     "beat2_reply2": {
       "speaker": "guest",
-      "text": "好着呢。忙的时候他替我留饭，我收工帮他搬东西。互相损几句太正常了，不损反倒不习惯。",
+      "text": "有吧。没以前那么吵了。一个说要搬家，另一个问搬哪儿、远不远。我当时只顾着发球，没仔细听。",
+      "next": "remember_school"
+    },
+    "remember_school": {
+      "speaker": "guest",
+      "text": "他们还聊过去哪儿上学，以后周末能不能过来。这些话我都听见过，总觉得明天还有一局，哪天再问也来得及。",
       "next": "beat3"
-    },
-    "beat2": {
-      "speaker": "guest",
-      "text": "后来拍《火柴人智闯飞艇》，要用的道具更多。阿尺是管道具的，有些东西他递过来，自己先往后退，我一看就知道这回又悬。",
-      "choices": [
-        {
-          "id": "stick_03.beat2.c1",
-          "text": "阿尺也不提醒你？",
-          "next": "beat2_reply1"
-        },
-        {
-          "id": "stick_03.beat2.c2",
-          "text": "你俩关系应该挺好吧。",
-          "next": "beat2_reply2"
-        }
-      ]
-    },
-    "beat3_reply1": {
-      "speaker": "guest",
-      "text": "找得到。阿尺去了新片场，圆头在带新人，都忙。我也老想着等我这边闲一点，再去问他们。",
-      "next": "closing"
-    },
-    "beat3_reply2": {
-      "speaker": "guest",
-      "text": "在，箱子里压着呢。前几天翻出来，字都看得懂，就是有些地方忘了当时想怎么演。",
-      "next": "closing"
     },
     "beat3": {
       "speaker": "guest",
-      "text": "还有个叫圆头的，老演我的对手。我们三个以前说好，哪天有空就自己排个戏，别老照着通告走。结果本子写了几页，谁也腾不出空。",
+      "text": "箱子里还压着这个本子。我、圆头，还有个管道具的阿尺，以前说要自己排个戏。只写了几页，后来谁也没再提。",
       "choices": [
         {
           "id": "stick_03.beat3.c1",
@@ -80,14 +75,50 @@
         },
         {
           "id": "stick_03.beat3.c2",
-          "text": "本子还在你手里？",
+          "text": "怎么一直没排成？",
           "next": "beat3_reply2"
         }
       ]
     },
+    "beat3_reply1": {
+      "speaker": "guest",
+      "text": "找得到。阿尺换了片场，我一直有他的电话。就是老想着等自己闲一点再联系，一拖就拖到现在。",
+      "next": "pliers_call"
+    },
+    "beat3_reply2": {
+      "speaker": "guest",
+      "text": "我说等这阵忙完，阿尺说等下个活干完。后来各忙各的，偶尔碰面也只顾着吃饭，谁都忘了问这本戏。",
+      "next": "pliers_call"
+    },
+    "pliers_call": {
+      "speaker": "guest",
+      "text": "昨天我给阿尺打了个电话。他一接起来就问，终于想起还我钳子了？",
+      "choices": [
+        {
+          "id": "stick_03.pliers_call.c1",
+          "text": "钳子也在箱子里？",
+          "next": "pliers_call_reply1"
+        },
+        {
+          "id": "stick_03.pliers_call.c2",
+          "text": "借了人家多久啊？",
+          "next": "pliers_call_reply2"
+        }
+      ]
+    },
+    "pliers_call_reply1": {
+      "speaker": "guest",
+      "text": "在，就压在本子底下。所以这回见面的理由也有了。约的周六，把圆头一起叫上。",
+      "next": "closing"
+    },
+    "pliers_call_reply2": {
+      "speaker": "guest",
+      "text": "不记得了。我原本想解释两句，他说见面带上就行。我们就约了周六，圆头也能来。",
+      "next": "closing"
+    },
     "closing": {
       "speaker": "guest",
-      "text": "我前两天把旧稿寄给他们了，今天刚拿到回信，还没拆。等我看完，下次来告诉你他们怎么说。",
+      "text": "钳子得还，本子也带上。哪段看不懂就当面问他们，先试着排一遍。总不能又原样装回箱子里。",
       "transition": "resume_existing_dialogue_loop"
     }
   },

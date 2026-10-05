@@ -6,10 +6,13 @@ const KEYS=["alcohol_intensity","sweetness","sourness","bitterness"]
 const LABELS=["酒感","甜度","酸度","苦度"]
 var result: Dictionary={}
 var preview: Control
+var displayed_attributes: Dictionary = {}
 
 func _ready() -> void:
 	mouse_filter=Control.MOUSE_FILTER_IGNORE
 	var evaluation: Dictionary=result.get("evaluation",{})
+	displayed_attributes = result.get("customer_sensory", {}).get("attributes", evaluation.get("attributes", {}))
+	if displayed_attributes.is_empty(): displayed_attributes = evaluation.get("attributes", {})
 	var accent:=Color(str(evaluation.get("color","8c9aa2")))
 	_label(Rect2(28,2,360,58),str(evaluation.get("title","旧记录 · 未评级")),38,accent.darkened(.28))
 	_label(Rect2(385,17,490,42),str(result.get("recipe",{}).get("name","这一杯")),28,Color("493523"))
@@ -30,7 +33,7 @@ func _ready() -> void:
 		for i in range(4):
 			var y:=147+i*53
 			_label(Rect2(382,y,75,34),LABELS[i],22,Color("493523"))
-			_label(Rect2(826,y,58,34),str(roundi(float(evaluation.attributes[KEYS[i]]))),24,Color("493523"))
+			_label(Rect2(826,y,58,34),str(roundi(float(displayed_attributes[KEYS[i]]))),24,Color("493523"))
 			_label(Rect2(884,y+4,92,30),"目标 %s" % str(roundi(float(evaluation.targets[KEYS[i]]))),16,Color("816b4d"))
 		for i in range(mini(2,evaluation.tags.size())):
 			var tag: Dictionary=evaluation.tags[i]
@@ -65,7 +68,7 @@ func _draw() -> void:
 	for i in range(4):
 		var y:=165+i*53
 		draw_style_box(_bar(Color("d7c4a1")),Rect2(466,y,340,11))
-		var value:=float(evaluation.attributes[KEYS[i]])
+		var value:=float(displayed_attributes[KEYS[i]])
 		if value>0: draw_style_box(_bar(colors[i]),Rect2(466,y,340*value/100,11))
 		var reference:=clampf(float(evaluation.targets[KEYS[i]]),0,100)
 		var x:=466+340*reference/100

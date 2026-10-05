@@ -701,9 +701,19 @@ func _begin_measure(material: String, target: float, vessel := "jigger") -> void
 func _finish() -> void:
 	table.stop_gesture()
 	if _issue("finish"):
-		_result()
+		if data.result.get("guest", {}).has("visit_id"):
+			_deliver_finished()
+		else:
+			_result()
 	else:
 		status_label.text=WorkbenchSession.last_error
+
+func _deliver_finished() -> void:
+	if CustomerService.deliver(data.result):
+		Navigation.go_to(&"home")
+	else:
+		status_label.text = CustomerService.last_error
+		_result()
 
 func _result() -> void:
 	var p:=_dialog("",760,1020)
@@ -730,7 +740,15 @@ func _result() -> void:
 	card.result["cup"]=data.result.get("cup",data.cup)
 	card.result["capacity_ml"]=data.result.get("capacity_ml",WorkbenchSession.capacity(data,"glass"))
 	p.add_child(card)
-	_text(p,Rect2(34,20,800,30),"这一杯的出品",23,INK)
+	_text(p,Rect2(34,20,760,30),"这一杯的出品",23,INK)
+	if data.result.get("guest", {}).has("visit_id"):
+		var send := Button.new()
+		send.position = Vector2(820, 16)
+		send.size = Vector2(166, 42)
+		send.text = "送出这一杯"
+		send.add_theme_font_size_override("font_size", 20)
+		send.pressed.connect(_deliver_finished)
+		p.add_child(send)
 	_text(p,Rect2(45,704,930,38),"空格 另起一杯     ·     Esc 返回桌面     ·     R 查看依据",22,INK)
 	pending_confirm=func():
 		if _issue("start"): _clear_modal()

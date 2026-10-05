@@ -2,6 +2,7 @@ extends Control
 ## The same detail layout renders every cocktail directly from its JSON definition.
 signal back_requested
 
+const ART_LAYOUT := preload("res://scripts/cocktail_art_layout.gd")
 const INK := Color("493019")
 const MUTED := Color("674b2c")
 const SCORE := preload("res://scripts/journal_score.gd")
@@ -102,7 +103,11 @@ func _header() -> void:
 	_label(self, Rect2(1033, 62, 143, 25), "原料 %d / %d" % [progress.owned, progress.total], 16, MUTED)
 
 func _left_column() -> void:
-	_texture(self, Rect2(142, 115, 302, 277), CocktailDatabase.get_image(str(recipe.id)))
+	var drink := TextureRect.new()
+	drink.name = "DrinkPicture"
+	drink.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ART_LAYOUT.fit(drink, CocktailDatabase.get_image(str(recipe.id)), Rect2(144, 113, 306, 277), str(recipe.id), true)
+	add_child(drink)
 	_label(self, Rect2(145, 397, 95, 32), "口感", 23)
 	_label(self, Rect2(242, 401, 200, 30), " · ".join(recipe.get("mouthfeel_tags", recipe.get("tags", []))), 19, MUTED)
 	_rule(self, Rect2(140, 430, 298, 5))
