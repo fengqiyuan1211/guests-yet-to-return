@@ -231,7 +231,8 @@ static func evaluate(demand: Dictionary, actual: Dictionary, late: bool, rules: 
 	if values.get("buffs_enabled", false):
 		if buff_result.get("status", "complete") != "complete" or not buff_result.get("active", []) is Array: return _incomplete("invalid_buff_result")
 		for buff: Variant in buff_result.get("active", []):
-			if not buff is Dictionary or not buff.get("id") is String or buff.get("kind") != "ordinary": return _incomplete("invalid_active_buff")
+			if not buff is Dictionary or not buff.get("id") is String or buff.get("kind") not in ["ordinary", "legendary"]: return _incomplete("invalid_active_buff")
+			if buff.kind == "legendary": continue # Visual distinction only; no points until effects are designed.
 			if counted.has(buff.id): continue
 			counted[buff.id] = true
 			var points := float(demand.get("buff_affinities", {}).get(buff.id, 0))

@@ -9,13 +9,13 @@
       "category": "纪念品",
       "storage_mode": "permanent",
       "quantity_unit": "张",
-      "description": "小线赠予的一张旧酒单。",
+      "description": "小线留下的配方：童年拾忆。",
       "image_path": "res://assets/art/minigames/after_school_paper.svg",
-      "recipe": null,
-      "recipe_status": "reserved_empty",
+      "recipe": "childhood_keepsake",
+      "recipe_status": "available",
       "source": "stick_memory_badminton_victory",
       "consumable": false,
-      "buff": null
+      "buff": "buff.to_be_continued"
     }
   ]
 }

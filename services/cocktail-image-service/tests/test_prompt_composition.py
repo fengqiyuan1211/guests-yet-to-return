@@ -37,7 +37,7 @@ class PromptCompositionTests(unittest.TestCase):
         for marker in ("FEW-SHOT", "TARGET RECIPE", "TARGET VISUAL BRIEF", "INPUT IMAGE ROLES", "example_id", "sku_", "{", "}"):
             self.assertNotIn(marker, bundle.prompt)
         self.assertNotIn(self.fixture["recipe"]["id"], bundle.prompt)
-        self.assertEqual(PROMPT_VERSION, "diy-cocktail-serving-constraints-v3")
+        self.assertEqual(PROMPT_VERSION, "diy-cocktail-handdrawn-v4")
 
     def test_single_glass_and_uniform_white_are_the_first_and_last_priorities(self):
         bundle = self.bundle(self.request())
@@ -151,7 +151,7 @@ class PromptCompositionTests(unittest.TestCase):
                 self.assertIn("采用温和自然的默认光感", bundle.prompt)
                 self.assertEqual(len(bundle.images), 2)
                 self.assertEqual(bundle.metadata["style_id"], "saloon-cocktail-cutout-v1")
-                self.assertIn("二维手绘水粉与水彩风", bundle.prompt)
+                self.assertIn("钢笔淡彩与彩铅手绘插画风", bundle.prompt)
 
 
 if __name__ == "__main__":

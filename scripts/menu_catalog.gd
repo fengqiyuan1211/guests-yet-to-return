@@ -139,6 +139,8 @@ func _finished_recipes() -> Array:
 		recipe["ingredients"] = ingredients
 		recipe["ice"] = ice
 		result.append(recipe)
+	for record: Dictionary in preload("res://scripts/research_data.gd").config().get("legendary_recipes", []):
+		result.append(record.duplicate(true))
 	if temporary:
 		database.free()
 	return result
@@ -222,6 +224,12 @@ func get_recipe(id: String) -> Dictionary:
 		return {}
 	var recipe: Dictionary = _by_id[id].duplicate(true)
 	recipe["unlocked"] = unlocked_ids.has(id)
+	var supplies:=get_node_or_null("/root/Supplies")
+	if supplies != null and recipe.get("unlock_kind") == "legendary_mastery":
+		var picture: Dictionary=supplies.workbench.get("research", {}).get("legendary_images", {}).get(id,{})
+		if not picture.is_empty():
+			recipe.image_path=picture.path
+			recipe.thumbnail=picture.path
 	return recipe
 
 func unlock_recipe(id: String) -> bool:

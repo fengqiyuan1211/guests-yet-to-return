@@ -15,14 +15,14 @@ static func resolve(result: Dictionary, actual: Dictionary, config: Dictionary) 
 		return answer
 	var registry: Dictionary = {}
 	for item: Variant in config.buffs:
-		if not item is Dictionary or not item.get("id") is String or item.get("kind") != "ordinary" or item.get("namespace") not in ["mouthfeel", "flavor"] or not item.get("tag") is String or registry.has(item.id):
+		if not item is Dictionary or not item.get("id") is String or item.get("kind") not in ["ordinary", "legendary"] or item.get("namespace") not in ["mouthfeel", "flavor", "theme"] or not item.get("tag") is String or registry.has(item.id):
 			answer.status = "data_incomplete"
 			answer.inactive.append({"id":"", "reason":"invalid_buff_definition"})
 			return answer
 		registry[item.id] = item
 	var recipe: Dictionary = result.get("recipe", {})
 	var recipe_id := str(recipe.get("id", ""))
-	if recipe_id not in CLASSICS or not config.recipes.has(recipe_id):
+	if (recipe_id not in CLASSICS and recipe_id != "childhood_keepsake") or not config.recipes.has(recipe_id):
 		answer.inactive.append({"id":"", "reason":"recipe_not_authorized"})
 		return answer
 	var authorization: Variant = config.recipes[recipe_id]
@@ -33,7 +33,7 @@ static func resolve(result: Dictionary, actual: Dictionary, config: Dictionary) 
 	var quality: Dictionary = result.get("evaluation", {})
 	var reason := ""
 	if actual.get("status") != "complete": reason = "data_incomplete"
-	elif recipe.get("source_kind") != "menu_catalog": reason = "recipe_source_not_authorized"
+	elif recipe.get("source_kind") != authorization.get("source_kind", "menu_catalog"): reason = "recipe_source_not_authorized"
 	elif recipe.get("version") not in authorization.allowed_versions or quality.get("recipe_version") != recipe.get("version"): reason = "recipe_version_not_authorized"
 	elif quality.get("tier") != "perfect" or not _number(quality.get("score")) or float(quality.score) < 95 or float(quality.score) > 100: reason = "quality_not_perfect"
 	var seen: Dictionary = {}
@@ -57,6 +57,6 @@ static func resolve(result: Dictionary, actual: Dictionary, config: Dictionary) 
 			var trace: Dictionary = quality.get("trace", {})
 			if not _number(trace.get("carbonated")) or not _number(trace.get("flat")): failure = "missing_state"
 			elif carbonated <= 0 or float(trace.carbonated) <= 0 or float(trace.flat) > 0: failure = "bubbles_absent"
-		if failure.is_empty(): answer.active.append({"id":id, "kind":"ordinary", "name":definition.get("name", definition.tag), "recipe_id":recipe_id, "recipe_version":recipe.version})
+		if failure.is_empty(): answer.active.append({"id":id, "kind":definition.kind, "effect_status":definition.get("effect_status", "active"), "name":definition.get("name", definition.tag), "recipe_id":recipe_id, "recipe_version":recipe.version})
 		else: answer.inactive.append({"id":id, "reason":failure})
 	return answer

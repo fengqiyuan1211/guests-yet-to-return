@@ -113,6 +113,11 @@ func _profile_valid(profile: Dictionary) -> bool:
 
 func _valid_saved_state(data: Variant) -> bool:
 	if not data is Dictionary or data.get("version") != 1 or not data.get("active") is Dictionary or not data.get("deliveries") is Dictionary or not data.get("last_drinks") is Dictionary: return false
+	var memory: Variant = data.get("memory_dialogue", {})
+	if not memory is Dictionary: return false
+	for key in ["intro_step", "reward_step"]:
+		if not _number(memory.get(key, 0), 0, 2) or float(memory.get(key, 0)) != floor(float(memory.get(key, 0))): return false
+	if not memory.get("reward_seen", false) is bool or not memory.get("reward_visit_id", "") is String: return false
 	var active: Dictionary = data.active
 	if not active.is_empty():
 		for key in ["id", "guest_id", "delivery_id"]:
@@ -311,11 +316,52 @@ func _visit_story_completed() -> bool:
 func memory_summary() -> Dictionary:
 	return MemoryProgress.summarize(StoryDialogue.progress.get("stick", {}), state.deliveries)
 
-func can_award_memory(visit_id: String) -> bool:
+func _memory_reception_ready() -> bool:
+	if not writable or state.active.get("guest_id") != "stick" or str(state.active.get("id", "")).is_empty(): return false
+	if StoryDialogue.guest_id != "stick" or StoryDialogue.phase != "idle": return false
 	var record := current_record()
-	return (writable and not visit_id.is_empty() and state.active.get("id") == visit_id
-		and state.active.get("guest_id") == "stick" and StoryDialogue.guest_id == "stick" and StoryDialogue.phase == "idle"
-		and not record.is_empty() and record.status == "settled" and record.feedback.done and memory_summary().eligible)
+	# Eligibility belongs to the five story cups. A later reunion needs no sixth purchase.
+	if record.is_empty(): return state.active.get("order", {}).is_empty()
+	return record.status == "settled" and record.feedback.done and not record.feedback.pending
+
+func can_award_memory(visit_id: String) -> bool:
+	return (_memory_reception_ready() and not visit_id.is_empty()
+		and state.active.get("id") == visit_id and memory_summary().eligible)
+
+func memory_dialogue_kind() -> String:
+	if not _memory_reception_ready() or not memory_summary().eligible: return ""
+	var owned: bool = WorkbenchSession.research_state().get("story_items", {}).has("item_recipe_after_school")
+	if owned: return "" if state.get("memory_dialogue", {}).get("reward_seen", false) else "reward"
+	return "invitation"
+
+func memory_dialogue_step(kind: String) -> int:
+	return int(state.get("memory_dialogue", {}).get("reward_step" if kind == "reward" else "intro_step", 0))
+
+func advance_memory_dialogue(kind: String, expected_step: int) -> bool:
+	if kind not in ["invitation", "reward"] or memory_dialogue_kind() != kind: return false
+	if expected_step != memory_dialogue_step(kind) or expected_step >= 2: return false
+	var previous := state.duplicate(true)
+	if not state.has("memory_dialogue"): state.memory_dialogue = {}
+	state.memory_dialogue["reward_step" if kind == "reward" else "intro_step"] = expected_step + 1
+	if not _write():
+		state = previous
+		return false
+	return true
+
+func finish_memory_reward() -> bool:
+	if memory_dialogue_kind() != "reward" or memory_dialogue_step("reward") != 2: return false
+	var previous := state.duplicate(true)
+	state.memory_dialogue.reward_seen = true
+	state.memory_dialogue.reward_visit_id = str(state.active.id)
+	if not _write():
+		state = previous
+		return false
+	return true
+
+func memory_farewell_active() -> bool:
+	var memory: Dictionary = state.get("memory_dialogue", {})
+	return (memory.get("reward_seen", false) and not str(state.active.get("id", "")).is_empty()
+		and memory.get("reward_visit_id", "") == state.active.get("id"))
 
 func memory_match_context() -> Dictionary:
 	var visit_id := str(state.active.get("id", ""))

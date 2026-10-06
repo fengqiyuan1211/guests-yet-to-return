@@ -5,7 +5,6 @@ const ENTRY_PREVIEW := preload("res://scenes/entry_preview.tscn")
 const DESIGN_SIZE := Vector2(1600, 900)
 var service_started := false
 var active_page: Control
-var previous_focus: Control
 var guest_profile: Dictionary = {}
 var dialogue_index := 0
 var guest_count := 0
@@ -17,6 +16,9 @@ var _dialogue_press_revision := -1
 var _dialogue_pointer := -2
 var _memory_invitation_declined := false
 var _memory_inviting := false
+var _memory_match_started := false
+var _memory_paper: Control
+var _memory_lines: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/story_dialogues/stick/memory_event.json"))
 
 func _ready() -> void:
 	Navigation.register_page(&"drink_selection", preload("res://scenes/drink_selection.tscn"))
@@ -139,6 +141,9 @@ func _on_business_closed(completed_day: int) -> void:
 		Navigation.go_to(&"home")
 
 func _show_closed_state(just_closed: bool, completed_day: int) -> void:
+	_memory_inviting = false
+	_memory_invitation_declined = false
+	_memory_match_started = false
 	var arrivals := guest_count
 	CustomerService.end_guest()
 	StoryDialogue.end_guest()
@@ -179,7 +184,7 @@ func _on_fast_forward_changed(_active: bool) -> void:
 	_sync_service_controls()
 
 func _sync_service_controls() -> void:
-	%OpenButton.disabled = TimeManager.fast_forwarding or CustomerService.has_delivery()
+	%OpenButton.disabled = TimeManager.fast_forwarding or CustomerService.has_delivery() or _memory_inviting
 	if TimeManager.fast_forwarding:
 		%OpenButton.text = "时钟快转中…"
 		%ShiftStatus.text = "快进至 20:00"
@@ -199,11 +204,8 @@ func _on_next_guest_pressed() -> void:
 		on_drink_served()
 
 func _memory_invitation_available() -> bool:
-	var record := CustomerService.current_record()
 	return (not _memory_invitation_declined and guest_profile.get("id") == "stick"
-		and CustomerService.memory_summary().eligible
-		and not WorkbenchSession.research_state().get("story_items", {}).has("item_recipe_after_school")
-		and not record.is_empty() and record.status == "settled" and record.feedback.done)
+		and not CustomerService.memory_dialogue_kind().is_empty())
 
 func _maybe_offer_memory() -> void:
 	if Navigation.current_route == &"home" and not _memory_inviting and _memory_invitation_available(): _show_memory_invitation()
@@ -211,36 +213,69 @@ func _maybe_offer_memory() -> void:
 func _show_memory_invitation() -> void:
 	if Navigation.current_route != &"home" or not _memory_invitation_available(): return
 	_memory_inviting = true
+	_dialogue_press_revision = -1
 	_clear_story_choices()
 	_layout_dialogue(true)
-	%GuestSpeech.text = "对了。以前那一局还没打完。你想不想[b]陪我打一局羽毛球[/b]？赢了，我把[b]《童年拾忆》那张旧酒单[/b]给你。"
+	_sync_service_controls()
 	%TalkButton.hide()
 	%GuestTags.hide()
+	%OrderKicker.hide()
+	%NoteOrder.hide()
 	%NextGuestButton.disabled = true
+	var kind := CustomerService.memory_dialogue_kind()
+	var step := CustomerService.memory_dialogue_step(kind)
+	var lines: Array = _memory_lines.reward if kind == "reward" else _memory_lines.intro
+	var panel: Control = find_child("GuestDialogue", true, false)
+	panel.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if step < 2 else Control.CURSOR_ARROW
+	if step < 2:
+		%GuestSpeech.text = str(lines[step])
+		return
 	story_choices.show()
-	for item in [["来吧，球拍给我。", true], ["下次再打，你先歇歇。", false]]:
-		var button := Button.new()
-		button.text = item[0]
-		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.custom_minimum_size = Vector2(0, 68)
-		button.add_theme_font_size_override("font_size", 18)
-		button.focus_mode = Control.FOCUS_NONE
-		for style in ["normal", "hover", "pressed"]: button.add_theme_stylebox_override(style, %NextGuestButton.get_theme_stylebox(style))
-		button.pressed.connect(func():
-			if item[1]:
-				var context := CustomerService.memory_match_context()
-				if context.mode != "story":
-					_memory_inviting = false
-					_render_dialogue()
-					return
-				Navigation.memory_match_context = context
-				Navigation.go_to(&"stick_badminton")
-			else:
-				_memory_invitation_declined = true
-				_memory_inviting = false
-				_render_dialogue()
-		)
-		story_choices.add_child(button)
+	if kind == "reward":
+		%GuestSpeech.text = str(_memory_lines.received.text)
+		_memory_choice(str(_memory_lines.received.accept), _finish_memory_reward)
+		_memory_choice(str(_memory_lines.received.inspect), _inspect_memory_paper)
+	else:
+		%GuestSpeech.text = str(_memory_lines.invitation.text)
+		_memory_choice(str(_memory_lines.invitation.accept), _accept_memory_invitation)
+		_memory_choice(str(_memory_lines.invitation.decline), _decline_memory_invitation)
+
+func _memory_choice(text: String, action: Callable) -> void:
+	var button := Button.new()
+	button.text = text
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.custom_minimum_size = Vector2(0, 68)
+	button.add_theme_font_size_override("font_size", 18)
+	button.focus_mode = Control.FOCUS_NONE
+	for style in ["normal", "hover", "pressed"]: button.add_theme_stylebox_override(style, %NextGuestButton.get_theme_stylebox(style))
+	button.pressed.connect(action)
+	story_choices.add_child(button)
+
+func _accept_memory_invitation() -> void:
+	if not _memory_inviting or CustomerService.memory_dialogue_kind() != "invitation": return
+	var context := CustomerService.memory_match_context()
+	if context.mode != "story": return
+	_memory_match_started = true
+	Navigation.memory_match_context = context
+	Navigation.go_to(&"stick_badminton")
+
+func _decline_memory_invitation() -> void:
+	_memory_invitation_declined = true
+	_memory_inviting = false
+	_render_dialogue()
+	_sync_service_controls()
+
+func _inspect_memory_paper() -> void:
+	if is_instance_valid(_memory_paper): return
+	_memory_paper = preload("res://scripts/memory_recipe_paper.gd").new()
+	_memory_paper.name = "MemoryRewardPaper"
+	add_child(_memory_paper)
+
+func _finish_memory_reward() -> void:
+	if not CustomerService.finish_memory_reward(): return
+	_memory_inviting = false
+	_render_dialogue()
+	_sync_service_controls()
 
 func _on_guest_spawned(profile: Dictionary) -> void:
 	guest_profile = profile
@@ -268,6 +303,10 @@ func _on_guest_spawned(profile: Dictionary) -> void:
 	_update_bottom_status()
 
 func _on_talk_pressed() -> void:
+	if _memory_inviting:
+		var kind := CustomerService.memory_dialogue_kind()
+		if CustomerService.advance_memory_dialogue(kind, CustomerService.memory_dialogue_step(kind)): _show_memory_invitation()
+		return
 	if not _can_advance_dialogue():
 		return
 	StoryDialogue.continue_talking()
@@ -292,6 +331,10 @@ func _setup_dialogue_input() -> void:
 	%GuestSpeech.add_theme_font_override("bold_font", bold)
 
 func _can_advance_dialogue() -> bool:
+	if _memory_inviting:
+		var kind := CustomerService.memory_dialogue_kind()
+		return Navigation.current_route == &"home" and not kind.is_empty() and CustomerService.memory_dialogue_step(kind) < 2 and not is_instance_valid(_memory_paper)
+	if CustomerService.memory_farewell_active(): return false
 	var record := CustomerService.current_record()
 	var resumed_story: bool = (not record.is_empty() and record.feedback.done
 		and record.feedback.get("story_resumed", false) and StoryDialogue.phase == "story")
@@ -366,11 +409,15 @@ func _render_dialogue() -> void:
 	if guest_profile.is_empty() or StoryDialogue.guest_id != str(guest_profile.id):
 		return
 	if _memory_inviting and Navigation.current_route == &"home": return
+	call_deferred("_maybe_offer_memory")
 	var record := CustomerService.current_record()
 	var resumed_story: bool = (not record.is_empty() and record.feedback.done
 		and record.feedback.get("story_resumed", false) and StoryDialogue.phase == "story")
 	if CustomerService.has_delivery() and not resumed_story:
 		_render_customer_feedback()
+		if CustomerService.memory_farewell_active():
+			%GuestSpeech.text = str(_memory_lines.farewell)
+			_clear_story_choices()
 		return
 	var known := StoryDialogue.is_known(str(guest_profile.id))
 	%GuestName.text = guest_profile.name if known else "？"
@@ -382,7 +429,7 @@ func _render_dialogue() -> void:
 	_clear_story_choices()
 	%NextGuestButton.disabled = CustomerService.has_delivery()
 	_layout_dialogue(StoryDialogue.phase == "story")
-	%GuestSpeech.text = StoryDialogue.speech
+	%GuestSpeech.text = str(_memory_lines.farewell) if CustomerService.memory_farewell_active() else StoryDialogue.speech
 	%GuestTags.text = StoryDialogue.progress_label()
 	%GuestTags.visible = not %GuestTags.text.is_empty()
 	%OrderKicker.hide()
@@ -556,14 +603,16 @@ func _on_route_requested(route_id: StringName) -> void:
 		%HomeButton.add_theme_stylebox_override("normal", selected_navigation_style)
 	if route_id == &"home":
 		%HomeContent.visible = true
-		if _memory_inviting:
-			_memory_inviting = false
-			_memory_invitation_declined = true # A returned match must not immediately invite again.
-			_render_dialogue()
-		if is_instance_valid(previous_focus) and previous_focus.is_inside_tree() and previous_focus.is_visible_in_tree():
-			previous_focus.grab_focus()
+		if _memory_match_started:
+			_memory_match_started = false
+			_memory_invitation_declined = false
+		_memory_inviting = false
+		_render_dialogue()
+		_sync_service_controls()
+		call_deferred("_maybe_offer_memory")
+		var focused := get_viewport().gui_get_focus_owner()
+		if is_instance_valid(focused): focused.release_focus()
 		return
-	previous_focus = get_viewport().gui_get_focus_owner()
 	%HomeContent.visible = route_id in [&"slots", &"codex", &"menu", &"settings", &"backpack"]
 	if route_id in [&"codex", &"menu"]:
 		for node in %HomeContent.get_children():

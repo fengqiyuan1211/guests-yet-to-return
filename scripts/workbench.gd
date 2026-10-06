@@ -862,11 +862,15 @@ func _result() -> void:
 		if data.mode=="research_diy":
 			_button(p,Rect2(40,697,240,44),"查看我的配方" if saved else "命名并保存配方",_research_library if saved else _save_research_dialog,true)
 		else:
-			_text(p,Rect2(35,697,410,46),"研习成功 · 已掌握" if data.result.get("research_success",false) else "尚未完美 · 可查看依据后重试",20,INK)
+			if data.result.get("research_success",false):
+				_button(p,Rect2(35,697,410,44),"已掌握 · 生成手绘酒图",_save_research_dialog,true)
+			else: _text(p,Rect2(35,697,410,46),"尚未完美 · 可查看依据后重试",20,INK)
 		_button(p,Rect2(475,697,235,44),"另起一杯",func():
 			if _issue("start"): _clear_modal()
 		)
-		_button(p,Rect2(730,697,245,44),"返回研发室",func(): Navigation.go_to(&"research"))
+		_button(p,Rect2(730,697,245,44),"返回研发室",func():
+			Navigation.research_view="legendary" if data.mode=="research_legendary" else "entry"
+			Navigation.go_to(&"research"))
 		pending_confirm=_research_library if saved else (_save_research_dialog if data.mode=="research_diy" else _result_details)
 		return
 	if _service_cup():
@@ -884,36 +888,16 @@ func _research_library() -> void:
 	Navigation.research_view="library"
 	Navigation.go_to(&"research")
 
+var image_dialog: Control
+
 func _save_research_dialog() -> void:
-	var p:=_dialog("为这次试调留一页配方",650,1000)
-	_text(p,Rect2(35,77,930,58),"保存实际成品用量；洒漏与容器余量不会写入配方。\n请补充你想复现的顺序、技法和时长。",20)
-	_text(p,Rect2(35,157,180,36),"酒名（必填）",21)
-	var title:=LineEdit.new()
-	title.name="ResearchRecipeName"
-	title.position=Vector2(220,154)
-	title.size=Vector2(720,44)
-	title.max_length=40
-	p.add_child(title)
-	_text(p,Rect2(35,217,180,36),"英文名（可选）",21)
-	var english:=LineEdit.new()
-	english.position=Vector2(220,214)
-	english.size=Vector2(720,44)
-	english.max_length=70
-	p.add_child(english)
-	_text(p,Rect2(35,282,180,36),"复做笔记",21)
-	var memo:=TextEdit.new()
-	memo.position=Vector2(220,278)
-	memo.size=Vector2(720,218)
-	memo.placeholder_text="例如：先加入金酒和果汁，摇和后过滤，再加苏打水……（最多500字）"
-	memo.wrap_mode=TextEdit.LINE_WRAPPING_BOUNDARY
-	p.add_child(memo)
-	var feedback:=_text(p,Rect2(40,515,900,40),"保存到图鉴 DIY 分类，不自动上架；不重复扣灵感。",19)
-	_button(p,Rect2(220,573,270,46),"保存配方",func():
-		if _issue("save_research",{"name":title.text,"english_name":english.text,"notes":memo.text}): _result()
-		else: feedback.text=WorkbenchSession.last_error
-	,true)
-	_button(p,Rect2(515,573,270,46),"返回成品",_result)
-	title.grab_focus()
+	if is_instance_valid(image_dialog): return
+	var editor:=preload("res://scripts/research_image_dialog.gd").new()
+	image_dialog=editor
+	editor.session=data.duplicate(true)
+	add_child(editor)
+	editor.saved.connect(func(): _result())
+
 
 func _result_details() -> void:
 	var p:=_dialog("这一杯的评价依据",700,1020)
@@ -1000,6 +984,7 @@ func _log() -> void:
 	scroll.add_child(label)
 
 func _input(event: InputEvent) -> void:
+	if is_instance_valid(image_dialog): return
 	if is_instance_valid(external_page): return
 	var focus:=get_viewport().gui_get_focus_owner()
 	if focus is LineEdit or focus is TextEdit:

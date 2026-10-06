@@ -336,6 +336,7 @@ func recipe_snapshot(reference: Dictionary) -> Dictionary:
 			result.ingredients[material] = float(result.ingredients.get(material,0))+float(quantity)
 	result.practice_only = false
 	result.source_kind = "menu_catalog"
+	if reference.get("unlock_kind") == "legendary_mastery": result.source_kind = "research_legendary"
 	# Content hash is a revision identifier when the catalog has no numbered version.
 	result.version = reference.get("version", JSON.stringify(reference).sha256_text())
 	# Normalize numeric types to the same JSON representation used by saved cups.
@@ -488,6 +489,8 @@ func load_state() -> bool:
 	if not data.has("table_materials"): data.table_materials=[]
 	# Repair the obsolete Gin & Tonic cup judgement, including saved results.
 	var repaired:=_repair_gin_tonic_evaluations(data)
+	if not data.has("research"): data.research=Research.fresh()
+	repaired=Research.acquire_owned_recipes(data.research) or repaired
 	# Preserve actual cups, recipes and inventory; only the derived evaluation changes.
 	if repaired or not Supplies.workbench_initialized or Supplies.workbench.get("schema")!=2:
 		if not Supplies.commit_workbench(data):
@@ -562,10 +565,19 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 		if not next.research.has("story_items"): next.research.story_items={}
 		if payload.outcome=="win" and payload.get("mode") == "story" and not next.research.story_items.has(rules.ITEM_ID):
 			next.research.story_items[rules.ITEM_ID]={"owned":true,"unlocked":true,"quantity":1,"awarded_by":match_id}
+		Research.acquire_owned_recipes(next.research)
 	elif kind=="grant_legendary":
 		var ref:=Research.legendary(str(payload.get("recipe_id","")))
 		if ref.is_empty(): return _error("没有这份传说配方，等待剧情配方接入。")
-		next.research.acquired[ref.id]=id
+		Research.acquire_owned_recipes(next.research)
+		if not next.research.acquired.has(ref.id): return _error("请先从小线手中收下这份酒单。")
+	elif kind=="save_legendary_image":
+		if s.get("id")!=session_id or s.get("mode")!="research_legendary" or s.get("status")!="finished" or not s.result.get("research_success",false): return _error("请先完美研习这份传说酒单。")
+		var picture: Dictionary=payload.get("image",{})
+		if not Research.valid_image(picture,true) or picture.source_drink_id!=s.result.drink_id: return _error("酒图尚未生成，或不属于这一杯。")
+		if not next.research.has("legendary_images"): next.research.legendary_images={}
+		next.research.legendary_images[s.recipe.id]=picture.duplicate(true)
+		s.result.image_path=picture.path
 	elif kind=="save_research":
 		if s.get("id")!=session_id or s.get("mode")!="research_diy" or s.get("status")!="finished": return _error("请先完成一杯 DIY 试调。")
 		var drink: String=s.result.drink_id
@@ -577,9 +589,16 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 		var english:=str(payload.get("english_name","")).strip_edges()
 		var memo:=str(payload.get("notes","")).strip_edges()
 		if title.is_empty() or title.length()>40 or english.length()>70 or memo.length()>500: return _error("请填写酒名（最多40字）；英文名最多70字，笔记最多500字。")
+		var picture: Dictionary=payload.get("image",{})
+		if not Research.valid_image(picture,true) or picture.source_drink_id!=drink: return _error("请先生成并确认这一杯的酒图，再保存成品。")
+		s.result.image_path=picture.path
 		next.research.serial+=1
 		var recipe_id:="diy_%d" % int(next.research.serial)
 		var record:=_research_record(s,recipe_id,title,english,memo)
+		record.image_path=picture.path
+		record.thumbnail=picture.path
+		record.image_generation=picture.duplicate(true)
+		record.story=str(payload.get("story",memo)).left(1000)
 		next.research.recipes[recipe_id]=record
 		next.research.saved_drinks[drink]=recipe_id
 	elif kind=="begin_research":
@@ -813,6 +832,8 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 				s.result = {"liquid_profiles":s.liquid_profiles.duplicate(true),"liquid_model":s.liquid_model.duplicate(true),"evaluation":evaluation,"drink_id": s.id + "-drink", "guest":s.get("guest",{}).duplicate(true), "recipe": s.recipe.duplicate(true), "contents": s.vessels.glass.duplicate(true), "cup":s.cup,"capacity_ml":capacity(s,"glass"), "withdrawn": s.withdrawn.duplicate(true), "waste": waste, "actions": s.actions.duplicate(true), "consumed":s.get("consumed",{}).duplicate(true), "sales": false}
 				if s.has("sensory_model"): s.result.sensory_model=s.sensory_model.duplicate(true)
 				if s.has("draft"): s.result.draft=s.draft.duplicate(true)
+				if s.recipe.get("id") == "childhood_keepsake" and s.recipe.get("source_kind") == "research_legendary" and s.result.evaluation.get("tier") == "perfect":
+					s.result["legendary_buff"] = s.recipe.get("buff", {}).duplicate(true)
 				if s.mode=="research_legendary":
 					if not next.research.acquired.has(s.recipe.id): return _error("未找到这份传说配方的获得记录，请保留试调并检查存档。")
 					s.result.research_success=evaluation.tier=="perfect"

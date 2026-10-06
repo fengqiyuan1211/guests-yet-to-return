@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "version": "cocktail-buffs-playtest-1",
+  "version": "cocktail-buffs-playtest-2",
   "required_quality_tier": "perfect",
   "buffs": [
     {
@@ -110,6 +110,14 @@
       "name": "微苦",
       "namespace": "mouthfeel",
       "tag": "微苦"
+    },
+    {
+      "id": "buff.to_be_continued",
+      "kind": "legendary",
+      "name": "未完待续",
+      "namespace": "theme",
+      "tag": "怀旧",
+      "effect_status": "reserved"
     }
   ],
   "recipes": {
@@ -153,7 +161,13 @@
         "buff.full_bodied",
         "buff.gently_bitter"
       ]
+    },
+    "childhood_keepsake": {
+      "buff_ids": [
+        "buff.to_be_continued"
+      ],
+      "source_kind": "research_legendary"
     }
   },
-  "source_note": "读取已存在的经典酒风味与口感标签。只授予通过实际完美工艺检查的配方Buff；展示描述词不参与授予，传奇效果暂不启用。"
+  "source_note": "经典酒完美工艺获得普通 Buff；童年拾忆完美出品显示金色传说 Buff，具体加成未启用。"
 }

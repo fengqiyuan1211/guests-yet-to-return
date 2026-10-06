@@ -27,12 +27,16 @@ static func valid(value: Variant) -> bool:
 		if id != preload("res://scripts/stick_memory_rules.gd").ITEM_ID or not item is Dictionary: return false
 		if item.get("owned") != true or item.get("unlocked") != true or item.get("quantity") != 1 or not item.get("awarded_by") is String: return false
 		if not value.get("memory_matches", {}).has(item.awarded_by) or value.memory_matches[item.awarded_by].outcome != "win": return false
+	if not value.get("legendary_images", {}) is Dictionary: return false
+	for image_record in value.get("legendary_images", {}).values():
+		if not valid_image(image_record): return false
 	for id in value.recipes:
 		var r: Variant = value.recipes[id]
 		if not id is String or not r is Dictionary or r.get("id") != id or not id.begins_with("diy_"): return false
 		if not r.get("name") is String or r.name.is_empty() or r.name.length() > 40: return false
 		if not r.get("english_name") is String or r.english_name.length() > 70 or not r.get("notes") is String or r.notes.length() > 500: return false
 		if not whole(r.get("version")) or r.version < 1 or not r.get("drink_id") is String or not r.get("result") is Dictionary: return false
+		if r.has("image_generation") and not valid_image(r.image_generation): return false
 		if not r.get("ingredients") is Array or not r.get("instructions") is Array: return false
 		if not r.get("attributes") is Dictionary or not r.get("model_version") is String: return false
 		for attr in ATTRS:
@@ -109,3 +113,26 @@ static func legendary(id: String) -> Dictionary:
 	for r in config().legendary_recipes:
 		if r.get("id")==id: return r.duplicate(true)
 	return {}
+
+static func acquire_owned_recipes(research: Dictionary) -> bool:
+	var updated := false
+	for recipe: Dictionary in config().get("legendary_recipes", []):
+		var item: Dictionary = research.get("story_items", {}).get(recipe.get("source_item_id", ""), {})
+		var match_record: Dictionary = research.get("memory_matches", {}).get(item.get("awarded_by", ""), {})
+		if item.get("owned", false) and match_record.get("outcome") == "win" and match_record.get("mode") == "story" and not research.acquired.has(recipe.id):
+			research.acquired[recipe.id] = str(item.awarded_by)
+			updated = true
+	return updated
+
+static func valid_image(value: Variant, require_file := false) -> bool:
+	if not value is Dictionary or not value.get("path") is String or not value.get("source_drink_id") is String or not value.get("task_id") is String: return false
+	var path: String=value.path
+	if not path.begins_with("user://diy_cocktails/images/") or ".." in path or not path.ends_with(".png"): return false
+	return not require_file or (value.get("confirmed",false) and FileAccess.file_exists(path) and Image.load_from_file(path) != null)
+
+static func preview_result(recipe: Dictionary) -> Dictionary:
+	if recipe.has("result"): return recipe.result.duplicate(true)
+	var liquids: Dictionary={}
+	for row: Dictionary in recipe.get("ingredients",[]):
+		if row.get("inventory_unit")=="ml": liquids[row.sku_id]=row.inventory_amount
+	return {"image_path":recipe.get("image_path",""),"cup":"highball","capacity_ml":350,"contents":{"contents":liquids,"ice":"cube","ice_batches":[{"kind":"cube","volume":100,"mass_g":100,"pieces":8}],"garnishes":["sku_cocktail_cherry"]}}

@@ -65,7 +65,7 @@
       "reference_role": "demonstrate_style_and_recipe_to_visible_serving_facts_not_a_target_recipe"
     },
     "image_file": "config/reference_images/last_word.png",
-    "image_sha256": "f09c8fb5bc8569f37d421be6ce6680337db26f3dd238551622e2052c0945e892",
+    "image_sha256": "28a55d2de697c2537227bcf223ccb6750d91074e13e2b7656f183beea64014b1",
     "source": {
       "catalog_record_id": "last_word",
       "source_code": "A1",
@@ -166,7 +166,7 @@
       "reference_role": "demonstrate_style_and_recipe_to_visible_serving_facts_not_a_target_recipe"
     },
     "image_file": "config/reference_images/mojito.png",
-    "image_sha256": "d179b8882e8d039437b1400c9235e5e95e8099748076ad1ddc2aa068b560b7ac",
+    "image_sha256": "6545a63f20e6bcac339622c0430313d355ef272a601985f8857698520821cbc7",
     "source": {
       "catalog_record_id": "mojito",
       "source_code": "A2",
@@ -237,7 +237,7 @@
       "reference_role": "demonstrate_style_and_recipe_to_visible_serving_facts_not_a_target_recipe"
     },
     "image_file": "config/reference_images/gin_and_tonic.png",
-    "image_sha256": "e8aa0d440f78821c3162502c337109db31570e193fea0b18a41e815b549e9be9",
+    "image_sha256": "44b0440171f4872872c3157c68d2892b7cee0cc224692fe20ddb82bcb431e137",
     "source": {
       "catalog_record_id": "gin_and_tonic",
       "source_code": "A3",
@@ -350,7 +350,7 @@
       "reference_role": "demonstrate_style_and_recipe_to_visible_serving_facts_not_a_target_recipe"
     },
     "image_file": "config/reference_images/long_island_iced_tea.png",
-    "image_sha256": "ee32590c9a45547c2945512ab50101c6c45c8665515b4b9630e711aca29f4e55",
+    "image_sha256": "154c66505e37fe221ae26e2f938d544e65ee293351f70a04996ea054175dce12",
     "source": {
       "catalog_record_id": "long_island_iced_tea",
       "source_code": "A4",
@@ -430,7 +430,7 @@
       "reference_role": "demonstrate_style_and_recipe_to_visible_serving_facts_not_a_target_recipe"
     },
     "image_file": "config/reference_images/manhattan.png",
-    "image_sha256": "770eca59c7d351a471b280580906ca4ad6f8b4cec7f208daa929d96aedb549a0",
+    "image_sha256": "344b842d5cbfbe9e049386a6f76cc18ef565c1b2240e268b8fc794cc79a12e77",
     "source": {
       "catalog_record_id": "manhattan",
       "source_code": "A5",

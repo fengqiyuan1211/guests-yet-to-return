@@ -104,11 +104,11 @@ func _header() -> void:
 
 func _left_column() -> void:
 	_texture(self, Rect2(142, 115, 302, 277), CocktailDatabase.get_image(str(recipe.id)))
-	if recipe.get("source_kind")=="diy":
+	if recipe.get("source_kind")=="diy" or recipe.get("unlock_kind")=="legendary_mastery":
 		var preview:=preload("res://scripts/workbench_drink_preview.gd").new()
 		preview.position=Vector2(142,115)
 		preview.size=Vector2(302,277)
-		preview.result=recipe.result
+		preview.result=preload("res://scripts/research_data.gd").preview_result(recipe)
 		preview.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		add_child(preview)
 	_label(self, Rect2(145, 397, 95, 32), "口感", 23)

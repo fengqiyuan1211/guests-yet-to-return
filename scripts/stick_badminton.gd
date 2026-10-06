@@ -306,26 +306,22 @@ func _result() -> void:
 	_label(p, Rect2(42, 22, 796, 58), title, 35, true)
 	_label(p, Rect2(100, 89, 680, 60), "%d : %d    最长 %d 拍" % [model.player_score, model.ai_score, model.longest_rally], 28, true)
 	var response := "“先说好，这分得算啊。下回你可别说我记错了。”\n再来一局，把下一分接回来？"
-	if won and story: response = "“行啊，这回算你赢。这张旧纸拿去，替我收好。”\n小线递来《童年拾忆》，纸面还留着空白。"
+	if won and story: response = "“行啊，最后这球接得好。回去坐会儿吧，我有样东西给你。”\n小线收起球拍，朝酒馆门口抬了抬头。"
 	elif won: response = "这一局练习，你先拿到了五分。\n剧情比赛获胜后，才会得到纪念纸《童年拾忆》。"
 	_label(p, Rect2(60, 168, 760, 92), response, 24, true)
 	var status := "比分记下了，下回接着打。" if saved else "比分还没记好，请再试一次。"
-	if won and story: status = "纪念纸《童年拾忆》已永久收进物品栏" if saved else "纪念纸还没收好，请再试一次。"
+	if won and story: status = "回到酒馆，听听小线接下来想说的话。" if saved else "比赛结果还没记好，请再试一次。"
 	elif not story and saved: status = "球拍放这儿，想打随时再来。"
 	result_status = _label(p, Rect2(70, 276, 740, 50), status, 25, true)
-	_button(p, Rect2(42, 365, 235, 60), "再打一局", _start)
 	if won and story:
-		_button(p, Rect2(300, 365, 280, 60), "看看纪念纸" if saved else "收好纪念纸", func():
-			if not _record_result():
-				result_status.text = "暂时没收好，请稍后再试。"
-				return
-			_recipe()
-		)
-	elif not saved:
-		_button(p, Rect2(300, 365, 280, 60), "保存比赛记录", func():
-			result_status.text = "比赛记录已保存。" if _record_result() else "暂时没保存好，请稍后再试。"
-		)
-	_button(p, Rect2(605, 365, 235, 60), "回到小线" if story else "回酒馆", _close)
+		_button(p, Rect2(250, 365, 380, 60), "回到酒馆，听小线说" if saved else "保存结果并回酒馆", _close)
+	else:
+		_button(p, Rect2(42, 365, 235, 60), "再打一局", _start)
+		if not saved:
+			_button(p, Rect2(300, 365, 280, 60), "保存比赛记录", func():
+				result_status.text = "比赛记录已保存。" if _record_result() else "暂时没保存好，请稍后再试。"
+			)
+		_button(p, Rect2(605, 365, 235, 60), "回到小线" if story else "回酒馆", _close)
 
 func _recipe() -> void:
 	if is_instance_valid(reward_paper): return
@@ -429,7 +425,15 @@ func _play_feedback() -> void:
 		point_audio.pitch_scale = 1.2 if model.point_winner == 0 else 0.84
 		point_audio.play()
 
+func can_close() -> bool:
+	if _story_match() and model.phase == "finished" and not recorded:
+		if not _record_result():
+			if is_instance_valid(result_status): result_status.text = "比赛结果还没记好，请再试一次。"
+			return false
+	return true
+
 func _close() -> void:
+	if not can_close(): return
 	if close_requested.get_connections().is_empty(): get_tree().change_scene_to_file("res://scenes/home.tscn")
 	else: close_requested.emit()
 

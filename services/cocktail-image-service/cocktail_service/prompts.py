@@ -11,7 +11,7 @@ from PIL import Image
 
 from .contracts import GLASSES, Request
 
-PROMPT_VERSION = "diy-cocktail-serving-constraints-v3"
+PROMPT_VERSION = "diy-cocktail-handdrawn-v4"
 
 # Approximate illustration proportions for the bowl/body, excluding any stem.
 # These guide drawings; they are not physical glassware standards or validators.
@@ -174,7 +174,7 @@ class PromptBuilder:
             f'制作方式的原始描述是{quoted(recipe["preparation"])}，仅用来理解混合、过滤或留杯状态，不画制作过程或工具。已知酒液量为 {appearance["liquid_volume_ml"]:g} ml，杯子参考容量为 {appearance["glass_capacity_art_hint_ml"]} ml；按比例安排液位，为所选出品冰留空间。不要把 dash 换算成未经提供的毫升量。',
             f"酒液的近似游戏美术色参考 RGB ({palette})，依据配方比例混合，保持自然透明感，不要荧光色或不透明色块。" + ("有细小自然气泡。" if appearance["sparkling"] else "不要自行添加气泡。"),
             "真实原料的外观依据是：" + " ".join(dict.fromkeys(appearance["ingredient_visual_hints"])) if appearance["ingredient_visual_hints"] else "",
-            "素材采用现有西部酒馆的精致二维手绘水粉与水彩风，玻璃比例可信，略高的正面三分之四视角，左上方温柔暖光，细微深棕轮廓和克制高光。纸感笔触只存在于酒杯和酒液内部，玻璃轮廓清晰可辨，不做强烈反光或三维渲染。",
+            "素材采用当前参考图的钢笔淡彩与彩铅手绘插画风：细而略有颤动的深棕墨线，少量重复勾线和排线，轻盈水彩铺色、留白与颗粒笔触。卡通化概括细节但保留可信杯型，略高的正面三分之四视角。不是写实产品摄影、光滑三维渲染或厚重油画；克制高光，不发光，不画奶油色纸底。纸感只留在杯与酒液的笔触中，杯外纯白便于转透明，单杯居中，底下没有名称、签名或文字。",
             "酒杯外所有区域必须是均匀纯白色，RGB (255, 255, 255)。背景没有纸纹、颜色渐变、棋盘格、桌面、投影或环境。画面中没有任何文字、数字、标注、标题、标签、表格、边框、水印、瓶子、人物或额外物品。以下描述只帮助你作画，不能变成画面里的文字。",
         ]
         allowed = constraints["allowed_visible_ingredients"]

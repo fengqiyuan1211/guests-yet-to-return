@@ -9,6 +9,7 @@ const MUTED := Color("79562f")
 const CREAM := Color("eed9b3")
 
 var sample_mode := false
+const PUBLISHED_STEP := 2
 var step := 0
 var selected: Array = []
 var design: Dictionary = {}
@@ -42,7 +43,8 @@ func _ready() -> void:
 	mouse_filter = MOUSE_FILTER_IGNORE
 	selected = MenuCatalog.entries.duplicate(true)
 	design = MenuCatalog.design.duplicate(true)
-	_load_idea()
+	step = 0 if selected.is_empty() else PUBLISHED_STEP
+	if selected.is_empty(): _load_idea()
 	recipes = MenuCatalog.unlocked_recipes()
 	MenuArt.generation_finished.connect(_art_received)
 	MenuArt.generation_failed.connect(_art_failed)
@@ -138,16 +140,61 @@ func _build() -> void:
 	add_child(body)
 	_panel(body, Rect2(250, 122, 1324, 734), Color("2c2018"), Color("aa7d46"))
 	_panel(body, Rect2(260, 132, 1304, 714), Color(0.14, 0.095, 0.065, 0.92), Color("65452c"))
-	_label(body, Rect2(288, 146, 750, 50), "今晚，上哪几杯？" if step == 0 else "为今晚写一张酒单", 34)
-	_label(body, Rect2(291, 198, 800, 27), "把拿手的几杯，留给远道而来的客人。" if step == 0 else "选一张旧纸，添几笔心意。", 17, Color("b59871"))
-	_label(body, Rect2(1138, 151, 370, 33), "① 选酒    ───    ② 制作酒单", 19, Color("d3b47c"))
+	var published := step == PUBLISHED_STEP
+	var heading := "今晚的酒单" if published else "今晚，上哪几杯？" if step == 0 else "为今晚写一张酒单"
+	var subtitle := "已经挂好的酒单，留给每一位远道而来的客人。" if published else "把拿手的几杯，留给远道而来的客人。" if step == 0 else "选一张旧纸，添几笔心意。"
+	_label(body, Rect2(288, 146, 750, 50), heading, 34)
+	_label(body, Rect2(291, 198, 800, 27), subtitle, 17, Color("b59871"))
+	if published:
+		var change := _button(body, Rect2(1260, 161, 276, 46), "重新选择酒款", _go_selection)
+		change.name = "ReselectMenu"
+	else:
+		_label(body, Rect2(1138, 151, 370, 33), "① 选酒    ───    ② 制作酒单", 19, Color("d3b47c"))
+		if not sample_mode and not MenuCatalog.entries.is_empty():
+			var cancel := _button(body, Rect2(1300, 192, 236, 34), "取消修改", _show_published)
+			cancel.name = "CancelMenuEdit"
 	if sample_mode:
 		_label(body, Rect2(1192, 188, 300, 27), "样张预览 · 不计入正式上架", 15, Color("c99e62"))
 	status = _label(body, Rect2(290, 809, 747, 28), "", 16, Color("cbb58f"))
-	if step == 0:
+	if step == PUBLISHED_STEP:
+		_build_published()
+	elif step == 0:
 		_build_selection()
 	else:
 		_build_editor()
+
+func _show_published() -> void:
+	if active_request >= 0:
+		MenuArt.cancel()
+		active_request = -1
+	# Reload the committed poster; abandoning an edit never publishes the draft.
+	drawing = null
+	sample_mode = false
+	selected = MenuCatalog.entries.duplicate(true)
+	design = MenuCatalog.design.duplicate(true)
+	recipes = MenuCatalog.unlocked_recipes()
+	query = ""
+	category = "全部"
+	step = 0 if selected.is_empty() else PUBLISHED_STEP
+	_build()
+
+func _build_published() -> void:
+	poster = Control.new()
+	poster.set_script(POSTER)
+	poster.name = "PublishedMenuPoster"
+	poster.position = Vector2(727, 237)
+	poster.size = Vector2(366, 549)
+	poster.drinks = _selected_drinks()
+	poster.design = design.duplicate(true)
+	poster.sample = false
+	body.add_child(poster)
+	drawing = poster.drawing
+	drawing.editable = false
+	var edit := _button(body, Rect2(945, 800, 189, 43), "调整样式", _go_editor)
+	edit.name = "EditMenuStyle"
+	_button(body, Rect2(1150, 800, 189, 43), "导出图片", _show_export)
+	_button(body, Rect2(1355, 800, 181, 43), "返回酒馆", func(): close_requested.emit())
+	_message("已上架 %d 款酒 · 酒款与售价沿用上次的选择。" % selected.size())
 
 func _build_selection() -> void:
 	var paper := _paper(body, Rect2(283, 237, 794, 549))
@@ -233,10 +280,10 @@ func _refresh_cards() -> void:
 
 func _add_drink_art(parent: Node, rect: Rect2, recipe: Dictionary) -> void:
 	var path: String = recipe.get("thumbnail", "")
-	if not path.is_empty() and ResourceLoader.exists(path):
+	if not path.is_empty() and (ResourceLoader.exists(path) or (path.begins_with("user://") and FileAccess.file_exists(path))):
 		var art := TextureRect.new()
 		art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		art.texture = load(path)
+		art.texture = ImageTexture.create_from_image(Image.load_from_file(path)) if path.begins_with("user://") else load(path)
 		art.position = rect.position
 		art.size = rect.size
 		art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -248,8 +295,9 @@ func _add_drink_art(parent: Node, rect: Rect2, recipe: Dictionary) -> void:
 	icon.position = rect.position
 	icon.size = rect.size
 	var id := str(recipe.id)
-	icon.kind = "highball" if id.contains("mojito") or id.contains("tonic") else ("coupe" if id.contains("margarita") or id.contains("sour") else "rocks")
+	icon.kind = "highball" if id.contains("mojito") or id.contains("tonic") or id == "childhood_keepsake" else ("coupe" if id.contains("margarita") or id.contains("sour") else "rocks")
 	icon.tint = Color("b5b76f") if icon.kind == "highball" else Color("d8aa62") if icon.kind == "coupe" else Color("bf7a37")
+	if id == "childhood_keepsake": icon.tint = Color("794124")
 	parent.add_child(icon)
 
 func _refresh_receipt() -> void:
@@ -348,6 +396,9 @@ func _load_idea() -> void:
 		design.ai_prompt = idea.style_prompt.left(600)
 
 func _leave_samples() -> void:
+	if not MenuCatalog.entries.is_empty():
+		_show_published()
+		return
 	sample_mode = false
 	step = 0
 	drawing = null
@@ -620,6 +671,7 @@ func _save() -> void:
 			return
 		_message("样张已保存，下次还可以接着画。")
 	elif MenuCatalog.save_menu(selected, design):
+		_show_published()
 		_message("今晚的酒单挂好了。")
 	else:
 		_message(MenuCatalog.last_error)
@@ -671,6 +723,8 @@ func _unhandled_key_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		if step == 1:
 			_go_selection()
+		elif step == 0 and not sample_mode and not MenuCatalog.entries.is_empty():
+			_show_published()
 		else:
 			close_requested.emit()
 		get_viewport().set_input_as_handled()

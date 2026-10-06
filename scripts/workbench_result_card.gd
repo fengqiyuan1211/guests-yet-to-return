@@ -43,6 +43,19 @@ func _ready() -> void:
 			_label(Rect2(28,503+i*29,920,28),"· "+str(evaluation.reasons[i]),18,Color("574332"))
 	_label(Rect2(28,599,922,26),"试玩参数 · 四项属性 0—100 · 酒感不等于 ABV · R 查看全部依据",16,Color("816b4d"))
 
+	if result.get("legendary_buff", {}).get("id") == "buff.to_be_continued":
+		var badge:=Panel.new()
+		badge.position=Vector2(754,369)
+		badge.size=Vector2(202,38)
+		var style:=StyleBoxFlat.new()
+		style.bg_color=Color("59402a")
+		style.border_color=Color("d6af54")
+		style.set_border_width_all(2)
+		style.set_corner_radius_all(5)
+		badge.add_theme_stylebox_override("panel",style)
+		add_child(badge)
+		_label(Rect2(758,370,194,36),"传说 · 未完待续",18,Color("f6d889"),true)
+
 func _label(rect: Rect2, text: String, size_px: int, color: Color, centered:=false) -> Label:
 	var label:=Label.new()
 	label.position=rect.position

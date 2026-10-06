@@ -7,6 +7,13 @@ const Garnish=preload("res://scripts/workbench_garnish.gd")
 var result: Dictionary={}
 var accent:=Color("dbb455")
 var clock:=0.0
+var saved_art: Texture2D
+
+func _ready() -> void:
+	var path:=str(result.get("image_path",""))
+	if path.begins_with("user://") and FileAccess.file_exists(path):
+		var picture:=Image.load_from_file(path)
+		if picture != null: saved_art=ImageTexture.create_from_image(picture)
 
 func _init() -> void:
 	texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -17,6 +24,10 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	if result.is_empty(): return
+	if saved_art != null:
+		var extent:=saved_art.get_size()*minf(size.x/saved_art.get_width(),size.y/saved_art.get_height())
+		draw_texture_rect(saved_art,Rect2((size-extent)*.5,extent),false)
+		return
 	var vessel: Dictionary=result.get("contents",{})
 	var cup:=str(result.get("cup","coupe"))
 	if cup=="rocks": cup="highball"

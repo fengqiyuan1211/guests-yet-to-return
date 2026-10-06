@@ -279,19 +279,51 @@ func _library() -> void:
 
 func _legendary() -> void:
 	var records: Array=Research.config().legendary_recipes
+	var state:=WorkbenchSession.research_state()
 	if records.is_empty():
-		_label(body,Rect2(20,20,1180,50),"等待一份特别的配方",31)
-		_label(body,Rect2(20,100,780,210),"获得配方 → 按配方研习 → 完美出品 → 掌握\n\n传说配方会通过剧情或道具获得。当前还没有接入正式传说配方。\n\n研习不消耗灵感，但实际原料仍会消耗。",24)
+		_label(body,Rect2(20,30,1100,100),"还没有收到特别的配方。",30)
+		return
+	var r: Dictionary=records[0]
+	var acquired: bool=state.acquired.has(r.id)
+	var mastered: bool=state.mastered.has(r.id)
+	if not acquired:
+		_label(body,Rect2(30,35,1050,55),"等一位客人留下他的酒单",32)
+		_label(body,Rect2(30,125,1000,100),"有些配方藏在客人的故事里。\n收到那张旧纸后，再来这里试着调一杯。",24)
 		_resume_button()
 		return
-	var rows:=_scroll(Rect2(10,0,1255,465))
-	var state:=WorkbenchSession.research_state()
-	for r in records:
-		var acquired: bool=state.acquired.has(r.id)
-		var status:="已掌握" if state.mastered.has(r.id) else ("待研习" if acquired else "未获得")
-		var button:=_button(rows,Rect2(0,0,1200,76),str(r.name)+" · "+status,func(): _begin("research_legendary",str(r.id)))
-		button.custom_minimum_size=Vector2(1180,76)
-		button.disabled=not acquired
+	var preview:=Preview.new()
+	preview.position=Vector2(0,5)
+	preview.size=Vector2(325,420)
+	var liquids: Dictionary={}
+	for row: Dictionary in r.ingredients:
+		if row.inventory_unit=="ml": liquids[row.sku_id]=row.inventory_amount
+	preview.result={"cup":"highball","capacity_ml":350,"contents":{"contents":liquids,"ice":"cube","ice_batches":[{"kind":"cube","volume":100,"mass_g":100,"pieces":8}],"garnishes":["sku_cocktail_cherry"]}}
+	body.add_child(preview)
+	_label(body,Rect2(360,0,690,45),str(r.name),32)
+	_label(body,Rect2(360,48,700,35),"已掌握 · 可加入营业酒单" if mastered else "小线赠予 · 等你调出旧日的味道",20,MUTED)
+	var text:=""
+	for row: Dictionary in r.ingredients:
+		text+="%s  %s %s\n" % [row.name,WorkbenchSession.format_amount(float(row.amount)),"颗" if row.unit=="piece" else row.unit]
+	text+="高球杯 · 方冰 100 g\n轻轻搅拌 3—6 秒，最后放上樱桃。"
+	_label(body,Rect2(360,98,800,222),text,19)
+	var badge:=Panel.new()
+	badge.position=Vector2(360,322)
+	badge.size=Vector2(795,52)
+	var style:=StyleBoxFlat.new()
+	style.bg_color=Color("4d3824")
+	style.border_color=Color("dcba64")
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(5)
+	badge.add_theme_stylebox_override("panel",style)
+	body.add_child(badge)
+	_label(badge,Rect2(18,8,760,37),"传说 · 未完待续     完美出品时呈现",22,Color("f0d387"))
+	_button(body,Rect2(360,395,250,54),"再调一杯" if mastered else "按酒单开始研习",func(): _begin("research_legendary",str(r.id)))
+	_button(body,Rect2(630,395,250,54),"查看旧酒单",func():
+		var paper:=preload("res://scripts/memory_recipe_paper.gd").new()
+		paper.allow_research_link=false
+		add_child(paper))
+	if mastered: _button(body,Rect2(900,395,255,54),"加入营业酒单",func(): Navigation.go_to(&"menu"))
+	feedback.text="按原配方完美出品后掌握。研习照常消耗原料。" if not mastered else "配方已经记住，去酒单里选择上架即可。"
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode==KEY_ESCAPE:
