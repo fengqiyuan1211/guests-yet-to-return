@@ -53,6 +53,7 @@ var counter := 0
 var dose_overrides: Dictionary = {}
 var measure_waiting := false
 var pending_confirm := Callable()
+var modal_close := Callable()
 var feedback_panel: Panel
 var feedback_text: Label
 var restock_button: Button
@@ -666,9 +667,10 @@ func _motion(kind: String, seconds: float) -> void:
 	if kind=="muddle": payload.pressure=clampf(table.pressure_integral/maxf(.001,table.accumulated),0,1)
 	if not _issue(kind,payload): status_label.text=WorkbenchSession.last_error
 
-func _dialog(title: String, height := 520.0, width := 800.0) -> Panel:
+func _dialog(title: String, height := 520.0, width := 800.0, on_close := Callable()) -> Panel:
 	table.stop_gesture()
 	_clear_modal()
+	modal_close = on_close
 	table.input_enabled = false
 	modal = Control.new()
 	modal.size = Vector2(1600,900)
@@ -680,12 +682,18 @@ func _dialog(title: String, height := 520.0, width := 800.0) -> Panel:
 	modal.add_child(dim)
 	var p := _panel(modal,Rect2((1600-width)/2,(900-height)/2,width,height),Color("352a23"))
 	_text(p,Rect2(30,20,width-130,49),title,30)
-	_button(p,Rect2(width-94,20,65,46),"×",_clear_modal)
+	var close_button := _button(p,Rect2(width-94,20,65,46),"×",_close_modal)
+	close_button.name = "CloseDialog"
 	return p
+
+func _close_modal() -> void:
+	if modal_close.is_valid(): modal_close.call()
+	else: _clear_modal()
 
 func _clear_modal() -> void:
 	sfx.silence()
 	pending_confirm=Callable()
+	modal_close=Callable()
 	if is_instance_valid(table):
 		table.pouring = false
 		table.preview_amount = 0.0
@@ -828,11 +836,22 @@ func _service_cup() -> bool:
 
 func _send_finished_drink() -> void:
 	if data.get("status") != "finished" or not _service_cup(): return
+	CustomerService.deliver(data.result)
+	_result()
+
+func _return_after_serving() -> void:
+	# Delivery receipts make closing/reopening this card safe to repeat.
 	if CustomerService.deliver(data.result): Navigation.go_to(&"home")
 	else: _result()
 
+func _served_record() -> Dictionary:
+	var record: Dictionary = CustomerService.current_record()
+	if record.get("status") == "settled" and record.get("drink_id") == data.get("result", {}).get("drink_id") and record.get("visit_id") == data.get("guest", {}).get("visit_id"):
+		return record
+	return {}
+
 func _result() -> void:
-	var p:=_dialog("",760,1020)
+	var p:=_dialog("",760,1020,_return_after_serving if _service_cup() else Callable())
 	var evaluation: Dictionary=data.result.get("evaluation",{})
 	var accent:=Color(str(evaluation.get("color","8c9aa2")))
 	var style:=_style(Color("f1e2c3"),accent)
@@ -853,6 +872,7 @@ func _result() -> void:
 	card.position=Vector2(20,65)
 	card.size=Vector2(980,630)
 	card.result=data.result.duplicate(true)
+	card.service_record = _served_record() if _service_cup() else {}
 	card.result["cup"]=data.result.get("cup",data.cup)
 	card.result["capacity_ml"]=data.result.get("capacity_ml",WorkbenchSession.capacity(data,"glass"))
 	p.add_child(card)
@@ -874,11 +894,11 @@ func _result() -> void:
 		pending_confirm=_research_library if saved else (_save_research_dialog if data.mode=="research_diy" else _result_details)
 		return
 	if _service_cup():
-		_text(p,Rect2(45,667,930,26),CustomerService.last_error if not CustomerService.last_error.is_empty() else "这一杯已经做好，送给正在等你的客人。",18,INK)
-		_button(p,Rect2(40,705,275,44),"送给客人",_send_finished_drink,true)
-		_button(p,Rect2(340,705,275,44),"查看制作评价",_result_details)
-		_button(p,Rect2(640,705,310,44),"返回酒馆",func(): Navigation.go_to(&"home"))
-		pending_confirm = _send_finished_drink
+		var served := _served_record()
+		var note := "客人已收到这杯酒 · 获得 %d 金币" % int(served.amount) if not served.is_empty() else (CustomerService.last_error if not CustomerService.last_error.is_empty() else "这一杯已经做好，送给正在等你的客人。")
+		_text(p,Rect2(45,667,930,26),note,18,INK)
+		_button(p,Rect2(355,705,310,44),"回酒馆，听听客人怎么说" if not served.is_empty() else "送给客人，返回酒馆",_return_after_serving,true)
+		pending_confirm = _return_after_serving
 		return
 	_text(p,Rect2(45,704,930,38),"空格 另起一杯     ·     Esc 返回桌面     ·     R 查看依据",22,INK)
 	pending_confirm=func():
@@ -1015,11 +1035,11 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		elif event.keycode == KEY_ESCAPE:
 			if not table.carry_id.is_empty(): table.cancel_carry()
-			elif is_instance_valid(modal): _clear_modal()
+			elif is_instance_valid(modal): _close_modal()
 			else: _leave()
 			get_viewport().set_input_as_handled()
 		elif event.keycode==KEY_R and is_instance_valid(modal) and data.get("status")=="finished":
-			_result_details()
+			if not _service_cup(): _result_details()
 			get_viewport().set_input_as_handled()
 		elif not is_instance_valid(modal) and event.keycode in [KEY_R,KEY_N,KEY_B,KEY_S]:
 			match event.keycode:

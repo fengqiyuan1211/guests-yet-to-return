@@ -134,7 +134,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path != '/health': return self.send_json(404, {'error': 'not_found'})
-        self.send_json(200, {'ok': True, 'configured': bool(configuration().get('DEEPSEEK_API_KEY')), 'max_rounds': 3})
+        self.send_json(200, {'ok': True, 'service': 'customer-feedback-service', 'configured': bool(configuration().get('DEEPSEEK_API_KEY')), 'max_rounds': 3})
 
     def do_POST(self):
         if self.path != '/feedback': return self.send_json(404, {'error': 'not_found'})

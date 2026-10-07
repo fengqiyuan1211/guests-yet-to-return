@@ -156,10 +156,10 @@ class ServingConstraintsTests(unittest.TestCase):
         _, bundle = self.build(data)
         self.assertEqual(bundle.metadata["serving_constraints"], baseline.metadata["serving_constraints"])
         self.assertEqual(bundle.metadata["appearance"], baseline.metadata["appearance"])
-        self.assertEqual(bundle.metadata["preview_role"], "color_and_fill_reference")
+        self.assertEqual(bundle.metadata["preview_role"], "actual_contents_reference")
         self.assertEqual(bundle.metadata["story_role"], "subtle_mood_only")
-        self.assertEqual(len(bundle.images), 3)
-        self.assertIn("只能画上述真实配方中明确保留的物品", bundle.prompt)
+        self.assertEqual(len(bundle.images), 2)
+        self.assertIn("仅绘制配方授权的实体食材", bundle.prompt)
         self.assertIn("不复制它们的酒杯类型、内容、冰、装饰或背景", bundle.prompt)
 
 

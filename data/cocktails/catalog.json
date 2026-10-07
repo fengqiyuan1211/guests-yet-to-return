@@ -403,7 +403,14 @@
         "sourness": 65.0,
         "sweetness": 45.0
       },
-      "sensory_model_version": "sensory-calibrated-1"
+      "sensory_model_version": "sensory-calibrated-1",
+      "reference_price": 18,
+      "pricing": {
+        "version": "ingredient-cost-1",
+        "cost": 12.552857142857142,
+        "multiplier": 1.5,
+        "price": 18
+      }
     },
     {
       "id": "mojito",
@@ -822,7 +829,14 @@
         "sourness": 45.0,
         "sweetness": 35.0
       },
-      "sensory_model_version": "sensory-calibrated-1"
+      "sensory_model_version": "sensory-calibrated-1",
+      "reference_price": 18,
+      "pricing": {
+        "version": "ingredient-cost-1",
+        "cost": 12.42142857142857,
+        "multiplier": 1.5,
+        "price": 18
+      }
     },
     {
       "id": "gin_and_tonic",
@@ -1085,7 +1099,14 @@
         "sourness": 20.0,
         "sweetness": 25.0
       },
-      "sensory_model_version": "sensory-calibrated-1"
+      "sensory_model_version": "sensory-calibrated-1",
+      "reference_price": 21,
+      "pricing": {
+        "version": "ingredient-cost-1",
+        "cost": 14.366666666666667,
+        "multiplier": 1.5,
+        "price": 21
+      }
     },
     {
       "id": "long_island_iced_tea",
@@ -1526,7 +1547,14 @@
         "sourness": 45.0,
         "sweetness": 55.0
       },
-      "sensory_model_version": "sensory-calibrated-1"
+      "sensory_model_version": "sensory-calibrated-1",
+      "reference_price": 24,
+      "pricing": {
+        "version": "ingredient-cost-1",
+        "cost": 16.554545454545455,
+        "multiplier": 1.5,
+        "price": 24
+      }
     },
     {
       "id": "manhattan",
@@ -1863,7 +1891,14 @@
         "sourness": 10.0,
         "sweetness": 30.0
       },
-      "sensory_model_version": "sensory-calibrated-1"
+      "sensory_model_version": "sensory-calibrated-1",
+      "reference_price": 17,
+      "pricing": {
+        "version": "ingredient-cost-1",
+        "cost": 11.575,
+        "multiplier": 1.5,
+        "price": 17
+      }
     }
   ],
   "sensory_model_version": "sensory-calibrated-1"

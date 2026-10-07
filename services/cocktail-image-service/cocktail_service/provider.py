@@ -16,9 +16,10 @@ import json
 import math
 import re
 import socket
+import ssl
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
-from urllib.request import HTTPRedirectHandler, Request, build_opener
+from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
 import warnings
 
 from PIL import Image, UnidentifiedImageError
@@ -38,7 +39,7 @@ class _NoRedirects(HTTPRedirectHandler):
 
 
 # Kept at module scope so tests can replace transport without calling a paid API.
-urlopen = build_opener(_NoRedirects()).open
+urlopen = build_opener(ProxyHandler({}), _NoRedirects()).open
 
 
 class ProviderError(Exception):
@@ -175,6 +176,13 @@ class QwenImageProvider:
     def __init__(self, settings):
         self.settings = settings
 
+    def _open(self, request, *, timeout):
+        # Direct HTTPS avoids inheriting an unrelated desktop/VPN proxy.
+        # Proxy use remains an explicit opt-in for deployments that require it.
+        if getattr(self.settings, "use_system_proxy", False):
+            return build_opener(_NoRedirects()).open(request, timeout=timeout)
+        return urlopen(request, timeout=timeout)
+
     def _configuration(self) -> tuple[str, str, str, float]:
         key = getattr(self.settings, "api_key", None)
         base_url = getattr(self.settings, "base_url", None)
@@ -229,20 +237,22 @@ class QwenImageProvider:
                           headers={"Authorization": "Bearer " + key, "Content-Type": "application/json",
                                    "Accept": "application/json"}, method="POST")
         try:
-            with urlopen(request, timeout=timeout) as response:
+            with self._open(request, timeout=timeout) as response:
                 response_id = _request_id(response.headers)
                 body = _bounded_read(response, MAX_JSON_BYTES,
                                      "invalid_provider_response", "invalid_provider_response")
         except HTTPError as error:
             raise _http_failure(error, key) from None
         except (socket.timeout, TimeoutError):
-            raise ProviderError("provider_timeout", "The image provider timed out; generation was not retried.", True) from None
+            raise ProviderError("provider_timeout", "酒图生成等待超时，请稍后手动重试。", True) from None
         except URLError as error:
             if isinstance(error.reason, (socket.timeout, TimeoutError)):
-                raise ProviderError("provider_timeout", "The image provider timed out; generation was not retried.", True) from None
-            raise ProviderError("provider_network_error", "The image provider could not be reached; generation was not retried.", True) from None
+                raise ProviderError("provider_timeout", "酒图生成等待超时，请稍后手动重试。", True) from None
+            if isinstance(error.reason, ssl.SSLError):
+                raise ProviderError("provider_network_error", "与绘图服务的安全连接中断，请检查网络或代理后手动重试。", True) from None
+            raise ProviderError("provider_network_error", "暂时无法连接绘图服务，请检查网络后手动重试。", True) from None
         except (OSError, ValueError, HTTPException):
-            raise ProviderError("provider_network_error", "The image provider request could not be completed; generation was not retried.", True) from None
+            raise ProviderError("provider_network_error", "绘图服务连接中断，请稍后手动重试。", True) from None
         try:
             result = json.loads(body)
             image_url = result["data"][0]["url"]
@@ -262,7 +272,7 @@ class QwenImageProvider:
             raise ProviderError("invalid_provider_response", "The image provider returned invalid usage metadata.")
         image_request = Request(image_url, headers={"Accept": "image/png"}, method="GET")
         try:
-            with urlopen(image_request, timeout=timeout) as response:
+            with self._open(image_request, timeout=timeout) as response:
                 content_type = response.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
                 if content_type and content_type not in ("image/png", "application/octet-stream"):
                     raise ProviderError("invalid_image", "The generated image download is not a PNG response.")

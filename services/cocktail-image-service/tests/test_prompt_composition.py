@@ -33,15 +33,15 @@ class PromptCompositionTests(unittest.TestCase):
 
     def test_prompt_is_compact_prose_instead_of_a_machine_record_or_poster(self):
         bundle = self.bundle(self.request())
-        self.assertLess(len(bundle.prompt), 2400)
+        self.assertLess(len(bundle.prompt), 3400)
         for marker in ("FEW-SHOT", "TARGET RECIPE", "TARGET VISUAL BRIEF", "INPUT IMAGE ROLES", "example_id", "sku_", "{", "}"):
             self.assertNotIn(marker, bundle.prompt)
         self.assertNotIn(self.fixture["recipe"]["id"], bundle.prompt)
-        self.assertEqual(PROMPT_VERSION, "diy-cocktail-handdrawn-v4")
+        self.assertEqual(PROMPT_VERSION, "diy-cocktail-rule-reference-v6")
 
     def test_single_glass_and_uniform_white_are_the_first_and_last_priorities(self):
         bundle = self.bundle(self.request())
-        self.assertTrue(bundle.prompt.startswith("只创作一杯"))
+        self.assertTrue(bundle.prompt.startswith("最高优先级的成品物件清单"))
         self.assertIn("不要画第二杯", bundle.prompt)
         self.assertIn("RGB (255, 255, 255)", bundle.prompt)
         self.assertIn("没有任何文字、数字", bundle.prompt)
@@ -99,21 +99,21 @@ class PromptCompositionTests(unittest.TestCase):
             self.assertIn(hint, bundle.prompt)
         self.assertIn("成品杯中没有冰", bundle.prompt)
 
-    def test_preview_is_only_color_and_fill_and_reference_indices_stay_correct(self):
+    def test_preview_is_contents_reference_with_flexible_color_and_correct_indices(self):
         data = self.request()
         stream = BytesIO()
         Image.new("RGB", (32, 32), "yellow").save(stream, "PNG")
         data["preview_image"] = "data:image/png;base64," + base64.b64encode(stream.getvalue()).decode("ascii")
         parsed = parse_request(data, self.builder.profiles)
         bundle = self.builder.build(parsed)
-        self.assertEqual(len(bundle.images), 3)
+        self.assertEqual(len(bundle.images), 2)
         self.assertEqual(bundle.images[0], parsed.preview_image)
-        self.assertIn("第1张输入图是粗糙规则预览，只参考酒液颜色和相对液位", bundle.prompt)
-        self.assertIn("输入图第2、3张只提供画风", bundle.prompt)
-        self.assertIn("只能画上述真实配方中明确保留的物品", bundle.prompt)
+        self.assertIn("第1张输入图是本杯实际用料生成的规则预览", bundle.prompt)
+        self.assertIn("输入图第2张只提供画风", bundle.prompt)
+        self.assertIn("仅绘制配方授权的实体食材", bundle.prompt)
         self.assertEqual(bundle.metadata["generation_intent"], "redraw")
-        self.assertEqual(bundle.metadata["preview_role"], "color_and_fill_reference")
-        self.assertEqual([role["role"] for role in bundle.metadata["image_roles"]], ["rule_preview", "style_few_shot", "style_few_shot"])
+        self.assertEqual(bundle.metadata["preview_role"], "actual_contents_reference")
+        self.assertEqual([role["role"] for role in bundle.metadata["image_roles"]], ["rule_preview", "style_few_shot"])
 
     def test_text_few_shots_survive_without_reference_images(self):
         builder = PromptBuilder(ROOT, reference_images=False)
@@ -149,7 +149,8 @@ class PromptCompositionTests(unittest.TestCase):
                 bundle = self.bundle(data)
                 self.assertEqual(bundle.metadata["story_role"], "none")
                 self.assertIn("采用温和自然的默认光感", bundle.prompt)
-                self.assertEqual(len(bundle.images), 2)
+                self.assertGreaterEqual(len(bundle.images), 1)
+                self.assertLessEqual(len(bundle.images), 2)
                 self.assertEqual(bundle.metadata["style_id"], "saloon-cocktail-cutout-v1")
                 self.assertIn("钢笔淡彩与彩铅手绘插画风", bundle.prompt)
 

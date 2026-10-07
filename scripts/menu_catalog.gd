@@ -91,6 +91,12 @@ func load_catalog() -> bool:
 	var next_recipes: Array = []
 	var next_by_id: Dictionary = {}
 	for recipe in records:
+		if _using_finished_catalog:
+			var quote:=preload("res://scripts/drink_pricing.gd").quote(recipe)
+			if not quote.ok: return _catalog_error()
+			recipe["reference_price"]=quote.price
+			recipe["pricing"]=quote
+			recipe["price_status"]="fixed_ingredient_cost"
 		if not _valid_recipe(recipe) or next_by_id.has(recipe.id):
 			return _catalog_error()
 		next_recipes.append(recipe.duplicate(true))
@@ -262,7 +268,7 @@ func _normalize_entries(value: Variant, available: Array, deduplicate: bool) -> 
 				continue
 			return {"ok": false, "message": "酒单中有重复的酒。"}
 		seen[entry.id] = true
-		result.append({"id": entry.id, "price": entry.price})
+		result.append({"id": entry.id, "price": _by_id[entry.id].reference_price if _using_finished_catalog else entry.price})
 	if result.size() > MAX_MENU_SIZE:
 		return {"ok": false, "message": "一张酒单最多上架六款酒。"}
 	return {"ok": true, "entries": result}

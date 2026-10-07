@@ -8,10 +8,11 @@ var result: Dictionary={}
 var accent:=Color("dbb455")
 var clock:=0.0
 var saved_art: Texture2D
+var reference_only := false
 
 func _ready() -> void:
 	var path:=str(result.get("image_path",""))
-	if path.begins_with("user://") and FileAccess.file_exists(path):
+	if not reference_only and path.begins_with("user://") and FileAccess.file_exists(path):
 		var picture:=Image.load_from_file(path)
 		if picture != null: saved_art=ImageTexture.create_from_image(picture)
 
@@ -33,7 +34,7 @@ func _draw() -> void:
 	if cup=="rocks": cup="highball"
 	var texture: Texture2D=Art.texture(cup)
 	if texture==null: return
-	for i in range(8,0,-1):
+	for i in range(0 if reference_only else 8,0,-1):
 		var ring:=StyleBoxFlat.new()
 		ring.bg_color=Color.TRANSPARENT
 		ring.border_color=Color(accent,.015+(8-i)*.006)
@@ -45,7 +46,7 @@ func _draw() -> void:
 	panel.border_color=accent
 	panel.set_border_width_all(2)
 	panel.set_corner_radius_all(18)
-	draw_style_box(panel,Rect2(14,14,size.x-28,size.y-28))
+	if not reference_only: draw_style_box(panel,Rect2(14,14,size.x-28,size.y-28))
 	var extent:=texture.get_size()*minf((size.x-78)/texture.get_width(),(size.y-95)/texture.get_height())
 	var rect:=Rect2(Vector2((size.x-extent.x)*.5,size.y-48-extent.y),extent)
 	var fill:=rect
@@ -62,7 +63,7 @@ func _draw() -> void:
 	Mint.in_vessel(self,fill,int(solids.get("sku_mint_leaf",0)),contents,capacity,coupe,false,displacement,clock,[],0,false,cup,1,result.get("liquid_profiles",{}),WorkbenchSession.Muddle.leaves(vessel))
 	draw_texture_rect(texture,rect,false)
 	Garnish.draw(self,fill,WorkbenchSession.garnishes(vessel),[],clock,coupe,cup)
-	if result.get("evaluation",{}).get("tier","")=="perfect":
+	if not reference_only and result.get("evaluation",{}).get("tier","")=="perfect":
 		for i in range(5):
 			var point:=Vector2(29+(i%2)*(size.x-58),60+i*57)
 			var alpha:=.25+.3*(sin(clock*1.5+i)+1)*.5

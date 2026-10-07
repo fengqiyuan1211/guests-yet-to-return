@@ -23,6 +23,38 @@ var form_hash:=""
 var cache_path:=""
 var pending_info: Dictionary={}
 var locked:=false
+var rule_preview_data := ""
+
+func _capture_rule_preview() -> String:
+	if not rule_preview_data.is_empty(): return rule_preview_data
+	# Reuse the exact saved reference on retries so request identity stays stable.
+	if request.get("preview_image", "").begins_with("data:image/png;base64,"):
+		rule_preview_data=request.preview_image
+		return rule_preview_data
+	if DisplayServer.get_name()=="headless": return ""
+	var viewport:=SubViewport.new()
+	viewport.size=Vector2i(768,768)
+	viewport.disable_3d=true
+	viewport.render_target_update_mode=SubViewport.UPDATE_ALWAYS
+	add_child(viewport)
+	var background:=ColorRect.new()
+	background.size=Vector2(768,768)
+	background.color=Color.WHITE
+	viewport.add_child(background)
+	var reference:=Preview.new()
+	reference.reference_only=true
+	reference.size=Vector2(768,768)
+	reference.result=session.result.duplicate(true)
+	reference.result.erase("image_path")
+	viewport.add_child(reference)
+	reference.set_process(false)
+	reference.clock=0.0
+	await RenderingServer.frame_post_draw
+	var image:=viewport.get_texture().get_image()
+	if image!=null and not image.is_empty():
+		rule_preview_data="data:image/png;base64,"+Marshalls.raw_to_base64(image.save_png_to_buffer())
+	viewport.queue_free()
+	return rule_preview_data
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -157,10 +189,19 @@ func _lock(value: bool) -> void:
 	generate.disabled=value
 
 func _generate() -> void:
+	if locked: return
 	if title.text.strip_edges().is_empty() or story.text.length()>1000 or notes.text.length()>500:
 		status.text="请填写酒名；故事最多1000字，笔记最多500字。"
 		return
+	_lock(true)
+	status.text="正在准备这杯酒的用料参考……"
+	var preview_data: String=await _capture_rule_preview()
+	if preview_data.is_empty():
+		_lock(false)
+		status.text="酒杯参考图暂时未能生成，请重新打开此页后重试。"
+		return
 	var next:=RequestBuilder.build(session,title.text.strip_edges(),story.text)
+	next.preview_image=preview_data
 	var hash:=JSON.stringify(next).sha256_text()
 	# Re-submit the same request id after a lost response or scene change: no second charge.
 	if request.is_empty() or content_hash!=hash or not picture.is_empty() or pending_info.get("provider_terminal",false):
@@ -172,6 +213,15 @@ func _generate() -> void:
 	accept.disabled=true
 	_lock(true)
 	_cache()
+	var services:=get_node_or_null("/root/LocalServices")
+	if services!=null:
+		status.text="正在准备酒图服务……"
+		var ready: bool=await services.ensure_ready("image")
+		if not is_inside_tree() or is_queued_for_deletion(): return
+		if not ready:
+			_lock(false)
+			status.text=services.failure_message("image")
+			return
 	status.text="正在提交手绘酒图……"
 	client.generate_drink(request)
 

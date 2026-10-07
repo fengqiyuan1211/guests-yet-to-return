@@ -599,6 +599,10 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 		record.thumbnail=picture.path
 		record.image_generation=picture.duplicate(true)
 		record.story=str(payload.get("story",memo)).left(1000)
+		var quote:=preload("res://scripts/drink_pricing.gd").quote(record)
+		if not quote.ok: return _error(quote.message)
+		record.pricing=quote
+		record.reference_price=quote.price
 		next.research.recipes[recipe_id]=record
 		next.research.saved_drinks[drink]=recipe_id
 	elif kind=="begin_research":

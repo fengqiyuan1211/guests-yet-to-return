@@ -16,7 +16,7 @@
       "subtitle": "可乐与青柠的旧时光",
       "thumbnail": "",
       "image_path": "",
-      "reference_price": 48,
+      "reference_price": 16,
       "unlocked_by_default": false,
       "tags": [
         "酸甜",
@@ -173,7 +173,13 @@
         "sourness": 47.472072072072066,
         "bitterness": 10.907828282828282
       },
-      "sensory_model_version": "sensory-calibrated-1"
+      "sensory_model_version": "sensory-calibrated-1",
+      "pricing": {
+        "version": "ingredient-cost-1",
+        "cost": 11.307532467532468,
+        "multiplier": 1.5,
+        "price": 16
+      }
     }
   ],
   "note": "传说配方由剧情道具获得，完美研习后解锁营业上架；原料购买不能直接解锁传说。"

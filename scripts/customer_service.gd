@@ -15,6 +15,7 @@ var writable := true
 var last_error := ""
 var request: HTTPRequest
 var generation := 0
+var waiting_for_service := false
 
 func _ready() -> void:
 	StoryDialogue.story_finished.connect(_on_story_finished)
@@ -175,6 +176,7 @@ func _write() -> bool:
 
 func _cancel_request() -> void:
 	generation += 1
+	waiting_for_service = false
 	if is_instance_valid(request):
 		request.cancel_request()
 		request.queue_free()
@@ -503,7 +505,7 @@ func resume_served_story(expected_delivery_id: String) -> bool:
 
 func _request_feedback(reply: String) -> void:
 	var record := current_record()
-	if record.is_empty() or record.feedback.done or int(record.feedback.round) >= 3 or is_instance_valid(request): return
+	if record.is_empty() or record.feedback.done or int(record.feedback.round) >= 3 or is_instance_valid(request) or waiting_for_service: return
 	var feedback: Dictionary = record.feedback
 	feedback.pending = true
 	feedback.pending_reply = reply
@@ -512,6 +514,17 @@ func _request_feedback(reply: String) -> void:
 		return
 	changed.emit()
 	var round_number := int(feedback.round) + 1
+	var services:=get_node_or_null("/root/LocalServices")
+	if services!=null and not endpoint.is_empty():
+		waiting_for_service=true
+		var waiting_epoch:=generation
+		var ready: bool=await services.ensure_ready("feedback")
+		if generation!=waiting_epoch: return
+		waiting_for_service=false
+		if state.active.get("delivery_id")!=record.id: return
+		if not ready:
+			_accept_turn(str(record.id),round_number,reply,_fallback(record,round_number))
+			return
 	var context := {"request_id": record.id + ":%d" % round_number, "round": round_number,
 		"guest": {"id": record.guest_id, "name": state.active.profile.name if record.known else "来客",
 			"bio": state.active.profile.bio if record.known else "身份尚未介绍，不要自报名字或泄露身份"},

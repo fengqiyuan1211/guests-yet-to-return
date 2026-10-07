@@ -226,7 +226,7 @@ func _build_selection() -> void:
 	picker.select(maxi(categories.find(category), 0))
 	picker.item_selected.connect(func(index: int): category = str(categories[index]); _refresh_cards())
 	paper.add_child(picker)
-	_label(paper, Rect2(441, 78, 314, 27), "轻点酒卡加入，右侧可改售价", 16, MUTED)
+	_label(paper, Rect2(441, 78, 314, 27), "轻点酒卡，安排今晚的酒单", 16, MUTED)
 	var scroll := ScrollContainer.new()
 	scroll.position = Vector2(29, 122)
 	scroll.size = Vector2(737, 393)
@@ -245,7 +245,7 @@ func _build_selection() -> void:
 	next_button.disabled = selected.is_empty()
 	if sample_mode:
 		_button(body, Rect2(1047, 800, 167, 43), "回到正式酒单", _leave_samples)
-	_message("最多选 6 款，可在右侧调整每杯售价。" if not recipes.is_empty() else "还没有点亮的酒谱，可以先看看酒单样张。")
+	_message("最多选 6 款，售价已按配方统一确定。" if not recipes.is_empty() else "还没有点亮的酒谱，可以先看看酒单样张。")
 
 func _refresh_cards() -> void:
 	_clear(grid)
@@ -263,7 +263,7 @@ func _refresh_cards() -> void:
 		card.add_theme_stylebox_override("normal", _style(Color(0.47, 0.3, 0.11, 0.1 if chosen else 0.015), Color(0.48, 0.3, 0.13, 0.65 if chosen else 0.15)))
 		_add_drink_art(card, Rect2(14, 14, 71, 75), recipe)
 		_label(card, Rect2(99, 22, 119, 32), "已选  ✓" if chosen else str(recipe.category), 17, INK if chosen else MUTED)
-		var price_hint := "售价由你定" if recipe.get("price_status", "") == "editor_starting_value" else "参考 %d 金币" % int(recipe.reference_price)
+		var price_hint := "%d 金币" % int(recipe.reference_price)
 		_label(card, Rect2(99, 57, 124, 26), price_hint, 15, MUTED)
 		_label(card, Rect2(17, 102, 203, 36), str(recipe.name), 23, INK)
 		_label(card, Rect2(17, 143, 204, 25), " · ".join(recipe.tags), 15, MUTED)
@@ -315,21 +315,8 @@ func _refresh_receipt() -> void:
 		var recipe := _recipe(str(entry.id))
 		var y := 118 + i * 57
 		_label(receipt, Rect2(35, y + 6, 210, 35), str(recipe.get("name", "")), 21, INK)
-		var price := SpinBox.new()
-		price.position = Vector2(247, y + 3)
-		price.size = Vector2(105, 42)
-		price.min_value = 1
-		price.max_value = 9999
-		price.step = 1
-		price.value = entry.price
-		price.add_theme_font_size_override("font_size", 20)
-		price.get_line_edit().add_theme_color_override("font_color", INK)
-		price.get_line_edit().add_theme_stylebox_override("normal", _style(Color(1, 0.92, 0.75, 0.22), Color(0.5, 0.35, 0.16, 0.2)))
-		price.value_changed.connect(func(value: float):
-			entry.price = value
-			revision += 1
-		)
-		receipt.add_child(price)
+		entry.price = recipe.reference_price
+		_label(receipt, Rect2(247, y + 6, 105, 35), str(int(entry.price)), 22, INK)
 		_button(receipt, Rect2(364, y + 3, 40, 42), "×", _toggle_recipe.bind(str(entry.id)), false, true)
 	_label(receipt, Rect2(35, 481, 370, 41), "好酒不必太多，合心意就好。", 17, MUTED)
 	if is_instance_valid(next_button):
