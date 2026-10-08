@@ -5,6 +5,7 @@ const Evaluation := preload("res://scripts/customer_evaluation.gd")
 const MemoryProgress := preload("res://scripts/stick_memory_progress.gd")
 const LEGACY_RULES := "res://data/guest_mechanics/settlement_rules_legacy_v1.json"
 const Buffs := preload("res://scripts/cocktail_buffs.gd")
+const FreeOrder := preload("res://scripts/free_drink_order.gd")
 var rules: Dictionary
 var profiles: Dictionary = {}
 var events: Array = []
@@ -134,7 +135,7 @@ func _valid_saved_state(data: Variant) -> bool:
 	for id in data.deliveries:
 		var record: Variant = data.deliveries[id]
 		if not id is String or not record is Dictionary or record.get("id") != id or record.get("status") not in ["prepared", "settled"]: return false
-		if not profiles.has(record.get("guest_id")) or not _number(record.get("amount"), 1, 1000000000) or float(record.amount) != floor(float(record.amount)): return false
+		if not profiles.has(record.get("guest_id")) or not _number(record.get("amount"), 0 if record.get("play_mode")=="mixing" else 1, 1000000000) or float(record.amount) != floor(float(record.amount)): return false
 		if record.has("story_completed") and not record.story_completed is bool: return false
 		if record.has("story_episode_id") and not record.story_episode_id is String: return false
 		if record.has("visit_serial") and (not _number(record.visit_serial, 1, 1000000000) or record.visit_serial != floor(record.visit_serial)): return false
@@ -263,6 +264,17 @@ func begin_guest(profile: Dictionary, visit: int, restoring: bool) -> bool:
 		"day": TimeManager.day, "visit": visit, "demand": demand, "order": {}, "delivery_id": "",
 		"profile": profile.duplicate(true), "story_episode_id": episode_id if number <= StoryDialogue.catalog.get(str(profile.id), []).size() else "",
 		"story_completed": number > StoryDialogue.catalog.get(str(profile.id), []).size(), "rules_snapshot":_rules_snapshot(rules)}
+	state.active["play_mode"]=PlayModes.mode
+	if PlayModes.mode=="mixing":
+		state.active.story_episode_id=""
+		state.active.story_completed=true
+		var menu: Array=[]
+		for entry: Dictionary in MenuCatalog.entries:
+			var recipe:=MenuCatalog.get_recipe(entry.id)
+			if not recipe.is_empty(): menu.append({"id":entry.id,"name":recipe.name,"price":int(entry.price),"tags":recipe.get("tags",[]).duplicate()})
+		var rng:=RandomNumberGenerator.new()
+		rng.randomize()
+		state.active["free_order"]=FreeOrder.create(menu,rng)
 	if not _write():
 		state.active = previous
 		return false
@@ -275,6 +287,10 @@ func prepare_order(recipe_id: String) -> Dictionary:
 	var price := -1
 	for entry in MenuCatalog.entries:
 		if entry.id == recipe_id: price = int(entry.price)
+	if state.active.get("play_mode")=="mixing":
+		price=-1
+		for entry: Dictionary in state.active.get("free_order",{}).get("menu",[]):
+			if entry.id==recipe_id: price=int(entry.price)
 	if price < 1: return {}
 	var old: Dictionary = state.active.order.duplicate(true)
 	var started := int(old.get("started_minute", TimeManager.minutes_since_midnight))
@@ -319,6 +335,7 @@ func memory_summary() -> Dictionary:
 	return MemoryProgress.summarize(StoryDialogue.progress.get("stick", {}), state.deliveries)
 
 func _memory_reception_ready() -> bool:
+	if state.active.get("play_mode")=="mixing": return false
 	if not writable or state.active.get("guest_id") != "stick" or str(state.active.get("id", "")).is_empty(): return false
 	if StoryDialogue.guest_id != "stick" or StoryDialogue.phase != "idle": return false
 	var record := current_record()
@@ -443,6 +460,20 @@ func deliver(result: Dictionary) -> bool:
 		"previous_drink": state.last_drinks.get(str(state.active.guest_id), {}).duplicate(true),
 		"story": StoryDialogue.history.duplicate(true), "known": StoryDialogue.is_known(str(state.active.guest_id)),
 		"feedback": {"round": 0, "pending": false, "pending_reply": "", "messages": [], "turn": {}, "done": false, "story_resumed": false}}
+	if state.active.get("play_mode")=="mixing":
+		var settlement:=FreeOrder.settle(state.active.free_order,str(result.recipe.id),float(result.get("evaluation",{}).get("score",0)))
+		record["play_mode"]="mixing"
+		record["free_order"]=state.active.free_order.duplicate(true)
+		record["free_settlement"]=settlement
+		record.amount=settlement.amount
+		record.story_episode_id=""
+		record.story_completed=true
+		record.story=[]
+		record.previous_drink={}
+		record.review={"status":"scored" if settlement.matched else "rejected","satisfaction":settlement.craft_score if settlement.matched else 0.0,"stars":clampi(ceili(settlement.craft_score/20.0),1,5) if settlement.matched else 1}
+		record.buffs={"active":[],"inactive":[]}
+		var text: String={"full":"对，就是我点的这杯。谢谢你！","half":"是我点的酒，不过做得还有些欠缺。这杯我只付一半。","wrong":"这不是我点的酒，这杯我就不付钱了。"}[settlement.tier]
+		record.feedback={"round":1,"pending":false,"pending_reply":"","messages":[{"speaker":"guest","text":text}],"turn":{"text":text,"emotion":"pleased" if settlement.tier=="full" else "disappointed","replies":[],"end":true},"done":true,"story_resumed":false}
 	state.deliveries[id] = record
 	state.active.delivery_id = id
 	if not _write():
@@ -457,15 +488,15 @@ func _commit_delivery(id: String) -> bool:
 		last_error = ""
 		_resume_feedback()
 		return true
-	if not SlotWallet.credit_sale(id, int(record.amount)):
+	if int(record.amount)>0 and not SlotWallet.credit_sale(id, int(record.amount)):
 		last_error = SlotWallet.last_error
 		return false
 	record.status = "settled"
 	var previous: Dictionary = state.last_drinks.get(str(record.guest_id), {}).duplicate(true)
-	state.last_drinks[record.guest_id] = {"recipe_id": record.recipe_id, "actual": record.actual.duplicate(true), "day": record.day}
+	if record.get("play_mode")!="mixing": state.last_drinks[record.guest_id] = {"recipe_id": record.recipe_id, "actual": record.actual.duplicate(true), "day": record.day}
 	if not _write():
 		record.status = "prepared"
-		state.last_drinks[record.guest_id] = previous
+		if record.get("play_mode")!="mixing": state.last_drinks[record.guest_id] = previous
 		return false # Durable wallet receipt makes retry/recovery safe.
 	changed.emit()
 	if state.active.get("delivery_id") == id: call_deferred("_resume_feedback")

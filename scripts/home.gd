@@ -18,6 +18,22 @@ var _memory_invitation_declined := false
 var _memory_inviting := false
 var _memory_match_started := false
 var _memory_paper: Control
+var mode_button: Button
+
+func _setup_mode_button() -> void:
+	var rail:=find_child("MenuButton",true,false).get_parent()
+	mode_button=Button.new()
+	mode_button.position=Vector2(10,580)
+	mode_button.size=Vector2(164,50)
+	mode_button.text="调酒模式" if PlayModes.mode=="story" else "剧情模式"
+	mode_button.focus_mode=Control.FOCUS_NONE
+	mode_button.add_theme_font_size_override("font_size",21)
+	rail.add_child(mode_button)
+	mode_button.pressed.connect(func():
+		if not PlayModes.switch_to("mixing" if PlayModes.mode=="story" else "story"):
+			%GuestTags.show()
+			%GuestTags.text=PlayModes.last_error
+	)
 var _memory_lines: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/story_dialogues/stick/memory_event.json"))
 
 func _ready() -> void:
@@ -33,6 +49,7 @@ func _ready() -> void:
 	Navigation.register_page(&"backpack", preload("res://scenes/backpack.tscn"))
 	Navigation.register_page(&"reviews", preload("res://scenes/customer_reviews.tscn"))
 	_setup_settings_button()
+	_setup_mode_button()
 	selected_navigation_style = %HomeButton.get_theme_stylebox("normal")
 	SlotWallet.balance_changed.connect(_on_balance_changed)
 	_on_balance_changed(SlotWallet.balance)
@@ -298,6 +315,9 @@ func _on_guest_spawned(profile: Dictionary) -> void:
 	%NoteBody.text = profile.bio
 	if _restoring_reception:
 		_render_dialogue()
+	elif PlayModes.mode=="mixing":
+		StoryDialogue.restore_session({"guest_id":str(profile.id),"phase":"idle","speech":"","history":[],"episode_id":"","node_id":"","idle_index":0})
+		_render_dialogue()
 	else:
 		StoryDialogue.start_guest(str(profile.id))
 	_update_bottom_status()
@@ -331,6 +351,7 @@ func _setup_dialogue_input() -> void:
 	%GuestSpeech.add_theme_font_override("bold_font", bold)
 
 func _can_advance_dialogue() -> bool:
+	if PlayModes.mode=="mixing": return false
 	if _memory_inviting:
 		var kind := CustomerService.memory_dialogue_kind()
 		return Navigation.current_route == &"home" and not kind.is_empty() and CustomerService.memory_dialogue_step(kind) < 2 and not is_instance_valid(_memory_paper)
@@ -407,6 +428,21 @@ func _layout_dialogue(telling_story: bool) -> void:
 
 func _render_dialogue() -> void:
 	if guest_profile.is_empty() or StoryDialogue.guest_id != str(guest_profile.id):
+		return
+	if PlayModes.mode=="mixing" and not CustomerService.has_delivery():
+		_clear_story_choices()
+		_layout_dialogue(false)
+		%TalkButton.hide()
+		%GuestName.text=guest_profile.name
+		%GuestRole.text=guest_profile.role
+		%GuestSpeech.text=CustomerService.state.active.get("free_order",{}).get("speech","酒单还空着。先准备好酒单，再迎接下一位客人吧。")
+		%GuestTags.text="调酒模式"
+		%GuestTags.show()
+		%OrderKicker.text="客 人 点 单"
+		%OrderKicker.show()
+		%NoteOrder.text=%GuestSpeech.get_parsed_text()
+		%NoteOrder.show()
+		%NextGuestButton.disabled=false
 		return
 	if _memory_inviting and Navigation.current_route == &"home": return
 	call_deferred("_maybe_offer_memory")
@@ -517,6 +553,7 @@ func _render_customer_feedback() -> void:
 	%GuestTags.text = "正在结账……"
 	if record.status == "settled":
 		%GuestTags.text = "总评分 %.1f" % float(review.satisfaction) if review.get("satisfaction") != null else "未满足要求"
+		if record.get("play_mode")=="mixing": %GuestTags.text="制作评分 %.1f" % float(record.free_settlement.craft_score)
 		%GuestTags.text += "    收入 +%d 金币" % int(record.amount)
 	if record.status == "settled" and review.get("stars") != null:
 		%GuestTags.text += "    " + "★".repeat(int(review.stars)) + "☆".repeat(5 - int(review.stars))

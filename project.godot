@@ -30,6 +30,7 @@ WorkbenchSession="*res://scripts/workbench_session.gd"
 CustomerService="*res://scripts/customer_service.gd"
 GameSession="*res://scripts/game_session.gd"
 SaloonAudio="*res://scripts/saloon_audio.gd"
+PlayModes="*res://scripts/play_modes.gd"
 
 [display]
 

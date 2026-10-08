@@ -41,6 +41,7 @@ func _ready() -> void:
 		if not service_record.is_empty():
 			var total: Variant=service_record.get("review", {}).get("satisfaction")
 			score_text="总评分 %.1f / 100" % clampf(float(total),0,100) if total!=null else "未满足客人的要求"
+			if service_record.get("play_mode")=="mixing": score_text="制作评分 %.1f / 100" % float(service_record.free_settlement.craft_score)
 		_label(Rect2(382,420,580,32),score_text,24,accent.darkened(.25))
 		var subs: Dictionary=evaluation.subscores
 		if service_record.is_empty():

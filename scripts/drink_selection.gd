@@ -137,7 +137,8 @@ func _clear(parent: Node) -> void:
 func _reload() -> void:
 	_clear(list)
 	buttons.clear()
-	for entry in MenuCatalog.entries:
+	var offered: Array=CustomerService.state.active.get("free_order",{}).get("menu",MenuCatalog.entries) if PlayModes.mode=="mixing" else MenuCatalog.entries
+	for entry in offered:
 		var recipe: Dictionary=MenuCatalog.get_recipe(str(entry.id))
 		if recipe.is_empty(): continue
 		var button:=_button(list,"%s    ·    %s 金币\n%s" % [recipe.name,str(entry.price),recipe.get("english_name","")],_select.bind(str(entry.id)))
@@ -185,6 +186,7 @@ func _select(id: String) -> void:
 	start_button.text="收拾并制作新酒  空格" if pending else "开始制作  空格 →"
 	start_button.disabled=recipe.is_empty() or not WorkbenchSession.writable
 	status.text="选定后按空格开始制作，左上角会显示这款酒的配方。"
+	if PlayModes.mode=="mixing": status.text=str(CustomerService.state.active.get("free_order",{}).get("speech","请先准备营业酒单。" )).replace("[b]","").replace("[/b]","")
 	if recipe.is_empty(): status.text="暂无上架酒款，请先保存一份营业酒单。"
 	if pending: status.text="开工将收拾桌上的「%s」，制作新选的酒；已用原料不退回。也可继续原来这一杯。" % session.recipe.name
 	if not WorkbenchSession.writable: status.text=WorkbenchSession.last_error

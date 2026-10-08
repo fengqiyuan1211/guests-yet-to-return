@@ -136,7 +136,7 @@ func restart_game() -> bool:
 		last_error = "旧进度未能备份，暂未重新开始。"
 		return false
 	var index := 0
-	var restart_paths := [save_path, StoryDialogue.save_path, SlotWallet.save_path, MenuCatalog.save_path, CustomerService.save_path]
+	var restart_paths := [save_path, save_path+".modes", StoryDialogue.save_path, SlotWallet.save_path, MenuCatalog.save_path, CustomerService.save_path]
 	var supplies := get_node_or_null("/root/Supplies")
 	if supplies != null:
 		restart_paths.append(supplies.save_path)
@@ -154,6 +154,11 @@ func restart_game() -> bool:
 func _finish_restart() -> bool:
 	resetting = true
 	writable = true
+	var modes:=get_node_or_null("/root/PlayModes")
+	if modes!=null:
+		if not modes.reset_game(): return false
+	elif FileAccess.file_exists(save_path+".modes"):
+		if DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path+".modes"))!=OK: return false
 	if not MenuCatalog.reset_game():
 		last_error = "酒单尚未重置，请重试。"
 		return false

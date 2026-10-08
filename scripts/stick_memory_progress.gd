@@ -48,6 +48,7 @@ static func summarize(story: Dictionary, deliveries: Dictionary, settings: Dicti
 	var threshold := float(rule.get("minimum_average_total_score", 60))
 	var candidates: Array = []
 	for record: Variant in deliveries.values():
+		if record is Dictionary and record.get("play_mode")=="mixing": continue
 		if not record is Dictionary or record.get("guest_id") != "stick" or record.get("status") != "settled": continue
 		if total_score(record) == null or not completed_visit(record, story) or sequence(record) < 0: continue
 		candidates.append(record)

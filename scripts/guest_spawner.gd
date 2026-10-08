@@ -28,6 +28,7 @@ func _ready() -> void:
 
 func _can_arrive(index: int) -> bool:
 	if index < 0 or index >= profiles.size(): return false
+	if PlayModes.mode=="mixing" and not StoryDialogue.is_known(str(profiles[index].id)): return false
 	if profiles[index].id != "stick": return true
 	return not WorkbenchSession.research_state().get("story_items", {}).get("item_recipe_after_school", {}).get("owned", false)
 
