@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "config_version": "diy-cocktail-visual-config-v1",
+  "config_version": "diy-cocktail-handdrawn-v4",
   "style_id": "saloon-cocktail-cutout-v1",
   "sources": [
     {
@@ -46,5 +46,33 @@
     "retained_solids": "莫吉托轻压薄荷叶且不滤去，其他示例无额外留杯制作固体。",
     "source_quantities_status": "源配方仍保留原有草案/参考状态，few-shot冻结不代表试调定稿。"
   },
-  "source_style_template": "Use case: stylized-concept. Asset type: individual finished cocktail illustration for a 2D western saloon game's parchment recipe journal and menu. Primary request: draw exactly ONE physically plausible {cocktail_name}, with {glass_shape}, {liquid_description}, {ice_description}, and {garnish_description}. Style/medium: refined hand-painted gouache and watercolor game item illustration, semi-realistic proportions, subtle natural paper-like brush texture INSIDE the painted object only, delicate warm dark-brown contour accents, restrained amber highlights, believable transparent glass, clearly readable silhouette. Composition: square canvas, full glass and entire stem/base and garnish visible, centered with generous clean 12 percent margins, slight elevated three-quarter front view that shows the rim ellipse and drink surface. Lighting: soft warm saloon light from upper left, subtle cool glass reflections, preserve the drink's true color. Backdrop: genuinely transparent alpha outside the object and through unpainted glass areas; no backdrop, no paper card, no tabletop, no cast floor shadow. Constraints: accurate finished serving presentation, no ingredients placed outside glass, no bottles, no bartending tools, no humans, no hats, no frame, no lettering, no labels, no logo, no watermark; no pixel art, no shiny 3D render, no comic face, no exaggerated fantasy shapes. Output: a crisp square transparent PNG suitable for small in-game catalogue cards."
+  "source_style_template": "Use case: stylized-concept. Asset type: individual finished cocktail illustration for a 2D western saloon game's parchment recipe journal and menu. Primary request: draw exactly ONE physically plausible {cocktail_name}, with {glass_shape}, {liquid_description}, {ice_description}, and {garnish_description}. Style/medium: refined hand-painted gouache and watercolor game item illustration, semi-realistic proportions, subtle natural paper-like brush texture INSIDE the painted object only, delicate warm dark-brown contour accents, restrained amber highlights, believable transparent glass, clearly readable silhouette. Composition: square canvas, full glass and entire stem/base and garnish visible, centered with generous clean 12 percent margins, slight elevated three-quarter front view that shows the rim ellipse and drink surface. Lighting: soft warm saloon light from upper left, subtle cool glass reflections, preserve the drink's true color. Backdrop: genuinely transparent alpha outside the object and through unpainted glass areas; no backdrop, no paper card, no tabletop, no cast floor shadow. Constraints: accurate finished serving presentation, no ingredients placed outside glass, no bottles, no bartending tools, no humans, no hats, no frame, no lettering, no labels, no logo, no watermark; no pixel art, no shiny 3D render, no comic face, no exaggerated fantasy shapes. Output: a crisp square transparent PNG suitable for small in-game catalogue cards.",
+  "style_note": "2026-10-06：参考图与游戏当前五款钢笔淡彩手绘素材逐文件同步；style_id 保持接口兼容，prompt_version 更新为 v4。",
+  "reference_images": [
+    {
+      "id": "last_word",
+      "sha256": "28a55d2de697c2537227bcf223ccb6750d91074e13e2b7656f183beea64014b1",
+      "source": "res://assets/art/cocktails/last_word.png"
+    },
+    {
+      "id": "mojito",
+      "sha256": "6545a63f20e6bcac339622c0430313d355ef272a601985f8857698520821cbc7",
+      "source": "res://assets/art/cocktails/mojito.png"
+    },
+    {
+      "id": "gin_and_tonic",
+      "sha256": "44b0440171f4872872c3157c68d2892b7cee0cc224692fe20ddb82bcb431e137",
+      "source": "res://assets/art/cocktails/gin_and_tonic.png"
+    },
+    {
+      "id": "long_island_iced_tea",
+      "sha256": "154c66505e37fe221ae26e2f938d544e65ee293351f70a04996ea054175dce12",
+      "source": "res://assets/art/cocktails/long_island_iced_tea.png"
+    },
+    {
+      "id": "manhattan",
+      "sha256": "344b842d5cbfbe9e049386a6f76cc18ef565c1b2240e268b8fc794cc79a12e77",
+      "source": "res://assets/art/cocktails/manhattan.png"
+    }
+  ]
 }

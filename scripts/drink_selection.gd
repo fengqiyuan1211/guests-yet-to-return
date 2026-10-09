@@ -25,12 +25,11 @@ var starting := false
 func _ready() -> void:
 	if is_instance_valid(GameSession.home) and not GameSession.home.guest_profile.is_empty():
 		var profile: Dictionary=GameSession.home.guest_profile
-		guest={"id":str(profile.id),"name":str(profile.name) if StoryDialogue.is_known(str(profile.id)) else "来客", "day":TimeManager.day,"visit":GameSession.home.guest_count,"visit_id":GameSession.home.reception_id}
+		guest={"id":str(profile.id),"name":str(profile.name) if StoryDialogue.is_known(str(profile.id)) else "来客", "day":TimeManager.day,"visit":GameSession.home.guest_count}
 	_build()
 	resized.connect(_fit)
 	_fit()
 	MenuCatalog.changed.connect(_reload)
-	GuestService.ensure_demand(guest)
 	_reload()
 
 func _fit() -> void:
@@ -144,15 +143,19 @@ func _clear(parent: Node) -> void:
 		child.queue_free()
 
 func _reload() -> void:
-	var target: Dictionary=GuestService.ledger().demands.get(guest.get("visit_id",""),{})
-	if not target.is_empty():
-		var a: Dictionary=target.targets
+	var target: Dictionary=CustomerService.state.active.get("demand",{})
+	demand_hint.text=""
+	if PlayModes.mode=="mixing":
+		demand_hint.text=str(CustomerService.state.active.get("free_order",{}).get("speech","")).replace("[b]","").replace("[/b]","")
+	elif target.get("target") is Dictionary:
+		var a: Dictionary=target.target
 		var limits: Array=[]
-		for key in target.restrictions: limits.append({"alcohol":"无酒精","dairy":"无奶制品","mint":"不要薄荷","extra_syrup":"不要额外糖浆","pulp":"不要果肉"}.get(key,key))
-		demand_hint.text="本次口味：酒感 %s · 甜 %s · 酸 %s · 苦 %s\n要求：%s" % [str(a.alcohol_intensity),str(a.sweetness),str(a.sourness),str(a.bitterness),"、".join(limits)]
+		for rule: Dictionary in target.get("constraints",[]): limits.append(str(rule.get("label","")))
+		demand_hint.text="本次口味：酒感 %s · 甜 %s · 酸 %s · 苦 %s\n要求：%s" % [str(a.alcohol_intensity),str(a.sweetness),str(a.sourness),str(a.bitterness),"、".join(limits) if not limits.is_empty() else "没有额外禁忌"]
 	_clear(list)
 	buttons.clear()
-	for entry in MenuCatalog.entries:
+	var offered: Array=CustomerService.state.active.get("free_order",{}).get("menu",MenuCatalog.entries) if PlayModes.mode=="mixing" else MenuCatalog.entries
+	for entry in offered:
 		var recipe: Dictionary=MenuCatalog.get_recipe(str(entry.id))
 		if recipe.is_empty(): continue
 		var button:=_button(list,"%s    ·    %s 金币\n%s" % [recipe.name,str(entry.price),recipe.get("english_name","")],_select.bind(str(entry.id)))
@@ -203,6 +206,7 @@ func _select(id: String) -> void:
 	start_button.text="收拾并制作新酒  空格" if pending else "开始制作  空格 →"
 	start_button.disabled=recipe.is_empty() or not WorkbenchSession.writable
 	status.text="选定后按空格开始制作，左上角会显示这款酒的配方。"
+	if PlayModes.mode=="mixing": status.text=str(CustomerService.state.active.get("free_order",{}).get("speech","请先准备营业酒单。" )).replace("[b]","").replace("[/b]","")
 	if recipe.is_empty(): status.text="暂无上架酒款，请先保存一份营业酒单。"
 	if pending: status.text="开工将收拾桌上的「%s」，制作新选的酒；已用原料不退回。也可继续原来这一杯。" % session.recipe.name
 	if not WorkbenchSession.writable: status.text=WorkbenchSession.last_error
@@ -228,16 +232,18 @@ func _resume() -> void:
 
 func _start() -> void:
 	if starting or start_button.disabled: return
-	if not GuestService.serving_now() or StoryDialogue.guest_id!=str(guest.get("id","")) or not is_instance_valid(GameSession.home) or GameSession.home.reception_id!=str(guest.get("visit_id","")):
+	if not TimeManager.is_open or StoryDialogue.guest_id!=str(guest.get("id","")) or TimeManager.day!=int(guest.get("day",-1)) or not is_instance_valid(GameSession.home) or GameSession.home.guest_count!=int(guest.get("visit",-1)):
 		status.text="当前接待已结束，请返回主页重新选择客人。"
-		return
-	var order:=GuestService.make_order(guest,selected_id)
-	if order.is_empty():
-		status.text=GuestService.last_error
 		return
 	starting=true
 	var command_id:="select-recipe-%d" % Time.get_ticks_usec()
-	var payload: Dictionary={"recipe_id":selected_id,"guest":guest,"order":order}
+	var quote := CustomerService.prepare_order(selected_id)
+	if quote.is_empty():
+		starting = false
+		status.text = CustomerService.last_error if not CustomerService.last_error.is_empty() else "客人已离店，或这桌已经结账。"
+		return
+	guest["visit_id"] = quote.visit_id
+	var payload: Dictionary={"recipe_id":selected_id,"guest":guest}
 	if not replacing_id.is_empty(): payload.replace_session_id=replacing_id
 	if WorkbenchSession.command(command_id,"","select_recipe",payload):
 		Navigation.go_to(&"mixing")

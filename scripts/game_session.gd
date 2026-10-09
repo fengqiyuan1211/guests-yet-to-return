@@ -58,6 +58,9 @@ func _valid(data: Variant) -> bool:
 		return false
 	if not _whole(clock.get("fast_total"), 0, 1439) or not _whole(clock.get("fast_applied"), 0, int(clock.fast_total)):
 		return false
+	if not clock.get("closing_pending", false) is bool: return false
+	if clock.get("closing_pending", false):
+		if int(clock.minutes) != TimeManager.CLOSE_MINUTE or clock.fast_forwarding or not data.get("active") is Dictionary or str(data.active.get("guest_id", "")).is_empty(): return false
 	if not StoryDialogue._valid_save(data.get("story")) or not StoryDialogue.valid_session(data.get("active")):
 		return false
 	var reception = data.get("visit")
@@ -85,8 +88,14 @@ func load_game() -> bool:
 		return false
 	if data.get("reset_pending", false):
 		return _finish_restart()
+	if data.visit.get("closing_pending",false) and not data.clock.get("closing_pending",false) and not str(data.active.get("guest_id","")).is_empty():
+		data.clock.day=maxi(1,int(data.visit.get("closing_day",data.clock.day)))
+		data.clock.minutes=TimeManager.CLOSE_MINUTE
+		data.clock.closing_pending=true
+		data.clock.fast_forwarding=false
 	TimeManager.restore(data.clock)
 	StoryDialogue.progress = data.story.guests.duplicate(true)
+	StoryDialogue.migrate_content_progress()
 	StoryDialogue.restore_session(data.active)
 	visit = data.visit.duplicate(true)
 	dirty = false
@@ -134,7 +143,7 @@ func restart_game() -> bool:
 		last_error = "旧进度未能备份，暂未重新开始。"
 		return false
 	var index := 0
-	var restart_paths := [save_path, StoryDialogue.save_path, SlotWallet.save_path, MenuCatalog.save_path]
+	var restart_paths := [save_path, save_path+".modes", StoryDialogue.save_path, SlotWallet.save_path, MenuCatalog.save_path, CustomerService.save_path]
 	var supplies := get_node_or_null("/root/Supplies")
 	if supplies != null:
 		restart_paths.append(supplies.save_path)
@@ -152,6 +161,11 @@ func restart_game() -> bool:
 func _finish_restart() -> bool:
 	resetting = true
 	writable = true
+	var modes:=get_node_or_null("/root/PlayModes")
+	if modes!=null:
+		if not modes.reset_game(): return false
+	elif FileAccess.file_exists(save_path+".modes"):
+		if DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path+".modes"))!=OK: return false
 	if not MenuCatalog.reset_game():
 		last_error = "酒单尚未重置，请重试。"
 		return false
@@ -171,6 +185,9 @@ func _finish_restart() -> bool:
 	SlotWallet.writable = true
 	if not SlotWallet.persist():
 		last_error = "重新开始尚未完成，请重试。"
+		return false
+	if not CustomerService.reset_game():
+		last_error = "客人记录尚未重置，请重试。"
 		return false
 	StoryDialogue.progress = {}
 	StoryDialogue.end_guest()

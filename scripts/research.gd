@@ -19,6 +19,7 @@ var sheet: Control
 var desk_hint: Label
 var page_title: Label
 var back_button: Button
+var legendary_id := ""
 
 func _ready() -> void:
 	SaloonAudio.acquire_scene(self,"research")
@@ -280,19 +281,53 @@ func _library() -> void:
 
 func _legendary() -> void:
 	var records: Array=Research.config().legendary_recipes
+	var state:=WorkbenchSession.research_state()
 	if records.is_empty():
-		_label(body,Rect2(20,20,1180,50),"等待一份特别的配方",31)
-		_label(body,Rect2(20,100,780,210),"获得配方 → 按配方研习 → 完美出品 → 掌握\n\n传说配方会通过剧情或道具获得。当前还没有接入正式传说配方。\n\n研习不消耗灵感，但实际原料仍会消耗。",24)
+		_label(body,Rect2(20,30,1100,100),"还没有收到特别的配方。",30)
+		return
+	if legendary_id.is_empty():
+		legendary_id=str(records[0].id)
+		for candidate: Dictionary in records:
+			if state.acquired.has(candidate.id): legendary_id=str(candidate.id); break
+	var choices:=_scroll(Rect2(0,0,340,460))
+	for candidate: Dictionary in records:
+		var unlocked: bool=state.acquired.has(candidate.id)
+		var caption: String=str(candidate.name)+"\n"+("已掌握" if state.mastered.has(candidate.id) else ("待研习" if unlocked else "未获得"))
+		var button:=_button(choices,Rect2(0,0,320,94),caption,func(): legendary_id=str(candidate.id); _refresh())
+		button.custom_minimum_size=Vector2(320,94)
+		button.name="Legendary_"+str(candidate.id)
+	var r:=Research.legendary(legendary_id)
+	if r.is_empty(): return
+	var acquired: bool=state.acquired.has(r.id)
+	var mastered: bool=state.mastered.has(r.id)
+	_label(body,Rect2(385,0,840,48),str(r.name),31)
+	if not acquired:
+		_label(body,Rect2(385,90,800,125),"这份配方还藏在客人的故事里。\n完成对应角色的正式小游戏，收到他的纪念酒单后再来研习。",24)
 		_resume_button()
 		return
-	var rows:=_scroll(Rect2(10,0,1255,465))
-	var state:=WorkbenchSession.research_state()
-	for r in records:
-		var acquired: bool=state.acquired.has(r.id)
-		var status:="已掌握" if state.mastered.has(r.id) else ("待研习" if acquired else "未获得")
-		var button:=_button(rows,Rect2(0,0,1200,76),str(r.name)+" · "+status,func(): _begin("research_legendary",str(r.id)))
-		button.custom_minimum_size=Vector2(1180,76)
-		button.disabled=not acquired
+	var preview:=Preview.new()
+	preview.position=Vector2(370,80)
+	preview.size=Vector2(215,290)
+	preview.result=Research.preview_result(r)
+	body.add_child(preview)
+	_label(body,Rect2(385,50,840,32),"已掌握 · 可加入营业酒单" if mastered else "已获得 · 按配方完美出品后掌握",20,MUTED)
+	var rows:=_scroll(Rect2(610,95,640,275))
+	for row: Dictionary in r.ingredients:
+		var line:=_label(rows,Rect2(),"%s  %s %s" % [row.name,WorkbenchSession.format_amount(float(row.amount)),"颗" if row.unit=="piece" else row.unit],21)
+		line.custom_minimum_size=Vector2(590,32)
+	var glass_line:=_label(rows,Rect2(),str(r.glass)+" · "+"未完待续" if r.id=="childhood_keepsake" else str(r.glass),21)
+	glass_line.custom_minimum_size=Vector2(590,32)
+	for step: Dictionary in r.get("display_steps",[]):
+		var line:=_label(rows,Rect2(),str(step.instruction),19,MUTED)
+		line.custom_minimum_size=Vector2(590,48)
+	_button(body,Rect2(380,395,270,54),"再调一杯" if mastered else "按酒单开始研习",func(): _begin("research_legendary",str(r.id)))
+	if r.id=="childhood_keepsake":
+		_button(body,Rect2(675,395,250,54),"查看旧酒单",func():
+			var paper:=preload("res://scripts/memory_recipe_paper.gd").new()
+			paper.allow_research_link=false
+			add_child(paper))
+	if mastered: _button(body,Rect2(950,395,285,54),"加入营业酒单",func(): Navigation.go_to(&"menu"))
+	feedback.text="按原配方完美出品后掌握。研习照常消耗原料。" if not mastered else "配方已经记住，去酒单里选择上架即可。"
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode==KEY_ESCAPE:

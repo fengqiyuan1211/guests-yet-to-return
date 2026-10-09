@@ -2,6 +2,7 @@ extends Node
 ## Finished cocktail definitions. Inventory and player unlocks belong to player state.
 
 const CATALOG_PATH := "res://data/cocktails/catalog.json"
+const Sensory := preload("res://scripts/sensory_model.gd")
 const SCORE_FIELDS := ["alcohol_intensity", "sweetness", "sourness", "bitterness"]
 
 var last_error := ""
@@ -95,12 +96,24 @@ func reload_catalog() -> bool:
 		return false
 	var next_records: Array = []
 	var next_by_id: Dictionary = {}
+	var sensory_model := Sensory.snapshot()
+	if not Sensory.valid_model(sensory_model):
+		last_error = "酒品属性资料暂时无法读取。"
+		return false
 	for record in data.cocktails:
 		if not _valid_record(record) or next_by_id.has(record.id):
 			last_error = "鸡尾酒资料中存在缺失或重复内容。"
 			return false
-		next_records.append(record.duplicate(true))
-		next_by_id[record.id] = record.duplicate(true)
+		var standard := Sensory.standard(record, sensory_model)
+		if not standard.data_complete:
+			last_error = "这款酒的材料属性或用量不完整：" + str(record.name)
+			return false
+		var calibrated: Dictionary = record.duplicate(true)
+		for field in SCORE_FIELDS:
+			calibrated[field] = standard.attributes[field]
+		calibrated["sensory_model_version"] = standard.version
+		next_records.append(calibrated)
+		next_by_id[record.id] = calibrated.duplicate(true)
 	_records = next_records
 	_by_id = next_by_id
 	_textures.clear()

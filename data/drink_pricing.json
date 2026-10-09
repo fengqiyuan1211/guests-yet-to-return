@@ -1,0 +1,7 @@
+{
+  "version": "ingredient-cost-1",
+  "multiplier": 1.5,
+  "rounding": "floor",
+  "minimum_price": 1,
+  "note": "按保存配方的原料及装饰成本定价。冰、杯型和器材不计成本；操作浪费不提高售价。"
+}

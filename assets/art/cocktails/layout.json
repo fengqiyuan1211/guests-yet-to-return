@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "description": "Normalized source-image coordinates for glass body, excluding protruding garnish. Runtime display only.",
+  "cocktails": {
+    "last_word": {
+      "body_top": 0.062,
+      "body_bottom": 0.935,
+      "body_center_x": 0.507
+    },
+    "mojito": {
+      "body_top": 0.216,
+      "body_bottom": 0.994,
+      "body_center_x": 0.514
+    },
+    "gin_and_tonic": {
+      "body_top": 0.12,
+      "body_bottom": 0.952,
+      "body_center_x": 0.489
+    },
+    "long_island_iced_tea": {
+      "body_top": 0.124,
+      "body_bottom": 0.934,
+      "body_center_x": 0.471
+    },
+    "manhattan": {
+      "body_top": 0.064,
+      "body_bottom": 0.961,
+      "body_center_x": 0.503
+    }
+  }
+}

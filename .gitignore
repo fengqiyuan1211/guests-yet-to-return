@@ -2,3 +2,10 @@
 *.translation
 .DS_Store
 exports/
+
+# Local API secrets and generated service state
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc

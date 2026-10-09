@@ -5,7 +5,7 @@
     {
       "guest_id": "stick",
       "name": "小线",
-      "story_summary": "以前演过不少游戏，如今重聚老搭档，想起那些很久没再来的观众。",
+      "story_summary": "小游戏演员想起长大后没有再来的玩家，重排旧戏，并把邀请留给正在玩酒馆的每个人。",
       "episodes": [
         {
           "id": "stick_01",
@@ -16,25 +16,25 @@
         {
           "id": "stick_02",
           "episode": 2,
-          "title": "一张键盘挤两个人",
+          "title": "那局球还没打完",
           "file": "stick/02.json"
         },
         {
           "id": "stick_03",
           "episode": 3,
-          "title": "拍砸了也得接着拍",
+          "title": "箱子里还有一本旧戏",
           "file": "stick/03.json"
         },
         {
           "id": "stick_04",
           "episode": 4,
-          "title": "好不容易约上一回",
+          "title": "这次约好了下周",
           "file": "stick/04.json"
         },
         {
           "id": "stick_05",
           "episode": 5,
-          "title": "请谁来看这场戏",
+          "title": "致未归的客人",
           "file": "stick/05.json"
         }
       ]

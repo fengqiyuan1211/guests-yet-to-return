@@ -41,6 +41,7 @@ func _ready() -> void:
 	_build()
 	StoryDialogue.changed.connect(_refresh)
 	WorkbenchSession.changed.connect(_refresh)
+	CustomerService.changed.connect(_refresh)
 	_refresh()
 
 func _style(fill: Color, border:=Color("b28b53")) -> StyleBoxFlat:
@@ -308,7 +309,7 @@ func _drink(record: Dictionary, overview: bool) -> void:
 	var minute := int(stamp.get("minute",-1))
 	var when := "第 %d 天" % day if day>0 else "早期记录"
 	if minute>=0: when += "  %02d:%02d" % [minute/60,minute%60]
-	_label(column,when+"  ·  "+(("拒收 · 未收费" if result.get("customer_receipt",{}).get("status")=="rejected" else "已饮用并结算") if result.has("customer_receipt") else "已出品 · 尚未确认饮用"),16,MUTED)
+	_label(column,when+"  ·  "+(("拒收 · 未收费" if result.get("customer_receipt",{}).get("status")=="rejected" and result.customer_receipt.total_paid==0 else "已交付并结算") if result.has("customer_receipt") else "已出品 · 尚未确认饮用"),16,MUTED)
 	_label(column,str(recipe.get("name","未命名酒款")),29)
 	_label(column,str(recipe.get("english_name","")),16,MUTED)
 	var row := HBoxContainer.new()
@@ -399,6 +400,8 @@ func _activities() -> void:
 				var recipe:=preload("res://scripts/research_data.gd").legendary(info.reward.recipe_id)
 				_label(column,"首通已领取：《%s》配方 · 灵感 +%d" % [recipe.get("name",""),info.reward.inspiration],21,Color("506537"))
 			else: _label(column,"正式首通：专属配方＋3 点研发灵感；演示不发奖。",18,MUTED)
+		if item.id=="stick_minigame":
+			_label(column,"这里可随时练习；正式邀请与纪念奖励在酒馆剧情中触发。",19,MUTED)
 		var action := _button(column,"开始游戏  →" if available and item.accessible else ("尚未开放" if item.unlocked else "等待客人的邀请"),_launch_activity.bind(str(item.id)))
 		action.disabled = not available or not item.accessible
 		if item.demo and not item.unlocked: action.tooltip_text = "内测演示：暂时开放体验，不代表正式剧情已解锁；不推进剧情、不发放奖励。"
@@ -407,6 +410,9 @@ func _launch_activity(id: String) -> void:
 	# Check again at click time; presentation state does not grant access.
 	for item in Data.activities(selected_id,StoryDialogue.progress):
 		if item.id == id and item.accessible and Navigation.registered_pages.has(StringName(item.route)):
+			if item.route=="stick_badminton":
+				Navigation.memory_match_context={"mode":"practice"}
+				Navigation.memory_from_journal=true
 			Navigation.go_to(StringName(item.route))
 
 func _has_demo(id: String) -> bool:

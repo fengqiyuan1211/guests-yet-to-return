@@ -242,7 +242,7 @@ func commit_workbench(next: Dictionary, amounts: Dictionary = {}) -> bool:
 		return false
 	inventory.restore(candidate.serialize())
 	workbench_initialized=true
-	if not amounts.is_empty(): _sync_menu()
+	if not amounts.is_empty() or previous.get("research", {}).get("mastered", {}) != workbench.get("research", {}).get("mastered", {}): _sync_menu()
 	_busy=false
 	changed.emit()
 	shop_changed.emit()
@@ -414,8 +414,10 @@ func _sync_menu() -> bool:
 		return true
 	var unlocked: Array = []
 	for recipe: Dictionary in menu.all_recipes():
-		if not recipe.get("source_guest", "").is_empty(): continue # Activity rewards, never material-discovery unlocks.
-		if _recipe_requirements(recipe).ready:
+		if not recipe.get("source_guest", "").is_empty(): continue
+		if recipe.get("unlock_kind") == "legendary_mastery":
+			if workbench.get("research", {}).get("mastered", {}).has(recipe.id): unlocked.append(recipe.id)
+		elif _recipe_requirements(recipe).ready:
 			unlocked.append(recipe.id)
 	if not menu.update_supply_inventory(inventory.as_recipe_inventory(), unlocked):
 		last_error = "已保存库存，酒谱更新暂未完成。"

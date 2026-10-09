@@ -319,6 +319,15 @@ func run() -> void:
 		check(WorkbenchSession.state.session.result.evaluation.tier=="perfect","gift recipe achieves perfect with stated technique: "+guest)
 		check(WorkbenchSession.research_state().mastered.has(recipe.id),"gift recipe can be mastered: "+guest)
 	check(WorkbenchSession.research_state().inspiration==trial_inspiration,"gift recipe study has no DIY inspiration charge")
+	Navigation.research_view="legendary"
+	Navigation.go_to(&"research")
+	await settle()
+	var research_page: Control=home.active_page
+	for recipe_id in ["character_milo","character_ada","character_hank","childhood_keepsake"]:
+		check(research_page.find_child("Legendary_"+recipe_id,true,false)!=null,"research UI keeps reward recipe entry "+recipe_id)
+	research_page.legendary_id="character_hank"
+	research_page._refresh()
+	await capture("merge-research-all-legends")
 	check(MenuCatalog.save_menu([{"id":"character_milo","price":60}],MenuCatalog.design),"reward recipe may be explicitly published")
 	check(WorkbenchSession._valid(WorkbenchSession.state),"combined activity and research save validates")
 	var roundtrip: Dictionary=JSON.parse_string(JSON.stringify(WorkbenchSession.state))

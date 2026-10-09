@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "reaction_set_id": "stick_taste_reactions",
+  "status": "authored_pending_runtime",
+  "lines": {
+    "satisfied": "嗯，这杯喝着舒服。",
+    "unsatisfied": "跟我今天想喝的有点不一样。",
+    "too_alcoholic": "酒味有点重了。",
+    "not_alcoholic_enough": "今天还想喝得再有点酒味。",
+    "too_sweet": "有点甜了。",
+    "not_sweet_enough": "甜味还能再多一点。",
+    "too_sour": "有点酸过头了。",
+    "not_sour_enough": "今天想喝得再酸一点。",
+    "too_bitter": "这杯有点苦。",
+    "not_bitter_enough": "苦味可以再留一点。",
+    "pulp": "有果肉啊。我还是喝不带果肉的顺口。",
+    "fruit_heavy": "果味有点抢了。今天想喝的不是这种味道。"
+  },
+  "selection_rule": "由正式评分中的signed_difference和有效偏差选择最主要原因；不要根据台词自行算分。",
+  "runtime_enabled": false
+}

@@ -1,0 +1,207 @@
+{
+  "schema_version": 1,
+  "status": "runtime_playtest",
+  "profiles": [
+    {
+      "guest_id": "stick",
+      "profile_version": "stick-profile-v0.3",
+      "base_preferences": {
+        "alcohol_intensity": 35,
+        "sweetness": 25,
+        "sourness": 20,
+        "bitterness": 30
+      },
+      "base_reference": {
+        "recipe_id": "gin_and_tonic",
+        "basis": "采用当前图鉴策划草案值；后续校准需要显式确认。"
+      },
+      "weights": {
+        "alcohol_intensity": 1,
+        "sweetness": 1,
+        "sourness": 1,
+        "bitterness": 1
+      },
+      "tolerances": {
+        "alcohol_intensity": 5,
+        "sweetness": 5,
+        "sourness": 5,
+        "bitterness": 5
+      },
+      "permanent_delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "long_term_changes_enabled": false,
+      "buff_affinities": {
+        "buff.refreshing": 5,
+        "buff.bubbles": 5,
+        "buff.juniper": 3
+      },
+      "soft_state_penalties": [
+        {
+          "id": "stick_dislikes_pulp",
+          "state_id": "mouthfeel.pulp",
+          "operator": "eq",
+          "value": true,
+          "penalty": -5,
+          "dedup_group": "stick_pulp",
+          "scope": "served_contents"
+        }
+      ],
+      "constraints": [],
+      "descriptive_preferences": [
+        "清透",
+        "接受气泡",
+        "少量青柠装饰可以接受"
+      ],
+      "unknown_state_policy": "data_incomplete_not_false",
+      "reaction_set_id": "stick_taste_reactions"
+    },
+    {
+      "guest_id": "milo",
+      "profile_version": "character-story-integrated-1",
+      "status": "playtest_unconfirmed",
+      "base_preferences": {
+        "alcohol_intensity": 45,
+        "sweetness": 25,
+        "sourness": 30,
+        "bitterness": 10
+      },
+      "weights": {
+        "alcohol_intensity": 1.0,
+        "sweetness": 1.0,
+        "sourness": 1.0,
+        "bitterness": 1.0
+      },
+      "tolerances": {
+        "alcohol_intensity": 5.0,
+        "sweetness": 5.0,
+        "sourness": 5.0,
+        "bitterness": 5.0
+      },
+      "constraints": [
+        {
+          "kind": "forbid_items",
+          "items": [
+            "sku_milk",
+            "sku_cream"
+          ],
+          "label": "不喝奶制品"
+        }
+      ],
+      "soft_state_penalties": [],
+      "permanent_delta": {},
+      "long_term_changes_enabled": false,
+      "buff_affinities": {}
+    },
+    {
+      "guest_id": "ada",
+      "profile_version": "character-story-integrated-1",
+      "status": "playtest_unconfirmed",
+      "base_preferences": {
+        "alcohol_intensity": 30,
+        "sweetness": 10,
+        "sourness": 25,
+        "bitterness": 8
+      },
+      "weights": {
+        "alcohol_intensity": 1.0,
+        "sweetness": 1.0,
+        "sourness": 1.0,
+        "bitterness": 1.0
+      },
+      "tolerances": {
+        "alcohol_intensity": 5.0,
+        "sweetness": 5.0,
+        "sourness": 5.0,
+        "bitterness": 5.0
+      },
+      "constraints": [
+        {
+          "kind": "forbid_items",
+          "items": [
+            "sku_mint_leaf",
+            "sku_mint_sprig"
+          ],
+          "label": "不加薄荷"
+        }
+      ],
+      "soft_state_penalties": [],
+      "permanent_delta": {},
+      "long_term_changes_enabled": false,
+      "buff_affinities": {}
+    },
+    {
+      "guest_id": "hank",
+      "profile_version": "character-story-integrated-1",
+      "status": "playtest_unconfirmed",
+      "base_preferences": {
+        "alcohol_intensity": 65,
+        "sweetness": 15,
+        "sourness": 10,
+        "bitterness": 30
+      },
+      "weights": {
+        "alcohol_intensity": 1.0,
+        "sweetness": 1.0,
+        "sourness": 1.0,
+        "bitterness": 1.0
+      },
+      "tolerances": {
+        "alcohol_intensity": 5.0,
+        "sweetness": 5.0,
+        "sourness": 5.0,
+        "bitterness": 5.0
+      },
+      "constraints": [
+        {
+          "kind": "forbid_extra",
+          "item": "sku_simple_syrup",
+          "label": "不要在配方外额外加糖浆"
+        }
+      ],
+      "soft_state_penalties": [],
+      "permanent_delta": {},
+      "long_term_changes_enabled": false,
+      "buff_affinities": {}
+    },
+    {
+      "guest_id": "yellow_creature",
+      "profile_version": "yellow_creature-playtest-v1",
+      "status": "playtest_unconfirmed",
+      "base_preferences": {
+        "alcohol_intensity": 0,
+        "sweetness": 65,
+        "sourness": 25,
+        "bitterness": 0
+      },
+      "weights": {
+        "alcohol_intensity": 1,
+        "sweetness": 1,
+        "sourness": 1,
+        "bitterness": 1
+      },
+      "tolerances": {
+        "alcohol_intensity": 5,
+        "sweetness": 5,
+        "sourness": 5,
+        "bitterness": 5
+      },
+      "constraints": [
+        {
+          "kind": "max_attribute",
+          "attribute": "alcohol_intensity",
+          "maximum": 0,
+          "label": "不喝含酒精的饮品"
+        }
+      ],
+      "soft_state_penalties": [],
+      "permanent_delta": {},
+      "long_term_changes_enabled": false,
+      "buff_affinities": {}
+    }
+  ],
+  "runtime_enabled": true
+}

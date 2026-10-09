@@ -3,6 +3,7 @@ extends Node
 signal changed
 signal story_finished(guest_id: String, episode_id: String)
 signal smalltalk_requested(guest_id: String, context: Dictionary)
+const CONTENT_REVISIONS := {"stick": "stick-v0.3"}
 const DATA_ROOT := "res://data/story_dialogues/"
 var catalog: Dictionary = {}
 var introductions: Dictionary = {}
@@ -41,7 +42,7 @@ func _ready() -> void:
 			elif character.guest_id == "yellow_creature":
 				chapter.nodes.handoff.reveals_identity = true
 			var taste_cfg: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_service.json"))
-			if taste_cfg.events.has(chapter.id):
+			if character.guest_id!="stick" and taste_cfg.events.has(chapter.id):
 				for closing_id in chapter.nodes.keys():
 					var closing: Dictionary=chapter.nodes[closing_id]
 					if closing.has("transition"):
@@ -65,6 +66,18 @@ func load_progress() -> void:
 		last_error = "对话存档无法读取，本次进度暂不保存。"
 		return
 	progress = data.guests
+	migrate_content_progress()
+
+func content_revision(id: String) -> String:
+	return str(CONTENT_REVISIONS.get(id, ""))
+
+func migrate_content_progress() -> void:
+	# Preserve completed chapters and identity. Restart only an unfinished revised chapter.
+	for id in CONTENT_REVISIONS:
+		if progress.has(id) and progress[id].get("content_revision", "") != content_revision(id):
+			progress[id]["known"] = progress[id].get("known", int(progress[id].get("completed", 0)) > 0 or not progress[id].get("pending", {}).is_empty())
+			progress[id].pending = {}
+			progress[id]["content_revision"] = content_revision(id)
 
 func _valid_save(data: Variant) -> bool:
 	if not data is Dictionary or data.get("version") != 1 or not data.get("guests") is Dictionary:
@@ -116,7 +129,7 @@ func _save() -> void:
 
 func _state() -> Dictionary:
 	if not progress.has(guest_id):
-		progress[guest_id] = {"completed": 0, "pending": {}, "heard": {}, "known": false}
+		progress[guest_id] = {"completed": 0, "pending": {}, "heard": {}, "known": false, "content_revision": content_revision(guest_id), "taste_event_id":taste_event_id}
 	return progress[guest_id]
 
 func is_known(id: String) -> bool:
@@ -248,7 +261,8 @@ func current_choices() -> Array:
 
 func session_snapshot() -> Dictionary:
 	return {"guest_id": guest_id, "episode_id": episode.get("id", ""), "node_id": node_id,
-		"phase": phase, "taste_event_id":taste_event_id, "speech": speech, "idle_index": idle_index, "history": history.duplicate(true)}
+		"phase": phase, "speech": speech, "idle_index": idle_index, "history": history.duplicate(true),
+		"content_revision": content_revision(guest_id), "taste_event_id":taste_event_id}
 
 func valid_session(data: Variant) -> bool:
 	if not data is Dictionary:
@@ -280,6 +294,15 @@ func restore_session(data: Dictionary) -> void:
 	for chapter in catalog.get(guest_id, []):
 		if chapter.id == data.get("episode_id"):
 			episode = chapter
+	if phase == "story" and not episode.is_empty():
+		if data.get("content_revision", "") != content_revision(guest_id):
+			node_id = str(episode.get("story_entry", episode.entry) if is_known(guest_id) else episode.entry)
+			history = []
+		# Scene snapshots cache text; always display the current authored line.
+		speech = str(episode.nodes[node_id].get("text", ""))
+		_state().pending = {"episode_id": episode.id, "node": node_id, "history": history.duplicate(true)}
+	elif phase == "idle" and idle_index == -1 and episode.has("nodes") and episode.nodes.has("closing"):
+		speech = str(episode.nodes.closing.get("text", speech))
 
 func progress_label() -> String:
 	# Story bookkeeping stays internal; only an actionable save failure needs a notice.

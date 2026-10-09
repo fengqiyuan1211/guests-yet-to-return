@@ -7,6 +7,7 @@ from http.client import IncompleteRead
 from io import BytesIO
 import json
 import socket
+import ssl
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -115,6 +116,28 @@ class ErrorBody(BytesIO):
 
 
 class ProviderTests(unittest.TestCase):
+    def test_default_transport_does_not_inherit_desktop_proxy(self):
+        from cocktail_service.provider import urlopen
+        from urllib.request import ProxyHandler
+        self.assertFalse(any(isinstance(h, ProxyHandler) and h.proxies
+                             for h in urlopen.__self__.handlers))
+
+    def test_system_proxy_is_explicitly_opt_in(self):
+        provider = QwenImageProvider(settings(use_system_proxy=True))
+        with patch("cocktail_service.provider.build_opener") as factory:
+            request = Request("https://example.test")
+            provider._open(request, timeout=12)
+            factory.return_value.open.assert_called_once_with(request, timeout=12)
+
+    def test_tls_failure_is_safe_and_never_retried(self):
+        with patch("cocktail_service.provider.urlopen", side_effect=URLError(
+                ssl.SSLEOFError(8, "secret " + API_KEY))) as transport:
+            with self.assertRaises(ProviderError) as caught:
+                QwenImageProvider(settings()).generate("test", [], 1)
+        self.assertIn("安全连接中断", caught.exception.message)
+        self.assertNotIn(API_KEY, caught.exception.message)
+        self.assertEqual(transport.call_count, 1)
+
     def setUp(self) -> None:
         self.provider = QwenImageProvider(settings())
 

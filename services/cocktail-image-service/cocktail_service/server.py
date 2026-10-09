@@ -61,7 +61,7 @@ def make_server(jobs, host=None, port=None):
                 self.send_bytes(200, (settings.service_root / "web/index.html").read_bytes(), "text/html; charset=utf-8")
                 return
             if path == "/health":
-                self.send_json(200, {"status": "ok", "provider_configured": jobs.configured,
+                self.send_json(200, {"status": "ok", "service": "cocktail-image-service", "provider_configured": jobs.configured,
                                      "restart_required": jobs.configuration_changed(),
                                      "model": settings.model, "style_id": STYLE_ID,
                                      "prompt_version": PROMPT_VERSION})

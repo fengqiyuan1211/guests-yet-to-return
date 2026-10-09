@@ -126,7 +126,7 @@ func run() -> void:
 	check(StoryDialogue.unlock_activity("stick","stick_minigame","test-story-event"),"authored unlock hook persists")
 	check(StoryDialogue.unlock_activity("stick","stick_minigame","test-story-event"),"unlock retries are idempotent")
 	check(text_in(bench).contains("开始游戏"),"badminton demo has a real launch entry")
-	var route: StringName = &"stick_demo"
+	var route: StringName = &"stick_badminton"
 	var scene: PackedScene = Navigation.registered_pages[route]
 	Navigation.registered_pages.erase(route)
 	bench._launch_activity("stick_minigame")

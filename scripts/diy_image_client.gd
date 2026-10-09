@@ -214,6 +214,7 @@ func _accept_job(info: Dictionary, kind: String, serial: int) -> void:
 		_fail("INVALID_STATUS", "酒图服务返回了未知的任务状态。")
 		return
 	_job = info.duplicate(true)
+	_job["provider_terminal"] = status == "failed"
 	_job["request_id"] = _request_id
 	if status == "failed":
 		_service_failure(info, "GENERATION_FAILED")

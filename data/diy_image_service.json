@@ -1,0 +1,5 @@
+{
+  "service_url": "http://127.0.0.1:8787",
+  "style_id": "saloon-cocktail-cutout-v1",
+  "note": "模型密钥只在 services/cocktail-image-service/.env。可用 user://diy_image_service.cfg 覆盖 service.url 和 service.token。"
+}

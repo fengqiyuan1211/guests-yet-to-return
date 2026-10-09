@@ -40,6 +40,7 @@ class Settings:
     workers: int = 1
     max_pending: int = 16
     reference_images: bool = True
+    use_system_proxy: bool = False
 
     @classmethod
     def from_env(cls, root: Path = ROOT) -> "Settings":
@@ -57,6 +58,7 @@ class Settings:
             workers=int(env.get("IMAGE_WORKERS", "1")),
             max_pending=int(env.get("IMAGE_MAX_PENDING", "16")),
             reference_images=env.get("IMAGE_REFERENCE_IMAGES", "true").lower() == "true",
+            use_system_proxy=env.get("QWEN_USE_SYSTEM_PROXY", "false").lower() == "true",
         )
         if value.host not in ("127.0.0.1", "localhost", "::1") and not value.service_token:
             raise ValueError("开放给其他电脑前，请设置 IMAGE_SERVICE_TOKEN。")

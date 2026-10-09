@@ -102,7 +102,7 @@ func _catalog_changed() -> void:
 
 func _visible_recipes() -> Array:
 	if selected_filter==3: return WorkbenchSession.research_recipes()
-	var records := MenuCatalog.all_recipes()
+	var records := MenuCatalog.all_recipes().filter(func(r: Dictionary): return r.get("unlock_kind")!="legendary_mastery" or WorkbenchSession.research_state().acquired.has(r.id))
 	records.append_array(WorkbenchSession.research_recipes())
 	records.sort_custom(func(a: Dictionary, b: Dictionary): return int(a.get("codex_order", 99999)) < int(b.get("codex_order", 99999)))
 	if selected_filter == 0:
@@ -205,6 +205,7 @@ func _make_page(index: int) -> Control:
 	return sheet
 
 func _missing_material_tooltip(recipe_id: String) -> String:
+	if MenuCatalog.get_recipe(recipe_id).get("unlock_kind")=="legendary_mastery": return "带着旧酒单前往传说研习台，完美出品后点亮。"
 	var names: Array[String] = []
 	var supplies := get_node_or_null("/root/Supplies")
 	if supplies != null:
@@ -248,11 +249,11 @@ func _populate_card(card: Button, recipe: Dictionary) -> void:
 		drink.modulate.a = 0.82
 	drink.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(drink)
-	if recipe.get("source_kind")=="diy":
+	if recipe.get("source_kind")=="diy" or recipe.get("unlock_kind")=="legendary_mastery":
 		var preview:=preload("res://scripts/workbench_drink_preview.gd").new()
 		preview.position=drink.position
 		preview.size=drink.size
-		preview.result=recipe.result
+		preview.result=preload("res://scripts/research_data.gd").preview_result(recipe)
 		preview.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		card.add_child(preview)
 	var stamp := _panel(card, Rect2(218, 14, 59, 29), _style(Color.TRANSPARENT, Color(0.40, 0.26, 0.11, 0.65)))

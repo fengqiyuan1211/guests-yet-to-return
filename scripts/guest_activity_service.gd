@@ -10,6 +10,7 @@ var migration_notice:=""
 func _ready() -> void:
 	StoryDialogue.changed.connect(_queue_reconcile)
 	GuestService.changed.connect(_queue_reconcile)
+	CustomerService.changed.connect(_queue_reconcile)
 	call_deferred("reconcile")
 
 func _queue_reconcile() -> void:
@@ -29,6 +30,9 @@ func satisfied_count(guest: String) -> int:
 	for tx: Dictionary in GuestService.ledger().deliveries.values():
 		if tx.phase=="complete" and tx.order.guest_id==guest and tx.receipt.status=="accepted" and float(tx.receipt.score)>=70:
 			visits[tx.order.visit_id]=true
+	for record: Dictionary in CustomerService.state.deliveries.values():
+		if record.status=="settled" and record.guest_id==guest and record.get("play_mode","story")!="mixing" and record.review.status=="scored" and record.review.get("satisfaction")!=null and float(record.review.satisfaction)>=70:
+			visits[record.visit_id]=true
 	return visits.size()
 
 func progress(id: String) -> Dictionary:

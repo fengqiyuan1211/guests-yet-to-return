@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "version": "cocktail-buffs-playtest-2",
+  "required_quality_tier": "perfect",
+  "buffs": [
+    {
+      "id": "buff.refreshing",
+      "kind": "ordinary",
+      "name": "清爽",
+      "namespace": "mouthfeel",
+      "tag": "清爽"
+    },
+    {
+      "id": "buff.bubbles",
+      "kind": "ordinary",
+      "name": "气泡",
+      "namespace": "mouthfeel",
+      "tag": "气泡"
+    },
+    {
+      "id": "buff.juniper",
+      "kind": "ordinary",
+      "name": "杜松",
+      "namespace": "flavor",
+      "tag": "杜松"
+    },
+    {
+      "id": "buff.herbal",
+      "kind": "ordinary",
+      "name": "草本",
+      "namespace": "flavor",
+      "tag": "草本"
+    },
+    {
+      "id": "buff.lime",
+      "kind": "ordinary",
+      "name": "青柠",
+      "namespace": "flavor",
+      "tag": "青柠"
+    },
+    {
+      "id": "buff.cherry",
+      "kind": "ordinary",
+      "name": "樱桃",
+      "namespace": "flavor",
+      "tag": "樱桃"
+    },
+    {
+      "id": "buff.mint",
+      "kind": "ordinary",
+      "name": "薄荷",
+      "namespace": "flavor",
+      "tag": "薄荷"
+    },
+    {
+      "id": "buff.citrus",
+      "kind": "ordinary",
+      "name": "柑橘",
+      "namespace": "flavor",
+      "tag": "柑橘"
+    },
+    {
+      "id": "buff.cola",
+      "kind": "ordinary",
+      "name": "可乐",
+      "namespace": "flavor",
+      "tag": "可乐"
+    },
+    {
+      "id": "buff.whiskey",
+      "kind": "ordinary",
+      "name": "威士忌",
+      "namespace": "flavor",
+      "tag": "威士忌"
+    },
+    {
+      "id": "buff.spice",
+      "kind": "ordinary",
+      "name": "香料",
+      "namespace": "flavor",
+      "tag": "香料"
+    },
+    {
+      "id": "buff.sweet_sour",
+      "kind": "ordinary",
+      "name": "酸甜",
+      "namespace": "mouthfeel",
+      "tag": "酸甜",
+      "tag_aliases": [
+        "甜酸"
+      ]
+    },
+    {
+      "id": "buff.short_drink",
+      "kind": "ordinary",
+      "name": "短饮",
+      "namespace": "mouthfeel",
+      "tag": "短饮"
+    },
+    {
+      "id": "buff.full_bodied",
+      "kind": "ordinary",
+      "name": "醇厚",
+      "namespace": "mouthfeel",
+      "tag": "醇厚"
+    },
+    {
+      "id": "buff.gently_bitter",
+      "kind": "ordinary",
+      "name": "微苦",
+      "namespace": "mouthfeel",
+      "tag": "微苦"
+    },
+    {
+      "id": "buff.to_be_continued",
+      "kind": "legendary",
+      "name": "未完待续",
+      "namespace": "theme",
+      "tag": "怀旧",
+      "effect_status": "reserved"
+    }
+  ],
+  "recipes": {
+    "last_word": {
+      "buff_ids": [
+        "buff.herbal",
+        "buff.lime",
+        "buff.cherry",
+        "buff.sweet_sour",
+        "buff.short_drink"
+      ]
+    },
+    "mojito": {
+      "buff_ids": [
+        "buff.mint",
+        "buff.lime",
+        "buff.refreshing",
+        "buff.bubbles"
+      ]
+    },
+    "gin_and_tonic": {
+      "buff_ids": [
+        "buff.juniper",
+        "buff.citrus",
+        "buff.refreshing",
+        "buff.bubbles"
+      ]
+    },
+    "long_island_iced_tea": {
+      "buff_ids": [
+        "buff.citrus",
+        "buff.cola",
+        "buff.sweet_sour",
+        "buff.bubbles"
+      ]
+    },
+    "manhattan": {
+      "buff_ids": [
+        "buff.whiskey",
+        "buff.spice",
+        "buff.full_bodied",
+        "buff.gently_bitter"
+      ]
+    },
+    "childhood_keepsake": {
+      "buff_ids": [
+        "buff.to_be_continued"
+      ],
+      "source_kind": "research_legendary"
+    }
+  },
+  "source_note": "经典酒完美工艺获得普通 Buff；童年拾忆完美出品显示金色传说 Buff，具体加成未启用。"
+}

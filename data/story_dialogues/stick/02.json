@@ -4,90 +4,116 @@
   "guest_id": "stick",
   "guest_name": "小线",
   "episode": 2,
-  "title": "一张键盘挤两个人",
+  "title": "那局球还没打完",
   "entry": "start",
   "nodes": {
-    "start_reply1": {
-      "speaker": "guest",
-      "text": "对，一个按字母，一个按方向键。手还能分开，胳膊老碰一块儿，谁没接到球就说是旁边的人挤的。",
-      "next": "beat2"
-    },
-    "start_reply2": {
-      "speaker": "guest",
-      "text": "有阵子差不多天天。大概是写完作业以后吧，我也不清楚，反正玩到一半经常有人喊他们。",
-      "next": "beat2"
-    },
     "start": {
       "speaker": "guest",
-      "text": "上回说那两个打羽毛球的小孩，我后来想了想，认识他们的时候，我还天天在球场上班。他俩共用一张键盘，老嫌对方占地方。",
+      "text": "今天换一杯，[b]酒味重一点，别太甜[/b]。[b]果味也别太重[/b]。回去以后总想起上次说的那两个小孩，有些事一提就停不下来了。",
       "choices": [
         {
           "id": "stick_02.start.c1",
-          "text": "一人按一边那种？",
+          "text": "一人按一边键盘的那两个？",
           "next": "start_reply1"
         },
         {
           "id": "stick_02.start.c2",
-          "text": "他们天天都来？",
+          "text": "他们以前天天都来？",
           "next": "start_reply2"
+        }
+      ]
+    },
+    "start_reply1": {
+      "speaker": "guest",
+      "text": "对。手倒能分开，胳膊老碰在一块儿。谁没接到球就说旁边的人挤他，吵完还是接着玩。",
+      "next": "beat2"
+    },
+    "start_reply2": {
+      "speaker": "guest",
+      "text": "有阵子差不多天天。玩到一半经常有人喊他们，过会儿又偷偷回来。我有时连球都不收。",
+      "next": "beat2"
+    },
+    "beat2": {
+      "speaker": "guest",
+      "text": "最后那局是左边领先一分。右边非说刚才那个不算，还没吵明白就得走了。一个先起来，另一个多按了两下，最后也跟着走了。",
+      "choices": [
+        {
+          "id": "stick_02.beat2.c1",
+          "text": "所以最后也没分出输赢？",
+          "next": "beat2_reply1"
+        },
+        {
+          "id": "stick_02.beat2.c2",
+          "text": "你还记得谁领先呢。",
+          "next": "beat2_reply2"
         }
       ]
     },
     "beat2_reply1": {
       "speaker": "guest",
-      "text": "就是这个意思。我后来也不急着走了，反正过不了一会儿又要发球。",
+      "text": "没有。我还把比分记了下来，怕下次开场又吵。以前也常这样，出去吃个饭，回来还能再打几局。",
       "next": "beat3"
     },
     "beat2_reply2": {
       "speaker": "guest",
-      "text": "记不准了。有一个特别爱算分，算到最后两个人各有一套，我都不知道该听谁的。",
+      "text": "专门记下来的。不然他们各有一套算法，回来又得掰扯半天。那次我以为顶多等到第二天。",
       "next": "beat3"
     },
-    "beat2": {
+    "beat3": {
       "speaker": "guest",
-      "text": "他俩水平也差不多，谁输了都不服。我有一次以为他们真吵翻了，正准备收工，人家又开了一局。",
+      "text": "可第二天没来，后面也一直没凑齐。有个人来过几回，每次都玩不长。以前总听两个人吵，突然安静下来，反倒认不出了。",
       "choices": [
         {
-          "id": "stick_02.beat2.c1",
-          "text": "嘴上说不玩，手还按着呢。",
-          "next": "beat2_reply1"
+          "id": "stick_02.beat3.c1",
+          "text": "你一直在等他们？",
+          "next": "beat3_reply1"
         },
         {
-          "id": "stick_02.beat2.c2",
-          "text": "你记得谁赢得多吗？",
-          "next": "beat2_reply2"
+          "id": "stick_02.beat3.c2",
+          "text": "可能后来忙起来了。",
+          "next": "beat3_reply2"
         }
       ]
     },
     "beat3_reply1": {
       "speaker": "guest",
-      "text": "没来。我开始还数着日子，后面也没数了。新的人照常来玩，就是一直没再碰到那两个。",
-      "next": "closing"
+      "text": "最开始还会算日子。今天没来就想周末总能来，周末过去了又想是不是快考试了。后来照常上班，偶尔碰到发球习惯像的，还是会多看两眼。",
+      "next": "old_props"
     },
     "beat3_reply2": {
       "speaker": "guest",
-      "text": "有可能。我连他们名字都不知道，上哪儿问去。有时候见谁发球的习惯像，还会多看两眼。",
-      "next": "closing"
+      "text": "有可能。我连他们名字都不知道，总不能到处问，你见过两个抢键盘的小孩没有。",
+      "next": "old_props"
     },
-    "beat3": {
+    "old_props": {
       "speaker": "guest",
-      "text": "再后来他们来得少了，有时只来一个。最后一次一起玩，球还没打完就关了，说下次再接着打。我当时还想，明天又得接着吵。",
+      "text": "明天我要回趟旧片场。圆头说道具间得腾出来，让我把东西拿走。那张比分纸说不定还在箱子里。",
       "choices": [
         {
-          "id": "stick_02.beat3.c1",
-          "text": "结果第二天没来？",
-          "next": "beat3_reply1"
+          "id": "stick_02.old_props.c1",
+          "text": "圆头也是演员？",
+          "next": "old_props_reply1"
         },
         {
-          "id": "stick_02.beat3.c2",
-          "text": "可能后来忙起来了，也不住一块儿了。",
-          "next": "beat3_reply2"
+          "id": "stick_02.old_props.c2",
+          "text": "那你这次可别再拖了。",
+          "next": "old_props_reply2"
         }
       ]
     },
+    "old_props_reply1": {
+      "speaker": "guest",
+      "text": "老搭档，演过我对手。球打得不怎么样，损人倒是一流。他现在还在那儿带新人，叫我去拿东西都叫了好几回了。",
+      "next": "closing"
+    },
+    "old_props_reply2": {
+      "speaker": "guest",
+      "text": "这次真得去。圆头说再不拿走就按天收保管费。他以前演我对手，认识这么多年了，催人的本事一点没变。",
+      "next": "closing"
+    },
     "closing": {
       "speaker": "guest",
-      "text": "不过说起来，我自己也跟朋友约过下次，到现在都没办成。下回来跟你讲那几个老搭档吧，这会儿先不说了。",
+      "text": "找到了我就带来给你看。要是纸还在，也能看看我到底有没有记错。",
       "transition": "resume_existing_dialogue_loop"
     }
   },

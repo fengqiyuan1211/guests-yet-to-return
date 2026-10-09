@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "items": [
+    {
+      "id": "item_recipe_after_school",
+      "kind": "story_item",
+      "name": "童年拾忆",
+      "english_name": "CHILDHOOD KEEPSAKE",
+      "category": "纪念品",
+      "storage_mode": "permanent",
+      "quantity_unit": "张",
+      "description": "小线留下的配方：童年拾忆。",
+      "image_path": "res://assets/art/minigames/after_school_paper.svg",
+      "recipe": "childhood_keepsake",
+      "recipe_status": "available",
+      "source": "stick_memory_badminton_victory",
+      "consumable": false,
+      "buff": "buff.to_be_continued"
+    }
+  ]
+}

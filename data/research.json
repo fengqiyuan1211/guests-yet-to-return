@@ -302,8 +302,185 @@
         "serving_ice": "cube",
         "cup": "rocks"
       }
+    },
+    {
+      "id": "childhood_keepsake",
+      "version": "childhood-keepsake-1",
+      "name": "童年拾忆",
+      "english_name": "CHILDHOOD KEEPSAKE",
+      "type": "特调",
+      "category": "传说",
+      "source_item_id": "item_recipe_after_school",
+      "unlock_kind": "legendary_mastery",
+      "subtitle": "可乐与青柠的旧时光",
+      "thumbnail": "",
+      "image_path": "",
+      "reference_price": 16,
+      "unlocked_by_default": false,
+      "tags": [
+        "酸甜",
+        "气泡",
+        "可乐",
+        "樱桃"
+      ],
+      "mouthfeel_tags": [
+        "酸甜",
+        "气泡"
+      ],
+      "flavor_tags": [
+        "可乐",
+        "青柠",
+        "樱桃"
+      ],
+      "theme_tags": [
+        "怀旧"
+      ],
+      "flavor": "可乐 · 青柠 · 樱桃",
+      "glass": "高球杯",
+      "display_equipment": [
+        "量酒器",
+        "吧勺"
+      ],
+      "equipment": [
+        "量酒器",
+        "吧勺"
+      ],
+      "preparation": "加冰→量取→加可乐→轻搅→装饰",
+      "story": "以前一局结束后，总有人说下次接着打。后来屏幕暗了，球拍还留在原处。小线把这杯酒写在旧纸上，交给了愿意陪他打完最后一局的人。冰块还在轻轻碰杯，下一段故事可以慢慢讲。",
+      "ingredients": [
+        {
+          "id": "CK-01",
+          "sku_id": "sku_white_rum",
+          "ingredient_id": "white_rum",
+          "name": "白朗姆酒",
+          "amount": 35,
+          "unit": "ml",
+          "inventory_amount": 35,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "基酒"
+        },
+        {
+          "id": "CK-02",
+          "sku_id": "sku_maraschino",
+          "ingredient_id": "maraschino",
+          "name": "马拉斯奇诺樱桃利口酒",
+          "amount": 10,
+          "unit": "ml",
+          "inventory_amount": 10,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "基酒"
+        },
+        {
+          "id": "CK-03",
+          "sku_id": "sku_lime_juice",
+          "ingredient_id": "lime_juice",
+          "name": "鲜榨青柠汁",
+          "amount": 15,
+          "unit": "ml",
+          "inventory_amount": 15,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "配料"
+        },
+        {
+          "id": "CK-04",
+          "sku_id": "sku_cola",
+          "ingredient_id": "cola",
+          "name": "可乐",
+          "amount": 90,
+          "unit": "ml",
+          "inventory_amount": 90,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "配料"
+        },
+        {
+          "id": "CK-05",
+          "sku_id": "sku_cocktail_cherry",
+          "ingredient_id": "cocktail_cherry",
+          "name": "鸡尾酒樱桃",
+          "amount": 1,
+          "unit": "piece",
+          "inventory_amount": 1,
+          "inventory_unit": "piece",
+          "required": true,
+          "use": "装饰"
+        }
+      ],
+      "ice": [
+        {
+          "name": "标准方冰",
+          "use": "出品冰",
+          "amount": 100,
+          "unit": "g",
+          "inventory_policy": "excluded_from_ingredient_inventory"
+        }
+      ],
+      "display_steps": [
+        {
+          "number": 1,
+          "operation": "准备",
+          "instruction": "高球杯中加入 100 g 标准方冰（两份，共 8 块）。"
+        },
+        {
+          "number": 2,
+          "operation": "量取",
+          "instruction": "加入白朗姆酒 35 ml、樱桃利口酒 10 ml 和青柠汁 15 ml。"
+        },
+        {
+          "number": 3,
+          "operation": "兑和",
+          "instruction": "加入可乐 90 ml，再沿杯壁轻轻搅拌 3—6 秒。不要摇晃含气泡的酒液。"
+        },
+        {
+          "number": 4,
+          "operation": "装饰",
+          "instruction": "放上一颗鸡尾酒樱桃，保留杯中的方冰出品。"
+        }
+      ],
+      "quality_rule": {
+        "mix_ice": false,
+        "filter": false,
+        "serving_ice": "cube",
+        "cup": "highball",
+        "garnishes": {
+          "sku_cocktail_cherry": 1
+        },
+        "time_window": [
+          3,
+          6
+        ],
+        "mix": "stir"
+      },
+      "buff": {
+        "id": "buff.to_be_continued",
+        "name": "未完待续",
+        "kind": "legendary",
+        "required_quality_tier": "perfect",
+        "description": "有些故事只是暂时停在这里。",
+        "effect_status": "reserved"
+      },
+      "alcohol_intensity": 36.7283950617284,
+      "sweetness": 56.15384615384615,
+      "sourness": 47.472072072072066,
+      "bitterness": 10.907828282828282,
+      "reference_attributes": {
+        "alcohol_intensity": 36.7283950617284,
+        "sweetness": 56.15384615384615,
+        "sourness": 47.472072072072066,
+        "bitterness": 10.907828282828282
+      },
+      "sensory_model_version": "sensory-calibrated-1",
+      "pricing": {
+        "version": "ingredient-cost-1",
+        "cost": 11.307532467532468,
+        "multiplier": 1.5,
+        "price": 16
+      }
     }
   ],
-  "note": "试玩配置：最多64份在用DIY配方；旧存档超限不删除。已接入三份角色首通纪念配方，用量、制作标准和奖励均可调整；其他传说配方道具待内容配置。",
+  "note": "角色首通及剧情道具分别解锁配方；研习与上架分开，DIY可选生成酒图。",
   "max_saved_recipes": 64
 }

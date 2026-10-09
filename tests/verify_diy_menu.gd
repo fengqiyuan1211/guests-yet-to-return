@@ -15,7 +15,7 @@ func run() -> void:
 	var recipe:=MenuCatalog.get_recipe("diy_1")
 	check(MenuCatalog.entries.is_empty(),"saving DIY does not auto-list")
 	check(recipe.name=="港口晚风" and recipe.category=="DIY" and recipe.unlocked,"existing saved DIY is available")
-	check(recipe.price_status=="editor_starting_value" and not recipe.preview_only,"DIY is sellable with player-defined price")
+	check(recipe.price_status=="ingredient_cost_recommendation" and not recipe.preview_only,"DIY is sellable with player-defined price")
 	check(MenuCatalog.all_recipes()==official and not MenuCatalog.unlocked_ids.has("diy_1"),"official catalogue and unlock ledger untouched")
 	check(WorkbenchSession.research_recipes()[0]==stored,"menu adapter never mutates saved recipe")
 	check(MenuCatalog.unlocked_ids.size()<=MenuCatalog.all_recipes().size(),"official codex progress excludes DIY")

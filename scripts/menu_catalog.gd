@@ -93,6 +93,12 @@ func load_catalog() -> bool:
 	var next_recipes: Array = []
 	var next_by_id: Dictionary = {}
 	for recipe in records:
+		if _using_finished_catalog:
+			var quote:=preload("res://scripts/drink_pricing.gd").quote(recipe)
+			if not quote.ok: return _catalog_error()
+			recipe["reference_price"]=quote.price
+			recipe["pricing"]=quote
+			recipe["price_status"]="ingredient_cost_recommendation"
 		if not _valid_recipe(recipe) or next_by_id.has(recipe.id):
 			return _catalog_error()
 		next_recipes.append(recipe.duplicate(true))
@@ -148,6 +154,8 @@ func _finished_recipes() -> Array:
 		recipe.attributes_version=standard.version
 		recipe.attributes_complete=standard.missing.is_empty()
 		result.append(recipe)
+	for record: Dictionary in preload("res://scripts/research_data.gd").config().get("legendary_recipes", []):
+		result.append(record.duplicate(true))
 	if temporary:
 		database.free()
 	return result
@@ -257,7 +265,7 @@ func _menu_diy(record: Dictionary) -> Dictionary:
 	recipe.attributes_version=standard.version
 	recipe.attributes_complete=standard.missing.is_empty()
 	recipe.merge({"category":"DIY", "subtitle":"自创特调", "thumbnail":"",
-		"reference_price":1, "price_status":"editor_starting_value",
+		"reference_price":record.get("reference_price",1), "price_status":"ingredient_cost_recommendation",
 		"unlocked":true, "unlocked_by_default":false, "preview_only":false,
 		"recipe_status":"已保存的 DIY 配方 · v%s" % str(record.get("version",1))}, true)
 	return recipe
@@ -280,6 +288,12 @@ func get_recipe(id: String) -> Dictionary:
 		return {} if record.is_empty() else _menu_diy(record)
 	var recipe: Dictionary = _by_id[id].duplicate(true)
 	recipe["unlocked"] = unlocked_ids.has(id)
+	var supplies:=get_node_or_null("/root/Supplies")
+	if supplies != null and recipe.get("unlock_kind") == "legendary_mastery":
+		var picture: Dictionary=supplies.workbench.get("research", {}).get("legendary_images", {}).get(id,{})
+		if not picture.is_empty():
+			recipe.image_path=picture.path
+			recipe.thumbnail=picture.path
 	return recipe
 
 func unlock_recipe(id: String) -> bool:

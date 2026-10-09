@@ -54,6 +54,19 @@ var toast: Label
 var toast_remaining := 0.0
 var page_turning := false
 var shelf_tween: Tween
+var balance_feedback_tween: Tween
+var purchase_feedback_sequence := 0
+var purchase_feedback_layers: Array[Control] = []
+
+
+class PurchaseCoin extends Control:
+	const TEXTURE := preload("res://assets/icons/coin.svg")
+	func _draw() -> void:
+		var center := size * 0.5
+		# A worn brass fill keeps the existing fine coin engraving readable on paper.
+		draw_circle(center + Vector2(0, 1.5), size.x * 0.36, Color(0.17, 0.10, 0.04, 0.35))
+		draw_circle(center, size.x * 0.34, Color("80532b"))
+		draw_texture_rect(TEXTURE, Rect2(Vector2.ZERO, size), false, Color(1.12, 1.06, 0.96))
 
 
 class MerchantInteraction extends Button:
@@ -694,16 +707,78 @@ func _purchase() -> void:
 		return
 	var item := _selected_item()
 	var bought := packages
+	var balance_before := _wallet_balance()
 	if bool(supplies.call("purchase", selected_id, packages)):
 		SaloonAudio.ui.product(item,true)
 		merchant_line.text = "给你收好了。下回缺什么，再来找我。"
 		_show_toast("已买入 %s%s" % [str(item.name), " × %d" % bought if bought > 1 else ""])
 		_load_category()
+		_show_purchase_feedback(maxi(0, balance_before - _wallet_balance()))
 	else:
 		SaloonAudio.ui.play("click")
 		var message := str(supplies.get("last_error"))
 		_show_toast(message if not message.is_empty() else "这笔没买成，稍后再试。")
 		_update_receipt()
+
+
+func _show_purchase_feedback(spent: int) -> void:
+	if spent <= 0:
+		return
+	# Each success owns a short-lived layer, so another purchase can start at once.
+	while purchase_feedback_layers.size() >= 3:
+		var oldest: Control = purchase_feedback_layers.pop_front()
+		oldest.queue_free()
+	purchase_feedback_sequence += 1
+	var feedback := Control.new()
+	feedback.name = "PurchaseFeedback_%d" % purchase_feedback_sequence
+	feedback.size = DESIGN_SIZE
+	feedback.mouse_filter = MOUSE_FILTER_IGNORE
+	feedback.z_index = 20
+	canvas.add_child(feedback)
+	purchase_feedback_layers.append(feedback)
+	var origin := buy_button.position + Vector2(buy_button.size.x * 0.5, 5)
+	var spread := [Vector2(-52, -50), Vector2(-27, -72), Vector2(0, -81), Vector2(30, -68), Vector2(54, -45)]
+	for i in range(spread.size()):
+		var coin := PurchaseCoin.new()
+		coin.name = "PurchaseCoin_%d" % i
+		coin.size = Vector2.ONE * (22.0 if i % 2 == 0 else 25.0)
+		coin.pivot_offset = coin.size * 0.5
+		coin.position = origin - coin.pivot_offset + Vector2((i - 2) * 3, 0)
+		coin.rotation = (i - 2) * 0.08
+		coin.mouse_filter = MOUSE_FILTER_IGNORE
+		feedback.add_child(coin)
+		var peak: Vector2 = coin.position + spread[i]
+		var motion := coin.create_tween().set_parallel(true)
+		motion.tween_property(coin, "position", peak, 0.34).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		motion.tween_property(coin, "position", peak + Vector2((i - 2) * 5, 17), 0.42).from(peak).set_delay(0.34).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		motion.tween_property(coin, "rotation", coin.rotation + (i - 2) * 0.24, 0.76)
+		motion.tween_property(coin, "modulate:a", 0.0, 0.34).set_delay(0.42)
+	# The header gap beside the balance leaves the receipt and quantity readable.
+	var spent_label := _label(feedback, Rect2(1067, 29, 187, 42), "−%d 金币" % spent, 24, Color("ffe1a0"))
+	spent_label.name = "PurchaseSpendLabel"
+	spent_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	spent_label.add_theme_color_override("font_shadow_color", INK)
+	spent_label.add_theme_constant_override("shadow_offset_y", 2)
+	spent_label.add_theme_constant_override("shadow_offset_x", 1)
+	# Replace an older caption during fast buying; the latest amount stays clear.
+	for layer in purchase_feedback_layers:
+		if layer != feedback:
+			var previous := layer.get_node_or_null("PurchaseSpendLabel") as Label
+			if previous != null:
+				previous.visible = false
+	var caption_motion := spent_label.create_tween().set_parallel(true)
+	caption_motion.tween_property(spent_label, "position:y", spent_label.position.y - 17, 0.90).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	caption_motion.tween_property(spent_label, "modulate:a", 0.0, 0.35).set_delay(0.55)
+	if balance_feedback_tween != null and balance_feedback_tween.is_valid():
+		balance_feedback_tween.kill()
+	balance_label.modulate = Color(1.22, 1.12, 0.96)
+	balance_feedback_tween = balance_label.create_tween()
+	balance_feedback_tween.tween_property(balance_label, "modulate", Color.WHITE, 0.75)
+	var cleanup := feedback.create_tween()
+	cleanup.tween_interval(0.95)
+	cleanup.tween_callback(func():
+		purchase_feedback_layers.erase(feedback)
+		feedback.queue_free())
 
 
 func _shop_changed() -> void:

@@ -260,7 +260,7 @@ func run() -> void:
 	await capture("research-04-result")
 	bench._save_research_dialog()
 	await settle()
-	var field: LineEdit=bench.modal.find_child("ResearchRecipeName",true,false)
+	var field: LineEdit=bench.image_dialog.find_child("ResearchRecipeName",true,false)
 	field.text="试调 A R"
 	field.grab_focus()
 	var key:=InputEventKey.new()
@@ -270,7 +270,7 @@ func run() -> void:
 	key.pressed=true
 	get_viewport().push_input(key,true)
 	await settle()
-	check(is_instance_valid(field) and bench.modal.find_child("ResearchRecipeName",true,false)==field,"typing R in naming form does not open evaluation details")
+	check(is_instance_valid(field) and bench.image_dialog.find_child("ResearchRecipeName",true,false)==field,"typing R in naming form does not open evaluation details")
 	await capture("research-05-name")
 	bench._result()
 	Navigation.research_view="library"

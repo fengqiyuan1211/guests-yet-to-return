@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "status": "playtest",
+  "order_time_limit_minutes": 120,
+  "timeout_penalty": -10,
+  "payment_policy": "locked_menu_price_plus_tip_accepted_zero_on_hard_rejection",
+  "star_thresholds": [
+    {
+      "minimum": 90,
+      "stars": 5
+    },
+    {
+      "minimum": 70,
+      "stars": 4
+    },
+    {
+      "minimum": 50,
+      "stars": 3
+    },
+    {
+      "minimum": 30,
+      "stars": 2
+    },
+    {
+      "minimum": 0,
+      "stars": 1
+    }
+  ],
+  "sensory": {
+    "version": "sensory-calibrated-1",
+    "source": "res://data/sensory/model.json"
+  },
+  "scoring": {
+    "version": "guest-match-playtest-2",
+    "penalty_scale": 2.0,
+    "satisfied_min": 70.0,
+    "soft_penalty_limit": 20.0,
+    "buffs_enabled": true,
+    "ordinary_bonus_limit": 10.0
+  },
+  "tip_tiers": [
+    {
+      "min": 90,
+      "rate": 0.2
+    },
+    {
+      "min": 70,
+      "rate": 0.1
+    },
+    {
+      "min": 0,
+      "rate": 0
+    }
+  ]
+}

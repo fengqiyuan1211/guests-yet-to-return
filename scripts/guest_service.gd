@@ -75,6 +75,10 @@ func deliver(drink_id: String) -> bool:
 	if book.deliveries.has(drink_id): return _settle(drink_id)
 	var cup:=find_cup(drink_id)
 	if cup.is_empty() or cup.get("status")!="finished" or WorkbenchSession.is_research(cup): return _error("请先完成营业酒品。")
+	if not cup.has("order"):
+		var ok: bool=CustomerService.deliver(cup.result)
+		last_error=CustomerService.last_error
+		return ok
 	var order: Dictionary=cup.get("order",{})
 	if not Data.valid_order(order): return _error("这杯没有营业订单，请从客人选酒页重新开工。")
 	if order.recipe_id!=cup.recipe.id or order.guest_id!=cup.guest.get("id") or order.visit_id!=cup.guest.get("visit_id"): return _error("这杯与原订单的关联不一致，请保留记录。")

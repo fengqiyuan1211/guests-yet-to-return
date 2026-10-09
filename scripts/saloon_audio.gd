@@ -68,7 +68,7 @@ func _ensure_bus(bus_name: String) -> void:
 	AudioServer.set_bus_send(index, &"Master")
 
 func is_night(minutes: int) -> bool:
-	return minutes >= TimeManager.OPEN_MINUTE or minutes < TimeManager.CLOSE_MINUTE
+	return TimeManager.closing_pending or minutes >= TimeManager.OPEN_MINUTE or minutes < TimeManager.CLOSE_MINUTE
 
 func _process(delta: float) -> void:
 	if _save_delay >= 0.0:

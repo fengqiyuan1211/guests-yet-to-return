@@ -2,8 +2,8 @@
   "stick": {
     "stick_minigame": {
       "name": "童年拾忆 · 小线的羽毛球",
-      "description": "小线把另一支球拍递给你。来后院，先打一场五分友谊赛。",
-      "route": "stick_demo",
+      "description": "陪小线再打一场羽毛球；手帐内可练习，正式故事邀请获胜后领取童年酒单。",
+      "route": "stick_badminton",
       "demo_unlocked": true
     }
   },

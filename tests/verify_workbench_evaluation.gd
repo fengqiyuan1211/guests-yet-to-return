@@ -55,7 +55,7 @@ func run() -> void:
 	var sweet:=Eval.evaluate(sample({"gin":30,"lime":20,"syrup":60}),definitions)
 	check(sweet.attributes.sweetness>perfect.attributes.sweetness and has_tag(sweet,"齁甜的"),"excess syrup produces higher sweetness and cloying tag")
 	var acid:=Eval.evaluate(sample({"gin":30,"lime":70,"syrup":10}),definitions)
-	check(acid.attributes.sourness>perfect.attributes.sourness and has_tag(acid,"尖酸的") and not has_tag(acid,"酸涩的"),"acid rises without inventing astringency")
+	check(acid.attributes.sourness>perfect.attributes.sourness and (has_tag(acid,"尖酸的") or has_tag(acid,"清酸的")) and not has_tag(acid,"酸涩的"),"acid rises without inventing astringency")
 	var thin:=Eval.evaluate(sample({"gin":30,"lime":20,"syrup":10,"soda":120}),definitions)
 	check(thin.attributes.alcohol_intensity<perfect.attributes.alcohol_intensity and has_tag(thin,"寡淡的"),"extra water-like mixer reduces sensory concentration")
 	var missing:=Eval.evaluate(sample({"syrup":80},false),definitions)

@@ -53,6 +53,7 @@ var counter := 0
 var dose_overrides: Dictionary = {}
 var measure_waiting := false
 var pending_confirm := Callable()
+var modal_close := Callable()
 var feedback_panel: Panel
 var feedback_text: Label
 var restock_button: Button
@@ -671,9 +672,10 @@ func _motion(kind: String, seconds: float) -> void:
 	if kind=="muddle": payload.pressure=clampf(table.pressure_integral/maxf(.001,table.accumulated),0,1)
 	if not _issue(kind,payload): status_label.text=WorkbenchSession.last_error
 
-func _dialog(title: String, height := 520.0, width := 800.0) -> Panel:
+func _dialog(title: String, height := 520.0, width := 800.0, on_close := Callable()) -> Panel:
 	table.stop_gesture()
 	_clear_modal()
+	modal_close = on_close
 	table.input_enabled = false
 	modal = Control.new()
 	modal.size = Vector2(1600,900)
@@ -685,12 +687,18 @@ func _dialog(title: String, height := 520.0, width := 800.0) -> Panel:
 	modal.add_child(dim)
 	var p := _panel(modal,Rect2((1600-width)/2,(900-height)/2,width,height),Color("352a23"))
 	_text(p,Rect2(30,20,width-130,49),title,30)
-	_button(p,Rect2(width-94,20,65,46),"×",_clear_modal)
+	var close_button := _button(p,Rect2(width-94,20,65,46),"×",_close_modal)
+	close_button.name = "CloseDialog"
 	return p
+
+func _close_modal() -> void:
+	if modal_close.is_valid(): modal_close.call()
+	else: _clear_modal()
 
 func _clear_modal() -> void:
 	sfx.silence()
 	pending_confirm=Callable()
+	modal_close=Callable()
 	if is_instance_valid(table):
 		table.pouring = false
 		table.preview_amount = 0.0
@@ -818,13 +826,37 @@ func _begin_measure(material: String, target: float, vessel := "jigger") -> void
 
 func _finish() -> void:
 	table.stop_gesture()
+	if data.get("status") == "finished":
+		if _service_cup(): _send_finished_drink()
+		else: _result()
+		return
 	if _issue("finish"):
-		_result()
+		if _service_cup(): _send_finished_drink()
+		else: _result()
 	else:
 		status_label.text=WorkbenchSession.last_error
 
+func _service_cup() -> bool:
+	return not data.has("order") and not WorkbenchSession.is_research(data) and not str(data.get("guest", {}).get("visit_id", "")).is_empty()
+
+func _send_finished_drink() -> void:
+	if data.get("status") != "finished" or not _service_cup(): return
+	CustomerService.deliver(data.result)
+	_result()
+
+func _return_after_serving() -> void:
+	# Delivery receipts make closing/reopening this card safe to repeat.
+	if CustomerService.deliver(data.result): Navigation.go_to(&"home")
+	else: _result()
+
+func _served_record() -> Dictionary:
+	var record: Dictionary = CustomerService.current_record()
+	if record.get("status") == "settled" and record.get("drink_id") == data.get("result", {}).get("drink_id") and record.get("visit_id") == data.get("guest", {}).get("visit_id"):
+		return record
+	return {}
+
 func _result() -> void:
-	var p:=_dialog("",760,1020)
+	var p:=_dialog("",760,1020,_return_after_serving if _service_cup() else Callable())
 	var evaluation: Dictionary=data.result.get("evaluation",{})
 	var accent:=Color(str(evaluation.get("color","8c9aa2")))
 	var style:=_style(Color("f1e2c3"),accent)
@@ -845,6 +877,7 @@ func _result() -> void:
 	card.position=Vector2(20,65)
 	card.size=Vector2(980,630)
 	card.result=data.result.duplicate(true)
+	card.service_record = _served_record() if _service_cup() else {}
 	card.result["cup"]=data.result.get("cup",data.cup)
 	card.result["capacity_ml"]=data.result.get("capacity_ml",WorkbenchSession.capacity(data,"glass"))
 	p.add_child(card)
@@ -854,11 +887,15 @@ func _result() -> void:
 		if data.mode=="research_diy":
 			_button(p,Rect2(40,697,240,44),"查看我的配方" if saved else "命名并保存配方",_research_library if saved else _save_research_dialog,true)
 		else:
-			_text(p,Rect2(35,697,410,46),"研习成功 · 已掌握" if data.result.get("research_success",false) else "尚未完美 · 可查看依据后重试",20,INK)
+			if data.result.get("research_success",false):
+				_button(p,Rect2(35,697,410,44),"已掌握 · 生成手绘酒图",_save_research_dialog,true)
+			else: _text(p,Rect2(35,697,410,46),"尚未完美 · 可查看依据后重试",20,INK)
 		_button(p,Rect2(475,697,235,44),"另起一杯",func():
 			if _issue("start"): _clear_modal()
 		)
-		_button(p,Rect2(730,697,245,44),"返回研发室",func(): Navigation.go_to(&"research"))
+		_button(p,Rect2(730,697,245,44),"返回研发室",func():
+			Navigation.research_view="legendary" if data.mode=="research_legendary" else "entry"
+			Navigation.go_to(&"research"))
 		pending_confirm=_research_library if saved else (_save_research_dialog if data.mode=="research_diy" else _result_details)
 		return
 	if data.has("order"):
@@ -871,6 +908,12 @@ func _result() -> void:
 			pending_confirm=_deliver
 		_button(p,Rect2(410,697,240,44),"查看制作依据",_result_details)
 		_button(p,Rect2(680,697,290,44),"返回桌面",_clear_modal)
+	elif _service_cup():
+		var served := _served_record()
+		var note := "客人已收到这杯酒 · 获得 %d 金币" % int(served.amount) if not served.is_empty() else (CustomerService.last_error if not CustomerService.last_error.is_empty() else "这一杯已经做好，送给正在等你的客人。")
+		_text(p,Rect2(45,667,930,26),note,18,INK)
+		_button(p,Rect2(355,705,310,44),"回酒馆，听听客人怎么说" if not served.is_empty() else "送给客人，返回酒馆",_return_after_serving,true)
+		pending_confirm = _return_after_serving
 		return
 	_text(p,Rect2(45,704,930,38),"空格 另起一杯     ·     Esc 返回桌面     ·     R 查看依据",22,INK)
 	pending_confirm=func():
@@ -914,42 +957,16 @@ func _research_library() -> void:
 	Navigation.research_view="library"
 	Navigation.go_to(&"research")
 
+var image_dialog: Control
+
 func _save_research_dialog() -> void:
-	var p:=_dialog("为这次试调留一页配方",650,1000)
-	_text(p,Rect2(35,77,930,58),"保存实际成品用量；洒漏与容器余量不会写入配方。\n请补充你想复现的顺序、技法和时长。",20)
-	_text(p,Rect2(35,157,180,36),"酒名（必填）",21)
-	var title:=LineEdit.new()
-	title.name="ResearchRecipeName"
-	title.position=Vector2(220,154)
-	title.size=Vector2(720,44)
-	title.max_length=40
-	p.add_child(title)
-	_text(p,Rect2(35,217,180,36),"英文名（可选）",21)
-	var english:=LineEdit.new()
-	english.position=Vector2(220,214)
-	english.size=Vector2(720,44)
-	english.max_length=70
-	p.add_child(english)
-	_text(p,Rect2(35,282,180,36),"复做笔记",21)
-	var memo:=TextEdit.new()
-	memo.position=Vector2(220,278)
-	memo.size=Vector2(720,218)
-	memo.placeholder_text="例如：先加入金酒和果汁，摇和后过滤，再加苏打水……（最多500字）"
-	memo.wrap_mode=TextEdit.LINE_WRAPPING_BOUNDARY
-	p.add_child(memo)
-	var feedback:=_text(p,Rect2(40,515,900,40),"保存到图鉴 DIY 分类，不自动上架；不重复扣灵感。",19)
-	_button(p,Rect2(40,573,270,46),"另存为新配方",func():
-		if _issue("save_research",{"name":title.text,"english_name":english.text,"notes":memo.text}): _result()
-		else: feedback.text=WorkbenchSession.last_error
-	,true)
-	_button(p,Rect2(700,573,270,46),"返回成品",_result)
-	var original: Dictionary=data.get("base_recipe",{})
-	if str(original.get("id","")).begins_with("diy_"):
-		_button(p,Rect2(360,573,290,46),"修订原配方 · 新版本",func():
-			if _issue("save_research",{"name":title.text,"english_name":english.text,"notes":memo.text,"replace_id":original.id,"expected_version":original.version}): _result()
-			else: feedback.text=WorkbenchSession.last_error
-		)
-	title.grab_focus()
+	if is_instance_valid(image_dialog): return
+	var editor:=preload("res://scripts/research_image_dialog.gd").new()
+	image_dialog=editor
+	editor.session=data.duplicate(true)
+	add_child(editor)
+	editor.saved.connect(func(): _result())
+
 
 func _result_details() -> void:
 	var p:=_dialog("这一杯的评价依据",700,1020)
@@ -1036,6 +1053,7 @@ func _log() -> void:
 	scroll.add_child(label)
 
 func _input(event: InputEvent) -> void:
+	if is_instance_valid(image_dialog): return
 	if is_instance_valid(external_page): return
 	var focus:=get_viewport().gui_get_focus_owner()
 	if focus is LineEdit or focus is TextEdit:
@@ -1066,11 +1084,11 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		elif event.keycode == KEY_ESCAPE:
 			if not table.carry_id.is_empty(): table.cancel_carry()
-			elif is_instance_valid(modal): _clear_modal()
+			elif is_instance_valid(modal): _close_modal()
 			else: _leave()
 			get_viewport().set_input_as_handled()
 		elif event.keycode==KEY_R and is_instance_valid(modal) and data.get("status")=="finished":
-			_result_details()
+			if not _service_cup(): _result_details()
 			get_viewport().set_input_as_handled()
 		elif not is_instance_valid(modal) and event.keycode in [KEY_R,KEY_N,KEY_B,KEY_S]:
 			match event.keycode:

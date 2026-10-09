@@ -2,6 +2,7 @@ extends RefCounted
 ## Pure, deterministic evaluator. Never writes inventory, recipes, or customer settlement.
 const LiquidState=preload("res://scripts/workbench_liquid_state.gd")
 const Research=preload("res://scripts/research_data.gd")
+const Sensory=preload("res://scripts/sensory_model.gd")
 const CONFIG_PATH := "res://data/workbench/evaluation.json"
 const ATTRS := ["alcohol_intensity","sweetness","sourness","bitterness"]
 const CARBONATED := ["sku_soda_water","sku_tonic_water","sku_cola"]
@@ -265,46 +266,48 @@ static func evaluate(session: Dictionary, definitions: Dictionary) -> Dictionary
 	if not finish_checks.is_empty():
 		finish_score=0
 		for value in finish_checks: finish_score+=float(value)*100/finish_checks.size()
-	# Unknown-dose ingredients anchor at the actual amount; never invent a dash-to-ml conversion.
-	var attribute_reference:=expected.duplicate(true)
-	for id in unquantified:
-		if actual.has(id): attribute_reference[id]=actual[id]
-	var ideal:=average(attribute_reference,model.profiles)
-	var observed:=average(actual,model.profiles)
-	for id in actual:
-		if not model.profiles.has(id):
-			uncertain=true
-			notes.append(_name(id,definitions)+"的属性模型尚未配置。")
 	var targets: Dictionary={}
 	var attributes: Dictionary={}
 	var deltas: Dictionary={}
-	for i in range(4):
-		var key: String=ATTRS[i]
-		var target:=float(recipe.get(key,ideal[i]))
-		var value:=target+(float(observed[i])-float(ideal[i]))*float(model.attribute_gain)
-		# Configured sensory imbalance only; does not fabricate liquid or change ABV.
-		if rule.has("mix") and key in ["sweetness","sourness","bitterness"]:
-			value+=(1-blend)*[0,3,5,2][i]
-		targets[key]=roundi(target)
-		attributes[key]=roundi(clampf(value,0,100))
-		deltas[key]=attributes[key]-targets[key]
-	# Dissolved solid sugar can affect taste; rim decorations never enter the liquid model.
-	var sugar:=float(serving.get("solids",{}).get("sku_white_cane_sugar",0))
-	if sugar>0:
-		attributes.sweetness=mini(100,int(attributes.sweetness)+roundi(100*sugar/maxf(20,actual_volume)))
-		deltas.sweetness=attributes.sweetness-targets.sweetness
-	if session.get("sensory_model",{}).get("version")=="research-sensory-2":
-		var sensory:=Research.attributes(session,definitions)
-		attributes=sensory.attributes
-		var standard:=Research.standard(recipe,session.sensory_model)
-		# Practice references predate row-based catalogues; actual values still use the common model.
-		if not recipe.get("practice_only",false): targets=standard.attributes
-		else:
-			targets=Research.attributes({"vessels":{"glass":{"contents":expected,"solids":expected_solids}},"sensory_model":session.sensory_model},{}).attributes
+	var sensory_model: Dictionary=session.get("sensory_model",model.get("sensory_model",{}))
+	var sensory_result: Dictionary={}
+	var standard_result: Dictionary={}
+	if Sensory.valid_model(sensory_model):
+		sensory_result=Sensory.evaluate(serving.contents,serving.get("solids",{}),definitions,sensory_model)
+		standard_result=Sensory.standard(recipe,sensory_model)
+		attributes=sensory_result.attributes.duplicate(true)
+		targets=standard_result.attributes.duplicate(true)
 		for key in ATTRS: deltas[key]=float(attributes[key])-float(targets[key])
-		if not sensory.missing.is_empty() or not standard.missing.is_empty():
+		if not sensory_result.data_complete or not standard_result.data_complete:
 			uncertain=true
-			notes.append("部分原料的标准用量或属性未配置，当前评分为参考。")
+			notes.append("部分材料的感官数据或用量未配置，暂不评为完美。")
+	else:
+		# Legacy cups keep their frozen calculation until this cup is finished.
+		# Unknown-dose ingredients anchor at the actual amount; never invent a dash-to-ml conversion.
+		var attribute_reference:=expected.duplicate(true)
+		for id in unquantified:
+			if actual.has(id): attribute_reference[id]=actual[id]
+		var ideal:=average(attribute_reference,model.profiles)
+		var observed:=average(actual,model.profiles)
+		for id in actual:
+			if not model.profiles.has(id):
+				uncertain=true
+				notes.append(_name(id,definitions)+"的属性模型尚未配置。")
+		for i in range(4):
+			var key: String=ATTRS[i]
+			var target:=float(recipe.get(key,ideal[i]))
+			var value:=target+(float(observed[i])-float(ideal[i]))*float(model.attribute_gain)
+			# Configured sensory imbalance only; does not fabricate liquid or change ABV.
+			if rule.has("mix") and key in ["sweetness","sourness","bitterness"]:
+				value+=(1-blend)*[0,3,5,2][i]
+			targets[key]=roundi(target)
+			attributes[key]=roundi(clampf(value,0,100))
+			deltas[key]=attributes[key]-targets[key]
+		# Dissolved solid sugar can affect taste; rim decorations never enter the liquid model.
+		var sugar:=float(serving.get("solids",{}).get("sku_white_cane_sugar",0))
+		if sugar>0:
+			attributes.sweetness=mini(100,int(attributes.sweetness)+roundi(100*sugar/maxf(20,actual_volume)))
+			deltas.sweetness=attributes.sweetness-targets.sweetness
 	var tags: Array=[]
 	if deltas.sweetness>=22: tags.append({"text":"齁甜的","color":"c88449"})
 	elif deltas.sweetness>=10: tags.append({"text":"甜味突出","color":"c99a55"})
@@ -335,11 +338,14 @@ static func evaluate(session: Dictionary, definitions: Dictionary) -> Dictionary
 	var research: bool=session.get("mode","") in ["research","development"] or recipe.get("source_kind","")=="diy"
 	if research:
 		tier={"id":"trial","title":"试调完成","color":"78a99b"}
+	if session.get("sensory_model",{}).get("version")=="research-sensory-2":
+		attributes=Research.attributes(session,definitions).attributes
+		targets=Research.standard(recipe,session.sensory_model).attributes
 	if session.get("mode")=="research_legendary":
 		attributes=Research.attributes(session,definitions).attributes
 	reasons.sort_custom(func(a,b): return _reason_priority(str(a))<_reason_priority(str(b)))
 	if reasons.is_empty(): reasons.append("用料贴合目标，关键操作和出品要求均已完成。")
-	return {"version":model.version,"attribute_model_version":session.get("sensory_model",{}).get("version","legacy-recipe-anchored"),"draft":true,"tier":tier.id,"title":tier.title,"color":tier.color,"score":null if research else roundi(score),"attributes":attributes,"targets":targets,"tags":tags,"reasons":reasons,"notes":notes,"subscores":{"recipe":roundi(recipe_score),"process":roundi(process_score),"finish":roundi(finish_score)},"trace":trace,"recipe_version":recipe.get("version",1)}
+	return {"version":model.version,"draft":true,"tier":tier.id,"title":tier.title,"color":tier.color,"score":null if research else roundi(score),"attributes":attributes,"targets":targets,"tags":tags,"reasons":reasons,"notes":notes,"subscores":{"recipe":roundi(recipe_score),"process":roundi(process_score),"finish":roundi(finish_score)},"trace":trace,"recipe_version":recipe.get("version",1),"sensory_model_version":str(sensory_model.get("version","legacy-quality")),"data_complete":sensory_result.get("data_complete",not uncertain) and standard_result.get("data_complete",not uncertain),"missing_profiles":sensory_result.get("missing",[])}
 
 static func _name(id: String, definitions: Dictionary) -> String:
 	for key in definitions:

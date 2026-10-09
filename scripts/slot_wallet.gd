@@ -95,6 +95,24 @@ func persist() -> bool:
 	last_error = ""
 	return true
 
+
+func credit_sale(id: String, amount: int) -> bool:
+	if not writable or id.is_empty() or id.length() > 128 or amount < 1 or amount > 1000000000:
+		last_error = "这次收款暂时无法结算。"
+		return false
+	if sale_receipts.has(id):
+		if int(sale_receipts[id]) == amount: return true
+		last_error = "收款记录不一致，请保留存档。"
+		return false
+	balance += amount
+	sale_receipts[id] = amount
+	if not persist():
+		balance -= amount
+		sale_receipts.erase(id)
+		return false
+	balance_changed.emit(balance)
+	return true
+
 func _valid_purchase_receipts(value: Variant) -> bool:
 	if not value is Dictionary or value.size() > 4096:
 		return false

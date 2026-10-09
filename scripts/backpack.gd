@@ -4,7 +4,9 @@ signal close_requested
 
 const DESIGN_SIZE := Vector2(1600, 900)
 const ITEMS_PER_PAGE := 6
-const CATEGORIES := ["全部", "原酒", "配料", "装饰品", "器材", "杯型"]
+const CATEGORIES := ["全部", "原酒", "配料", "装饰品", "器材", "杯型", "纪念品"]
+const StoryItems := preload("res://scripts/story_items.gd")
+const RecipePaper := preload("res://scripts/memory_recipe_paper.gd")
 const ORNAMENT_PANEL := preload("res://scripts/ornament_panel.gd")
 const INK := Color("493019")
 const MUTED_INK := Color("896844")
@@ -39,6 +41,8 @@ var detail_art: TextureRect
 var detail_stock: Label
 var detail_status: Label
 var detail_note: Label
+var paper_button: Button
+var paper_view: Control
 var detail_rows: Array[HBoxContainer] = []
 var detail_values: Array[Label] = []
 var _closing := false
@@ -105,6 +109,7 @@ func _ready() -> void:
 	_fit_canvas()
 	if supplies != null and supplies.has_signal("changed"):
 		supplies.connect("changed", _refresh_inventory)
+	WorkbenchSession.changed.connect(_refresh_inventory)
 	_refresh_inventory()
 
 
@@ -230,7 +235,7 @@ func _build() -> void:
 
 func _build_categories() -> void:
 	for i in range(CATEGORIES.size()):
-		var button := _button(backpack_panel, Rect2(42 + i * 133, 112, 122, 43), CATEGORIES[i], _set_category.bind(CATEGORIES[i]))
+		var button := _button(backpack_panel, Rect2(42 + i * 114, 112, 104, 43), CATEGORIES[i], _set_category.bind(CATEGORIES[i]))
 		button.name = "Category_" + CATEGORIES[i]
 		button.toggle_mode = true
 		_style_inventory_button(button)
@@ -295,6 +300,8 @@ func _build_details() -> void:
 		detail_values.append(value)
 	detail_note = _label(item_details, Rect2(25, 372, 309, 83), "", 19, SECONDARY_TEXT, HORIZONTAL_ALIGNMENT_CENTER)
 	detail_note.name = "DetailNote"
+	paper_button = _button(item_details, Rect2(68, 415, 223, 48), "展开酒单", _open_paper)
+	paper_button.hide()
 
 
 func _build_empty_state() -> void:
@@ -321,6 +328,7 @@ func _fit_canvas() -> void:
 
 
 func _state(id: String) -> Dictionary:
+	if not StoryItems.get_item(id).is_empty(): return StoryItems.get_state(id)
 	return supplies.call("get_state", id) if supplies != null else {}
 
 
@@ -341,6 +349,9 @@ func _refresh_inventory() -> void:
 			owned_count += 1
 			if category == "全部" or str(item.category) == category:
 				products.append(item)
+	for item: Dictionary in StoryItems.owned_items():
+		owned_count += 1
+		if category == "全部" or str(item.category) == category: products.append(item)
 	page_index = clampi(page_index, 0, _page_count() - 1)
 	var selected_index := _index_of_id(selected_id)
 	if selected_index >= 0:
@@ -453,6 +464,7 @@ func _item_art_rect(item: Dictionary) -> Rect2:
 
 
 func _texture(id: String) -> Texture2D:
+	if not StoryItems.get_item(id).is_empty(): return StoryItems.texture(id)
 	return catalog.call("get_texture", id) as Texture2D if catalog != null else null
 
 
@@ -502,6 +514,7 @@ func _render_details() -> void:
 	for row in detail_rows:
 		row.hide()
 	detail_note.hide()
+	paper_button.hide()
 	var index := _index_of_id(selected_id)
 	if index < 0:
 		return
@@ -511,6 +524,15 @@ func _render_details() -> void:
 	detail_english.text = str(item.get("english_name", ""))
 	detail_art.texture = _texture(selected_id)
 	detail_stock.text = _stock_summary(item)
+	if item.get("kind") == "story_item":
+		detail_stock.text = "1 张"
+		detail_status.text = "纪念品 · 小线赠予"
+		detail_note.text = str(item.description)
+		detail_note.size.y = 35
+		detail_note.show()
+		paper_button.show()
+		return
+	detail_note.size.y = 83
 	var unit := _quantity_unit(item)
 	match str(item.storage_mode):
 		"container":
@@ -529,6 +551,11 @@ func _render_details() -> void:
 			detail_note.show()
 
 
+func _open_paper() -> void:
+	if is_instance_valid(paper_view) or not StoryItems.get_state(selected_id).get("owned", false): return
+	paper_view = RecipePaper.new()
+	add_child(paper_view)
+
 func _backdrop_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		backdrop.accept_event()
@@ -546,6 +573,7 @@ func _request_close() -> void:
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
+	if is_instance_valid(paper_view): return
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		_request_close()

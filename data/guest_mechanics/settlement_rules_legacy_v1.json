@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "status": "playtest",
+  "order_time_limit_minutes": 120,
+  "timeout_penalty": -10,
+  "payment_policy": "full_locked_menu_price_on_received_even_if_disliked",
+  "star_thresholds": [
+    {
+      "minimum": 90,
+      "stars": 5
+    },
+    {
+      "minimum": 70,
+      "stars": 4
+    },
+    {
+      "minimum": 50,
+      "stars": 3
+    },
+    {
+      "minimum": 30,
+      "stars": 2
+    },
+    {
+      "minimum": 0,
+      "stars": 1
+    }
+  ],
+  "sensory": {
+    "version": "cup-sensory-playtest-1",
+    "note": "共享感官曲线，仅取真实杯内用料，不取选中的酒名。以50ml金酒+150ml汤力的策划属性35/25/20/30为锚点；其他经典酒属性仍保留原策划值，感官模型待后续校准。没有融冰或温度模拟。",
+    "profiles": {
+      "sku_gin_london_dry": [
+        90,
+        0,
+        0,
+        8
+      ],
+      "sku_white_rum": [
+        85,
+        4,
+        0,
+        2
+      ],
+      "sku_vodka": [
+        90,
+        0,
+        0,
+        0
+      ],
+      "sku_tequila": [
+        90,
+        3,
+        0,
+        9
+      ],
+      "sku_green_chartreuse": [
+        98,
+        65,
+        0,
+        50
+      ],
+      "sku_maraschino": [
+        65,
+        80,
+        4,
+        12
+      ],
+      "sku_cointreau": [
+        85,
+        85,
+        12,
+        8
+      ],
+      "sku_lime_juice": [
+        0,
+        4,
+        100,
+        4
+      ],
+      "sku_lemon_juice": [
+        0,
+        5,
+        95,
+        2
+      ],
+      "sku_simple_syrup": [
+        0,
+        100,
+        0,
+        0
+      ],
+      "sku_soda_water": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "sku_tonic_water": [
+        0,
+        28,
+        5,
+        48
+      ],
+      "sku_cola": [
+        0,
+        65,
+        12,
+        7
+      ],
+      "sku_rye_whiskey": [
+        95,
+        8,
+        0,
+        20
+      ],
+      "sku_sweet_red_vermouth": [
+        35,
+        70,
+        8,
+        38
+      ],
+      "sku_angostura_bitters": [
+        90,
+        3,
+        0,
+        100
+      ]
+    },
+    "gains": [
+      1.5555555555555556,
+      1.1904761904761905,
+      5.333333333333333,
+      0.7894736842105263
+    ],
+    "known_solids": [
+      "sku_mint_leaf",
+      "sku_white_cane_sugar",
+      "sku_lime_wedge",
+      "sku_lime_wheel",
+      "sku_lemon_wedge"
+    ],
+    "pulp_solids": [
+      "sku_lime_wedge",
+      "sku_lime_wheel",
+      "sku_lemon_wedge"
+    ],
+    "fruit_liquids": [
+      "sku_lime_juice",
+      "sku_lemon_juice",
+      "sku_maraschino",
+      "sku_cointreau"
+    ]
+  }
+}

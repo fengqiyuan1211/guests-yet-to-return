@@ -26,18 +26,27 @@ func _ready() -> void:
 	for profile in profiles:
 		_textures[profile.id] = load(profile.texture)
 
+func _can_arrive(index: int) -> bool:
+	if index < 0 or index >= profiles.size(): return false
+	if PlayModes.mode=="mixing" and not StoryDialogue.is_known(str(profiles[index].id)): return false
+	if profiles[index].id != "stick": return true
+	return not WorkbenchSession.research_state().get("story_items", {}).get("item_recipe_after_school", {}).get("owned", false)
+
 func spawn_random_guest() -> Dictionary:
 	if profiles.is_empty():
 		return {}
+	# Filter restored/partly consumed bags too: the reward may have been won mid-group.
+	_bag.assign(_bag.filter(func(index: int): return _can_arrive(index)))
 	if _bag.is_empty():
 		for i in range(profiles.size()):
-			_bag.append(i)
+			if _can_arrive(i): _bag.append(i)
+		if _bag.is_empty(): return {}
 		for i in range(_bag.size() - 1, 0, -1):
 			var j := rng.randi_range(0, i)
 			var temp := _bag[i]
 			_bag[i] = _bag[j]
 			_bag[j] = temp
-		# Each group of five contains everyone, and groups never repeat a guest at the boundary.
+		# Each group contains eligible guests once, with no repeat at the boundary.
 		if _bag.size() > 1 and profiles[_bag.back()].id == _last_id:
 			var temp := _bag[0]
 			_bag[0] = _bag[-1]
@@ -45,6 +54,8 @@ func spawn_random_guest() -> Dictionary:
 	return show_guest(int(_bag.pop_back()))
 
 func show_guest(index: int) -> Dictionary:
+	# Explicit restoration keeps the current farewell/reward scene until the guest leaves.
+	# Retirement only prevents future random arrivals.
 	if index < 0 or index >= profiles.size():
 		return {}
 	_clear_art()

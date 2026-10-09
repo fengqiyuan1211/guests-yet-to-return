@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Navigation="*res://scripts/navigation.gd"
+LocalServices="*res://scripts/local_services.gd"
 TimeManager="*res://scripts/time_manager.gd"
 SlotWallet="*res://scripts/slot_wallet.gd"
 StoryDialogue="*res://scripts/story_dialogue.gd"
@@ -26,10 +27,12 @@ MenuCatalog="*res://scripts/menu_catalog.gd"
 Supplies="*res://scripts/supplies.gd"
 MenuArt="*res://scripts/menu_art_provider.gd"
 WorkbenchSession="*res://scripts/workbench_session.gd"
+CustomerService="*res://scripts/customer_service.gd"
 GameSession="*res://scripts/game_session.gd"
 GuestService="*res://scripts/guest_service.gd"
 GuestActivities="*res://scripts/guest_activity_service.gd"
 SaloonAudio="*res://scripts/saloon_audio.gd"
+PlayModes="*res://scripts/play_modes.gd"
 
 [display]
 

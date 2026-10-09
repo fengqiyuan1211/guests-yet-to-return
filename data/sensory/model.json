@@ -1,0 +1,414 @@
+{
+  "version": "sensory-calibrated-1",
+  "attribute_order": [
+    "alcohol_intensity",
+    "sweetness",
+    "sourness",
+    "bitterness"
+  ],
+  "score_scale": {
+    "min": 0,
+    "max": 100,
+    "meaning": "游戏感官强度；四项相互独立，不是 ABV 或化学百分比。"
+  },
+  "profiles": {
+    "sku_gin_london_dry": [
+      90,
+      0,
+      0,
+      8
+    ],
+    "sku_white_rum": [
+      85,
+      4,
+      0,
+      2
+    ],
+    "sku_vodka": [
+      90,
+      0,
+      0,
+      0
+    ],
+    "sku_tequila": [
+      90,
+      3,
+      0,
+      9
+    ],
+    "sku_green_chartreuse": [
+      98,
+      65,
+      0,
+      50
+    ],
+    "sku_maraschino": [
+      65,
+      80,
+      4,
+      12
+    ],
+    "sku_cointreau": [
+      85,
+      85,
+      12,
+      8
+    ],
+    "sku_lime_juice": [
+      0,
+      4,
+      100,
+      4
+    ],
+    "sku_lemon_juice": [
+      0,
+      5,
+      95,
+      2
+    ],
+    "sku_simple_syrup": [
+      0,
+      100,
+      0,
+      0
+    ],
+    "sku_soda_water": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "sku_tonic_water": [
+      0,
+      12,
+      5,
+      28
+    ],
+    "sku_cola": [
+      0,
+      65,
+      12,
+      7
+    ],
+    "sku_rye_whiskey": [
+      95,
+      2,
+      0,
+      20
+    ],
+    "sku_sweet_red_vermouth": [
+      35,
+      30,
+      8,
+      38
+    ],
+    "sku_angostura_bitters": [
+      90,
+      3,
+      0,
+      100
+    ]
+  },
+  "curves": {
+    "alcohol_intensity": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        22.5,
+        35.0
+      ],
+      [
+        27.321428571428573,
+        40.0
+      ],
+      [
+        34.73684210526316,
+        55.0
+      ],
+      [
+        63.25,
+        65.0
+      ],
+      [
+        78.02816901408451,
+        75.0
+      ],
+      [
+        100.0,
+        100.0
+      ]
+    ],
+    "sweetness": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        9.0,
+        25.0
+      ],
+      [
+        9.901408450704226,
+        30.0
+      ],
+      [
+        12.571428571428571,
+        35.0
+      ],
+      [
+        37.25,
+        45.0
+      ],
+      [
+        44.23684210526316,
+        55.0
+      ],
+      [
+        100.0,
+        100.0
+      ]
+    ],
+    "sourness": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        2.2535211267605635,
+        10.0
+      ],
+      [
+        3.75,
+        20.0
+      ],
+      [
+        14.285714285714286,
+        45.0
+      ],
+      [
+        17.236842105263158,
+        47.0
+      ],
+      [
+        26.0,
+        65.0
+      ],
+      [
+        100.0,
+        100.0
+      ]
+    ],
+    "bitterness": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        1.2142857142857142,
+        0.0
+      ],
+      [
+        4.605263157894737,
+        10.0
+      ],
+      [
+        18.5,
+        20.0
+      ],
+      [
+        23.0,
+        30.0
+      ],
+      [
+        26.197183098591548,
+        35.0
+      ],
+      [
+        100.0,
+        100.0
+      ]
+    ]
+  },
+  "solid_profiles": {
+    "sku_white_cane_sugar": [
+      0,
+      100,
+      0,
+      0
+    ]
+  },
+  "neutral_solids": [
+    "sku_mint_leaf",
+    "sku_lime_wedge",
+    "sku_lime_wheel",
+    "sku_lemon_wedge"
+  ],
+  "excluded_ids": [
+    "sku_ice_standard_cube",
+    "sku_ice_crushed"
+  ],
+  "unit_conversions": {
+    "dash_to_ml": 1.0
+  },
+  "calibration": {
+    "method": "weighted_composition_then_monotone_piecewise_response",
+    "updated_profile_fields": {
+      "sku_tonic_water": [
+        "sweetness",
+        "bitterness"
+      ],
+      "sku_rye_whiskey": [
+        "sweetness"
+      ],
+      "sku_sweet_red_vermouth": [
+        "sweetness"
+      ]
+    },
+    "anchors": [
+      {
+        "reference_id": "last_word",
+        "volume_ml": 90.0,
+        "contents": {
+          "sku_gin_london_dry": 22.5,
+          "sku_green_chartreuse": 22.5,
+          "sku_maraschino": 22.5,
+          "sku_lime_juice": 22.5
+        },
+        "raw": [
+          63.25,
+          37.25,
+          26.0,
+          18.5
+        ],
+        "scores": {
+          "alcohol_intensity": 65,
+          "sweetness": 45,
+          "sourness": 65,
+          "bitterness": 20
+        }
+      },
+      {
+        "reference_id": "mojito",
+        "volume_ml": 140.0,
+        "contents": {
+          "sku_white_rum": 45.0,
+          "sku_simple_syrup": 15.0,
+          "sku_lime_juice": 20.0,
+          "sku_soda_water": 60.0
+        },
+        "raw": [
+          27.321428571428573,
+          12.571428571428571,
+          14.285714285714286,
+          1.2142857142857142
+        ],
+        "scores": {
+          "alcohol_intensity": 40,
+          "sweetness": 35,
+          "sourness": 45,
+          "bitterness": 0
+        }
+      },
+      {
+        "reference_id": "gin_and_tonic",
+        "volume_ml": 200.0,
+        "contents": {
+          "sku_gin_london_dry": 50.0,
+          "sku_tonic_water": 150.0
+        },
+        "raw": [
+          22.5,
+          9.0,
+          3.75,
+          23.0
+        ],
+        "scores": {
+          "alcohol_intensity": 35,
+          "sweetness": 25,
+          "sourness": 20,
+          "bitterness": 30
+        }
+      },
+      {
+        "reference_id": "long_island_iced_tea",
+        "volume_ml": 190.0,
+        "contents": {
+          "sku_vodka": 15.0,
+          "sku_tequila": 15.0,
+          "sku_white_rum": 15.0,
+          "sku_gin_london_dry": 15.0,
+          "sku_cointreau": 15.0,
+          "sku_lemon_juice": 25.0,
+          "sku_simple_syrup": 30.0,
+          "sku_cola": 60.0
+        },
+        "raw": [
+          34.73684210526316,
+          44.23684210526316,
+          17.236842105263158,
+          4.605263157894737
+        ],
+        "scores": {
+          "alcohol_intensity": 55,
+          "sweetness": 55,
+          "sourness": 47,
+          "bitterness": 10
+        }
+      },
+      {
+        "reference_id": "manhattan",
+        "volume_ml": 71.0,
+        "contents": {
+          "sku_rye_whiskey": 50.0,
+          "sku_sweet_red_vermouth": 20.0,
+          "sku_angostura_bitters": 1.0
+        },
+        "raw": [
+          78.02816901408451,
+          9.901408450704226,
+          2.2535211267605635,
+          26.197183098591548
+        ],
+        "scores": {
+          "alcohol_intensity": 75,
+          "sweetness": 30,
+          "sourness": 10,
+          "bitterness": 35
+        }
+      }
+    ],
+    "precision": "Full floating point internally; round only in the UI.",
+    "profile_meaning": "Relative gameplay coefficients. Not sugar concentration, acidity, or ABV."
+  },
+  "fruit_liquids": [
+    "sku_lime_juice",
+    "sku_lemon_juice",
+    "sku_maraschino",
+    "sku_cointreau"
+  ],
+  "fruit_heavy_fraction": 0.25,
+  "pulp_solids": [
+    "sku_lime_wedge",
+    "sku_lime_wheel",
+    "sku_lemon_wedge"
+  ],
+  "known_solids": [
+    "sku_mint_leaf",
+    "sku_white_cane_sugar",
+    "sku_lime_wedge",
+    "sku_lime_wheel",
+    "sku_lemon_wedge"
+  ],
+  "aliases": {
+    "gin": "sku_gin_london_dry",
+    "rum": "sku_white_rum",
+    "vodka": "sku_vodka",
+    "lime": "sku_lime_juice",
+    "syrup": "sku_simple_syrup",
+    "soda": "sku_soda_water",
+    "garnish": "sku_lime_wedge",
+    "lemon_slice": "sku_lemon_slice"
+  }
+}
