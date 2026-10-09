@@ -29,6 +29,8 @@ MenuArt="*res://scripts/menu_art_provider.gd"
 WorkbenchSession="*res://scripts/workbench_session.gd"
 CustomerService="*res://scripts/customer_service.gd"
 GameSession="*res://scripts/game_session.gd"
+GuestService="*res://scripts/guest_service.gd"
+GuestActivities="*res://scripts/guest_activity_service.gd"
 SaloonAudio="*res://scripts/saloon_audio.gd"
 PlayModes="*res://scripts/play_modes.gd"
 

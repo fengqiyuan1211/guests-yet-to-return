@@ -80,7 +80,7 @@ func run() -> void:
 		key.pressed = true
 		get_viewport().push_input(key, true)
 		await settle()
-		check(Navigation.current_route == &"home", "Escape did not return: %s" % route)
+		check(Navigation.current_route == (&"journal" if route == &"stick_demo" else &"home"), "Escape did not return: %s" % route)
 	home.get_node("%OpenButton").pressed.emit()
 	await get_tree().create_timer(4.1).timeout
 	check(home.service_started, "Start service preview failed")

@@ -140,7 +140,7 @@ func run() -> void:
 	await settle()
 	TimeManager.advance_minutes(480)
 	await settle()
-	check(Navigation.current_route==&"home" and not home.service_started,"closing shift also closes selector")
+	check(Navigation.current_route==&"drink_selection" and home.closing_pending and home.service_started,"closing retains final guest selector until send-off")
 	print("DRINK SELECTION: %d checks, %d failures" % [count,failures.size()])
 	home.queue_free()
 	await settle()

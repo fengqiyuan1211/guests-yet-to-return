@@ -66,6 +66,8 @@ func _valid(data: Variant) -> bool:
 	var reception = data.get("visit")
 	if not reception is Dictionary or not _whole(reception.get("count", 0), 0, 1000000000) or not reception.get("bag", []) is Array:
 		return false
+	if not reception.get("closing_pending",false) is bool or not _whole(reception.get("closing_day",0),0,1000000000): return false
+	if not reception.get("id","") is String: return false
 	var seen: Array = []
 	for index in reception.get("bag", []):
 		if not _whole(index, 0, StoryDialogue.catalog.size() - 1) or seen.has(int(index)):
@@ -97,7 +99,7 @@ func load_game() -> bool:
 func _capture() -> Dictionary:
 	if is_instance_valid(home):
 		var guests = home.get_node("%GuestLayer")
-		visit = {"count": home.guest_count, "bag": guests._bag.duplicate(), "last_id": guests._last_id}
+		visit = {"count": home.guest_count, "bag": guests._bag.duplicate(), "last_id": guests._last_id, "id":home.reception_id, "closing_pending":home.closing_pending, "closing_day":home.closing_day}
 	return {"version": 1, "clock": TimeManager.snapshot(),
 		"story": {"version": 1, "guests": StoryDialogue.progress.duplicate(true)},
 		"active": StoryDialogue.session_snapshot(), "visit": visit, "reset_pending": false}

@@ -90,7 +90,12 @@ func run() -> void:
 	await get_tree().create_timer(.4).timeout
 	check(bench.table.lift_blend==0 and not bench.table.dragging,"release settles shaker back on counter")
 	check(bench.table.shaker_pose().is_equal_approx(Transform2D.IDENTITY),"landing restores original prop transform")
-	check(WorkbenchSession.state.stock==before_stock and WorkbenchSession.state.session.vessels==before_contents,"animation does not consume or move ingredients")
+	check(WorkbenchSession.state.stock==before_stock,"shaking does not consume warehouse ingredients")
+	for vessel in before_contents:
+		var after: Dictionary=WorkbenchSession.state.session.vessels[vessel]
+		check(after.ice_batches==before_contents[vessel].ice_batches,"shaking preserves ice in "+vessel)
+		for material in before_contents[vessel].contents:
+			check(is_equal_approx(float(after.contents.get(material,0)),float(before_contents[vessel].contents[material])),"mixing changes layers but preserves quantity: "+material)
 	pointer(point(center),true)
 	await get_tree().create_timer(.3).timeout
 	bench.table._notification(Control.NOTIFICATION_APPLICATION_FOCUS_OUT)

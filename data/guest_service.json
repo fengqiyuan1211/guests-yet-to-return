@@ -1,0 +1,301 @@
+{
+  "version": "guest-service-character-events-2",
+  "status": "playtest",
+  "note": "人物四维与付款系数是可调整的试玩建议；不替代正式人设。事件与配方Buff仅使用明确配置。",
+  "penalty_scale": 2.0,
+  "satisfied_min": 70.0,
+  "tip_tiers": [
+    {
+      "min": 90,
+      "rate": 0.2
+    },
+    {
+      "min": 70,
+      "rate": 0.1
+    },
+    {
+      "min": 0,
+      "rate": 0
+    }
+  ],
+  "profiles": {
+    "milo": {
+      "targets": {
+        "alcohol_intensity": 45,
+        "sweetness": 25,
+        "sourness": 30,
+        "bitterness": 10
+      },
+      "weights": {
+        "alcohol_intensity": 1.0,
+        "sweetness": 1.0,
+        "sourness": 1.0,
+        "bitterness": 1.0
+      },
+      "tolerance": {
+        "alcohol_intensity": 5.0,
+        "sweetness": 5.0,
+        "sourness": 5.0,
+        "bitterness": 5.0
+      },
+      "restrictions": [
+        "dairy"
+      ],
+      "no_bubbles": false,
+      "request_text": "我平常喜欢橙香、酸甜平衡，酒感适中。不要奶制品。"
+    },
+    "ada": {
+      "targets": {
+        "alcohol_intensity": 30,
+        "sweetness": 10,
+        "sourness": 25,
+        "bitterness": 8
+      },
+      "weights": {
+        "alcohol_intensity": 1.0,
+        "sweetness": 1.0,
+        "sourness": 1.0,
+        "bitterness": 1.0
+      },
+      "tolerance": {
+        "alcohol_intensity": 5.0,
+        "sweetness": 5.0,
+        "sourness": 5.0,
+        "bitterness": 5.0
+      },
+      "restrictions": [
+        "mint"
+      ],
+      "no_bubbles": false,
+      "request_text": "给我清爽、低甜、带一点酸味的，不要薄荷。"
+    },
+    "hank": {
+      "targets": {
+        "alcohol_intensity": 65,
+        "sweetness": 15,
+        "sourness": 10,
+        "bitterness": 30
+      },
+      "weights": {
+        "alcohol_intensity": 1.0,
+        "sweetness": 1.0,
+        "sourness": 1.0,
+        "bitterness": 1.0
+      },
+      "tolerance": {
+        "alcohol_intensity": 5.0,
+        "sweetness": 5.0,
+        "sourness": 5.0,
+        "bitterness": 5.0
+      },
+      "restrictions": [
+        "extra_syrup"
+      ],
+      "no_bubbles": false,
+      "request_text": "我喜欢厚实、微苦、少甜的。别在配方外额外加糖浆。"
+    },
+    "stick": {
+      "targets": {
+        "alcohol_intensity": 35,
+        "sweetness": 20,
+        "sourness": 20,
+        "bitterness": 10
+      },
+      "weights": {
+        "alcohol_intensity": 1.0,
+        "sweetness": 1.0,
+        "sourness": 1.0,
+        "bitterness": 1.0
+      },
+      "tolerance": {
+        "alcohol_intensity": 5.0,
+        "sweetness": 5.0,
+        "sourness": 5.0,
+        "bitterness": 5.0
+      },
+      "restrictions": [
+        "pulp"
+      ],
+      "no_bubbles": true,
+      "request_text": "我喜欢清透、没有气泡、没有果肉的。"
+    },
+    "yellow_creature": {
+      "targets": {
+        "alcohol_intensity": 0,
+        "sweetness": 65,
+        "sourness": 25,
+        "bitterness": 5
+      },
+      "weights": {
+        "alcohol_intensity": 1.0,
+        "sweetness": 1.0,
+        "sourness": 1.0,
+        "bitterness": 1.0
+      },
+      "tolerance": {
+        "alcohol_intensity": 5.0,
+        "sweetness": 5.0,
+        "sourness": 5.0,
+        "bitterness": 5.0
+      },
+      "restrictions": [
+        "alcohol"
+      ],
+      "no_bubbles": false,
+      "request_text": "甜一点、有果香，不要酒精。"
+    }
+  },
+  "events": {
+    "milo_01": {
+      "guest_id": "milo",
+      "delta": {
+        "alcohol_intensity": 5,
+        "sweetness": 5,
+        "sourness": -5,
+        "bitterness": 0
+      },
+      "request_text": "有橙子的香气就好，甜一点也行，别把酸味全盖住。不要奶制品。"
+    },
+    "milo_02": {
+      "guest_id": "milo",
+      "delta": {
+        "alcohol_intensity": -10,
+        "sweetness": -10,
+        "sourness": 5,
+        "bitterness": 0
+      },
+      "request_text": "今天轻一点，甜味收住，酸味可以明显些。不要奶制品，我想慢慢看完这几页。"
+    },
+    "milo_03": {
+      "guest_id": "milo",
+      "delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "request_text": "还是要一点橙香。今天这杯，哪边都别太抢，不用奶制品。"
+    },
+    "milo_04": {
+      "guest_id": "milo",
+      "delta": {
+        "alcohol_intensity": -5,
+        "sweetness": -5,
+        "sourness": 0,
+        "bitterness": 5
+      },
+      "request_text": "甜味少些，有一点收尾的苦也行。奶制品就不放了。"
+    },
+    "milo_05": {
+      "guest_id": "milo",
+      "delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 5,
+        "sourness": -5,
+        "bitterness": 0
+      },
+      "request_text": "今天可以甜一点，酸味柔和些，还是不要奶制品。回家那几天，我大概连杯子都得自己洗。"
+    },
+    "ada_01": {
+      "guest_id": "ada",
+      "delta": {
+        "alcohol_intensity": -5,
+        "sweetness": 0,
+        "sourness": 5,
+        "bitterness": 0
+      },
+      "request_text": "清爽一点，酸味可以有，别放薄荷。我今天刚从外面回来。"
+    },
+    "ada_02": {
+      "guest_id": "ada",
+      "delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 5,
+        "sourness": -5,
+        "bitterness": 0
+      },
+      "request_text": "酸味少一点吧。可以有一点点甜，别像糖水，薄荷还是不要。"
+    },
+    "ada_03": {
+      "guest_id": "ada",
+      "delta": {
+        "alcohol_intensity": -10,
+        "sweetness": -5,
+        "sourness": 5,
+        "bitterness": 0
+      },
+      "request_text": "给我调轻些，少甜、酸一点，不要薄荷。我想把明天要说的话理清楚。"
+    },
+    "ada_04": {
+      "guest_id": "ada",
+      "delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "request_text": "照我平常喜欢的清爽低甜来，不用薄荷。今天这张表，先不用我重写了。"
+    },
+    "ada_05": {
+      "guest_id": "ada",
+      "delta": {
+        "alcohol_intensity": -5,
+        "sweetness": 5,
+        "sourness": -5,
+        "bitterness": 0
+      },
+      "request_text": "今天不赶时间，柔和一点，微酸、略甜，不要薄荷。杯子放那儿，我慢慢喝。"
+    },
+    "hank_01": {
+      "guest_id": "hank",
+      "delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "request_text": "照平常来，厚实一点，收尾带点苦。别临时多添糖浆。"
+    },
+    "hank_02": {
+      "guest_id": "hank",
+      "delta": {
+        "alcohol_intensity": -5,
+        "sweetness": -5,
+        "sourness": 0,
+        "bitterness": 5
+      },
+      "request_text": "甜味再少些，苦味留着，酒感稍轻。这账本得一行一行看，不要额外糖浆。"
+    },
+    "hank_03": {
+      "guest_id": "hank",
+      "delta": {
+        "alcohol_intensity": -15,
+        "sweetness": -5,
+        "sourness": 5,
+        "bitterness": -5
+      },
+      "request_text": "今天别那么冲，甜味少些。味道留着就好，我想坐久一点，不用额外糖浆。"
+    },
+    "hank_04": {
+      "guest_id": "hank",
+      "delta": {
+        "alcohol_intensity": 0,
+        "sweetness": -5,
+        "sourness": 0,
+        "bitterness": 5
+      },
+      "request_text": "还是老味道，厚实、少甜、微苦。糖浆不用额外加。"
+    },
+    "hank_05": {
+      "guest_id": "hank",
+      "delta": {
+        "alcohol_intensity": -5,
+        "sweetness": 5,
+        "sourness": 0,
+        "bitterness": -5
+      },
+      "request_text": "今天柔和一点。你按配方做就好，不用怕我皱眉又补糖。"
+    }
+  },
+  "recipe_buffs": {}
+}

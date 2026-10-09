@@ -170,7 +170,7 @@ func _make_page(index: int) -> Control:
 	sheet.add_child(texture)
 	_label(sheet, Rect2(180, 15, 330, 61), "酒 馆 图 鉴", 38)
 	_label(sheet, Rect2(510, 32, 504, 31), "S A L O O N  R E C I P E  J O U R N A L", 16)
-	_label(sheet, Rect2(1030, 27, 166, 34), ("原创配方 %d 款" % WorkbenchSession.research_recipes().size()) if selected_filter==3 else "已点亮 %d / %d" % [MenuCatalog.unlocked_recipes().size(), MenuCatalog.all_recipes().size()], 20)
+	_label(sheet, Rect2(1030, 27, 166, 34), ("原创配方 %d 款" % WorkbenchSession.research_recipes().size()) if selected_filter==3 else "已点亮 %d / %d" % [MenuCatalog.unlocked_ids.size(), MenuCatalog.all_recipes().size()], 20)
 	var records := _visible_recipes()
 	var offset := 1 if reserved_tutorial_slot and selected_filter!=3 else 0
 	for i in range(6):

@@ -48,7 +48,12 @@ func run() -> void:
 	var guests = home.get_node("%GuestLayer")
 	if mode == "seed":
 		check(TimeManager.day == 1 and not home.service_started, "Fresh session")
-		TimeManager.advance_minutes(120 + 2880 + 225)
+		TimeManager.advance_minutes(120)
+		for night in range(2):
+			TimeManager.advance_minutes(480)
+			home.on_drink_served()
+			TimeManager.advance_minutes(960)
+		TimeManager.advance_minutes(225)
 		guests.show_guest(3)
 		await settle()
 		click(home.story_choices.get_child(0)) # Name reveal.
@@ -120,7 +125,9 @@ func run() -> void:
 		TimeManager._process(3.0)
 		check(TimeManager.minutes_since_midnight == 1200 and TimeManager.is_open and home.service_started and home.guest_count == 1, "Fast forward finishes once at opening")
 		TimeManager.advance_minutes(480)
-		check(TimeManager.day == 2 and not home.service_started and StoryDialogue.phase == "none", "Closing after restore still works")
+		check(TimeManager.day == 2 and home.closing_pending, "Closing after restore preserves last guest")
+		home.on_drink_served()
+		check(not home.service_started and StoryDialogue.phase=="none","send-off completes restored closing")
 		check(GameSession.save_game(), "Closed state saved")
 	elif mode == "closed_check":
 		check(TimeManager.day == 2 and TimeManager.minutes_since_midnight == 240 and not home.service_started and StoryDialogue.phase == "none", "Reload at dawn remains closed on day two")

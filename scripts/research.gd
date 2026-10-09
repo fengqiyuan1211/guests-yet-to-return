@@ -200,7 +200,7 @@ func _entry() -> void:
 	library.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	desk.add_child(library)
 	_label(library,Rect2(0,0,220,40),"我的配方",30).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-	_label(library,Rect2(0,42,220,28),"已收藏 %d 份试调" % WorkbenchSession.research_recipes().size(),18,MUTED).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
+	_label(library,Rect2(0,42,220,28),"已收藏 %d / %d 份" % [WorkbenchSession.research_recipes().size(),int(Research.config().get("max_saved_recipes",64))],18,MUTED).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	var session: Dictionary=WorkbenchSession.state.session
 	if not session.is_empty() and session.status in ["mixing","finished"]:
 		var resume:=_button(desk,Rect2(955,95,590,45),"继续桌上这一杯 · "+str(session.recipe.name),func(): Navigation.go_to(&"mixing"))
@@ -262,6 +262,7 @@ func _library() -> void:
 	var english:=_label(body,Rect2(390,48,890,30),str(record.english_name),18,MUTED)
 	english.autowrap_mode=TextServer.AUTOWRAP_OFF
 	english.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
+	_button(body,Rect2(5,480,330,48),"管理配方 / 历史版本",_manage_saved)
 	var details:=_scroll(Rect2(725,87,550,370))
 	var text:="成品配方 · v%d\n" % int(record.version)
 	for row in record.ingredients: text+="%s  %s %s\n" % [row.name,WorkbenchSession.format_amount(float(row.amount)),row.unit]
@@ -275,7 +276,7 @@ func _library() -> void:
 	label.add_theme_font_size_override("font_size",21)
 	label.add_theme_color_override("font_color",INK)
 	details.add_child(label)
-	feedback.text="已保存成品用量和试调笔记。当前可查阅配方，营业上架将在后续版本开放。"
+	feedback.text="已保存成品用量和试调笔记。可在「酒单」选择 DIY 并设置售价，保存配方不会自动上架。"
 
 func _legendary() -> void:
 	var records: Array=Research.config().legendary_recipes
@@ -329,3 +330,87 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode==KEY_ESCAPE:
 		_back()
 		get_viewport().set_input_as_handled()
+
+func _manage_saved() -> void:
+	var record: Dictionary=WorkbenchSession.research_state().recipes.get(selected_id,{})
+	if record.is_empty(): return
+	for child in body.get_children():
+		body.remove_child(child)
+		child.queue_free()
+	_label(body,Rect2(20,0,1200,40),"配方管理 · "+str(record.name)+" · v%d" % int(record.version),28)
+	var title:=LineEdit.new()
+	title.name="RecipeTitleEdit"
+	title.text=record.name
+	title.max_length=40
+	title.position=Vector2(20,62)
+	title.size=Vector2(440,48)
+	body.add_child(title)
+	var english:=LineEdit.new()
+	english.text=record.english_name
+	english.max_length=70
+	english.position=Vector2(20,125)
+	english.size=Vector2(440,48)
+	body.add_child(english)
+	var notes:=TextEdit.new()
+	notes.text=record.notes
+	notes.position=Vector2(20,185)
+	notes.size=Vector2(440,165)
+	notes.wrap_mode=TextEdit.LINE_WRAPPING_BOUNDARY
+	body.add_child(notes)
+	_button(body,Rect2(20,365,440,48),"保存文字修订 · 新版本",func():
+		if WorkbenchSession.command("metadata-%d" % Time.get_ticks_usec(),"","revise_recipe",{"recipe_id":record.id,"expected_version":record.version,"name":title.text,"english_name":english.text,"notes":notes.text}):
+			_refresh()
+		else: feedback.text=WorkbenchSession.last_error
+	)
+	_button(body,Rect2(20,425,215,48),"返回收藏",_refresh)
+	_button(body,Rect2(250,425,210,48),"删除配方…",func(): _confirm_delete(record))
+	var history: Array=WorkbenchSession.research_state().get("versions",{}).get(selected_id,[]).duplicate(true)
+	history.append(record)
+	var versions:=OptionButton.new()
+	versions.position=Vector2(510,62)
+	versions.size=Vector2(720,45)
+	for old in history: versions.add_item("v%d · %s" % [int(old.version),old.name])
+	body.add_child(versions)
+	var compare_scroll:=_scroll(Rect2(510,125,750,350))
+	var compare:=Label.new()
+	compare.custom_minimum_size.x=710
+	compare.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	compare.add_theme_font_size_override("font_size",21)
+	compare.add_theme_color_override("font_color",INK)
+	compare_scroll.add_child(compare)
+	var show_version:=func(index: int):
+		var old: Dictionary=history[index]
+		var lines: Array[String]=["查看 v%d → 当前 v%d" % [int(old.version),int(record.version)],"酒名：%s → %s" % [old.name,record.name],"英文：%s → %s" % [old.english_name,record.english_name],"本版用量："]
+		var prior: Dictionary={}
+		var current: Dictionary={}
+		for row in old.ingredients: prior[row.sku_id]=row
+		for row in record.ingredients: current[row.sku_id]=row
+		var keys:=prior.duplicate()
+		keys.merge(current)
+		for sku in keys:
+			var row: Dictionary=keys[sku]
+			lines.append("%s：%s → %s %s" % [row.name,WorkbenchSession.format_amount(float(prior.get(sku,{}).get("amount",0))),WorkbenchSession.format_amount(float(current.get(sku,{}).get("amount",0))),row.unit])
+		lines.append("用量与当前版相同" if old.ingredients==record.ingredients else "用量已变化；当前用量可返回收藏查看。")
+		lines.append("本版笔记："+str(old.notes))
+		compare.text="\n".join(lines)
+	versions.item_selected.connect(show_version)
+	versions.select(history.size()-1)
+	show_version.call(history.size()-1)
+	feedback.text="修改用量请「以此研发」，完成后选择修订原配方；历史版本与单杯记录不会被覆盖。"
+
+func _confirm_delete(record: Dictionary) -> void:
+	var dialog:=ConfirmationDialog.new()
+	dialog.title="删除配方"
+	dialog.dialog_text="删除「%s」？\n已上架时需先下架。过去的消费和版本记录会保留。" % record.name
+	dialog.ok_button_text="删除"
+	dialog.cancel_button_text="保留"
+	add_child(dialog)
+	dialog.confirmed.connect(func():
+		if WorkbenchSession.command("delete-%d" % Time.get_ticks_usec(),"","delete_recipe",{"recipe_id":record.id,"expected_version":record.version}):
+			selected_id=""
+			_refresh()
+		else: feedback.text=WorkbenchSession.last_error
+		dialog.queue_free()
+	)
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.popup_centered(Vector2i(580,220))

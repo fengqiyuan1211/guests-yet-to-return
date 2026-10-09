@@ -19,12 +19,12 @@ func run() -> void:
 	bench._act("cup",{"cup":"highball"})
 	var original: Dictionary=bench.data.recipe.duplicate(true)
 	var small: Dictionary=bench.data.duplicate(true)
-	small.withdrawn={"gin":10}
+	small.vessels.mixing.contents={"gin":10}
 	small.consumed={"sku_gin_london_dry":10}
 	check(Notes.text_for(small,WorkbenchSession).contains("待加 20 ml"),"partial dose shows remaining amount without calling it a failure")
 	bench._issue("withdraw",{"material":"gin","ml":35,"vessel":"mixing"})
 	check(bench.feedback_text.text.contains("35 ml") and bench.feedback_text.text.contains("搅拌杯"),"liquid addition says exact amount and destination")
-	check(bench.note.text.contains("多取 5 ml"),"overdose annotated against frozen reference")
+	check(bench.note.text.contains("多加 5 ml"),"overdose annotated against frozen reference")
 	bench._issue("withdraw",{"material":"vodka","ml":27.5,"vessel":"glass"})
 	check(bench.note.text.contains("额外 伏特加 27.5 ml") and bench.note.text.contains("[b]"),"extra liquid has contrasting typography and precise amount")
 	bench._act("add_solid",{"material":"sku_mint_leaf","vessel":"glass"})
@@ -35,7 +35,7 @@ func run() -> void:
 	var stock: Dictionary=WorkbenchSession.state.stock.duplicate(true)
 	for i in range(3): bench._act("ice",{"vessel":"glass","ice":"cube"})
 	check(WorkbenchSession.ice_mass(bench.data.vessels.glass)==150 and WorkbenchSession.ice_volume(bench.data.vessels.glass)==150,"three portions give exactly 150 g")
-	check(bench.feedback_text.text.contains("50 g") and bench.feedback_text.text.contains("150 g") and bench.note.text.contains("已加 150 g"),"ice portion and cumulative grams agree")
+	check(bench.feedback_text.text.contains("50 g") and bench.feedback_text.text.contains("150 g") and bench.note.text.contains("现有 150 g"),"ice portion and cumulative grams agree")
 	var receipt: Dictionary=bench.data.actions.back()
 	var saved: Dictionary=WorkbenchSession.snapshot()
 	var path: String=Supplies.save_path
@@ -53,7 +53,7 @@ func run() -> void:
 	bad.vessels.glass.ice_batches[0].mass_g=-1
 	check(not WorkbenchSession._valid_session(bad),"invalid mass rejected on load")
 	bench._act("filter",{"source":"mixing","vessel":"glass"})
-	check(bench.feedback_text.text.contains("35 ml") and bench.note.text.count("多取 5 ml")==1,"transfer reports amount without counting material twice")
+	check(bench.feedback_text.text.contains("35 ml") and bench.note.text.count("多加 5 ml")==1,"transfer reports amount without counting material twice")
 	var pose: Dictionary=bench.table.transfer_pose("mixing","glass",.5)
 	var mouth: Vector2=bench.table.transfer_lip("mixing",pose.rect,pose.angle)
 	check(pose.angle>0 and mouth.x<bench.table.rim_point("glass").x and mouth.y<bench.table.rim_point("glass").y,"mixing spout tilts right and pours downward into glass")
@@ -102,9 +102,9 @@ func run() -> void:
 	var mojito: Dictionary=bench.data.duplicate(true)
 	mojito.recipe=WorkbenchSession.recipe_snapshot(MenuCatalog.get_recipe("mojito"))
 	check(Notes.text_for(mojito,WorkbenchSession).contains("额外出品冰 方冰 150 g"),"wrong ice type remains visible against recipe")
-	for action in mojito.actions:
-		if action.kind=="ice": action.payload.ice="crushed"
-	check(Notes.text_for(mojito,WorkbenchSession).contains("碎冰已加 150 g / 配方 150 g"),"recipe grams and actual mass use same unit")
+	for vessel in mojito.vessels.values():
+		for batch in vessel.get("ice_batches",[]): batch.kind="crushed"
+	check(Notes.text_for(mojito,WorkbenchSession).contains("碎冰现有 150 g / 配方 150 g"),"recipe grams and actual mass use same unit")
 	bench._issue("discard")
 	bench._issue("start")
 	bench._act("cup",{"cup":"highball"})

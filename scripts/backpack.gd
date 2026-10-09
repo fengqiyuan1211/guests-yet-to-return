@@ -426,6 +426,7 @@ func _build_item_slot(item: Dictionary, slot: int) -> void:
 	var button := ItemSlot.new()
 	button.name = "Product_" + str(item.id)
 	button.set_meta("item_id", str(item.id))
+	button.set_meta("audio_item",str(item.id))
 	button.position = Vector2((slot % 3) * 268, floori(slot / 3.0) * 238)
 	button.size = Vector2(252, 228)
 	button.toggle_mode = true
