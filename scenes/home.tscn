@@ -11,7 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://x28p5m24d3mv" path="res://assets/icons/home.svg" id="icon_home"]
 [ext_resource type="Texture2D" uid="uid://cb4eorycpdd1p" path="res://assets/icons/menu.svg" id="icon_menu"]
 [ext_resource type="Texture2D" uid="uid://cwiwg6qd2mgbw" path="res://assets/icons/research.svg" id="icon_research"]
-[ext_resource type="Texture2D" uid="uid://byuvf63ulxjqr" path="res://assets/icons/reviews.svg" id="icon_reviews"]
+[ext_resource type="Texture2D" path="res://assets/icons/journal.svg" id="icon_reviews"]
 [ext_resource type="Texture2D" uid="uid://d2ic3bsplsrvj" path="res://assets/icons/shop.svg" id="icon_shop"]
 [ext_resource type="Texture2D" uid="uid://da6j1otawybfy" path="res://assets/icons/slots.svg" id="icon_slots"]
 [ext_resource type="Texture2D" uid="uid://dkgni51avstiq" path="res://assets/icons/sun.svg" id="icon_sun"]
@@ -609,9 +609,9 @@ offset_bottom = 567.0
 mouse_default_cursor_shape = 2
 theme_override_constants/h_separation = 19
 theme_override_constants/icon_max_width = 30
-text = "评价"
+text = "手帐"
 icon = ExtResource("icon_reviews")
-metadata/route = "reviews"
+metadata/route = "journal"
 
 [node name="RailBottomRule" type="ColorRect" parent="Stage/HomeContent/Navigation" unique_id=1466792119]
 layout_mode = 0

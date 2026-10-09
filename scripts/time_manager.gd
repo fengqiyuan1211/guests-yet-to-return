@@ -63,7 +63,8 @@ func visual_minutes() -> float:
 	return minutes_since_midnight + _elapsed
 
 func advance_minutes(amount: int) -> void:
-	# Visit every crossed boundary even on a large frame or accelerated day.
+	# Visit every crossed boundary; a closing guest may pause the clock in the signal.
+	var was_running:=running
 	for _i in range(maxi(amount, 0)):
 		minutes_since_midnight = (minutes_since_midnight + 1) % (24 * 60)
 		if minutes_since_midnight == OPEN_MINUTE:
@@ -75,6 +76,7 @@ func advance_minutes(amount: int) -> void:
 			day += 1
 			business_closed.emit(completed)
 		time_changed.emit(day, minutes_since_midnight)
+		if was_running and not running: break
 
 func start_early() -> bool:
 	if is_open or fast_forwarding:

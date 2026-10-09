@@ -8,6 +8,8 @@ var surface: Control
 var list: VBoxContainer
 var detail: VBoxContainer
 var drink_image: TextureRect
+var diy_preview: Control
+var demand_hint: Label
 var title: Label
 var subtitle: Label
 var status: Label
@@ -23,11 +25,12 @@ var starting := false
 func _ready() -> void:
 	if is_instance_valid(GameSession.home) and not GameSession.home.guest_profile.is_empty():
 		var profile: Dictionary=GameSession.home.guest_profile
-		guest={"id":str(profile.id),"name":str(profile.name) if StoryDialogue.is_known(str(profile.id)) else "来客", "day":TimeManager.day,"visit":GameSession.home.guest_count}
+		guest={"id":str(profile.id),"name":str(profile.name) if StoryDialogue.is_known(str(profile.id)) else "来客", "day":TimeManager.day,"visit":GameSession.home.guest_count,"visit_id":GameSession.home.reception_id}
 	_build()
 	resized.connect(_fit)
 	_fit()
 	MenuCatalog.changed.connect(_reload)
+	GuestService.ensure_demand(guest)
 	_reload()
 
 func _fit() -> void:
@@ -107,7 +110,9 @@ func _build() -> void:
 	_place(_button(surface,"× 退出选酒",func(): close_requested.emit()),Rect2(1300,28,232,52))
 	_place(_label(surface,"今 晚 的 酒 单",30),Rect2(85,132,420,50))
 	_place(_label(surface,"从已上架酒款中选择",18),Rect2(85,189,420,28))
-	list=_scroll(Rect2(82,238,436,425))
+	demand_hint=_label(surface,"",18)
+	_place(demand_hint,Rect2(85,222,430,100))
+	list=_scroll(Rect2(82,330,436,333))
 	_place(_button(surface,"管理营业酒单",_manage_menu),Rect2(86,699,430,52))
 	title=_label(surface,"",36)
 	_place(title,Rect2(628,131,660,60))
@@ -119,6 +124,10 @@ func _build() -> void:
 	drink_image.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	surface.add_child(drink_image)
 	_place(drink_image,Rect2(1300,120,185,220))
+	diy_preview=preload("res://scripts/workbench_drink_preview.gd").new()
+	diy_preview.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	surface.add_child(diy_preview)
+	_place(diy_preview,Rect2(1284,120,230,250))
 	detail=_scroll(Rect2(630,264,632,450))
 	status=_label(surface,"",19,CREAM)
 	_place(status,Rect2(70,785,1470,36))
@@ -135,6 +144,12 @@ func _clear(parent: Node) -> void:
 		child.queue_free()
 
 func _reload() -> void:
+	var target: Dictionary=GuestService.ledger().demands.get(guest.get("visit_id",""),{})
+	if not target.is_empty():
+		var a: Dictionary=target.targets
+		var limits: Array=[]
+		for key in target.restrictions: limits.append({"alcohol":"无酒精","dairy":"无奶制品","mint":"不要薄荷","extra_syrup":"不要额外糖浆","pulp":"不要果肉"}.get(key,key))
+		demand_hint.text="本次口味：酒感 %s · 甜 %s · 酸 %s · 苦 %s\n要求：%s" % [str(a.alcohol_intensity),str(a.sweetness),str(a.sourness),str(a.bitterness),"、".join(limits)]
 	_clear(list)
 	buttons.clear()
 	for entry in MenuCatalog.entries:
@@ -153,6 +168,9 @@ func _select(id: String) -> void:
 	_clear(detail)
 	for key in buttons: buttons[key].add_theme_stylebox_override("normal",_style(Color("996e3c") if key==id else Color("62462e")))
 	var recipe: Dictionary=MenuCatalog.get_recipe(id)
+	diy_preview.visible=recipe.get("source_kind","")=="diy"
+	diy_preview.result=recipe.get("result",{}).duplicate(true)
+	drink_image.visible=not diy_preview.visible
 	if recipe.is_empty():
 		title.text="酒单还空着"
 		subtitle.text="先把想招待客人的酒加入营业酒单。"
@@ -210,12 +228,16 @@ func _resume() -> void:
 
 func _start() -> void:
 	if starting or start_button.disabled: return
-	if not TimeManager.is_open or StoryDialogue.guest_id!=str(guest.get("id","")) or TimeManager.day!=int(guest.get("day",-1)) or not is_instance_valid(GameSession.home) or GameSession.home.guest_count!=int(guest.get("visit",-1)):
+	if not GuestService.serving_now() or StoryDialogue.guest_id!=str(guest.get("id","")) or not is_instance_valid(GameSession.home) or GameSession.home.reception_id!=str(guest.get("visit_id","")):
 		status.text="当前接待已结束，请返回主页重新选择客人。"
+		return
+	var order:=GuestService.make_order(guest,selected_id)
+	if order.is_empty():
+		status.text=GuestService.last_error
 		return
 	starting=true
 	var command_id:="select-recipe-%d" % Time.get_ticks_usec()
-	var payload: Dictionary={"recipe_id":selected_id,"guest":guest}
+	var payload: Dictionary={"recipe_id":selected_id,"guest":guest,"order":order}
 	if not replacing_id.is_empty(): payload.replace_session_id=replacing_id
 	if WorkbenchSession.command(command_id,"","select_recipe",payload):
 		Navigation.go_to(&"mixing")

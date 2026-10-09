@@ -13,8 +13,15 @@ var journal_hidden_nodes: Dictionary = {}
 var selected_navigation_style: StyleBox
 var story_choices: HBoxContainer
 var _restoring_reception := false
+var reception_id := ""
+var closing_pending := false
+var closing_day := 0
 
 func _ready() -> void:
+	for activity in preload("res://scripts/guest_activity_rules.gd").IDS:
+		Navigation.register_page(StringName(activity),preload("res://scenes/guest_activity.tscn"))
+	Navigation.register_page(&"stick_demo", preload("res://scenes/stick_badminton_demo.tscn"))
+	Navigation.register_page(&"journal", preload("res://scenes/guest_journal.tscn"))
 	Navigation.register_page(&"drink_selection", preload("res://scenes/drink_selection.tscn"))
 	Navigation.register_page(&"research", preload("res://scenes/research.tscn"))
 	Navigation.register_page(&"mixing", preload("res://scenes/workbench.tscn"))
@@ -37,6 +44,9 @@ func _ready() -> void:
 	%TalkButton.pressed.connect(_on_talk_pressed)
 	_setup_story_choices()
 	StoryDialogue.changed.connect(_render_dialogue)
+	GuestService.changed.connect(_render_dialogue)
+	GuestService.changed.connect(_refresh_reputation)
+	_refresh_reputation()
 	%GuestLayer.guest_spawned.connect(_on_guest_spawned)
 	%NextGuestButton.hide()
 	%TalkButton.hide()
@@ -48,7 +58,10 @@ func _ready() -> void:
 	TimeManager.fast_forward_changed.connect(_on_fast_forward_changed)
 	TimeManager.time_changed.connect(_on_time_changed)
 	GameSession.bind_home(self)
-	if TimeManager.is_open:
+	closing_pending=bool(GameSession.visit.get("closing_pending",false)) and not StoryDialogue.guest_id.is_empty()
+	closing_day=int(GameSession.visit.get("closing_day",0))
+	if TimeManager.is_open or closing_pending:
+		if closing_pending: TimeManager.set_running(false)
 		_restoring_reception = not StoryDialogue.guest_id.is_empty()
 		_on_business_opened(TimeManager.day)
 		_restoring_reception = false
@@ -86,6 +99,9 @@ func _on_open_pressed() -> void:
 	if TimeManager.fast_forwarding:
 		return
 	if service_started:
+		if not GuestService.visit_receipt(reception_id).is_empty():
+			_render_dialogue()
+			return
 		Navigation.go_to(&"drink_selection")
 		return
 	TimeManager.start_early()
@@ -124,12 +140,20 @@ func _on_business_opened(_day: int) -> void:
 	service_preview_started.emit()
 
 func _on_business_closed(completed_day: int) -> void:
+	if service_started and not guest_profile.is_empty():
+		closing_pending=true
+		closing_day=completed_day
+		TimeManager.set_running(false)
+		_sync_service_controls()
+		_update_bottom_status()
+		GameSession.save_game()
+		return
 	_show_closed_state(true, completed_day)
-	# Only an active service workbench ends with the shift. Daytime browsing stays open.
-	if Navigation.current_route in [&"mixing", &"drink_selection"]:
-		Navigation.go_to(&"home")
 
 func _show_closed_state(just_closed: bool, completed_day: int) -> void:
+	if closing_pending: TimeManager.set_running(true)
+	closing_pending=false
+	closing_day=0
 	var arrivals := guest_count
 	StoryDialogue.end_guest()
 	_clear_story_choices()
@@ -173,7 +197,8 @@ func _sync_service_controls() -> void:
 		%ShiftStatus.text = "快进至 20:00"
 	elif service_started:
 		%OpenButton.text = "前往调酒台    →"
-		%ShiftStatus.text = "营业中 · 04:00 歇业"
+		%ShiftStatus.text = "最后一位 · 送客后收工" if closing_pending else "营业中 · 04:00 停止迎客"
+		%NextGuestButton.text = "送客并结束营业" if closing_pending else "送客，迎接下一位"
 	else:
 		%OpenButton.text = "提前开始营业  →"
 		%ShiftStatus.text = "备料中 · 20:00 开门"
@@ -184,6 +209,7 @@ func _on_next_guest_pressed() -> void:
 
 func _on_guest_spawned(profile: Dictionary) -> void:
 	guest_profile = profile
+	reception_id = str(GameSession.visit.get("id", "legacy-%d-%d-%s" % [TimeManager.day,guest_count,profile.id])) if _restoring_reception else "visit-%d-%d" % [Time.get_unix_time_from_system()*1000000,Time.get_ticks_usec()]
 	if not _restoring_reception:
 		guest_count += 1
 	dialogue_index = 0
@@ -253,6 +279,12 @@ func _render_dialogue() -> void:
 	%OrderKicker.hide()
 	%NoteOrder.text = ""
 	%NoteOrder.hide()
+	var demand: Dictionary=GuestService.ledger().demands.get(reception_id,{})
+	if not demand.is_empty():
+		%OrderKicker.show()
+		%OrderKicker.text="本次口味"
+		%NoteOrder.text=str(demand.get("request_text",""))
+		%NoteOrder.show()
 	%TalkButton.show()
 	%TalkButton.text = "再聊一句" if StoryDialogue.phase == "idle" else "接着听"
 	if StoryDialogue.phase == "story":
@@ -278,25 +310,41 @@ func _render_dialogue() -> void:
 				button.add_theme_stylebox_override(style, %TalkButton.get_theme_stylebox(style))
 			button.pressed.connect(_choose_story.bind(str(choice.id), revision))
 			story_choices.add_child(button)
+	var receipt:=GuestService.visit_receipt(reception_id)
+	if not receipt.is_empty():
+		_clear_story_choices()
+		_layout_dialogue(false)
+		%GuestSpeech.text=str(receipt.get("reaction",""))
+		%GuestTags.text="%s · 实收 %d 金币" % [receipt.satisfaction,receipt.total_paid]
+		%GuestTags.show()
+		%TalkButton.hide()
+	for activity in preload("res://scripts/guest_activity_rules.gd").IDS:
+		var info: Dictionary=GuestActivities.config(activity)
+		if info.guest_id==StoryDialogue.guest_id and GuestActivities.progress(activity).unlocked:
+			%GuestTags.text+="  · 已留下小游戏邀请与纪念物，可在手帐查看"
+			%GuestTags.show()
 	_update_bottom_status()
 
 func _choose_story(choice_id: String, revision: int) -> void:
 	StoryDialogue.choose(choice_id, revision)
 
 func on_drink_served() -> void:
-	# Public handoff for the future workbench; the current home send-off uses it too.
+	# Explicit send-off, after the player has had time to read the reaction.
 	if not service_started:
 		return
 	Navigation.go_to(&"home")
 	if Navigation.current_route == &"home":
-		%GuestLayer.spawn_random_guest()
+		if closing_pending:
+			_show_closed_state(true,closing_day)
+			GameSession.save_game()
+		else: %GuestLayer.spawn_random_guest()
 
 func _update_bottom_status() -> void:
 	if guest_profile.is_empty():
 		%BottomStatus.text = "白天备料  /  %s  /  营业时间 20:00—04:00" % TimeManager.formatted_time()
 	else:
 		var display_name: String = guest_profile.name if StoryDialogue.is_known(str(guest_profile.id)) else "？"
-		%BottomStatus.text = "营业中  /  %s  /  正在接待 %s" % [TimeManager.formatted_time(), display_name]
+		%BottomStatus.text = ("停止迎客 · 完成当前杯并送客后收工  /  %s  /  %s" if closing_pending else "营业中  /  %s  /  正在接待 %s") % [TimeManager.formatted_time(), display_name]
 
 func _on_time_changed(day: int, minutes: int) -> void:
 	%TimeValue.text = TimeManager.formatted_time()
@@ -321,10 +369,14 @@ func _on_route_requested(route_id: StringName) -> void:
 	var codex_button: Button = find_child("CodexButton", true, false)
 	%HomeButton.remove_theme_stylebox_override("normal")
 	codex_button.remove_theme_stylebox_override("normal")
+	var journal_button: Button = find_child("ReviewsButton", true, false)
+	journal_button.remove_theme_stylebox_override("normal")
 	var menu_button: Button = find_child("MenuButton", true, false)
 	if menu_button != null:
 		menu_button.remove_theme_stylebox_override("normal")
-	if route_id == &"codex":
+	if route_id == &"journal":
+		journal_button.add_theme_stylebox_override("normal", selected_navigation_style)
+	elif route_id == &"codex":
 		codex_button.add_theme_stylebox_override("normal", selected_navigation_style)
 	elif route_id == &"menu" and menu_button != null:
 		menu_button.add_theme_stylebox_override("normal", selected_navigation_style)
@@ -336,8 +388,8 @@ func _on_route_requested(route_id: StringName) -> void:
 			previous_focus.grab_focus()
 		return
 	previous_focus = get_viewport().gui_get_focus_owner()
-	%HomeContent.visible = route_id in [&"slots", &"codex", &"menu", &"settings", &"backpack"]
-	if route_id in [&"codex", &"menu"]:
+	%HomeContent.visible = route_id in [&"slots", &"codex", &"menu", &"journal", &"settings", &"backpack"]
+	if route_id in [&"codex", &"menu", &"journal"]:
 		for node in %HomeContent.get_children():
 			if node is CanvasItem and node.name not in ["TopBar", "Navigation", "Version"]:
 				journal_hidden_nodes[node] = node.visible
@@ -350,7 +402,15 @@ func _on_route_requested(route_id: StringName) -> void:
 		%PageHost.add_child(active_page)
 		active_page.configure(Navigation.ROUTES[route_id])
 	if active_page.has_signal("close_requested"):
-		active_page.connect("close_requested", func(): Navigation.go_to(&"home"))
+		active_page.connect("close_requested", func():
+			if str(route_id) in preload("res://scripts/guest_activity_rules.gd").IDS:
+				Navigation.journal_focus_guest = GuestActivities.config(str(route_id)).guest_id
+				Navigation.go_to(&"journal")
+			elif route_id == &"stick_demo":
+				Navigation.journal_focus_guest = "stick"
+				Navigation.go_to(&"journal")
+			else: Navigation.go_to(&"home")
+		)
 	if active_page.has_signal("restart_completed"):
 		active_page.connect("restart_completed", _on_game_restarted)
 	active_page.modulate.a = 0.0
@@ -364,9 +424,19 @@ func _on_game_restarted() -> void:
 	_show_closed_state(false, 0)
 	_on_time_changed(TimeManager.day, TimeManager.minutes_since_midnight)
 	_on_balance_changed(SlotWallet.balance)
+	_refresh_reputation()
 	GameSession.save_game()
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and Navigation.current_route != &"home":
 		Navigation.go_to(&"home")
 		get_viewport().set_input_as_handled()
+
+func _refresh_reputation() -> void:
+	var scores: Array=[]
+	for tx: Dictionary in GuestService.ledger().deliveries.values():
+		if tx.phase=="complete" and tx.receipt.score!=null: scores.append(float(tx.receipt.score))
+	var average:=0.0
+	for score in scores: average+=score/maxi(1,scores.size())
+	%ReputationValue.text="暂无评分" if scores.is_empty() else "%.1f 分" % average
+	%ReputationValue.tooltip_text="已接收酒品的客人口味评分均值；拒收单独记录。"

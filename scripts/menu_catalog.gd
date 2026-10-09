@@ -24,6 +24,8 @@ var _by_id: Dictionary = {}
 var _catalog_ready := false
 var _using_finished_catalog := false
 var _initial_settings: Dictionary = {}
+var _research_service: Node
+var _waiting_for_research := false
 
 func _ready() -> void:
 	# Match existing isolated test saves; explicit menu paths take precedence.
@@ -39,7 +41,7 @@ func _ready() -> void:
 		if arg.begins_with("--menu-save="):
 			save_path = arg.trim_prefix("--menu-save=")
 	if load_catalog():
-		load_state()
+		load_state(true)
 
 func _number(value: Variant, minimum: float, maximum: float) -> bool:
 	return (value is int or value is float) and is_finite(float(value)) and value >= minimum and value <= maximum
@@ -138,6 +140,13 @@ func _finished_recipes() -> Array:
 				ingredients.append(ingredient.duplicate(true))
 		recipe["ingredients"] = ingredients
 		recipe["ice"] = ice
+		var standard:=preload("res://scripts/research_data.gd").standard(recipe)
+		recipe.design_attributes={}
+		for key in preload("res://scripts/research_data.gd").ATTRS:
+			recipe.design_attributes[key]=recipe.get(key,0)
+			recipe[key]=standard.attributes[key]
+		recipe.attributes_version=standard.version
+		recipe.attributes_complete=standard.missing.is_empty()
 		result.append(recipe)
 	if temporary:
 		database.free()
@@ -208,18 +217,67 @@ func all_recipes() -> Array:
 	var result: Array = []
 	for recipe in _recipes:
 		result.append(get_recipe(recipe.id))
+	for recipe in _character_recipes().values():
+		if recipe.unlocked: result.append(recipe)
 	return result
+
+# Research remains owned by the atomic warehouse/workbench save. The menu only
+# stores IDs and prices; official unlocks and sample catalogues stay separate.
+func bind_research(service: Node) -> void:
+	_research_service = service
+	if _waiting_for_research:
+		_waiting_for_research = false
+		load_state()
+	changed.emit()
+
+func _diy_recipes() -> Dictionary:
+	if not _using_finished_catalog or not is_instance_valid(_research_service) or not _research_service.writable:
+		return {}
+	return _research_service.state.get("research", {}).get("recipes", {})
+
+func _character_recipes() -> Dictionary:
+	if not _using_finished_catalog or not is_instance_valid(_research_service) or not _research_service.writable: return {}
+	var records: Dictionary={}
+	for raw in preload("res://scripts/research_data.gd").config().legendary_recipes:
+		if not raw.get("source_guest","").is_empty():
+			var r: Dictionary=raw.duplicate(true)
+			var standard:=preload("res://scripts/research_data.gd").standard(r)
+			for key in standard.attributes: r[key]=standard.attributes[key]
+			r.attributes_complete=standard.missing.is_empty()
+			r.unlocked=_research_service.research_state().acquired.has(r.id)
+			r.preview_only=false
+			records[r.id]=r
+	return records
+
+func _menu_diy(record: Dictionary) -> Dictionary:
+	var recipe := record.duplicate(true)
+	var standard:=preload("res://scripts/research_data.gd").standard(record)
+	recipe.design_attributes=record.attributes.duplicate(true)
+	for key in standard.attributes: recipe[key]=standard.attributes[key]
+	recipe.attributes_version=standard.version
+	recipe.attributes_complete=standard.missing.is_empty()
+	recipe.merge({"category":"DIY", "subtitle":"自创特调", "thumbnail":"",
+		"reference_price":1, "price_status":"editor_starting_value",
+		"unlocked":true, "unlocked_by_default":false, "preview_only":false,
+		"recipe_status":"已保存的 DIY 配方 · v%s" % str(record.get("version",1))}, true)
+	return recipe
 
 func unlocked_recipes() -> Array:
 	var result: Array = []
 	for recipe in _recipes:
 		if unlocked_ids.has(recipe.id):
 			result.append(get_recipe(recipe.id))
+	for record: Dictionary in _diy_recipes().values():
+		result.append(_menu_diy(record))
+	for record: Dictionary in _character_recipes().values():
+		if record.unlocked: result.append(record)
 	return result
 
 func get_recipe(id: String) -> Dictionary:
+	if _character_recipes().has(id): return _character_recipes()[id]
 	if not _by_id.has(id):
-		return {}
+		var record: Dictionary = _diy_recipes().get(id,{})
+		return {} if record.is_empty() else _menu_diy(record)
 	var recipe: Dictionary = _by_id[id].duplicate(true)
 	recipe["unlocked"] = unlocked_ids.has(id)
 	return recipe
@@ -243,9 +301,9 @@ func _normalize_entries(value: Variant, available: Array, deduplicate: bool) -> 
 	var result: Array = []
 	var seen: Dictionary = {}
 	for entry in value:
-		if not entry is Dictionary or not entry.get("id") is String or not _by_id.has(entry.id):
+		if not entry is Dictionary or not entry.get("id") is String or get_recipe(entry.id).is_empty():
 			return {"ok": false, "message": "酒单里有尚未收录的酒。"}
-		if not available.has(entry.id):
+		if not available.has(entry.id) and not _diy_recipes().has(entry.id) and not _character_recipes().get(entry.id,{}).get("unlocked",false):
 			return {"ok": false, "message": "请先点亮这款酒，再把它加入酒单。"}
 		if not _number(entry.get("price"), 1, 9999):
 			return {"ok": false, "message": "每杯酒的价格须在 1 到 9999 金币之间。"}
@@ -292,7 +350,7 @@ func _valid_unlocks(value: Variant) -> bool:
 		seen[id] = true
 	return true
 
-func load_state() -> bool:
+func load_state(allow_research_wait := false) -> bool:
 	if not _catalog_ready:
 		return false
 	writable = true
@@ -310,6 +368,16 @@ func load_state() -> bool:
 	for id in _default_unlocks():
 		if not next_unlocked.has(id):
 			next_unlocked.append(id)
+	# Autoload order loads the menu before the warehouse and research. Block writes
+	# until the research service validates its save; never drop custom menu entries
+	# or overwrite them with an empty menu during warehouse startup synchronization.
+	if allow_research_wait and _using_finished_catalog and data.get("entries") is Array:
+		for entry in data.entries:
+			if entry is Dictionary and entry.get("id") is String and (entry.id.begins_with("diy_") or entry.id.begins_with("character_")):
+				_waiting_for_research = true
+				writable = false
+				last_error = "正在读取 DIY 配方。"
+				return false
 	var normalized := _normalize_entries(data.get("entries"), next_unlocked, false)
 	if not normalized.ok:
 		return _state_error()
@@ -407,9 +475,9 @@ func _atomic_write(snapshot: Dictionary) -> bool:
 func menu_for_ai() -> Dictionary:
 	var selected: Array = []
 	for entry in entries:
-		if not _by_id.has(entry.id) or not unlocked_ids.has(entry.id):
-			continue
 		var recipe := get_recipe(entry.id)
+		if recipe.is_empty() or not recipe.get("unlocked",false):
+			continue
 		selected.append({"id": recipe.id, "name": recipe.name,
 			"english_name": recipe.get("english_name", ""), "subtitle": recipe.subtitle,
 			"category": recipe.category, "tags": recipe.tags.duplicate(),

@@ -1,0 +1,359 @@
+{
+  "sources": [
+    {
+      "id": "bottle",
+      "author": "twohoursago",
+      "title": "Glass Bottle Clink",
+      "page": "https://freesound.org/people/twohoursago/sounds/135039/",
+      "download": "https://cdn.freesound.org/previews/135/135039_2431174-hq.mp3",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "retrieved": "2026-10-06",
+      "source_sha256": "ecfa7f5ab10b3a76862295ea84f054a34aab022bcd9b62325240e052a6f363a8"
+    },
+    {
+      "id": "leaf",
+      "author": "Kinoton",
+      "title": "Rustling leaves (reed mat foley)",
+      "page": "https://freesound.org/people/Kinoton/sounds/347557/",
+      "download": "https://cdn.freesound.org/previews/347/347557_2247456-hq.mp3",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "retrieved": "2026-10-06",
+      "source_sha256": "d2a9153de04d462b05e58268f9fd41b6dcd44af64ccc5e46350293fdc484b656"
+    },
+    {
+      "id": "grain",
+      "author": "davahey",
+      "title": "pouring sugar.wav",
+      "page": "https://freesound.org/people/davahey/sounds/98794/",
+      "download": "https://cdn.freesound.org/previews/98/98794_917901-hq.mp3",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "retrieved": "2026-10-06",
+      "source_sha256": "b4a2ec1206ddb71f86f295716d70229ee86899fc59ddd618aeab6dc0c93ec1f9"
+    },
+    {
+      "id": "ice",
+      "author": "Joseph SARDIN",
+      "title": "Ice cubes in a glass #5",
+      "page": "https://bigsoundbank.com/ice-cubes-in-a-glass-5-s2127.html",
+      "download": "https://bigsoundbank.com/UPLOAD/mp3/2127.mp3",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "retrieved": "2026-10-06",
+      "source_sha256": "d66d91dd569c39618b4c2255a9d4857ebb54229f98556ca26ecae58706d64a17"
+    },
+    {
+      "id": "metal",
+      "author": "Joseph SARDIN",
+      "title": "Teaspoon, placed on table",
+      "page": "https://bigsoundbank.com/teaspoon-placed-on-a-table-s1195.html",
+      "download": "https://bigsoundbank.com/UPLOAD/mp3/1195.mp3",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "retrieved": "2026-10-06",
+      "source_sha256": "18c92904368f75ec372fca081077a8a0ada0550fa9371862ff85d97c5203c06d"
+    },
+    {
+      "id": "glass",
+      "author": "Joseph SARDIN",
+      "title": "Cheers, Champagne Flute #1",
+      "page": "https://bigsoundbank.com/cheers-champagne-flute-1-s1335.html",
+      "download": "https://bigsoundbank.com/UPLOAD/mp3/1335.mp3",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "retrieved": "2026-10-06",
+      "source_sha256": "c553a2ef779db81b56631d876dfb9971e41967ee3c6832e4c7833e027f1bf1b2"
+    }
+  ],
+  "original_synthesis": [
+    "fruit: project soft contact, not a fruit recording",
+    "click/wood: project muted wooden contact",
+    "coin tail: project synthesized confirmation"
+  ],
+  "families": {
+    "bottle": "recorded bottle clink",
+    "small_bottle": "shorter brighter bottle clink",
+    "juice_bottle": "filtered lower bottle clink",
+    "fizzy_bottle": "bottle and granular texture, no bottle-opening sound",
+    "leaf": "reed mat rustle foley, not a recording of mint",
+    "grain": "recorded pouring sugar",
+    "fruit": "project synthesized soft contact",
+    "cherry": "shorter softer fruit contact",
+    "glass": "recorded champagne flute contact",
+    "metal": "recorded teaspoon on table",
+    "wood": "filtered project contact",
+    "ice": "recorded ice dropped into glass",
+    "crushed_ice": "resampled ice with sugar texture"
+  },
+  "clips": [
+    {
+      "file": "bottle-1.wav",
+      "seconds": 0.38,
+      "sha256": "6369042e6516afad064e0d6f9d97e53751a7947a46008d527377a928d23cb13d"
+    },
+    {
+      "file": "purchase-bottle-1.wav",
+      "seconds": 0.73,
+      "sha256": "b4806437400ee9934f1556f7f952d706176019cab93fa1906a67367ebec78f86"
+    },
+    {
+      "file": "bottle-2.wav",
+      "seconds": 0.38,
+      "sha256": "b20950b475cdc079b0f39e83b6e9b1062a1417811671002a8e1db39059635078"
+    },
+    {
+      "file": "purchase-bottle-2.wav",
+      "seconds": 0.73,
+      "sha256": "3930e80a0def09c19d6b64bb0094adf7e69c54f6e7bd0e42d444f1037c61e97f"
+    },
+    {
+      "file": "small_bottle-1.wav",
+      "seconds": 0.24,
+      "sha256": "ee5acdd4f77f021e9da5d610c06d4837f6f1f4578cee3b5d2d8480c0bb0afa4b"
+    },
+    {
+      "file": "purchase-small_bottle-1.wav",
+      "seconds": 0.59,
+      "sha256": "6a6a1d949d9c4be8d86c1c7165fdedff2bec78876bd8159c92b1cb7376e2252c"
+    },
+    {
+      "file": "small_bottle-2.wav",
+      "seconds": 0.24,
+      "sha256": "cb2bda7e15ef9dbc47dfaa7d2a0292dfa4c79c7365385e1c0f78bb1e66904f63"
+    },
+    {
+      "file": "purchase-small_bottle-2.wav",
+      "seconds": 0.59,
+      "sha256": "46cc03196d834934bb80d179097a22407561cd7ea9ab88d9a645b94306f40d98"
+    },
+    {
+      "file": "juice_bottle-1.wav",
+      "seconds": 0.36,
+      "sha256": "17102c772f84710feeaa05dfd11ada257ac6d629a43fab4de7e5a38c2dc8c814"
+    },
+    {
+      "file": "purchase-juice_bottle-1.wav",
+      "seconds": 0.71,
+      "sha256": "ac18917ded1d0137d2c139180aaaa93226f2fdb66c6d2b7f275d0bf2aee45dba"
+    },
+    {
+      "file": "juice_bottle-2.wav",
+      "seconds": 0.36,
+      "sha256": "01a88bcc55a86afc5b432e13f4942fbb1e45cac7497e3359f2aefbe2fce3e820"
+    },
+    {
+      "file": "purchase-juice_bottle-2.wav",
+      "seconds": 0.71,
+      "sha256": "5eaf3749a28ad2f545ebce8ffe7a6e8bed2d811473ab567b87d2741dc7e360e7"
+    },
+    {
+      "file": "fizzy_bottle-1.wav",
+      "seconds": 0.42,
+      "sha256": "c9b6230a79c6623cfc4e8db1b01fd6424dfbc505589edf66c52a2ddec57de1f0"
+    },
+    {
+      "file": "purchase-fizzy_bottle-1.wav",
+      "seconds": 0.77,
+      "sha256": "57aa219737e46e97af77b683e4729d7af5fe6beda78acf07a67b376c5168b876"
+    },
+    {
+      "file": "fizzy_bottle-2.wav",
+      "seconds": 0.42,
+      "sha256": "d4bf1d5bea7464a31f64748ee702d98bf4e1a30cbffe4cba3a77e1fcfda26bcf"
+    },
+    {
+      "file": "purchase-fizzy_bottle-2.wav",
+      "seconds": 0.77,
+      "sha256": "393b86774ff7af1fb6f4512a47f5f7e24a587990dcb30c7593f258579d5f9f83"
+    },
+    {
+      "file": "leaf-1.wav",
+      "seconds": 0.42,
+      "sha256": "49a17e825e2e7d79c80bb8f835fc05bddc15590f5114aa431eea2d3d4c12ded2"
+    },
+    {
+      "file": "purchase-leaf-1.wav",
+      "seconds": 0.77,
+      "sha256": "1b35e929cc94ffa005b0455a66776c3ea51ae83c2984ab34a40e2a422f712995"
+    },
+    {
+      "file": "leaf-2.wav",
+      "seconds": 0.42,
+      "sha256": "e0e79ae05cf8a5c541212b47a5313f14acc9a61f446bd36dd40eb4f36c9ab3bd"
+    },
+    {
+      "file": "purchase-leaf-2.wav",
+      "seconds": 0.77,
+      "sha256": "8fd8e5ec977dc95d385252c76b297f6571e29530d22a4c2c9066f00973ff7bc2"
+    },
+    {
+      "file": "grain-1.wav",
+      "seconds": 0.38,
+      "sha256": "99015db1485b95a7ee6f30a398cd8898aefe838b365976c0b75a48ac4fae7b1e"
+    },
+    {
+      "file": "purchase-grain-1.wav",
+      "seconds": 0.73,
+      "sha256": "95c2bbeb10922922a5a2b177aa4088f7cf4ca5a905304bdad31893548f8a3410"
+    },
+    {
+      "file": "grain-2.wav",
+      "seconds": 0.38,
+      "sha256": "5bf4f4ce052f56793a442dc268229b1109c73ebf4aa1391d3245c6f3dab92361"
+    },
+    {
+      "file": "purchase-grain-2.wav",
+      "seconds": 0.73,
+      "sha256": "ce0409729471c42c9703c5d7036aeb8435510ebffb68545a60aa51f230984e3c"
+    },
+    {
+      "file": "fruit-1.wav",
+      "seconds": 0.27,
+      "sha256": "d971d374bee696ea3337afd2b2c0af718cb7b149f9c4bb6b3021c197af6f9948"
+    },
+    {
+      "file": "purchase-fruit-1.wav",
+      "seconds": 0.62,
+      "sha256": "3f2f47745582b9a1562d33438ef06079a4db9cd9f0ca19f13e814e55cc9193ad"
+    },
+    {
+      "file": "fruit-2.wav",
+      "seconds": 0.27,
+      "sha256": "3a4c555931122250303ed2af5f27d6848390adb0252760b02ba5916d4cae655b"
+    },
+    {
+      "file": "purchase-fruit-2.wav",
+      "seconds": 0.62,
+      "sha256": "b75d617ecd02cf0e1dfb76c3a9f7cfeada842e5cd1ebc46f7d1ddc2108fbcce0"
+    },
+    {
+      "file": "cherry-1.wav",
+      "seconds": 0.19,
+      "sha256": "78e55e67cd829b0203d68b952b97f721046b2e34bfb4b040136c909630863302"
+    },
+    {
+      "file": "purchase-cherry-1.wav",
+      "seconds": 0.54,
+      "sha256": "75958de9cf86bd64e4198755614be4f4399ddbdd3eb787a8232f032e5d4b6304"
+    },
+    {
+      "file": "cherry-2.wav",
+      "seconds": 0.19,
+      "sha256": "c2239e78606961fd6f9b18864813f639abedfc217c0340a7e1351fa6e94cf320"
+    },
+    {
+      "file": "purchase-cherry-2.wav",
+      "seconds": 0.54,
+      "sha256": "71b205d8fc396ae340697f38644c678557c872ffe2848236e4b6b65ee1807d30"
+    },
+    {
+      "file": "glass-1.wav",
+      "seconds": 0.55,
+      "sha256": "4c03bc5f56078f1f03f1b20c0f04c9f1685a194cf9a30fd6c31fd9b149cf831f"
+    },
+    {
+      "file": "purchase-glass-1.wav",
+      "seconds": 0.9,
+      "sha256": "17b5da3b467f146c851149689303f33153f4ef8bbf40367c061912e464102b8f"
+    },
+    {
+      "file": "glass-2.wav",
+      "seconds": 0.55,
+      "sha256": "a3bbf8081f2765c393b4df7da9e1556a1c5de89bf1a432186c32e62a1082662d"
+    },
+    {
+      "file": "purchase-glass-2.wav",
+      "seconds": 0.9,
+      "sha256": "aed24853c12390329ba856de16dbcaed4b513441ed52f9e009a20e57c83c8e0b"
+    },
+    {
+      "file": "metal-1.wav",
+      "seconds": 0.32,
+      "sha256": "ffc53fc83af6226e73459588c9d8eb7bc311ebfe9b82bdf06596e37b022eeabd"
+    },
+    {
+      "file": "purchase-metal-1.wav",
+      "seconds": 0.67,
+      "sha256": "37d1383ce37476fd96eaf01fe224a14305631436016f39120aab5514a14fc972"
+    },
+    {
+      "file": "metal-2.wav",
+      "seconds": 0.32,
+      "sha256": "cc8d48c31ee9bc36c7b4a52c9bc4d709a5e0ebc1df0e3d1ee299c1ee099baa32"
+    },
+    {
+      "file": "purchase-metal-2.wav",
+      "seconds": 0.67,
+      "sha256": "7cdd73236fb7b3b5d2e57949d9cd8ca702c5fde784059562e99ee8fd727da378"
+    },
+    {
+      "file": "wood-1.wav",
+      "seconds": 0.16,
+      "sha256": "27f3e8bfba1e7848f79e969b687d1292a7101d7ca26f11197950817594ef0ae3"
+    },
+    {
+      "file": "purchase-wood-1.wav",
+      "seconds": 0.51,
+      "sha256": "3513b516311b4bc7c1d0b9fd32a41f2c35420805139ff119fb19071736466452"
+    },
+    {
+      "file": "wood-2.wav",
+      "seconds": 0.16,
+      "sha256": "e5ad32bea8e73c0b3e7611cba443c37088e83d13b9a079a50797881ea574d36e"
+    },
+    {
+      "file": "purchase-wood-2.wav",
+      "seconds": 0.51,
+      "sha256": "cae0ff39f5d67019223388f42f8b660dfc55f381a787ae10c3d9f68083dd49da"
+    },
+    {
+      "file": "ice-1.wav",
+      "seconds": 0.46,
+      "sha256": "c76ccb9727499195f9caa062a60aa0bad4fd983a5b730cdc532705d034e245b5"
+    },
+    {
+      "file": "purchase-ice-1.wav",
+      "seconds": 0.81,
+      "sha256": "693449ab359ed88fd79636ca130844dc640c574e684bd0b3fa382b6535e30ee2"
+    },
+    {
+      "file": "ice-2.wav",
+      "seconds": 0.46,
+      "sha256": "3a07bc89739a7f6ea74b76def0a040f0e32bfedf712404e5c6f8a1cae2a92201"
+    },
+    {
+      "file": "purchase-ice-2.wav",
+      "seconds": 0.81,
+      "sha256": "412dff54b34aed867a7764896d0d585d61351327ab03c11c8138389d65136da3"
+    },
+    {
+      "file": "crushed_ice-1.wav",
+      "seconds": 0.5,
+      "sha256": "a2c5463a3521222707f6d72b47271068ea1d5f0ba32a29513205db9421b34fd9"
+    },
+    {
+      "file": "purchase-crushed_ice-1.wav",
+      "seconds": 0.85,
+      "sha256": "bd3207acaf04fc641fc08f7a23b43a6856c43137065fd876d2d07fe3d81a4973"
+    },
+    {
+      "file": "crushed_ice-2.wav",
+      "seconds": 0.5,
+      "sha256": "1feac33e3a8e962262725135bc141f30c2a16079b5a93020347f3279860294f1"
+    },
+    {
+      "file": "purchase-crushed_ice-2.wav",
+      "seconds": 0.85,
+      "sha256": "b6069b554328b083a51dc9d2bbf5773430cb194a95cf35c9aab103c496c4ecc9"
+    }
+  ],
+  "processing": "44.1 kHz mono PCM16; selected excerpts, DC removal, peak limit, 4ms attack / 45ms release. Variants use alternate excerpts or resampling; juice and leaves lowpass; fizzy/crushed combine recorded textures. Purchase adds original synthesized coin tail. See build_item_foley.py.",
+  "excerpt_start_seconds": {
+    "bottle": 0,
+    "glass": 0.08454875283446713,
+    "ice": 0.05103401360544217,
+    "metal": 0.39189569160997734
+  }
+}

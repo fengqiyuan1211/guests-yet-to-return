@@ -7,7 +7,7 @@ static func config() -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string(CONFIG_PATH))
 
 static func fresh() -> Dictionary:
-	return {"version":1,"inspiration":int(config().initial_inspiration),"serial":0,"recipes":{},"saved_drinks":{},"acquired":{},"mastered":{}}
+	return {"version":1,"inspiration":int(config().initial_inspiration),"serial":0,"recipes":{},"saved_drinks":{},"acquired":{},"mastered":{},"versions":{},"archived":{}}
 
 static func whole(value: Variant, maximum: int = 1000000000) -> bool:
 	return (value is int or value is float) and is_finite(float(value)) and value >= 0 and value <= maximum and value == floor(value)
@@ -17,6 +17,18 @@ static func valid(value: Variant) -> bool:
 	if not whole(value.get("inspiration")) or not whole(value.get("serial")): return false
 	for key in ["recipes","saved_drinks","acquired","mastered"]:
 		if not value.get(key) is Dictionary: return false
+	for key in ["versions","archived"]:
+		if not value.get(key,{}) is Dictionary: return false
+	for id in value.get("versions",{}):
+		if not id is String or not value.versions[id] is Array: return false
+		var prior:=0
+		for record in value.versions[id]:
+			if not record is Dictionary or not whole(record.get("version")) or int(record.version)<=prior: return false
+			prior=int(record.version)
+			var check_state:={"version":1,"inspiration":0,"serial":0,"recipes":{id:record},"saved_drinks":{},"acquired":{},"mastered":{}}
+			if not valid(check_state): return false
+	for id in value.get("archived",{}):
+		if not id is String or value.archived[id]!=true or value.recipes.has(id): return false
 	for id in value.recipes:
 		var r: Variant = value.recipes[id]
 		if not id is String or not r is Dictionary or r.get("id") != id or not id.begins_with("diy_"): return false
@@ -38,8 +50,14 @@ static func valid(value: Variant) -> bool:
 				var v: Variant=row.get(key)
 				if not (v is float or v is int) or not is_finite(float(v)) or v<=0 or v>2000: return false
 	for drink in value.saved_drinks:
-		if not drink is String or not value.saved_drinks[drink] is String or not value.recipes.has(value.saved_drinks[drink]): return false
-		if value.recipes[value.saved_drinks[drink]].drink_id!=drink: return false
+		if not drink is String or not value.saved_drinks[drink] is String or (not value.recipes.has(value.saved_drinks[drink]) and not value.get("archived",{}).has(value.saved_drinks[drink])): return false
+		if not value.recipes.has(value.saved_drinks[drink]): continue
+		# A revision may come from a later trial; each original cup keeps its own saved receipt.
+		if value.recipes[value.saved_drinks[drink]].drink_id!=drink:
+			var recorded:=false
+			for old in value.get("versions",{}).get(value.saved_drinks[drink],[]):
+				if old.drink_id==drink: recorded=true
+			if not recorded: return false
 	for key in ["acquired", "mastered"]:
 		for id in value[key]:
 			if not id is String or not value[key][id] is String: return false
@@ -50,10 +68,10 @@ static func blank_recipe() -> Dictionary:
 
 static func sensory_snapshot() -> Dictionary:
 	var legacy: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/workbench/evaluation.json"))
-	return {"version":"research-sensory-1","profiles":legacy.profiles.duplicate(true)}
+	return {"version":"research-sensory-2","profiles":legacy.profiles.duplicate(true)}
 
 static func valid_model(model: Variant) -> bool:
-	if not model is Dictionary or model.get("version")!="research-sensory-1" or not model.get("profiles") is Dictionary: return false
+	if not model is Dictionary or model.get("version") not in ["research-sensory-1","research-sensory-2"] or not model.get("profiles") is Dictionary: return false
 	for id in model.profiles:
 		var p: Variant=model.profiles[id]
 		if not id is String or not p is Array or p.size()!=4: return false
@@ -76,10 +94,13 @@ static func attributes(session: Dictionary, definitions: Dictionary) -> Dictiona
 			continue
 		for i in range(4): values[i]+=ml*float(model.profiles[sku][i])
 	var result: Dictionary={}
-	for i in range(4): result[ATTRS[i]]=roundi(clampf(values[i]/maxf(volume,.001),0,100))
+	for i in range(4):
+		var value:=clampf(values[i]/maxf(volume,.001),0,100)
+		result[ATTRS[i]]=roundi(value) if model.version=="research-sensory-1" else value
 	# Coarse playtest sugar contribution only. No fabricated melting or ABV.
 	var sugar:=float(serving.get("solids",{}).get("sku_white_cane_sugar",0))
-	result.sweetness=mini(100,int(result.sweetness)+roundi(100*sugar/maxf(20,volume)))
+	result.sweetness=minf(100,float(result.sweetness)+100*sugar/maxf(20,volume))
+	if model.version=="research-sensory-1": result.sweetness=roundi(result.sweetness)
 	return {"attributes":result,"missing":missing,"version":model.version}
 
 static func trial(session: Dictionary, definitions: Dictionary) -> Dictionary:
@@ -96,3 +117,22 @@ static func legendary(id: String) -> Dictionary:
 	for r in config().legendary_recipes:
 		if r.get("id")==id: return r.duplicate(true)
 	return {}
+
+# Canonical prediction uses exactly the same units and model as actual production.
+static func standard(recipe: Dictionary, model: Dictionary={}) -> Dictionary:
+	if model.is_empty(): model=sensory_snapshot()
+	var contents: Dictionary={}
+	var solids: Dictionary={}
+	var missing: Array=[]
+	var rows: Array=recipe.get("ingredient_rows",[]) if recipe.get("ingredients") is Dictionary else recipe.get("ingredients",[])
+	for row in rows:
+		if row.get("use")=="装饰" or str(row.get("sku_id","")).begins_with("sku_ice_"): continue
+		var quantity: Variant=row.get("inventory_amount")
+		if row.get("inventory_unit")=="ml":
+			if quantity==null: missing.append(row.sku_id)
+			else: contents[row.sku_id]=float(contents.get(row.sku_id,0))+float(quantity)
+		elif row.get("sku_id")=="sku_white_cane_sugar": solids[row.sku_id]=float(quantity)
+	var sample:={"vessels":{"glass":{"contents":contents,"solids":solids}},"sensory_model":model}
+	var result:=attributes(sample,{})
+	result.missing.append_array(missing)
+	return result

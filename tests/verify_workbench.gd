@@ -213,12 +213,13 @@ func run() -> void:
 	DisplayServer.window_set_size(Vector2i(960,540))
 	await settle()
 	await capture("06-small-result")
-	# Closing business exits the route but does not lose the practice cup.
+	# Closing never interrupts an unrelated practice/result view.
 	TimeManager.is_open=true
 	home.service_started=true
+	var closing_route: StringName=Navigation.current_route
 	home._on_business_closed(1)
 	await settle()
-	check(Navigation.current_route==&"home","existing closing-time behavior preserved")
+	check(Navigation.current_route==closing_route,"closing does not forcibly replace current workbench page")
 	check(WorkbenchSession.state.session.status=="finished","closing does not erase practice")
 	print("WORKBENCH: %d checks, %d failures" % [count,failures.size()])
 	home.queue_free()

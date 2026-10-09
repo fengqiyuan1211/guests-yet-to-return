@@ -3,6 +3,307 @@
   "status": "playtest",
   "initial_inspiration": 999,
   "diy_cost": 1,
-  "legendary_recipes": [],
-  "note": "传说正式配方及道具映射待内容接入；不将经典酒自动改成传说。"
+  "legendary_recipes": [
+    {
+      "id": "character_milo",
+      "version": 1,
+      "name": "寄回家的那一页",
+      "english_name": "A PAGE SENT HOME",
+      "category": "传说",
+      "type": "角色特调",
+      "source_guest": "milo",
+      "subtitle": "角色纪念配方 · 试玩版",
+      "thumbnail": "",
+      "image_path": "",
+      "tags": [
+        "角色纪念"
+      ],
+      "flavor_tags": [],
+      "mouthfeel_tags": [],
+      "flavor": "清亮柑橘",
+      "reference_price": 60,
+      "unlocked_by_default": false,
+      "ingredients": [
+        {
+          "id": "sku_white_rum",
+          "sku_id": "sku_white_rum",
+          "name": "白朗姆酒",
+          "amount": 35,
+          "unit": "ml",
+          "inventory_amount": 35,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "基酒"
+        },
+        {
+          "id": "sku_cointreau",
+          "sku_id": "sku_cointreau",
+          "name": "君度橙酒",
+          "amount": 15,
+          "unit": "ml",
+          "inventory_amount": 15,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "基酒"
+        },
+        {
+          "id": "sku_lemon_juice",
+          "sku_id": "sku_lemon_juice",
+          "name": "鲜榨柠檬汁",
+          "amount": 20,
+          "unit": "ml",
+          "inventory_amount": 20,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "配料"
+        },
+        {
+          "id": "sku_simple_syrup",
+          "sku_id": "sku_simple_syrup",
+          "name": "糖浆",
+          "amount": 5,
+          "unit": "ml",
+          "inventory_amount": 5,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "配料"
+        },
+        {
+          "id": "sku_soda_water",
+          "sku_id": "sku_soda_water",
+          "name": "苏打水",
+          "amount": 25,
+          "unit": "ml",
+          "inventory_amount": 25,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "配料"
+        }
+      ],
+      "ice": [
+        {
+          "name": "标准方冰",
+          "amount": 100,
+          "unit": "g",
+          "sku_id": "sku_ice_cube",
+          "use": "出品冰"
+        }
+      ],
+      "glass": "高球杯",
+      "display_steps": [
+        {
+          "instruction": "杯中加入 100 g 方冰（两份）。"
+        },
+        {
+          "instruction": "按配方量取并加入苏打水以外的所有原料。"
+        },
+        {
+          "instruction": "最后沿杯壁倒入苏打水，轻轻搅拌 3–6 秒。"
+        }
+      ],
+      "quality_rule": {
+        "mix": "stir",
+        "time_window": [
+          3,
+          6
+        ],
+        "serving_ice": "cube",
+        "cup": "highball"
+      }
+    },
+    {
+      "id": "character_ada",
+      "version": 1,
+      "name": "借我一个下午",
+      "english_name": "AN AFTERNOON TO MYSELF",
+      "category": "传说",
+      "type": "角色特调",
+      "source_guest": "ada",
+      "subtitle": "角色纪念配方 · 试玩版",
+      "thumbnail": "",
+      "image_path": "",
+      "tags": [
+        "角色纪念"
+      ],
+      "flavor_tags": [],
+      "mouthfeel_tags": [],
+      "flavor": "清亮柑橘",
+      "reference_price": 60,
+      "unlocked_by_default": false,
+      "ingredients": [
+        {
+          "id": "sku_gin_london_dry",
+          "sku_id": "sku_gin_london_dry",
+          "name": "伦敦干金酒",
+          "amount": 25,
+          "unit": "ml",
+          "inventory_amount": 25,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "基酒"
+        },
+        {
+          "id": "sku_lemon_juice",
+          "sku_id": "sku_lemon_juice",
+          "name": "鲜榨柠檬汁",
+          "amount": 20,
+          "unit": "ml",
+          "inventory_amount": 20,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "配料"
+        },
+        {
+          "id": "sku_simple_syrup",
+          "sku_id": "sku_simple_syrup",
+          "name": "糖浆",
+          "amount": 5,
+          "unit": "ml",
+          "inventory_amount": 5,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "配料"
+        },
+        {
+          "id": "sku_soda_water",
+          "sku_id": "sku_soda_water",
+          "name": "苏打水",
+          "amount": 50,
+          "unit": "ml",
+          "inventory_amount": 50,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "配料"
+        }
+      ],
+      "ice": [
+        {
+          "name": "标准方冰",
+          "amount": 100,
+          "unit": "g",
+          "sku_id": "sku_ice_cube",
+          "use": "出品冰"
+        }
+      ],
+      "glass": "高球杯",
+      "display_steps": [
+        {
+          "instruction": "杯中加入 100 g 方冰（两份）。"
+        },
+        {
+          "instruction": "按配方量取并加入苏打水以外的所有原料。"
+        },
+        {
+          "instruction": "最后沿杯壁倒入苏打水，轻轻搅拌 3–6 秒。"
+        }
+      ],
+      "quality_rule": {
+        "mix": "stir",
+        "time_window": [
+          3,
+          6
+        ],
+        "serving_ice": "cube",
+        "cup": "highball"
+      }
+    },
+    {
+      "id": "character_hank",
+      "version": 1,
+      "name": "灯下有名",
+      "english_name": "NAMES IN THE LAMPLIGHT",
+      "category": "传说",
+      "type": "角色特调",
+      "source_guest": "hank",
+      "subtitle": "角色纪念配方 · 试玩版",
+      "thumbnail": "",
+      "image_path": "",
+      "tags": [
+        "角色纪念"
+      ],
+      "flavor_tags": [],
+      "mouthfeel_tags": [],
+      "flavor": "微苦琥珀",
+      "reference_price": 60,
+      "unlocked_by_default": false,
+      "ingredients": [
+        {
+          "id": "sku_rye_whiskey",
+          "sku_id": "sku_rye_whiskey",
+          "name": "黑麦威士忌",
+          "amount": 40,
+          "unit": "ml",
+          "inventory_amount": 40,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "基酒"
+        },
+        {
+          "id": "sku_sweet_red_vermouth",
+          "sku_id": "sku_sweet_red_vermouth",
+          "name": "甜红味美思",
+          "amount": 10,
+          "unit": "ml",
+          "inventory_amount": 10,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "基酒"
+        },
+        {
+          "id": "sku_soda_water",
+          "sku_id": "sku_soda_water",
+          "name": "苏打水",
+          "amount": 20,
+          "unit": "ml",
+          "inventory_amount": 20,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "配料"
+        },
+        {
+          "id": "sku_angostura_bitters",
+          "sku_id": "sku_angostura_bitters",
+          "name": "安格仕苦精",
+          "amount": 1,
+          "unit": "ml",
+          "inventory_amount": 1,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "基酒"
+        }
+      ],
+      "ice": [
+        {
+          "name": "标准方冰",
+          "amount": 100,
+          "unit": "g",
+          "sku_id": "sku_ice_cube",
+          "use": "出品冰"
+        }
+      ],
+      "glass": "古典杯",
+      "display_steps": [
+        {
+          "instruction": "杯中加入 100 g 方冰（两份）。"
+        },
+        {
+          "instruction": "按配方量取并加入苏打水以外的所有原料。"
+        },
+        {
+          "instruction": "最后沿杯壁倒入苏打水，轻轻搅拌 3–6 秒。"
+        }
+      ],
+      "quality_rule": {
+        "mix": "stir",
+        "time_window": [
+          3,
+          6
+        ],
+        "serving_ice": "cube",
+        "cup": "rocks"
+      }
+    }
+  ],
+  "note": "试玩配置：最多64份在用DIY配方；旧存档超限不删除。已接入三份角色首通纪念配方，用量、制作标准和奖励均可调整；其他传说配方道具待内容配置。",
+  "max_saved_recipes": 64
 }

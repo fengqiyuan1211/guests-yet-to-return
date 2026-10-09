@@ -1,6 +1,7 @@
 extends Control
 const ToolHelp=preload("res://scripts/workbench_tool_help.gd")
 ## First-person artwork; interaction hit areas are tied to movable independent sprites.
+signal item_grabbed(id: String)
 signal vessel_selected(id: String)
 signal prop_selected(id: String)
 signal transfer_requested(source: String, destination: String)
@@ -265,6 +266,7 @@ func bottle_rect(id: String) -> Rect2:
 func begin_item_drag(tab: String, id: String, point: Vector2) -> void:
 	if not input_enabled or data.get("status")!="mixing": return
 	stop_gesture()
+	item_grabbed.emit(id)
 	carry_tab=tab
 	carry_id=id
 	carry_start=point
@@ -424,10 +426,7 @@ func _draw() -> void:
 			draw_set_transform_matrix(Transform2D(0,pivot)*Transform2D(angle,Vector2.ZERO)*Transform2D(0,-pivot))
 			Liquid.draw(self,liquid_rect,contents,WorkbenchSession.capacity(data,id),false,ripple,vessel.get("ice","none")!="none",clock,true,ice_fraction,shape,layers_for(id),data.get("liquid_profiles",{}))
 			draw_set_transform(Vector2.ZERO)
-		if qty>0 and id=="jigger":
-			var pivot:=rect.position+Vector2(rect.size.x*.5,rect.size.y)
-			var group:=Transform2D(0,pivot)*Transform2D(angle,Vector2.ZERO)*Transform2D(0,-pivot)
-			_ellipse(rect.position+Vector2(rect.size.x*.5,rect.size.y*.10),Vector2(rect.size.x*.29,3+9*minf(qty/90,1)),Liquid.color(layers_for(id).back().contents if not layers_for(id).is_empty() else contents,data.get("liquid_profiles",{})),group)
+		# Opaque metal jigger: quantity is shown by the measuring UI, not a floating color disc.
 		if id==animated_source and RECTS.has(animated_destination) and animation_progress>.2 and animation_progress<.8:
 			var mouth := transfer_lip(id,rect,angle)
 			var target := liquid_impact_point(animated_destination)
@@ -734,10 +733,12 @@ func _gui_input(event: InputEvent) -> void:
 		if id.is_empty() or (animated_source=="shaker" and id in ["shaker","lid","cap"]): return
 		stop_gesture()
 		if id=="muddler":
+			item_grabbed.emit(id)
 			grip_muddler(event.position)
 			accept_event()
 			return
 		if id=="spoon":
+			item_grabbed.emit(id)
 			spoon_pressed=true
 			spoon_moved=false
 			id=str(data.get("spoon_vessel",""))
@@ -750,6 +751,7 @@ func _gui_input(event: InputEvent) -> void:
 			accept_event()
 			return
 		if POS.has(id):
+			if not spoon_pressed: item_grabbed.emit(id)
 			selected=id
 			vessel_selected.emit(id)
 			if not input_enabled: return

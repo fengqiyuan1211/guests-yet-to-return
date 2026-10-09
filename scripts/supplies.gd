@@ -410,10 +410,11 @@ func _migrate_legacy_totals() -> void:
 	inventory.restore(snapshot)
 
 func _sync_menu() -> bool:
-	if menu == null:
+	if menu == null or menu._waiting_for_research:
 		return true
 	var unlocked: Array = []
 	for recipe: Dictionary in menu.all_recipes():
+		if not recipe.get("source_guest", "").is_empty(): continue # Activity rewards, never material-discovery unlocks.
 		if _recipe_requirements(recipe).ready:
 			unlocked.append(recipe.id)
 	if not menu.update_supply_inventory(inventory.as_recipe_inventory(), unlocked):

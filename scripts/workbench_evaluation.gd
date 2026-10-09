@@ -293,6 +293,18 @@ static func evaluate(session: Dictionary, definitions: Dictionary) -> Dictionary
 	if sugar>0:
 		attributes.sweetness=mini(100,int(attributes.sweetness)+roundi(100*sugar/maxf(20,actual_volume)))
 		deltas.sweetness=attributes.sweetness-targets.sweetness
+	if session.get("sensory_model",{}).get("version")=="research-sensory-2":
+		var sensory:=Research.attributes(session,definitions)
+		attributes=sensory.attributes
+		var standard:=Research.standard(recipe,session.sensory_model)
+		# Practice references predate row-based catalogues; actual values still use the common model.
+		if not recipe.get("practice_only",false): targets=standard.attributes
+		else:
+			targets=Research.attributes({"vessels":{"glass":{"contents":expected,"solids":expected_solids}},"sensory_model":session.sensory_model},{}).attributes
+		for key in ATTRS: deltas[key]=float(attributes[key])-float(targets[key])
+		if not sensory.missing.is_empty() or not standard.missing.is_empty():
+			uncertain=true
+			notes.append("部分原料的标准用量或属性未配置，当前评分为参考。")
 	var tags: Array=[]
 	if deltas.sweetness>=22: tags.append({"text":"齁甜的","color":"c88449"})
 	elif deltas.sweetness>=10: tags.append({"text":"甜味突出","color":"c99a55"})
@@ -327,7 +339,7 @@ static func evaluate(session: Dictionary, definitions: Dictionary) -> Dictionary
 		attributes=Research.attributes(session,definitions).attributes
 	reasons.sort_custom(func(a,b): return _reason_priority(str(a))<_reason_priority(str(b)))
 	if reasons.is_empty(): reasons.append("用料贴合目标，关键操作和出品要求均已完成。")
-	return {"version":model.version,"draft":true,"tier":tier.id,"title":tier.title,"color":tier.color,"score":null if research else roundi(score),"attributes":attributes,"targets":targets,"tags":tags,"reasons":reasons,"notes":notes,"subscores":{"recipe":roundi(recipe_score),"process":roundi(process_score),"finish":roundi(finish_score)},"trace":trace,"recipe_version":recipe.get("version",1)}
+	return {"version":model.version,"attribute_model_version":session.get("sensory_model",{}).get("version","legacy-recipe-anchored"),"draft":true,"tier":tier.id,"title":tier.title,"color":tier.color,"score":null if research else roundi(score),"attributes":attributes,"targets":targets,"tags":tags,"reasons":reasons,"notes":notes,"subscores":{"recipe":roundi(recipe_score),"process":roundi(process_score),"finish":roundi(finish_score)},"trace":trace,"recipe_version":recipe.get("version",1)}
 
 static func _name(id: String, definitions: Dictionary) -> String:
 	for key in definitions:

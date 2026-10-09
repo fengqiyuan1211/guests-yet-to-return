@@ -14,6 +14,7 @@ var node_id := ""
 var phase := "none"
 var speech := ""
 var idle_index := -1
+var taste_event_id := ""
 var history: Array = []
 var save_path := "user://story_progress.json"
 var last_error := ""
@@ -39,6 +40,14 @@ func _ready() -> void:
 				chapter.entry = "_greeting"
 			elif character.guest_id == "yellow_creature":
 				chapter.nodes.handoff.reveals_identity = true
+			var taste_cfg: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_service.json"))
+			if taste_cfg.events.has(chapter.id):
+				for closing_id in chapter.nodes.keys():
+					var closing: Dictionary=chapter.nodes[closing_id]
+					if closing.has("transition"):
+						chapter.nodes["_taste"]={"speaker":"guest","text":taste_cfg.events[chapter.id].request_text,"taste_event":chapter.id,"transition":closing.transition}
+						closing.erase("transition")
+						closing.next="_taste"
 			chapters.append(chapter)
 		catalog[character.guest_id] = chapters
 	smalltalk = JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_smalltalk.json"))
@@ -71,6 +80,13 @@ func _valid_save(data: Variant) -> bool:
 			return false
 		if state.has("known") and not state.known is bool:
 			return false
+		if not state.get("archive", []) is Array or not state.get("activity_unlocks", {}) is Dictionary:
+			return false
+		for line in state.get("archive", []):
+			if not line is Dictionary or not line.get("key") is String or not line.get("text") is String or line.get("speaker") not in ["guest", "player"]:
+				return false
+		for activity in state.get("activity_unlocks", {}):
+			if not activity is String or not state.activity_unlocks[activity] is String: return false
 		var pending = state.get("pending", {})
 		if not pending is Dictionary:
 			return false
@@ -144,8 +160,13 @@ func _show_node(id: String, record := true) -> void:
 		_finish_story()
 		return
 	speech = node.text
+	if node.has("taste_event"):
+		taste_event_id=str(node.taste_event)
+		var locked: Dictionary=GuestService.ledger().demands.get(GuestService.current_visit(),{})
+		if not locked.is_empty(): speech=str(locked.get("request_text",speech))+" 这一杯就按刚才说的来。"
 	if record:
 		history.append({"speaker": "guest", "node": id, "text": speech})
+		_archive_line(episode.id, history.back())
 	_state().pending = {"episode_id": episode.id, "node": id, "history": history.duplicate(true)}
 	_save()
 	revision += 1
@@ -158,6 +179,7 @@ func choose(choice_id: String, expected_revision: int) -> bool:
 	for choice in node.get("choices", []):
 		if choice.id == choice_id:
 			history.append({"speaker": "player", "choice_id": choice.id, "text": choice.text})
+			_archive_line(episode.id, history.back())
 			_show_node(choice.next)
 			return true
 	return false
@@ -196,12 +218,21 @@ func _chat() -> void:
 	var lines: Array = smalltalk.get(guest_id, ["我在这儿坐会儿。"])
 	idle_index = (idle_index + 1) % lines.size()
 	speech = lines[idle_index]
+	if idle_index==0 and guest_id in ["milo","ada","hank"]:
+		var cfg: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_service.json"))
+		var request: String=cfg.events.get(taste_event_id,cfg.profiles.get(guest_id,{})).get("request_text","")
+		var locked: Dictionary=GuestService.ledger().demands.get(GuestService.current_visit(),{})
+		if not locked.is_empty(): request=locked.get("request_text",request)
+		if not request.is_empty(): speech=request
+	_archive_line("smalltalk", {"speaker":"guest", "node":str(idle_index), "text":speech})
+	_save()
 	revision += 1
 	changed.emit()
 	# Local lines work now; a future AI provider can respond using this stable context.
 	smalltalk_requested.emit(guest_id, {"revision": revision, "history": _state().heard.duplicate(true)})
 
 func end_guest() -> void:
+	taste_event_id = ""
 	guest_id = ""
 	phase = "none"
 	episode = {}
@@ -217,7 +248,7 @@ func current_choices() -> Array:
 
 func session_snapshot() -> Dictionary:
 	return {"guest_id": guest_id, "episode_id": episode.get("id", ""), "node_id": node_id,
-		"phase": phase, "speech": speech, "idle_index": idle_index, "history": history.duplicate(true)}
+		"phase": phase, "taste_event_id":taste_event_id, "speech": speech, "idle_index": idle_index, "history": history.duplicate(true)}
 
 func valid_session(data: Variant) -> bool:
 	if not data is Dictionary:
@@ -226,6 +257,7 @@ func valid_session(data: Variant) -> bool:
 		return data.get("guest_id", "") is String and data.get("guest_id", "").is_empty()
 	if not catalog.has(data.get("guest_id", "")) or not data.get("phase") in ["story", "idle"]:
 		return false
+	if not data.get("taste_event_id","") is String: return false
 	if not data.get("speech") is String or not data.get("history") is Array:
 		return false
 	var found: Dictionary = {}
@@ -239,6 +271,7 @@ func valid_session(data: Variant) -> bool:
 func restore_session(data: Dictionary) -> void:
 	end_guest()
 	guest_id = data.get("guest_id", "")
+	taste_event_id = data.get("taste_event_id", "")
 	phase = data.get("phase", "none")
 	speech = data.get("speech", "")
 	node_id = data.get("node_id", "")
@@ -251,3 +284,33 @@ func restore_session(data: Dictionary) -> void:
 func progress_label() -> String:
 	# Story bookkeeping stays internal; only an actionable save failure needs a notice.
 	return last_error
+
+## Only observed lines are archived. Stable node/choice IDs preserve different branches.
+func _archive_line(chapter_id: String, line: Dictionary) -> void:
+	var state := _state()
+	if not state.has("archive"): state.archive = []
+	var key := chapter_id + ":" + str(line.speaker) + ":" + str(line.get("choice_id", line.get("node", line.text)))
+	for existing in state.archive:
+		if existing.key == key: return
+	var entry := line.duplicate(true)
+	entry.key = key
+	entry.chapter_id = chapter_id
+	entry.day = TimeManager.day
+	state.archive.append(entry)
+
+## Called by an authored story reward, never by opening the journal.
+func unlock_activity(id: String, activity_id: String, source_event: String) -> bool:
+	if not writable or not catalog.has(id) or source_event.is_empty(): return false
+	var config: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_activities.json"))
+	if not config.get(id, {}).has(activity_id): return false
+	var previous := progress.duplicate(true)
+	if not progress.has(id): progress[id] = {"completed":0, "pending":{}, "heard":{}, "known":false}
+	if not progress[id].has("activity_unlocks"): progress[id].activity_unlocks = {}
+	if progress[id].activity_unlocks.has(activity_id): return true
+	progress[id].activity_unlocks[activity_id] = source_event
+	_save()
+	if not last_error.is_empty():
+		progress = previous
+		return false
+	changed.emit()
+	return true

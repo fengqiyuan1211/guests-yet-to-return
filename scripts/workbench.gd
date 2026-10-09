@@ -70,6 +70,7 @@ func _ready() -> void:
 	table=Table.new()
 	table.size=surface.size
 	surface.add_child(table)
+	table.item_grabbed.connect(func(id: String): SaloonAudio.ui.item(str(data.get("cup","highball")) if id=="glass" else id))
 	table.vessel_selected.connect(_select)
 	table.prop_selected.connect(_prop)
 	table.transfer_requested.connect(_transfer_vessel)
@@ -264,6 +265,7 @@ func _show_category(value: String) -> void:
 		var id: String=items[i][0]
 		var label: String=items[i][1]
 		var b:=_button(pantry_items,Rect2((i%2)*136,(i/2)*167,132,165),"",func(): pass)
+		b.set_meta("custom_audio",true)
 		b.gui_input.connect(_pantry_input.bind(value,id))
 		b.add_theme_stylebox_override("normal",_style(Color(0,0,0,0),Color(.45,.32,.17,.25)))
 		b.add_theme_stylebox_override("hover",_style(Color(.89,.74,.44,.3),Color("b38d45")))
@@ -472,7 +474,10 @@ func _act(kind: String,payload: Dictionary={}) -> void:
 	if not _issue(kind,payload):
 		status_label.text=WorkbenchSession.last_error
 	else:
-		if kind in ["spoon","lid","cup","ice"]: sfx.tap()
+		if kind=="ice": SaloonAudio.ui.item(str(payload.get("ice","cube")))
+		elif kind=="cup": SaloonAudio.ui.item(str(payload.get("cup","highball")))
+		elif kind in ["spoon","lid"]: SaloonAudio.ui.item(kind)
+		elif kind in ["add_solid","garnish"]: SaloonAudio.ui.item(str(payload.get("material","")))
 		if kind=="spoon" and data.get("spoon_vessel","").is_empty():
 			technique="shake"
 			table.technique=technique
@@ -609,7 +614,7 @@ func _set_technique(value: String) -> void:
 			if not _issue("spoon",{"target":selected}):
 				status_label.text=WorkbenchSession.last_error
 				return
-			sfx.tap()
+			SaloonAudio.ui.item("spoon")
 	if value=="muddle" and not data.get("spoon_vessel","").is_empty():
 		if not _issue("spoon",{"target":""}): return
 	if value=="muddle": table.muddler_vessel=selected
@@ -856,9 +861,54 @@ func _result() -> void:
 		_button(p,Rect2(730,697,245,44),"返回研发室",func(): Navigation.go_to(&"research"))
 		pending_confirm=_research_library if saved else (_save_research_dialog if data.mode=="research_diy" else _result_details)
 		return
+	if data.has("order"):
+		var receipt: Dictionary=data.result.get("customer_receipt",{})
+		if not receipt.is_empty():
+			_button(p,Rect2(40,697,340,44),"查看客人评价与收款",_delivery_result,true)
+			pending_confirm=_delivery_result
+		else:
+			_button(p,Rect2(40,697,340,44),"交给客人 · 空格",_deliver,true)
+			pending_confirm=_deliver
+		_button(p,Rect2(410,697,240,44),"查看制作依据",_result_details)
+		_button(p,Rect2(680,697,290,44),"返回桌面",_clear_modal)
+		return
 	_text(p,Rect2(45,704,930,38),"空格 另起一杯     ·     Esc 返回桌面     ·     R 查看依据",22,INK)
 	pending_confirm=func():
 		if _issue("start"): _clear_modal()
+
+func _deliver() -> void:
+	if GuestService.deliver(str(data.result.drink_id)):
+		data=WorkbenchSession.snapshot().session
+		_delivery_result()
+	else:
+		var p:=_dialog("这杯暂时未完成交付",380,860)
+		_text(p,Rect2(40,100,780,140),GuestService.last_error+"\n当前成品已保留，重试不会重复收款。",25)
+		_button(p,Rect2(40,290,370,52),"重试交付 · 空格",_deliver,true)
+		_button(p,Rect2(445,290,370,52),"返回成品",_result)
+		pending_confirm=_deliver
+
+func _delivery_result() -> void:
+	var receipt: Dictionary=data.result.get("customer_receipt",{})
+	if receipt.is_empty(): return
+	var p:=_dialog("客人的评价",620,960)
+	p.add_theme_stylebox_override("panel",_style(Color("f1e2c3"),Color("b08a54")))
+	for child in p.get_children():
+		if child is Label: child.add_theme_color_override("font_color",INK)
+	var preview:=preload("res://scripts/workbench_drink_preview.gd").new()
+	preview.position=Vector2(30,100)
+	preview.size=Vector2(290,365)
+	preview.result=data.result
+	p.add_child(preview)
+	_text(p,Rect2(350,100,560,70),str(receipt.satisfaction)+(" · %.1f 分" % float(receipt.score) if receipt.score!=null else " · 本杯未饮用"),30,INK)
+	_text(p,Rect2(350,185,560,165),str(receipt.get("reaction","")),25,INK).autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	_text(p,Rect2(350,365,560,80),"实收 %d 金币\n酒款 %d + 小费 %d" % [receipt.total_paid,receipt.base_paid,receipt.tip],26,INK)
+	_text(p,Rect2(40,475,875,40),"已记入手帐；口味满意度与制作品质分别记录。",20,INK)
+	_button(p,Rect2(40,545,420,50),"返回酒馆 · 空格",func(): Navigation.go_to(&"home"),true)
+	_button(p,Rect2(490,545,420,50),"查看手帐",func():
+		Navigation.journal_focus_guest=str(data.guest.id)
+		Navigation.go_to(&"journal")
+	)
+	pending_confirm=func(): Navigation.go_to(&"home")
 
 func _research_library() -> void:
 	Navigation.research_view="library"
@@ -888,11 +938,17 @@ func _save_research_dialog() -> void:
 	memo.wrap_mode=TextEdit.LINE_WRAPPING_BOUNDARY
 	p.add_child(memo)
 	var feedback:=_text(p,Rect2(40,515,900,40),"保存到图鉴 DIY 分类，不自动上架；不重复扣灵感。",19)
-	_button(p,Rect2(220,573,270,46),"保存配方",func():
+	_button(p,Rect2(40,573,270,46),"另存为新配方",func():
 		if _issue("save_research",{"name":title.text,"english_name":english.text,"notes":memo.text}): _result()
 		else: feedback.text=WorkbenchSession.last_error
 	,true)
-	_button(p,Rect2(515,573,270,46),"返回成品",_result)
+	_button(p,Rect2(700,573,270,46),"返回成品",_result)
+	var original: Dictionary=data.get("base_recipe",{})
+	if str(original.get("id","")).begins_with("diy_"):
+		_button(p,Rect2(360,573,290,46),"修订原配方 · 新版本",func():
+			if _issue("save_research",{"name":title.text,"english_name":english.text,"notes":memo.text,"replace_id":original.id,"expected_version":original.version}): _result()
+			else: feedback.text=WorkbenchSession.last_error
+		)
 	title.grab_focus()
 
 func _result_details() -> void:
@@ -921,7 +977,7 @@ func _result_details() -> void:
 	rows.append("其他容器弃置：%s ml" % WorkbenchSession.format_amount(waste))
 	rows.append("\n评价说明")
 	for note_text in evaluation.get("notes",["旧记录没有评级，未追溯重算。"]): rows.append(str(note_text))
-	rows.append("本页为出品评价，尚未交付顾客或结算销售。")
+	rows.append("客人评价及收款已记录在手帐。" if data.result.has("customer_receipt") else "本页为出品评价，尚未交付顾客或结算销售。")
 	var label:=Label.new()
 	label.custom_minimum_size=Vector2(930,0)
 	label.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART

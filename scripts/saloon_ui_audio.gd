@@ -6,6 +6,10 @@ var focused:=true
 var played:=0
 var last_cue:=""
 var last_click:=-1.0
+var cue_times: Dictionary={}
+var variants: Dictionary={}
+var last_clip:=""
+var config: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/audio/item_foley.json"))
 
 func _ready() -> void:
 	process_mode=Node.PROCESS_MODE_ALWAYS
@@ -26,34 +30,47 @@ func _node_added(node: Node) -> void:
 		node.pressed.connect(_button.bind(node))
 
 func _button(button: BaseButton) -> void:
-	if is_instance_valid(button) and not button.disabled and not button.get_meta("custom_audio",false): play("click")
+	if not is_instance_valid(button) or button.disabled: return
+	if button.has_meta("audio_item"):
+		item(str(button.get_meta("audio_item")))
+	elif not button.get_meta("custom_audio",false): play("click")
 
-func material(item: Dictionary) -> String:
-	var id:=str(item.get("id",""))
-	if id.contains("mint"): return "leaf"
-	if id.contains("sugar"): return "grain"
-	if item.get("category","")=="杯型": return "glass"
-	if item.get("category","")=="器材": return "metal"
-	if item.get("category","")=="装饰品": return "fruit"
-	return "bottle"
+func canonical(id: String) -> String:
+	return str(config.aliases.get(id,id))
 
-func product(item: Dictionary, purchased:=false) -> void:
-	play(("purchase-" if purchased else "")+material(item))
+func material(entry: Dictionary) -> String:
+	var id:=canonical(str(entry.get("id","")))
+	return str(config.items.get(id,config.fallback_by_category.get(str(entry.get("category","")),"click")))
 
-func play(cue: String) -> void:
+func item(id: String) -> void:
+	product({"id":id})
+
+func product(entry: Dictionary, purchased:=false) -> void:
+	var family:=material(entry)
+	play(("purchase-" if purchased else "")+family,float(config.item_pitch.get(canonical(str(entry.get("id",""))),1)))
+
+func play(cue: String, pitch:=1.0) -> void:
 	if not focused: return
 	var now:=Time.get_ticks_msec()/1000.0
 	if cue=="click" and now-last_click<.045: return
 	if cue=="click": last_click=now
-	if not clips.has(cue):
-		var path:="res://assets/audio/interface/"+cue+".wav"
+	# A pick plus a synchronous placement is one contact, not two overlapping hits.
+	if now-float(cue_times.get(cue,-10))<.075: return
+	var family:=cue.trim_prefix("purchase-")
+	var path:="res://assets/audio/interface/click.wav"
+	var variant:=int(variants.get(cue,0))%int(config.variants)+1
+	if family!="click": path=str(config.root)+cue+"-%d.wav" % variant
+	if not clips.has(path):
 		if not ResourceLoader.exists(path): return
-		clips[cue]=load(path)
+		clips[path]=load(path)
+	cue_times[cue]=now
+	variants[cue]=variant
+	last_clip=path
 	var voice: AudioStreamPlayer=voices[played%voices.size()]
 	voice.stop()
-	voice.stream=clips[cue]
+	voice.stream=clips[path]
 	voice.volume_linear=.65 if cue.begins_with("purchase-") else .5
-	voice.pitch_scale=randf_range(.98,1.02)
+	voice.pitch_scale=pitch*randf_range(.985,1.015)
 	voice.play()
 	played+=1
 	last_cue=cue

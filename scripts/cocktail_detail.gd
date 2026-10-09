@@ -126,7 +126,8 @@ func _left_column() -> void:
 		bar.set("value", float(recipe.get(fields[i], 0)))
 		add_child(bar)
 		_label(self, Rect2(398, y - 4, 38, 28), str(int(recipe.get(fields[i], 0))), 19, INK, HORIZONTAL_ALIGNMENT_RIGHT)
-	_label(self, Rect2(145, 586, 250, 35), "风味标签", 23)
+	_label(self, Rect2(145, 576, 292, 22), "统一感官试算 · 策划原值已保留" if recipe.has("design_attributes") else "试调记录 · 感官数值", 14, MUTED)
+	_label(self, Rect2(145, 600, 250, 35), "风味标签", 23)
 	_rule(self, Rect2(140, 622, 298, 5))
 	var flavors := HFlowContainer.new()
 	flavors.name = "FlavorTags"

@@ -232,6 +232,15 @@ func _refresh_cards() -> void:
 			button.name = "PreviewSamples"
 
 func _add_drink_art(parent: Node, rect: Rect2, recipe: Dictionary) -> void:
+	if recipe.get("source_kind", "") == "diy" and recipe.get("result") is Dictionary:
+		var preview := preload("res://scripts/workbench_drink_preview.gd").new()
+		preview.result = recipe.result.duplicate(true)
+		preview.position = rect.position
+		preview.size = Vector2(240, 260)
+		preview.scale = rect.size / preview.size
+		preview.mouse_filter = MOUSE_FILTER_IGNORE
+		parent.add_child(preview)
+		return
 	var path: String = recipe.get("thumbnail", "")
 	if not path.is_empty() and ResourceLoader.exists(path):
 		var art := TextureRect.new()

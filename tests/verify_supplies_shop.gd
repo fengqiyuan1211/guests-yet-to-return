@@ -281,7 +281,7 @@ func verify_global_restart() -> void:
 	check(service.purchase("sku_gin_london_dry") and service.is_owned("tool_jigger"), "Global fixture contains paid stock and default tool")
 	var old_stock := FileAccess.get_file_as_string(service.save_path)
 	var backup_root := ProjectSettings.globalize_path(GameSession.save_path).get_base_dir().path_join("backups")
-	var prior_backups := DirAccess.get_directories_at(backup_root)
+	var prior_backups := DirAccess.get_directories_at(backup_root) if DirAccess.dir_exists_absolute(backup_root) else PackedStringArray()
 	TimeManager.advance_minutes(60)
 	check(GameSession.restart_game(), "GameSession confirmed restart resets the new shop module")
 	check(service.total_remaining("sku_gin_london_dry") == 0 and service.is_owned("tool_jigger") and service.is_owned("glass_balloon_glass"), "Main restart clears stock while keeping free tools and glasses")
