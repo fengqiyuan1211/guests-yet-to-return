@@ -38,7 +38,22 @@ func satisfied_count(guest: String) -> int:
 func progress(id: String) -> Dictionary:
 	var c:=config(id)
 	var b:=book()
-	return {"chapters":int(StoryDialogue.progress.get(c.get("guest_id",""),{}).get("completed",0)),"satisfied":satisfied_count(str(c.get("guest_id",""))),"unlocked":b.unlocks.has(id),"reward":b.rewards.get(id,{}),"keepsake":c.get("keepsake",{}) if b.unlocks.has(id) else {}}
+	var chapters:=int(StoryDialogue.progress.get(c.get("guest_id",""),{}).get("completed",0))
+	var satisfied:=satisfied_count(str(c.get("guest_id","")))
+	var required_chapters:=maxi(0,int(c.get("required_chapters",0)))
+	var required_satisfied:=maxi(0,int(c.get("required_satisfied",0)))
+	return {"chapters":chapters,"satisfied":satisfied,"required_chapters":required_chapters,"required_satisfied":required_satisfied,
+		"eligible":not c.is_empty() and chapters>=required_chapters and satisfied>=required_satisfied,
+		"unlocked":b.unlocks.has(id),"reward":b.rewards.get(id,{}),"keepsake":c.get("keepsake",{}) if b.unlocks.has(id) else {}}
+
+func requirement_text(id: String, show_progress:=false) -> String:
+	var p:=progress(id)
+	var parts:=PackedStringArray()
+	if p.required_chapters>0:
+		parts.append("剧情 %d / %d 轮" % [mini(p.chapters,p.required_chapters),p.required_chapters] if show_progress else "完成第 %d 轮剧情" % p.required_chapters)
+	if p.required_satisfied>0:
+		parts.append("满意招待 %d / %d 次" % [mini(p.satisfied,p.required_satisfied),p.required_satisfied] if show_progress else "%d 次满意招待" % p.required_satisfied)
+	return " · ".join(parts)
 
 func _commit(b: Dictionary, research: Dictionary={}) -> bool:
 	if not Rules.valid_book(b) or not WorkbenchSession.writable: return _error("活动记录暂时无法保存，请保留当前页面后重试。")
@@ -62,7 +77,7 @@ func reconcile() -> bool:
 		var c:=config(id)
 		var p:=progress(id)
 		var b:=book()
-		if not p.unlocked and p.chapters>=int(c.required_chapters) and p.satisfied>=int(c.required_satisfied):
+		if not p.unlocked and p.eligible:
 			b.unlocks[id]={"source":"character-invite:"+id,"day":TimeManager.day}
 			if not _commit(b): ok=false; break
 		if book().unlocks.has(id) and not StoryDialogue.unlock_activity(c.guest_id,id,str(book().unlocks[id].source)):
@@ -86,6 +101,8 @@ func begin(id: String, restart:=false) -> bool:
 		if id=="hank_lantern" and active.state.get("model",1)!=2 and not active.state.won:
 			active.state=Rules.fresh(id)
 			migration_notice="移灯影戏已更新为推箱子备货，本局从第一关开始；邀请与已领取奖励保留。"
+		if id=="hank_lantern" and active.state.get("model")==2 and Rules.Crates.edition(active.state)==1:
+			migration_notice="正在继续旧版三关进度；这局的位置和撤回记录保留。完成后再玩一局，将进入新版五关。"
 		b.runs[id]=active.duplicate(true)
 		if not _commit(b): active={}; return false
 	last_error=""

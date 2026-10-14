@@ -75,9 +75,19 @@
 
 ### 专属小游戏
 
-`data/guest_activities.json` 以客人 ID → 活动 ID 配置名称、说明及 `route`。只有剧情奖励明确调用 `StoryDialogue.unlock_activity(guest_id, activity_id, source_event)` 才解锁，重复调用不重复奖励；解锁保存失败会回滚。
+`data/guest_activities.json` 以客人 ID → 活动 ID 配置名称、说明及 `route`。米洛、艾达、老霍克由 `GuestActivities.reconcile()` 根据各小游戏条件保存正式邀请，再调用 `StoryDialogue.unlock_activity(guest_id, activity_id, source_event)` 同步手帐；重复调用不重复奖励，手帐写入失败可以重试。
 
 小线登记为 `stick_minigame`，路由为正式 `stick_badminton`。手帐统一进入练习模式，不发剧情奖励；酒馆中的正式邀请由 `CustomerService.memory_summary()` 判断五章完成及五杯评分，首通奖励走正式控制器。内测时保留 `demo_unlocked`，未相识也能体验，身份资料仍受相识进度限制。
+
+当前正式邀请条件：
+
+| 客人 | 完成剧情轮数 | 额外满意招待 |
+| --- | --- | --- |
+| 米洛 | 2 | 0 |
+| 老霍克 | 3 | 0 |
+| 艾达 | 5 | 2 |
+
+“完成一轮”指读完该章，包括最后的口味提示并确认继续；不是计算倒过多少杯酒。米洛、老霍克仍有完整 5 轮剧情，解锁小游戏不会跳过后续剧情。旧存档达到条件会自动补齐邀请，不重置已读节点、不重复发首通奖励。章节与节点 ID 保持不变。
 
 米洛、艾达、老霍克复用各自角色小游戏与 `GuestActivities` 奖励记录。新旧两种结算的满意招待都可计入正式邀请，自由调酒订单不冒充剧情招待。手帐练习与正式首次通关分开，不重复领奖。
 

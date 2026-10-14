@@ -30,6 +30,12 @@ var failure_outcome: Dictionary={}
 var failure_shown:=false
 var crate_queue: Array=[]
 var crate_queued_direction:=""
+var crate_hint_search: Dictionary={}
+var crate_hint_key:=""
+var crate_story_active:=false
+var crate_story_remaining:=0.0
+var crate_story_caption: Label
+var application_focused:=true
 
 func state() -> Dictionary:
 	return GuestActivities.active.get("state",Rules.fresh(activity_id))
@@ -84,7 +90,7 @@ func _rules_text() -> String:
 	return "把货箱推到黄铜备货位。\n一次只能推一箱，不能拉。\n方向键移动，Z 撤回，H 提示。"
 
 func _intro() -> String:
-	var lines: Dictionary={"milo_ferry":"雨后旧桥停用。三名警察和三名囚犯都要去对岸。\n陪米洛用木偶复核渡河安排：拖动上船，空格开船。\n有警察的一岸，警察少于囚犯会发生暴动；无警察的一岸不判暴动。\n失败后可重试这一趟；Z 撤回，H 提示。", "ada_watch_memory":"艾达终于给自己留了一个下午。\n用组件把发条接到右侧目标，让怀表重新走起来。\n拖动组件，选中或拖着时空格旋转；Z 撤回，H 提示。\n三段拼图，不限时，最后按空格或拖表冠上弦。", "hank_lantern":"报纸从我出门那儿写起，可灯不是自己亮的。\n陪老霍克把灯、油和绳的货箱推到黄铜备货位。\n方向键 / WASD 移动，只能推一箱、不能拉箱。\n也可点击地面走路、拖箱推一格；Z 撤回，H 提示，R 重来。"}
+	var lines: Dictionary={"milo_ferry":"雨后旧桥停用。三名警察和三名囚犯都要去对岸。\n陪米洛用木偶复核渡河安排：拖动上船，空格开船。\n有警察的一岸，警察少于囚犯会发生暴动；无警察的一岸不判暴动。\n失败后可重试这一趟；Z 撤回，H 提示。", "ada_watch_memory":"艾达终于给自己留了一个下午。\n用组件把发条接到右侧目标，让怀表重新走起来。\n拖动组件，选中或拖着时空格旋转；Z 撤回，H 提示。\n三段拼图，不限时，最后按空格或拖表冠上弦。", "hank_lantern":"报纸从我出门那儿写起，可灯不是自己亮的。\n陪老霍克把灯、油和绳的货箱推到黄铜备货位。\n五关逐渐增加绕行与挪箱顺序，不限时。\n方向键 / WASD 移动，只能推一箱、不能拉箱。\n也可点击地面走路、拖箱推一格；Z 撤回，H 提示，R 重来。"}
 	return str(lines[activity_id])+ ("\n\n当前为演示：不推进剧情、不发放奖励。" if GuestActivities.active.mode=="demo" else "\n\n正式首通：专属配方＋3 点研发灵感。")
 
 func _style(fill: Color) -> StyleBoxFlat:
@@ -132,9 +138,9 @@ func _update() -> void:
 			else: hint_label.text="拖动组件入槽 · 点击选中 / 拖着时空格旋转 · Z 撤回 · H 提示\n把左侧发条接到右侧目标，带铆钉的组件不可移动。"
 		"hank_lantern":
 			if s.get("model")!=2: return
-			progress_label.text="第 %d / 3 关 · 备妥 %d / %d · 推动 %d 次" % [int(s.stage)+1,Rules.Crates.filled(s),s.boxes.size(),s.pushes]
-			if Rules.Crates.solved(s): hint_label.text=Rules.Crates.LINES[int(s.stage)]+"\n空格继续"+("并收好清单。" if s.stage==2 else "下一关。")
-			elif Rules.Crates.cornered(s): hint_label.text="货箱被推到墙角了。按 Z 撤回，留出能绕到箱后的路。"
+			progress_label.text="第 %d / %d 关 · 备妥 %d / %d · 推动 %d 次" % [int(s.stage)+1,Rules.Crates.stage_count(s),Rules.Crates.filled(s),s.boxes.size(),s.pushes]
+			if Rules.Crates.solved(s): hint_label.text="物资备妥了，听老霍克说几句……随后自动继续。"
+			elif Rules.Crates.cornered(s): hint_label.text="这只箱子进入了送不到备货位的角落。按 Z 撤回几步，还来得及。"
 			else: hint_label.text="方向键 / WASD 移动 · 点击空地走过去 · 拖箱推一格 · Z 撤回 · H 提示 · R 重来\n一次只推一箱，不能拉；把物资送到黄铜备货位。"
 	board.queue_redraw()
 
@@ -172,7 +178,7 @@ func _cross() -> void:
 func _undo() -> void:
 	if sailing>0: return
 	if activity_id=="hank_lantern":
-		crate_queue=[]; crate_queued_direction=""; board.finish_motion()
+		crate_queue=[]; crate_queued_direction=""; board.finish_motion(); board.clear_feedback(); crate_hint_search={}
 	if act("undo"): selection=[0,0]; board.selected=-1; audio.cue("place"); board.queue_redraw()
 
 func _hint() -> void:
@@ -184,9 +190,12 @@ func _hint() -> void:
 		else: hint_label.text="接通了，松开组件后按空格继续。"
 		return
 	if activity_id=="hank_lantern":
-		var direction:=Rules.Crates.hint(state())
-		hint_label.text="箱子可能卡住了，试试 Z 撤回最近几步，或 R 重来本关。" if direction=="undo" else ("已备妥，按空格继续。" if direction=="next" else "下一步试试向%s走一格，再观察能从哪一侧推箱。" % {"U":"上","D":"下","L":"左","R":"右"}[direction])
+		crate_queue=[]; crate_queued_direction=""
+		crate_hint_key=_crate_position_key()
+		crate_hint_search=Rules.Crates.hint_search(state())
+		hint_label.text="老霍克正在看看哪条路能腾出来……你仍可继续移动，换位后会取消这次提示。"
 		return
+
 	var pair:=Rules.hint(state())
 	if not pair.is_empty(): hint_label.text="可以试试这趟：%d 名警察＋%d 名囚犯。记得安排回船。" % [pair[0],pair[1]]
 
@@ -208,6 +217,12 @@ func watch_space() -> void:
 
 func _process(delta: float) -> void:
 	if not is_instance_valid(board): return
+	if crate_story_active:
+		if playing and application_focused and not paused:
+			crate_story_remaining=maxf(0,crate_story_remaining-delta)
+			crate_story_caption.text="%d 秒后自动%s" % [ceili(crate_story_remaining),"收好清单" if int(state().stage)==Rules.Crates.stage_count(state())-1 else "进入下一关"]
+			if crate_story_remaining<=0: _complete_crate_story()
+		board.queue_redraw(); return
 	if not playing or paused or is_instance_valid(overlay): board.queue_redraw(); return
 	board.advance(delta)
 	if sailing>0:
@@ -217,6 +232,9 @@ func _process(delta: float) -> void:
 			audio.cue("dock"); board.landing=.3; _update()
 			if end_pending: end_pending=false; audio.cue("success"); _result(); return
 	if activity_id=="hank_lantern":
+		if board.travel<=0 and Rules.Crates.solved(state()):
+			_show_crate_story(); return
+		_advance_crate_hint()
 		if board.travel<=0:
 			if not crate_queued_direction.is_empty():
 				var d:=crate_queued_direction; crate_queued_direction=""; crate_move(d)
@@ -231,6 +249,22 @@ func _process(delta: float) -> void:
 		if activity_id!="ada_watch_memory": audio.cue("water" if activity_id=="milo_ferry" else "wind")
 	board.queue_redraw()
 
+func _crate_position_key() -> String:
+	return str(state().get("layout_version",1))+":"+str(state().stage)+":"+Rules.Crates.key(int(state().player),state().boxes)
+func _advance_crate_hint() -> void:
+	if crate_hint_search.is_empty(): return
+	if crate_hint_key!=_crate_position_key(): crate_hint_search={}; return
+	if not Rules.Crates.advance_hint(crate_hint_search): return
+	var direction: String=crate_hint_search.answer
+	crate_hint_search={}
+	if direction=="undo": hint_label.text="这条路已经堵住了。试试 Z 撤回最近几步，或 R 重来本关。"
+	elif direction=="next": hint_label.text="已备妥，按空格继续。"
+	elif direction=="unknown": hint_label.text="这次暂时没找到完整路线。先给箱后留出通道，必要时 Z 撤回；并不代表这一局无解。"
+	else:
+		hint_label.text="脚下已标出方向：先向%s走一格，再观察从哪侧推。" % {"U":"上","D":"下","L":"左","R":"右"}[direction]
+		board.hint_direction=direction; board.hint_life=6
+		board.queue_redraw()
+
 func crate_move(direction: String, manual:=true) -> void:
 	if activity_id!="hank_lantern" or not playing or paused or is_instance_valid(overlay): return
 	if manual: crate_queue=[]
@@ -244,7 +278,7 @@ func crate_move(direction: String, manual:=true) -> void:
 		if state().pushes>before.pushes:
 			for i in range(state().boxes.size()):
 				if state().boxes[i]!=before.boxes[i]: audio.cue(["crate_lamp","crate_oil","crate_rope"][i%3])
-		if Rules.Crates.filled(state())>Rules.Crates.filled(before): audio.cue("tick")
+		if Rules.Crates.filled(state())>Rules.Crates.filled(before): audio.cue("crate_ready")
 	else: crate_queue=[]; crate_queued_direction=""
 
 func crate_walk_to(cell: int) -> void:
@@ -254,7 +288,7 @@ func crate_walk_to(cell: int) -> void:
 
 func crate_drag_push(index: int, direction: String) -> void:
 	if board.travel>0 or not playing or paused or is_instance_valid(overlay): return
-	var cfg:=Rules.Crates.layout(int(state().stage)); var dir: Vector2i=Rules.Crates.DIRS[direction]
+	var cfg:=Rules.Crates.config_for(state()); var dir: Vector2i=Rules.Crates.DIRS[direction]
 	var cell:=int(state().boxes[index]); var behind: int=cell-dir.y*cfg.width-dir.x
 	var path:=Rules.Crates.walk_path(state(),behind)
 	if behind!=int(state().player) and path.is_empty(): hint_label.text="需要先绕到箱子的另一侧，不能隔墙推箱。"; audio.cue("reject"); return
@@ -262,10 +296,27 @@ func crate_drag_push(index: int, direction: String) -> void:
 	if not attempt.ok: hint_label.text=attempt.message; audio.cue("reject"); return
 	crate_queue=path; crate_queue.append(direction); crate_queued_direction=""
 
-func crate_next() -> void:
-	if board.travel>0: return
+func _show_crate_story() -> void:
+	if crate_story_active or state().won: return
+	crate_queue=[]; crate_queued_direction=""; crate_hint_search={}; board.cancel_drag()
+	var line: String=Rules.Crates.LINES[int(state().stage)]
+	crate_story_remaining=clampf(float(line.length())*.13,4.5,8.0)
+	_modal("老霍克 · 这一趟备妥了",line,[])
+	crate_story_caption=_label(overlay.get_child(0),Rect2(38,397,850,56),"稍后自动继续",22)
+	crate_story_active=true
+
+func _complete_crate_story() -> void:
+	crate_story_active=false; _clear_modal()
+	if not crate_next():
+		# Keep the completed, saved board intact if advancing cannot be saved.
+		_modal("这关已完成，进度暂未保存",GuestActivities.last_error,[["重试保存并继续",_complete_crate_story],["返回手帐",_close]])
+
+func crate_next() -> bool:
+	if board.travel>0: return false
 	crate_queue=[]; crate_queued_direction=""
-	if act("next"): board.finish_motion()
+	if not act("next"): return false
+	board.finish_motion(); board.clear_feedback(); crate_hint_search={}
+	return true
 
 func crate_reset_prompt() -> void:
 	if not playing or paused or is_instance_valid(overlay) or state().moves.is_empty(): return
@@ -273,7 +324,7 @@ func crate_reset_prompt() -> void:
 	_modal("重新整理这一关？","前面完成的关卡会保留；当前关的人物和货箱回到起点。",[["重来本关",_crate_reset],["继续整理",_resume]])
 
 func _crate_reset() -> void:
-	_resume(); act("reset"); board.finish_motion()
+	_resume(); act("reset"); board.finish_motion(); board.clear_feedback(); crate_hint_search={}
 
 func _ferry_failure() -> void:
 	playing=false; failure_shown=true; _clear_modal(); audio.cue("reject")
@@ -295,18 +346,18 @@ func _result() -> void:
 	playing=false
 	var granted:=GuestActivities.claim()
 	var demo: bool=GuestActivities.active.mode=="demo"
-	var text: String={"milo_ferry":"三名警察与三名囚犯都安全到了对岸。米洛把回船的安排也写进了夹页。","ada_watch_memory":"怀表又走了起来。艾达笑了：今天还有时间慢慢调。","hank_lantern":"物资都备齐了。玛莎的灯与绳、齐恩的账本、尼尔·贝克的路，还有霍克的接应。\n“这回，把名字也带上。”"}[activity_id]
-	if demo: text+="\n\n演示完成，不改变剧情与奖励。正式条件：故事 5 章＋2 次满意招待。"
+	var text: String={"milo_ferry":"三名警察与三名囚犯都安全到了对岸。米洛把回船的安排也写进了夹页。","ada_watch_memory":"怀表又走了起来。艾达笑了：今天还有时间慢慢调。","hank_lantern":"物资都备齐了。玛莎的灯与绳、齐恩的账本、车夫认出的路，还有霍克的接应。\n“这回，把名字也带上。”"}[activity_id]
+	if demo: text+="\n\n演示完成，不改变剧情与奖励。正式条件："+GuestActivities.requirement_text(activity_id)+"。"
 	elif granted:
 		var recipe:=preload("res://scripts/research_data.gd").legendary(config.reward_recipe_id)
-		text+="\n\n已收录配方《%s》＋3 点研发灵感。\n可在图鉴查看、研发试调，再自行加入酒单。\n每个角色首通只奖励一次。" % recipe.name
+		text+="\n\n已收录配方《%s》＋%d 点研发灵感。\n可在图鉴查看、研发试调，再自行加入酒单。\n每个小游戏的首次通关奖励只领取一次。" % [recipe.name,int(config.reward_inspiration)]
 	else: text+="\n\n"+GuestActivities.last_error
 	_modal("一起完成了",text,[["返回手帐",_close],["再玩一局" if granted else "重试领取",_restart if granted else _result]])
 
 func _restart() -> void:
 	if not GuestActivities.begin(activity_id,true): hint_label.text=GuestActivities.last_error; return
 	own_run=GuestActivities.active.id; selection=[0,0]; sailing=0; end_pending=false; failure_outcome={}; failure_shown=false; board.selected=-1; board.held=-1; board.watch_motion.reset(); board.angles.clear(); crate_queue=[]; crate_queued_direction=""
-	if activity_id=="hank_lantern": board.finish_motion()
+	if activity_id=="hank_lantern": board.finish_motion(); board.clear_feedback(); crate_hint_search={}
 	_start()
 
 func _pause() -> void:
@@ -325,7 +376,8 @@ func can_close() -> bool:
 	_restore_clock(); return true
 
 func _close() -> void:
-	if can_close(): close_requested.emit()
+	if can_close():
+		crate_story_active=false; playing=false; close_requested.emit()
 
 func _exit_tree() -> void:
 	if GuestActivities.active.get("id","")==own_run: GuestActivities.checkpoint()
@@ -363,11 +415,14 @@ func _unhandled_key_input(event: InputEvent) -> void:
 				KEY_Z: _undo()
 				KEY_H: _hint()
 				KEY_R: crate_reset_prompt()
-				KEY_SPACE: crate_next()
 	get_viewport().set_input_as_handled()
 
 
 func _notification(what: int) -> void:
+	if what==NOTIFICATION_APPLICATION_FOCUS_IN:
+		application_focused=true
+		if crate_story_active and is_instance_valid(audio): audio.suspend(false)
 	if what==NOTIFICATION_APPLICATION_FOCUS_OUT and is_instance_valid(audio):
+		application_focused=false
 		_pause()
 		audio.suspend(true)

@@ -68,7 +68,7 @@ func run() -> void:
 	for chapters in StoryDialogue.catalog.values():
 		for chapter in chapters:
 			walk(chapter, chapter.entry, [])
-	check(paths == 161, "All 161 authored paths terminate")
+	check(paths == 233, "All 233 authored paths terminate")
 	StoryDialogue.progress = {}
 	for i in range(guests.profiles.size()):
 		var id: String = guests.profiles[i].id
@@ -181,10 +181,10 @@ func run() -> void:
 					continue
 				StoryDialogue._show_node(key)
 				await settle()
-				var label: Label = home.get_node("%GuestSpeech")
-				check(label.get_line_count() * label.get_line_height() <= 94, "Text fits reserved space: " + chapter.id + "/" + key)
+				var label: RichTextLabel = home.get_node("%GuestSpeech")
+				check(label.get_content_height() <= label.size.y, "Text fits reserved space: " + chapter.id + "/" + key)
 				check(label.position.y + label.size.y <= home.story_choices.position.y, "Speech stays above choices")
-				check(home.story_choices.size.x <= 802 and home.story_choices.size.y <= 68, "Choices stay in dialogue panel")
+				check(Rect2(Vector2.ZERO, home.story_choices.get_parent().size).encloses(home.story_choices.get_rect()), "Choices stay in dialogue panel")
 	StoryDialogue.progress = {}
 	guests.show_guest(3)
 	await settle()
@@ -197,5 +197,5 @@ func run() -> void:
 	await settle()
 	await capture("tablet")
 	check(SlotWallet.balance == balance, "Story never modifies wallet")
-	print("STORY DIALOGUE: ", "PASS" if failures.is_empty() else "FAIL", " | 161 paths, 21 visits, unknown identity/reveal, native choices, reload/resume, idle, closing, handoff, all-node text bounds")
+	print("STORY DIALOGUE: ", "PASS" if failures.is_empty() else "FAIL", " | 233 paths, 21 visits, unknown identity/reveal, native choices, reload/resume, idle, closing, handoff, all-node text bounds")
 	get_tree().quit(0 if failures.is_empty() else 1)

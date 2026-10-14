@@ -625,10 +625,13 @@ func _render_customer_feedback() -> void:
 
 func _show_activity_hint() -> void:
 	if PlayModes.mode!="story" or StoryDialogue.phase=="story": return
+	var invitations:=0
 	for activity in preload("res://scripts/guest_activity_rules.gd").IDS:
 		if GuestActivities.config(activity).guest_id==StoryDialogue.guest_id and GuestActivities.progress(activity).unlocked:
-			%GuestTags.text+=" · 小游戏邀请已收进手帐"
-			%GuestTags.show()
+			invitations+=1
+	if invitations>0:
+		%GuestTags.text+=" · %d 个小游戏邀请已收进手帐" % invitations
+		%GuestTags.show()
 
 func _update_bottom_status() -> void:
 	if guest_profile.is_empty():

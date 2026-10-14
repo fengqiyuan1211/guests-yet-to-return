@@ -71,7 +71,7 @@ func crate_input() -> void:
 	bench.set_process(false)
 	var board: Control=bench.board
 	var before: Dictionary=bench.state().duplicate(true)
-	key_press(KEY_RIGHT); await settle()
+	key_press(KEY_LEFT); await settle()
 	check(bench.state().steps==1 and board.travel>0,"keyboard moves cowboy with animation")
 	bench._pause(); bench._process(2)
 	check(bench.state().steps==1 and board.travel>0,"pause freezes queued moves and animation")
@@ -83,7 +83,7 @@ func crate_input() -> void:
 		get_viewport().warp_mouse(from); pointer(from,true); await settle()
 		move_pointer(to,from,true); await settle(); pointer(to,false); await settle()
 		for i in range(12): bench._process(.25)
-		check(Rules.Crates.solved(bench.state()) and bench.state().steps==4,"drag walks around crate and pushes once into goal")
+		check(bench.state().pushes==1 and bench.state().boxes[0]==int(before.boxes[0])-1 and bench.state().steps>1,"drag walks around crate and pushes exactly one cell")
 		key_press(KEY_R); await settle()
 		check(is_instance_valid(bench.overlay),"reset requests current-stage confirmation")
 		bench._crate_reset(); await settle()
@@ -130,6 +130,15 @@ func crate_migration_checks() -> void:
 	GuestActivities.end()
 	var research:=WorkbenchSession.research_state(); research.inspiration=inspiration
 	check(GuestActivities._commit(original,research),"restore crate migration fixture")
+	b=original.duplicate(true)
+	var old_crates:=Rules.Crates.fresh(1)
+	old_crates.erase("layout_version")
+	old_crates=Rules.Crates.apply(old_crates,"move",{"direction":"R"}).state
+	b.runs[id].state=old_crates
+	check(GuestActivities._commit(b) and GuestActivities.begin(id),"existing three-level crate save opens")
+	check(GuestActivities.active.state==old_crates and Rules.Crates.stage_count(GuestActivities.active.state)==3,"upgrade keeps old board positions and undo proof")
+	GuestActivities.end()
+	check(GuestActivities._commit(original),"restore real new-layout checkpoint after compatibility test")
 
 func _ready() -> void:
 	if OS.get_cmdline_user_args().has("--activities-resume"):
@@ -173,13 +182,24 @@ func complete_game() -> void:
 			else: bench.act("move",next)
 		check(bench.state().won,"three connected mechanical stages and winding complete")
 	else:
-		for stage in range(3):
-			if stage==2: await capture("character-hank-crates-stage3")
+		for stage in range(Rules.Crates.stage_count(bench.state())):
+			await capture("character-hank-v4-stage%d" % (stage+1))
 			for direction in Rules.Crates.SOLUTIONS[stage]:
 				bench.crate_move(direction); bench.board.finish_motion()
 			check(Rules.Crates.solved(bench.state()),"authored crate stage completed through controls")
-			bench.crate_next()
-		check(bench.state().won and bench.state().completed.size()==2,"all three crate stages proved before victory")
+			bench._process(0)
+			check(bench.crate_story_active and is_instance_valid(bench.overlay),"solved board automatically opens Hank dialogue")
+			var completed: Dictionary=bench.state().duplicate(true)
+			bench.crate_move("L"); bench._undo()
+			check(bench.state()==completed,"story overlay blocks accidental moves and undo")
+			bench.application_focused=false; bench._process(20)
+			check(bench.crate_story_active and bench.state()==completed,"story waits while application is unfocused")
+			bench.application_focused=true
+			if stage==0: await capture("character-hank-auto-story")
+			bench._process(10)
+			check(not bench.crate_story_active,"story advances automatically without space")
+			check(bench.state().won if stage==Rules.Crates.stage_count(bench.state())-1 else int(bench.state().stage)==stage+1,"automatic continuation advances exactly one stage or settles")
+		check(bench.state().won and bench.state().completed.size()==4,"all five crate stages proved before victory")
 	if bench.activity_id=="milo_ferry" and bench.end_pending: bench._process(1.0)
 	await settle()
 
@@ -227,6 +247,8 @@ func run() -> void:
 			check(StoryDialogue.taste_event_id.is_empty(),"new visit starts before new clue")
 			talk_chapter(); await settle()
 			check(StoryDialogue.taste_event_id=="%s_%02d" % [guest,chapter+1],"spoken clue records stable episode")
+			var target: int={"milo":2,"ada":5,"hank":3}[guest]
+			check(GuestActivities.progress(id).unlocked==(chapter+1>=target),"invitation follows this guest's milestone: "+guest+" round "+str(chapter+1))
 			if chapter<2:
 				var who:={"id":guest,"visit_id":home.reception_id,"day":TimeManager.day,"visit":home.guest_count}
 				var order:=GuestService.make_order(who,"gin_and_tonic")
@@ -240,7 +262,7 @@ func run() -> void:
 				check(GuestService.deliver(WorkbenchSession.state.session.result.drink_id),"real guest delivery "+guest)
 				check(WorkbenchSession.state.session.result.customer_receipt.score!=null and WorkbenchSession.state.session.result.customer_receipt.score>=70,"candidate meets current guest event")
 				await settle()
-		check(GuestActivities.progress(id).unlocked and not GuestActivities.progress(id).keepsake.is_empty(),"five chapters and two distinct satisfied visits grant invitation and keepsake")
+		check(GuestActivities.progress(id).unlocked and not GuestActivities.progress(id).keepsake.is_empty(),"later chapters preserve independent invitation and keepsake")
 		check(StoryDialogue.progress[guest].activity_unlocks.has(id),"unlock mirrors into journal")
 		var before: Dictionary=WorkbenchSession.state.session.duplicate(true)
 		var count_before: int=WorkbenchSession.research_state().inspiration
@@ -293,7 +315,7 @@ func run() -> void:
 	check(GuestActivities.end(),"checkpoint second stage with tray and undo history")
 	check(GuestActivities.begin("hank_lantern",true),"start new formal crate checkpoint")
 	for direction in Rules.Crates.SOLUTIONS[0]: check(GuestActivities.action("move",{"direction":direction}),"crate checkpoint first stage")
-	check(GuestActivities.action("next") and GuestActivities.action("move",{"direction":"L"}),"second crate stage saves walk")
+	check(GuestActivities.action("next") and GuestActivities.action("move",{"direction":Rules.Crates.SOLUTIONS[1][0]}),"second crate stage saves walk")
 	var crate_before: Dictionary=GuestActivities.active.duplicate(true)
 	Supplies.save_path=path+"/blocked.json"
 	check(not GuestActivities.action("move",{"direction":"U"}) and GuestActivities.active==crate_before,"failed crate write rolls back logical board")
@@ -350,7 +372,7 @@ func restored() -> void:
 	check(GuestActivities.book().rewards.size()==3,"three first-clear receipts survive")
 	check(GuestActivities.book().runs.milo_ferry.state.moves.size()==1,"ferry checkpoint survives process restart")
 	check(GuestActivities.book().runs.ada_watch_memory.state.stage==1 and GuestActivities.book().runs.ada_watch_memory.state.pieces[0].cell==0 and GuestActivities.book().runs.ada_watch_memory.state.history.size()==2,"mechanical stage, placed component and undo history survive process restart")
-	check(GuestActivities.book().runs.hank_lantern.state.stage==1 and GuestActivities.book().runs.hank_lantern.state.moves==["L"],"crate stage and undo proof survive restart")
+	check(GuestActivities.book().runs.hank_lantern.state.stage==1 and GuestActivities.book().runs.hank_lantern.state.moves==[Rules.Crates.SOLUTIONS[1][0]],"crate stage and undo proof survive restart")
 	check(MenuCatalog.entries[0].id=="character_milo","published role recipe survives autoload ordering")
 	for id in Rules.IDS: check(GuestActivities.progress(id).unlocked,"formal unlock survives "+id)
 	print("CHARACTER RESTORE: %d checks, %d failures" % [count,failures.size()])

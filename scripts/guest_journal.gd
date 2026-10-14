@@ -389,9 +389,14 @@ func _activities() -> void:
 		_label(column,str(item.description),21,MUTED)
 		var available := Navigation.registered_pages.has(StringName(item.route))
 		_label(column,"已解锁 · 正式邀请" if item.unlocked else ("内测演示 · 暂时开放" if item.demo else "尚未解锁"),22)
+		var action := _button(column,"开始游戏  →" if available and item.accessible else ("尚未开放" if item.unlocked else "等待客人的邀请"),_launch_activity.bind(str(item.id)))
+		action.disabled = not available or not item.accessible
+		if item.demo and not item.unlocked: action.tooltip_text = "内测演示：暂时开放体验，不代表正式剧情已解锁；不推进剧情、不发放奖励。"
 		if item.id in preload("res://scripts/guest_activity_rules.gd").IDS:
 			var info: Dictionary=GuestActivities.progress(item.id)
-			_label(column,"故事 %d / 5  ·  满意招待 %d / 2" % [mini(5,info.chapters),mini(2,info.satisfied)],20)
+			_label(column,"邀请进度："+GuestActivities.requirement_text(item.id,true),20)
+			if int(info.required_chapters)<StoryDialogue.catalog.get(selected_id,[]).size():
+				_label(column,"小游戏解锁后，后面的来访故事仍会继续。",19,MUTED)
 			if not info.keepsake.is_empty():
 				_label(column,"已获得纪念物："+str(info.keepsake.name),23)
 				_label(column,str(info.keepsake.description),19,MUTED)
@@ -399,12 +404,9 @@ func _activities() -> void:
 			if not info.reward.is_empty():
 				var recipe:=preload("res://scripts/research_data.gd").legendary(info.reward.recipe_id)
 				_label(column,"首通已领取：《%s》配方 · 灵感 +%d" % [recipe.get("name",""),info.reward.inspiration],21,Color("506537"))
-			else: _label(column,"正式首通：专属配方＋3 点研发灵感；演示不发奖。",18,MUTED)
+			else: _label(column,"本小游戏正式首通：专属配方＋%d 点研发灵感；演示不发奖。" % int(item.get("reward_inspiration",0)),18,MUTED)
 		if item.id=="stick_minigame":
 			_label(column,"这里可随时练习；正式邀请与纪念奖励在酒馆剧情中触发。",19,MUTED)
-		var action := _button(column,"开始游戏  →" if available and item.accessible else ("尚未开放" if item.unlocked else "等待客人的邀请"),_launch_activity.bind(str(item.id)))
-		action.disabled = not available or not item.accessible
-		if item.demo and not item.unlocked: action.tooltip_text = "内测演示：暂时开放体验，不代表正式剧情已解锁；不推进剧情、不发放奖励。"
 
 func _launch_activity(id: String) -> void:
 	# Check again at click time; presentation state does not grant access.

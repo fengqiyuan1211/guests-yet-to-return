@@ -232,7 +232,7 @@ func _lantern() -> void:
 	draw_set_transform(r.get_center(),sin(time*7)*pulse*.3)
 	_sprite(Rect2(-r.size*.5,r.size),3)
 	draw_set_transform(Vector2.ZERO)
-	_tag(Rect2(543,733,518,34),"玛莎的灯 · 齐恩的油 · 尼尔的路",21)
+	_tag(Rect2(543,733,518,34),"玛莎的灯 · 齐恩的油 · 车夫的路",21)
 
 func _hit(rows: Array, at: Vector2) -> int:
 	for row in rows:

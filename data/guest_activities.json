@@ -15,16 +15,16 @@
       "demo_unlocked": true,
       "guest_id": "milo",
       "rules_version": 1,
-      "required_chapters": 5,
-      "required_satisfied": 2,
+      "required_chapters": 2,
+      "required_satisfied": 0,
       "keepsake": {
         "id": "milo_ferry_keepsake",
         "name": "渡口夹页",
-        "description": "一张写清船容量和回程安排的夹页。"
+        "description": "米洛留下的渡河练习草稿，写着船的容量和需要照看的两岸。"
       },
       "reward_recipe_id": "character_milo",
       "reward_inspiration": 3,
-      "invitation": "渡口的办法我画好了。有空陪我推一遍？夹页也给你留了一份。"
+      "invitation": "罗恩以前拿渡河题教我检查路线。我带了木偶，陪我摆一遍？先把回程也算清楚，这张草稿留在你这里。"
     }
   },
   "ada": {
@@ -50,21 +50,21 @@
   "hank": {
     "hank_lantern": {
       "name": "灯下有名 · 风沙前的货棚",
-      "description": "陪老霍克推动灯、油和绳的货箱，腾出通道，把风沙夜需要的物资备齐。",
+      "description": "五关货棚推箱子：绕行、借位与装箱顺序逐渐进阶。陪老霍克备齐物资，也给回头接人的路留出空位。",
       "route": "hank_lantern",
       "demo_unlocked": true,
       "guest_id": "hank",
       "rules_version": 2,
-      "required_chapters": 5,
-      "required_satisfied": 2,
+      "required_chapters": 3,
+      "required_satisfied": 0,
       "keepsake": {
         "id": "hank_lantern_keepsake",
         "name": "旧货棚清单",
-        "description": "玛莎的灯与绳、齐恩的物资账本、尼尔的路；名单上也留着一行空白。"
+        "description": "玛莎的灯与绳、齐恩的物资账、车夫认出的归路；尚未查清的姓名，先留着空位。"
       },
       "reward_recipe_id": "character_hank",
       "reward_inspiration": 3,
-      "invitation": "报纸从我出门那儿写起，可灯不是自己亮的。陪我把货棚里的东西备齐吧。"
+      "invitation": "那晚的事说到这里，咱们用货棚草图摆一遍吧。灯、油、绳要备齐，走动的路也得留出来。"
     }
   }
 }
