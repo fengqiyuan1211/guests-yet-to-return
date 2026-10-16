@@ -91,6 +91,10 @@ func _ready() -> void:
 	if active.get("status")=="mixing" and active.get("liquid_profiles",{})!=preload("res://scripts/workbench_liquid_appearance.gd").profiles(): _issue("refresh_appearance")
 	_refresh()
 	if data.get("status")=="finished": _result()
+	if WorkbenchSession.tutorial_active:
+		var guide=preload("res://scripts/opening_tutorial.gd").new()
+		guide.bench=self
+		surface.add_child(guide)
 
 func _fit() -> void:
 	var factor := minf(size.x/1600.0,size.y/900.0)
@@ -233,8 +237,8 @@ func _build() -> void:
 	_button(surface,Rect2(342,22,145,38),"返回 Esc",_leave)
 	_button(surface,Rect2(497,22,130,38),"记录 R",_log)
 	_button(surface,Rect2(637,22,130,38),"重做 N",_restart)
-	_button(surface,Rect2(777,22,120,38),"仓库 B",_open_storage.bind("backpack"))
-	_button(surface,Rect2(907,22,140,38),"商店 S",_open_storage.bind("shop"))
+	_button(surface,Rect2(777,22,120,38),"跳过教学" if WorkbenchSession.tutorial_active else "仓库 B",_skip_tutorial if WorkbenchSession.tutorial_active else _open_storage.bind("backpack"))
+	_button(surface,Rect2(907,22,140,38),"教学说明" if WorkbenchSession.tutorial_active else "商店 S",_tutorial_help if WorkbenchSession.tutorial_active else _open_storage.bind("shop"))
 	gold_label=_text(surface,Rect2(1060,26,190,30),"",20)
 	next_hint=_text(context,Rect2(16,6,863,65),"",23,Color("352416"))
 	next_hint.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
@@ -319,7 +323,7 @@ func _update_stock_ui() -> void:
 		feedback_text.size.x=660
 		feedback_text.text="%s已补货，可以继续制作。" % _material_info(restock_material).name
 		restock_material=""
-	if is_instance_valid(gold_label): gold_label.text="金币 %d" % SlotWallet.balance
+	if is_instance_valid(gold_label): gold_label.text="教学包 · 不扣仓库" if WorkbenchSession.tutorial_active else "金币 %d" % SlotWallet.balance
 	for id in stock_labels:
 		var left: float=WorkbenchSession.remaining(id)
 		var unit: String=WorkbenchSession.GARNISHES[id].unit if WorkbenchSession.GARNISHES.has(id) else (WorkbenchSession.SOLIDS[id].unit if WorkbenchSession.SOLIDS.has(id) else "ml")
@@ -327,6 +331,9 @@ func _update_stock_ui() -> void:
 		item_buttons[id].modulate=Color.WHITE if left>0 else Color(.7,.7,.7)
 
 func _open_storage(route: String) -> void:
+	if WorkbenchSession.tutorial_active:
+		_tutorial_help()
+		return
 	if is_instance_valid(external_page): return
 	_clear_modal()
 	table.stop_gesture()
@@ -882,6 +889,11 @@ func _result() -> void:
 	card.result["capacity_ml"]=data.result.get("capacity_ml",WorkbenchSession.capacity(data,"glass"))
 	p.add_child(card)
 	_text(p,Rect2(34,20,800,30),"这一杯的出品",23,INK)
+	if WorkbenchSession.tutorial_active:
+		_button(p,Rect2(40,705,360,44),"重做练习 · 不扣仓库",_restart)
+		_button(p,Rect2(525,705,435,44),"记下这一杯，准备开门 · 空格",_finish_tutorial,true)
+		pending_confirm=_finish_tutorial
+		return
 	if WorkbenchSession.is_research(data):
 		var saved: bool=WorkbenchSession.research_state().saved_drinks.has(data.result.drink_id)
 		if data.mode=="research_diy":
@@ -1006,6 +1018,13 @@ func _result_details() -> void:
 	pending_confirm=_result
 
 func _restart() -> void:
+	if WorkbenchSession.tutorial_active:
+		if OpeningFlow.begin_tutorial(true):
+			_clear_modal()
+			selected=""
+			_refresh()
+		else: status_label.text=OpeningFlow.last_error
+		return
 	var p := _dialog("丢弃这一杯，重新试作？",320)
 	_text(p,Rect2(30,94,740,90),"已用材料不会退回；上一杯的动作记录会保留。\n继续使用仓库剩余原料，缺料需到商店补货。",22)
 	_text(p,Rect2(30,222,740,61),"空格 确认重做     ·     Esc 继续当前制作",22)
@@ -1101,6 +1120,9 @@ func _input(event: InputEvent) -> void:
 func _leave() -> void:
 	sfx.silence()
 	table.stop_gesture()
+	if WorkbenchSession.tutorial_active:
+		OpeningFlow.return_to_title()
+		return
 	if WorkbenchSession.is_research(data):
 		Navigation.research_view="entry"
 		Navigation.go_to(&"research")
@@ -1118,6 +1140,23 @@ func _exit_tree() -> void:
 		measure.set_process(false)
 	if is_instance_valid(table):
 		table.stop_gesture()
+
+func _tutorial_help() -> void:
+	var p:=_dialog("先熟悉这张工作台",370)
+	_text(p,Rect2(30,90,740,180),"拖动材料到量酒器，空格停止量取。\n把量酒器拖到摇壶；轻压棒拖入后上下拉动。\n盖好摇壶，拖起快速来回摇，最后拖到成品杯。\n教学包独立消耗；N 重做，Esc 保留进度返回。",23)
+	pending_confirm=_clear_modal
+
+func _skip_tutorial() -> void:
+	var p:=_dialog("跳过这次教学？",320)
+	_text(p,Rect2(30,92,740,100),"不会生成虚假的成品、品质评分或销售收入。\n以后可从开始界面回看序章、练习调酒。",23)
+	_button(p,Rect2(30,228,300,50),"继续练习",_clear_modal)
+	_button(p,Rect2(420,228,340,50),"跳过，准备开门",_finish_tutorial.bind(true),true)
+	pending_confirm=_finish_tutorial.bind(true)
+
+func _finish_tutorial(skipped := false) -> void:
+	if OpeningFlow.finish_tutorial(skipped):
+		get_tree().change_scene_to_file("res://scenes/opening_story.tscn")
+	else: status_label.text=OpeningFlow.last_error
 
 func _material_info(id: String) -> Dictionary:
 	return WorkbenchSession.MATERIALS.get(id,WorkbenchSession.SOLIDS.get(id,WorkbenchSession.GARNISHES.get(id,{})))

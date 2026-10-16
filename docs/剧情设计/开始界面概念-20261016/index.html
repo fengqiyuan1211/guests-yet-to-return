@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>致未归的客人 · 开始界面概念</title>
+<style>
+:root{color-scheme:dark;--ink:#f0e3ca;--muted:#bdb09c;--gold:#e4b96e;--bg:#151e22}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+button,input{font:inherit}button,a{touch-action:manipulation}button{color:var(--ink);background:#ffffff08;border:1px solid #e8cca434;border-radius:7px;padding:10px 17px;cursor:pointer}button:hover{background:#ffffff12}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:4px}button[aria-pressed=true]{border-color:var(--gold);background:#d7a96219;color:#ffdfaa}a{color:var(--gold)}
+header{max-width:1480px;margin:auto;padding:25px 30px 17px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.kicker{color:var(--muted);font-size:12px;letter-spacing:3px}h1{font-size:22px;margin:4px 0;font-weight:500}header p{margin:4px 0;font-size:13px;color:var(--muted)}nav{display:flex;gap:9px;flex-wrap:wrap}nav button small{font-size:11px;color:var(--muted);margin-left:5px}
+main{max-width:1480px;margin:auto;padding:0 30px 30px}.stage{position:relative;aspect-ratio:1672/941;overflow:hidden;border:1px solid #d2b88c40;border-radius:5px;background:#243944;box-shadow:0 24px 70px #0005}.stage img{width:100%;height:100%;display:block;object-fit:contain}.stage canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.lamp{position:absolute;width:10%;aspect-ratio:1;border-radius:50%;background:radial-gradient(ellipse,#ffbf5d39,transparent 69%);transform:translate(-50%,-50%);mix-blend-mode:screen;pointer-events:none;animation:flame 5.7s ease-in-out infinite}.still .lamp{animation:none;opacity:.45}@keyframes flame{0%,100%{opacity:.35}29%{opacity:.8}47%{opacity:.6}67%{opacity:.9}81%{opacity:.55}}
+.below{display:grid;grid-template-columns:1fr auto;gap:25px;margin:21px 0}.below h2{font-size:20px;font-weight:500;margin:0 0 7px}.below p{margin:0;max-width:780px;color:var(--muted)}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:17px 20px;background:#ffffff04;border:1px solid #ffffff12;border-radius:8px}.controls label{font-size:13px;display:flex;align-items:center;gap:8px;color:var(--muted)}input[type=range]{width:90px;accent-color:var(--gold)}input[type=checkbox]{accent-color:var(--gold)}.note{font-size:12px;color:var(--muted);margin:12px 1px}.links{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;margin-top:17px}.status{font-size:13px;color:var(--gold);min-height:21px;margin:7px 0}
+dialog{background:#1b272c;color:var(--ink);border:1px solid #bca37480;border-radius:12px;max-width:820px;width:calc(100% - 40px);padding:26px;max-height:88vh;box-shadow:0 25px 100px #0008}dialog::backdrop{background:#070e13c9}dialog h2{font-weight:500;margin-top:0}dialog p{color:var(--muted)}.close{float:right}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.flow article{border:1px solid #dfbd7c30;padding:16px 13px;border-radius:6px}.flow span{color:var(--gold);font-size:12px}.flow h3{font-weight:500;font-size:16px;margin:7px 0}.flow p{font-size:13px;line-height:1.8;margin:0}.drink{display:flex;align-items:center;gap:24px}.drink img{width:40%;background:radial-gradient(ellipse,#405863,#1b272c 70%);border-radius:9px}.drink strong{font-size:20px;font-weight:500}.drink p{line-height:1.9}
+@media(max-width:760px){header,main{padding-left:16px;padding-right:16px}h1{font-size:20px}nav button{font-size:13px;padding:9px 11px}.below{grid-template-columns:1fr}.flow{grid-template-columns:repeat(2,1fr)}.controls{gap:14px}.drink{display:block}.drink img{width:65%;display:block;margin:auto}}
+@media(prefers-reduced-motion:reduce){.lamp{animation:none!important}}
+</style>
+</head>
+<body>
+<header><div><div class="kicker">GUESTS YET TO RETURN · CONCEPT STUDY</div><h1>夕阳里，为未归的人留一盏灯</h1><p>开始界面概念 · 2026.10.16 · 独立预览，不读写游戏存档</p></div><nav aria-label="选择概念版本"><button data-view="A" aria-pressed="false">A 归港余晖</button><button data-view="B" aria-pressed="true">B 留一盏灯 <small>推荐</small></button><button data-view="C" aria-pressed="false">C 潮汐来信</button></nav></header>
+<main>
+<div class="stage" id="stage"><img id="scene" src="images/B-留一盏灯.png" alt="B：酒馆门前的空椅、信与灯，右侧是夕阳海面和开始菜单"><canvas id="water" aria-hidden="true"></canvas><div id="lamp" class="lamp" aria-hidden="true"></div></div>
+<section class="below"><div><h2 id="view-title">B · 留一盏灯</h2><p id="description">站在酒馆门前看海。空椅、信和灯呼应开篇故事，让“未归”成为画面里可以感受到的等待。</p></div><div><button id="flow-open">查看首次进入流程</button></div></section>
+<div class="controls"><button id="sound" aria-pressed="false">试听配乐＋潮声</button><label>音乐 <input id="music-volume" aria-label="音乐音量" type="range" min="0" max="100" value="36"></label><label>海浪 <input id="wave-volume" aria-label="海浪音量" type="range" min="0" max="100" value="18"></label><label><input id="motion" type="checkbox" checked> 潮光与灯光动态</label><button id="drink-open">看蓝色「回响」</button></div>
+<p class="status" id="status" aria-live="polite">点击试听后播放，初始静音。</p>
+<p class="note">动态小样：局部潮光与灯光叠加；完整海浪、云层与船的运动待分层制作。画面内菜单为静态排版概念，使用上方和下方工具浏览。</p>
+<p class="note">配乐优先候选：Laura / kaazoom，引用项目已有木吉他曲；海浪为实时合成音色。你喜欢的同一首 MP3 已在下方单独提供，未混入潮声。</p>
+<div class="links"><a href="开始界面与序章衔接.md">完整设计说明</a><a id="original" href="images/B-留一盏灯.png" target="_blank" rel="noopener">查看当前原图</a><a href="配乐/Laura-kaazoom-开始界面试听.mp3" download>保存试听 MP3</a><a href="../../../assets/audio/music/README.md">现有音乐来源记录</a></div>
+</main>
+<dialog id="flow"><button class="close" aria-label="关闭流程说明">关闭</button><h2>从黄昏的海，到第一杯回响</h2><p>首次新游戏直接进入剧情，之后自然接到现有工作台；不会先跳入已经营业的大厅。</p><div class="flow"><article><span>01 · 开始</span><h3>抵达之前</h3><p>淡出菜单，音乐渐弱。公寓、失败后的生活，旧酒谱触发回忆。</p></article><article><span>02 · 剧情 CG</span><h3>来信与小岛</h3><p>酒友与回响、遗赠的信、海路、门前空椅。自由推进对白。</p></article><article><span>03 · 新手教学</span><h3>重新拿起摇壶</h3><p>单步高光，拖动与空格操作。实际用量与黄金刻度引用同一配方。</p></article><article><span>04 · 营业</span><h3>把今晚做好</h3><p>翻转营业牌，迎接第一位来客。继续现有经营、手帐与小游戏。</p></article></div><p>已有存档 → 继续原进度；中途退出 → 恢复 CG 或教学节点。跳过剧情仍进入教学，跳过教学不产生虚假的成品与奖励。</p><p>此处仅为流程说明，尚未接入游戏。</p></dialog>
+<dialog id="drink"><button class="close" aria-label="关闭回响预览">关闭</button><div class="drink"><img src="images/回响-Echo-World-蓝色概念.png" alt="回响 Echo World：沿用 Last Word 杯型，明亮蓝色酒液"><div><strong>回响 · Echo World</strong><p>保留 Last Word 的杯型、线条与玻璃高光，将酒液调整为更明亮的海蓝色。</p><p>这是新的回响酒图概念；经典 Last Word 保持独立。正式配方和工作台混色数据还需共同校准。</p><a href="images/回响-Echo-World-蓝色概念.png" target="_blank" rel="noopener">打开透明背景原图</a></div></div></dialog>
+<audio id="music" loop preload="none"><source src="../../../assets/audio/music/night-laura-source.mp3" type="audio/mpeg"></audio>
+<script>
+'use strict';
+const views={
+A:{file:'A-归港余晖.png',title:'A · 归港余晖',desc:'从码头望向岛上酒馆。海浪、夕阳与灯火让“抵达”的感觉更鲜明，最直观地展示海港世界。',rect:[.39,.51,.22,.23],lamp:[.88,.73]},
+B:{file:'B-留一盏灯.png',title:'B · 留一盏灯',desc:'站在酒馆门前看海。空椅、信和灯呼应开篇故事，让“未归”成为画面里可以感受到的等待。',rect:[.44,.43,.16,.23],lamp:[.29,.55]},
+C:{file:'C-潮汐来信.png',title:'C · 潮汐来信',desc:'天空与海面留下更多呼吸空间。远处酒馆亮着灯，潮汐慢慢抵岸，整体更轻盈、更明亮。',rect:[.61,.65,.25,.27],lamp:[.36,.89]}
+};
+const stage=document.getElementById('stage'),scene=document.getElementById('scene'),lamp=document.getElementById('lamp'),canvas=document.getElementById('water'),ctx=canvas.getContext('2d'),motion=document.getElementById('motion');
+let selected='B',frame=0,activeTime=0,lastTime=0;
+function select(key){selected=key;const v=views[key];scene.src='images/'+v.file;scene.alt=v.title+'：'+v.desc;document.getElementById('view-title').textContent=v.title;document.getElementById('description').textContent=v.desc;document.getElementById('original').href=scene.src;lamp.style.left=v.lamp[0]*100+'%';lamp.style.top=v.lamp[1]*100+'%';document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===key)));ctx.clearRect(0,0,canvas.width,canvas.height)}
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>select(b.dataset.view)));
+function resize(){const r=stage.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.5);canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d)}
+new ResizeObserver(resize).observe(stage);
+const ripples=Array.from({length:72},(_,i)=>({x:((i*43)%97)/97,y:((i*29)%89)/89,phase:i*1.63,len:.008+(i%5)*.004}));
+function draw(ts){frame=0;if(!motion.checked||document.hidden)return;const delta=lastTime?Math.min((ts-lastTime)/1000,.05):0;lastTime=ts;activeTime+=delta;const t=activeTime,W=canvas.width,H=canvas.height,v=views[selected],r=v.rect;ctx.clearRect(0,0,W,H);ctx.lineCap='round';
+for(const p of ripples){const y=r[1]+p.y*r[3],x=r[0]+p.x*r[2]+Math.sin(t*.32+p.phase)*.003;const alpha=(Math.sin(t*.7+p.phase)+1)*.065;ctx.strokeStyle='rgba(255,220,161,'+alpha+')';ctx.lineWidth=(.7+p.y*.7)*W/1200;ctx.beginPath();ctx.moveTo(x*W,y*H);ctx.quadraticCurveTo((x+p.len*.5)*W,(y-.0015)*H,(x+p.len)*W,y*H);ctx.stroke()}
+frame=requestAnimationFrame(draw)}
+function syncMotion(){if(frame)cancelAnimationFrame(frame);frame=0;lastTime=0;stage.classList.toggle('still',!motion.checked);ctx.clearRect(0,0,canvas.width,canvas.height);if(motion.checked&&!document.hidden)frame=requestAnimationFrame(draw)}
+motion.checked=!matchMedia('(prefers-reduced-motion: reduce)').matches;motion.addEventListener('change',syncMotion);document.addEventListener('visibilitychange',syncMotion);select('B');syncMotion();
+document.getElementById('flow-open').addEventListener('click',()=>document.getElementById('flow').showModal());document.getElementById('drink-open').addEventListener('click',()=>document.getElementById('drink').showModal());document.querySelectorAll('dialog .close').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
+const music=document.getElementById('music'),sound=document.getElementById('sound'),status=document.getElementById('status'),mv=document.getElementById('music-volume'),wv=document.getElementById('wave-volume');let ac=null,wave=null,on=false,waveTimer=0,busy=false;
+music.volume=Number(mv.value)/100;mv.addEventListener('input',()=>music.volume=Number(mv.value)/100);
+function makeWave(){const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)return;ac=new AudioCtx();const buffer=ac.createBuffer(1,ac.sampleRate*12,ac.sampleRate),data=buffer.getChannelData(0);let brown=0;for(let i=0;i<data.length;i++){brown=(brown+(Math.random()*2-1)*.02)/1.02;data[i]=brown*3.5}const noise=ac.createBufferSource();noise.buffer=buffer;noise.loop=true;const filter=ac.createBiquadFilter();filter.type='lowpass';filter.frequency.value=1100;wave=ac.createGain();wave.gain.value=0;noise.connect(filter).connect(wave).connect(ac.destination);noise.start();waveTimer=setInterval(()=>{if(on&&ac.state==='running'){const swell=.055+.045*(1+Math.sin(ac.currentTime*.65))/2;wave.gain.setTargetAtTime(Number(wv.value)/100*swell,ac.currentTime,.35)}},120)}
+async function stop(){on=false;music.pause();if(wave)wave.gain.value=0;if(ac&&ac.state==='running')await ac.suspend();sound.setAttribute('aria-pressed','false');sound.textContent='试听配乐＋潮声';status.textContent='已暂停。可切换画面后再次试听。'}
+sound.addEventListener('click',async()=>{if(busy)return;busy=true;try{if(on){await stop();return}if(!ac)makeWave();if(ac)await ac.resume();music.volume=Number(mv.value)/100;await music.play();on=true;sound.setAttribute('aria-pressed','true');sound.textContent='暂停试听';status.textContent='正在试听：项目已有 Laura 木吉他曲＋合成潮声（临时情绪参考）。'}catch(e){await stop();status.textContent='音乐未能播放，请从项目内保留完整目录后重试。'}finally{busy=false}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&on)stop()});window.addEventListener('pagehide',()=>{music.pause();if(waveTimer)clearInterval(waveTimer);if(ac)ac.close()});
+</script>
+</body>
+</html>

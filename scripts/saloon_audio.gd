@@ -13,6 +13,8 @@ const NIGHT_TRACKS := [
 ]
 const WORKBENCH_TRACK := "res://assets/audio/music/workbench-george-street.mp3"
 const SCENE_TRACKS := {
+	"title": "res://assets/audio/music/night-laura-source.mp3",
+	"opening": "res://assets/audio/music/night-laura-source.mp3",
 	"workbench": WORKBENCH_TRACK,
 	"shop": "res://assets/audio/music/shop-carpe-diem.mp3",
 	"research": "res://assets/audio/music/research-bossa-antigua.mp3",
@@ -30,6 +32,7 @@ var scene_owners: Dictionary = {}
 var ui: Node
 var hall_path := ""
 var hall_position := 0.0
+var hall_from_front_end := false
 var night_mode := false
 var night_index := 0
 var day_index := 0
@@ -57,7 +60,7 @@ func _ready() -> void:
 		players.append(player)
 	# GameSession is earlier in the autoload list, so the saved clock is ready.
 	night_mode = is_night(TimeManager.minutes_since_midnight)
-	_play_path(NIGHT_TRACK if night_mode else DAY_TRACKS[day_index])
+	_play_path(SCENE_TRACKS.title if OpeningFlow.front_end else (NIGHT_TRACK if night_mode else DAY_TRACKS[day_index]))
 
 func _ensure_bus(bus_name: String) -> void:
 	if AudioServer.get_bus_index(bus_name) >= 0:
@@ -76,7 +79,7 @@ func _process(delta: float) -> void:
 		if _save_delay < 0.0:
 			save_settings()
 	var desired_night := is_night(TimeManager.minutes_since_midnight)
-	if desired_night != night_mode:
+	if desired_night != night_mode and not OpeningFlow.front_end:
 		night_mode = desired_night
 		if not scene_owners.is_empty():
 			hall_path="" # Resume the playlist for the new time of day when leaving.
@@ -91,6 +94,8 @@ func _process(delta: float) -> void:
 	if not current.playing or current.stream.get_length() - current.get_playback_position() <= FADE_SECONDS:
 		if not scene_owners.is_empty():
 			_play_path(_scene_track())
+		elif OpeningFlow.front_end:
+			_play_path(SCENE_TRACKS.title)
 		elif night_mode:
 			night_index = (night_index + 1) % NIGHT_TRACKS.size()
 			_play_path(NIGHT_TRACKS[night_index])
@@ -130,7 +135,7 @@ func _play_path(path: String, from_position := 0.0) -> void:
 		players[next_index].stop()
 		players[next_index].stream = stream
 		players[next_index].volume_linear = 0.0
-		players[next_index].pitch_scale = 0.94 if NIGHT_TRACKS.has(path) else 1.0
+		players[next_index].pitch_scale = 0.94 if NIGHT_TRACKS.has(path) and not OpeningFlow.front_end else 1.0
 		players[next_index].play(from_position)
 	active_index = next_index
 	active_path = path
@@ -205,6 +210,7 @@ func acquire_scene(owner: Node, context: String) -> void:
 	if not SCENE_TRACKS.has(context) or scene_owners.has(id): return
 	if scene_owners.is_empty():
 		hall_path=active_path
+		hall_from_front_end=OpeningFlow.front_end
 		hall_position=players[active_index].get_playback_position() if active_index>=0 else 0.0
 	scene_owners[id]=context
 	owner.tree_exiting.connect(_release_scene.bind(id),CONNECT_ONE_SHOT)
@@ -218,5 +224,9 @@ func _release_scene(id: int) -> void:
 	if not scene_owners.is_empty():
 		if active_path!=_scene_track(): _play_path(_scene_track())
 		return
-	var path: String=hall_path if not hall_path.is_empty() else (NIGHT_TRACKS[night_index] if night_mode else DAY_TRACKS[day_index])
-	_play_path(path,hall_position if not hall_path.is_empty() else 0.0)
+	var resume_hall: bool=not hall_path.is_empty() and not hall_from_front_end
+	var path: String=SCENE_TRACKS.title
+	if not OpeningFlow.front_end:
+		night_mode=is_night(TimeManager.minutes_since_midnight)
+		path=hall_path if resume_hall else (NIGHT_TRACKS[night_index] if night_mode else DAY_TRACKS[day_index])
+	_play_path(path,hall_position if resume_hall and path==hall_path else 0.0)

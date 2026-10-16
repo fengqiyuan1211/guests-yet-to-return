@@ -69,7 +69,7 @@ func list_shop_items(category := "") -> Array:
 	var selected: String = SHOP_CATEGORIES.get(category, category)
 	var result: Array = []
 	for item: Dictionary in catalog.list_items(selected):
-		if item.storage_mode == "permanent":
+		if item.storage_mode == "permanent" or not item.get("shop_enabled",true):
 			continue
 		item.shop_price = get_unit_price(item.id)
 		item.price_basis = "game_provisional"

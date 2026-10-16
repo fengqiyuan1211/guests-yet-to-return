@@ -1,5 +1,5 @@
 {
-  "version": "quality-playtest-3-highball",
+  "version": "quality-playtest-5-midnight",
   "status": "draft",
   "note": "试玩感官、用量容差与有效操作时长；不是真实化学或物理压力。融水、温度和过度轻压尚未建模。",
   "weights": [
@@ -104,6 +104,18 @@
       3,
       0,
       100
+    ],
+    "sku_blue_curacao": [
+      48,
+      78,
+      8,
+      6
+    ],
+    "sku_bleu_de_minuit": [
+      82,
+      52,
+      3,
+      58
     ]
   },
   "rules": {
@@ -176,6 +188,16 @@
       "time_window": [
         4,
         8
+      ]
+    },
+    "echo_world": {
+      "mix": "shake",
+      "mix_ice": true,
+      "filter": true,
+      "cup": "coupe",
+      "time_window": [
+        6,
+        10
       ]
     }
   },

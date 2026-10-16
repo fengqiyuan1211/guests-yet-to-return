@@ -39,7 +39,7 @@ func restore(data: Dictionary) -> void:
 	running = true
 
 func _process(delta: float) -> void:
-	if not running or closing_pending:
+	if not running or closing_pending or OpeningFlow.front_end:
 		return
 	if fast_forwarding:
 		_fast_elapsed = minf(_fast_elapsed + delta, FAST_FORWARD_SECONDS)

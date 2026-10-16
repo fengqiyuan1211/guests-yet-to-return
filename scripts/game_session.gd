@@ -143,7 +143,7 @@ func restart_game() -> bool:
 		last_error = "旧进度未能备份，暂未重新开始。"
 		return false
 	var index := 0
-	var restart_paths := [save_path, save_path+".modes", StoryDialogue.save_path, SlotWallet.save_path, MenuCatalog.save_path, CustomerService.save_path]
+	var restart_paths := [save_path, save_path+".modes", OpeningFlow.save_path, StoryDialogue.save_path, SlotWallet.save_path, MenuCatalog.save_path, CustomerService.save_path]
 	var supplies := get_node_or_null("/root/Supplies")
 	if supplies != null:
 		restart_paths.append(supplies.save_path)
@@ -198,6 +198,10 @@ func _finish_restart() -> bool:
 		return false
 	TimeManager.restore({})
 	visit = {}
+	OpeningFlow.writable = true
+	if not OpeningFlow.begin_story():
+		last_error = OpeningFlow.last_error
+		return false
 	# Do not capture the old home while replacing its state.
 	var old_home := home
 	home = null

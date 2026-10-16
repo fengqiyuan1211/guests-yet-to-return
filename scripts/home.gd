@@ -95,6 +95,8 @@ func _ready() -> void:
 	_on_time_changed(TimeManager.day, TimeManager.minutes_since_midnight)
 	%OpenButton.grab_focus()
 	GameSession.save_game()
+	if OpeningFlow.arrival_pending() and not TimeManager.is_open:
+		TimeManager.start_early()
 
 func _setup_settings_button() -> void:
 	var emblem: TextureRect = find_child("Emblem", true, false)
@@ -157,8 +159,15 @@ func _on_business_opened(_day: int) -> void:
 				break
 	if not restored:
 		_restoring_reception = false
-		%GuestLayer.spawn_random_guest()
+		if OpeningFlow.arrival_pending():
+			for i in range(%GuestLayer.profiles.size()):
+				if %GuestLayer.profiles[i].id == "milo":
+					%GuestLayer.show_guest(i)
+					break
+		else:
+			%GuestLayer.spawn_random_guest()
 	_sync_service_controls()
+	if OpeningFlow.arrival_pending() and GameSession.save_game(): OpeningFlow.acknowledge_arrival()
 	service_preview_started.emit()
 
 func _on_business_closed(completed_day: int) -> void:
@@ -718,6 +727,12 @@ func _on_route_requested(route_id: StringName) -> void:
 	create_tween().tween_property(active_page, "modulate:a", 1.0, 0.16)
 
 func _on_game_restarted() -> void:
+	if get_tree().current_scene == self:
+		OpeningFlow.front_end = true
+		TimeManager.set_running(false)
+		GameSession.home = null
+		get_tree().change_scene_to_file("res://scenes/opening_story.tscn")
+		return
 	Navigation.go_to(&"home")
 	guest_count = 0
 	%GuestLayer._bag.clear()

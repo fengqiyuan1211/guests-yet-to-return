@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "reserved_tutorial_slot": true,
+  "reserved_tutorial_slot": false,
   "allow_locked_details": false,
   "initial_unlocked_ids": [],
   "initial_inventory": {}
