@@ -19,7 +19,10 @@ func equal_amounts(a: Dictionary,b: Dictionary) -> bool:
 
 func run() -> void:
 	var profiles:=Appearance.profiles()
-	check(profiles.size()==16,"every catalog liquid has an appearance profile")
+	var liquid_count:=0
+	for item: Dictionary in Supplies.catalog.list_items():
+		if item.get("measurement_unit")=="ml": liquid_count+=1
+	check(profiles.size()==liquid_count,"every catalog liquid has an appearance profile")
 	for p in profiles.values(): check(p.version!="missing" and p.rgb.size()==3,"configured RGB profile")
 	var alias:=Appearance.sample({"lime":30},profiles)
 	check(alias==Appearance.sample({"sku_lime_juice":30},profiles),"SKU and legacy alias use identical appearance")

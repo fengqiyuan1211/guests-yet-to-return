@@ -53,6 +53,7 @@ func garnishes(vessel: Dictionary) -> Array:
 	return [vessel.get("garnish_id","garnish")] if vessel.get("garnish",false) else []
 
 func recommended_cup(recipe: Dictionary) -> String:
+	if str(recipe.get("glass_id","")) in CUPS: return str(recipe.glass_id)
 	var glass:=str(recipe.get("glass",""))
 	if glass.contains("古典"): return "rocks"
 	if glass.contains("高球"): return "highball"
@@ -69,6 +70,7 @@ var save_path := "user://workbench_practice.json"
 var state: Dictionary = {}
 var last_error := ""
 var writable := true
+var tutorial_active := false
 
 func _ready() -> void:
 	_load_catalog()
@@ -97,7 +99,9 @@ func pantry_items(tab: String) -> Array:
 	var group: String={"基酒":"原酒","配料":"配料","装饰":"装饰品","杯子":"杯型","器具":"器材"}.get(tab,"")
 	if tab=="冰块": return [["cube","方冰 · 50 g / 4块"],["crushed","碎冰 · 50 g / 铲"]]
 	for item: Dictionary in Supplies.catalog.list_items(group):
-		if Supplies.total_remaining(item.id)<=0: continue
+		if tutorial_active:
+			if item.storage_mode!="permanent" and float(OpeningFlow.state.stock.get(item.id,0))<=0: continue
+		elif Supplies.total_remaining(item.id)<=0: continue
 		result.append([str(ITEM_ALIASES.get(item.id,item.id)),str(item.name)])
 	return result
 
@@ -140,9 +144,11 @@ func research_note(session: Dictionary) -> String:
 
 func remaining(material: String) -> float:
 	var definition: Dictionary=MATERIALS.get(material,GARNISHES.get(material,SOLIDS.get(material,{})))
+	if tutorial_active: return float(OpeningFlow.state.stock.get(str(definition.get("sku_id","")),0))
 	return Supplies.total_remaining(str(definition.get("sku_id","")))
 
 func _warehouse_changed() -> void:
+	if tutorial_active: return
 	if not Supplies.writable: return
 	if not writable and not Supplies.workbench.is_empty(): return
 	writable=true
@@ -520,7 +526,9 @@ func _commit(next: Dictionary, amounts: Dictionary={}) -> bool:
 	var durable:=next.duplicate(true)
 	durable.erase("stock")
 	durable.erase("garnish_stock")
-	if not Supplies.commit_workbench(durable,amounts): return _error(Supplies.last_error)
+	if tutorial_active:
+		if not OpeningFlow.commit_tutorial(durable,amounts): return _error(OpeningFlow.last_error)
+	elif not Supplies.commit_workbench(durable,amounts): return _error(Supplies.last_error)
 	state=durable
 	_refresh_stock_view()
 	last_error=""

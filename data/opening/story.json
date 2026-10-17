@@ -1,0 +1,964 @@
+{
+  "version": 2,
+  "legacy_index_path": "res://data/opening/story-v1-index.json",
+  "nodes": [
+    {
+      "id": "s01_00",
+      "chapter": "S01",
+      "title": "现在 · 项目结束之后",
+      "speaker": "我 · 心声",
+      "text": "项目群最后一条消息，是“后续材料另行通知”。从那以后，再没人叫过我的名字。",
+      "background": "apartment"
+    },
+    {
+      "id": "s01_01",
+      "chapter": "S01",
+      "title": "现在 · 项目结束之后",
+      "speaker": "我 · 心声",
+      "text": "我还是每天七点醒。伸手找手机，想着有没有昨夜漏掉的消息。然后才想起来，已经不用去公司了。",
+      "background": "apartment"
+    },
+    {
+      "id": "s01_new_01",
+      "chapter": "S01",
+      "title": "现在 · 项目结束之后",
+      "background": "apartment",
+      "speaker": "我 · 心声",
+      "text": "三十五岁。以前别人问我做什么，我能一口气说完公司、职位和手上的项目。现在，我不知道该从哪里说起。"
+    },
+    {
+      "id": "s01_new_02",
+      "chapter": "S01",
+      "title": "现在 · 项目结束之后",
+      "background": "apartment",
+      "speaker": "我 · 心声",
+      "text": "我做金融，最擅长的事，是把一团乱麻整理成一份看上去很有把握的方案。这次，我也相信了自己那份方案。"
+    },
+    {
+      "id": "s01_02",
+      "chapter": "S01",
+      "title": "现在 · 项目结束之后",
+      "speaker": "我 · 心声",
+      "text": "项目推进不下去，后续资金没能接上。跟投进去的，是我工作这些年攒下的全部积蓄。最后，连工作也一起丢了。",
+      "background": "apartment"
+    },
+    {
+      "id": "s01_new_03",
+      "chapter": "S01",
+      "title": "现在 · 项目结束之后",
+      "background": "apartment",
+      "speaker": "我 · 心声",
+      "text": "风险并不是没人提过。只是前面几次都走得太顺，我以为这一次，也能靠多熬几个晚上补回来。"
+    },
+    {
+      "id": "s01_03",
+      "chapter": "S01",
+      "title": "现在 · 项目结束之后",
+      "speaker": "我 · 心声",
+      "text": "房租还剩一个月。我把招聘页面打开，又关上。最难写的不是履历，是“离职原因”那一栏。",
+      "background": "apartment"
+    },
+    {
+      "id": "s01_new_04",
+      "chapter": "S01",
+      "title": "现在 · 项目结束之后",
+      "background": "apartment",
+      "speaker": "我 · 心声",
+      "text": "桌边那个纸箱还没拆。杯子、旧笔记本，还有一张已经刷不开任何门的工牌。"
+    },
+    {
+      "id": "s01_young_00",
+      "chapter": "S01A",
+      "title": "三年前 · 大家都说我前途无量",
+      "background": "office-success-faceless",
+      "speaker": "我 · 心声",
+      "text": "三年前的那个下午，窗外也是这样的光。我刚从会议室出来，就被他们堵在了工位边。"
+    },
+    {
+      "id": "s01_young_01",
+      "chapter": "S01A",
+      "title": "三年前 · 大家都说我前途无量",
+      "background": "office-success-faceless",
+      "speaker": "同事甲",
+      "text": "过了？我就说，最后还得你去讲。下次汇报我坐你旁边，沾点运气。"
+    },
+    {
+      "id": "s01_young_02",
+      "chapter": "S01A",
+      "title": "三年前 · 大家都说我前途无量",
+      "background": "office-success-faceless",
+      "speaker": "我",
+      "text": "别抢我的咖啡就行。昨天那版材料，你改到两点，也有你一份。"
+    },
+    {
+      "id": "s01_young_03",
+      "chapter": "S01A",
+      "title": "三年前 · 大家都说我前途无量",
+      "background": "office-success-faceless",
+      "speaker": "同事乙",
+      "text": "这就开始分功劳了？等你往上走，可别忘了我们。"
+    },
+    {
+      "id": "s01_young_04",
+      "chapter": "S01A",
+      "title": "三年前 · 大家都说我前途无量",
+      "background": "office-success-faceless",
+      "speaker": "我",
+      "text": "忘不了。今晚我请，地方你们挑。"
+    },
+    {
+      "id": "s01_young_05",
+      "chapter": "S01A",
+      "title": "三年前 · 大家都说我前途无量",
+      "background": "office-success-faceless",
+      "speaker": "年轻同事",
+      "text": "那份被退了三次的方案，明天还能再帮我看一眼吗？"
+    },
+    {
+      "id": "s01_young_06",
+      "chapter": "S01A",
+      "title": "三年前 · 大家都说我前途无量",
+      "background": "office-success-faceless",
+      "speaker": "我",
+      "text": "能。先把你最想做成的事写清楚，别急着往里面塞漂亮词。"
+    },
+    {
+      "id": "s01_young_07",
+      "chapter": "S01A",
+      "title": "三年前 · 大家都说我前途无量",
+      "background": "office-success-faceless",
+      "speaker": "我 · 心声",
+      "text": "那时候，我真心觉得自己帮得上忙。有人需要我，有人在等我的判断。走进任何一间屋子，我都知道该站在哪里。"
+    },
+    {
+      "id": "s01_young_08",
+      "chapter": "S01A",
+      "title": "三年前 · 大家都说我前途无量",
+      "background": "office-success-faceless",
+      "speaker": "同事甲",
+      "text": "又去那家小酒吧？你还研究调酒呢？"
+    },
+    {
+      "id": "s01_young_09",
+      "chapter": "S01A",
+      "title": "三年前 · 大家都说我前途无量",
+      "background": "office-success-faceless",
+      "speaker": "我",
+      "text": "研究一点。数字在纸上漂亮，不代表倒进杯子就好喝。这件事比做汇报诚实。"
+    },
+    {
+      "id": "s01_young_10",
+      "chapter": "S01A",
+      "title": "三年前 · 大家都说我前途无量",
+      "background": "office-success-faceless",
+      "speaker": "我 · 心声",
+      "text": "他们笑了，我也笑了。那时我还不知道，有一天，自己会很想念这种不用猜意思的笑声。"
+    },
+    {
+      "id": "s01_depart_00",
+      "chapter": "S01B",
+      "title": "一周前 · 回公司收拾东西",
+      "background": "office-departure-faceless",
+      "speaker": "我 · 心声",
+      "text": "一周前，我回公司收东西。同一扇玻璃门，这次得等前台替我刷开。"
+    },
+    {
+      "id": "s01_depart_01",
+      "chapter": "S01B",
+      "title": "一周前 · 回公司收拾东西",
+      "background": "office-departure-faceless",
+      "speaker": "同事甲",
+      "text": "东西都在桌上。电脑先别拿，行政还要登记。"
+    },
+    {
+      "id": "s01_depart_02",
+      "chapter": "S01B",
+      "title": "一周前 · 回公司收拾东西",
+      "background": "office-departure-faceless",
+      "speaker": "我",
+      "text": "我知道。我只拿自己的东西。"
+    },
+    {
+      "id": "s01_depart_03",
+      "chapter": "S01B",
+      "title": "一周前 · 回公司收拾东西",
+      "background": "office-departure-faceless",
+      "speaker": "同事乙 · 远处",
+      "text": "以前说得多有把握啊。连自己的钱都放进去，倒真是够相信自己。"
+    },
+    {
+      "id": "s01_depart_04",
+      "chapter": "S01B",
+      "title": "一周前 · 回公司收拾东西",
+      "background": "office-departure-faceless",
+      "speaker": "同事甲 · 压低声音",
+      "text": "人还没走呢。"
+    },
+    {
+      "id": "s01_depart_05",
+      "chapter": "S01B",
+      "title": "一周前 · 回公司收拾东西",
+      "background": "office-departure-faceless",
+      "speaker": "同事乙 · 远处",
+      "text": "我说错了吗？当初谁劝得住。现在收拾烂摊子的又不止他。"
+    },
+    {
+      "id": "s01_depart_06",
+      "chapter": "S01B",
+      "title": "一周前 · 回公司收拾东西",
+      "background": "office-departure-faceless",
+      "speaker": "我 · 心声",
+      "text": "音量刚好。足够让我听清，又不够让我转过去问一句。几年前那句“别忘了我们”，忽然显得很远。"
+    },
+    {
+      "id": "s01_depart_07",
+      "chapter": "S01B",
+      "title": "一周前 · 回公司收拾东西",
+      "background": "office-departure-faceless",
+      "speaker": "我 · 心声",
+      "text": "我想解释自己不是没努力过。手已经扶上纸箱，才发现他们也没有在等我的解释。"
+    },
+    {
+      "id": "s01_depart_08",
+      "chapter": "S01B",
+      "title": "一周前 · 回公司收拾东西",
+      "background": "office-departure-faceless",
+      "speaker": "年轻同事",
+      "text": "底下再贴一道吧。你这个箱子有点沉。"
+    },
+    {
+      "id": "s01_depart_09",
+      "chapter": "S01B",
+      "title": "一周前 · 回公司收拾东西",
+      "background": "office-departure-faceless",
+      "speaker": "我",
+      "text": "……谢谢。"
+    },
+    {
+      "id": "s01_depart_10",
+      "chapter": "S01B",
+      "title": "一周前 · 回公司收拾东西",
+      "background": "office-departure-faceless",
+      "speaker": "年轻同事",
+      "text": "那本笔记别落了。你以前说，没做成的版本也留着，下次才知道哪里错了。"
+    },
+    {
+      "id": "s01_depart_11",
+      "chapter": "S01B",
+      "title": "一周前 · 回公司收拾东西",
+      "background": "office-departure-faceless",
+      "speaker": "我 · 心声",
+      "text": "他递过来胶带，没有再问别的。我最后带走的，比一个纸箱多一点，也比我曾经以为的少很多。"
+    },
+    {
+      "id": "s01_mail_arrival",
+      "chapter": "S01",
+      "title": "现在 · 一封不在预料里的邮件",
+      "background": "apartment",
+      "speaker": "旁白",
+      "text": "电脑轻轻响了一声。不是招聘回复。屏幕右侧，多了一封来自陌生地址的邮件。"
+    },
+    {
+      "id": "s01_04",
+      "chapter": "S01",
+      "title": "现在 · 一封不在预料里的邮件",
+      "speaker": "我 · 心声",
+      "text": "“关于岛上酒馆的交接安排。”我盯着这个标题。岛上……哪一座岛？",
+      "background": "apartment",
+      "mail_id": "handover_notice"
+    },
+    {
+      "id": "s01_05",
+      "chapter": "S01",
+      "title": "现在 · 一封不在预料里的邮件",
+      "speaker": "我 · 心声",
+      "text": "发件人是个陌生人，邮件里提到的那个人，我却认得。只是“离世”这两个字，怎么也没法和他放在一起。",
+      "background": "apartment"
+    },
+    {
+      "id": "s01_06",
+      "chapter": "S01",
+      "title": "现在 · 一封不在预料里的邮件",
+      "speaker": "我 · 心声",
+      "text": "附件预览是一页酒谱。右上角那个划掉的数字，是我的笔迹。纸边的圆印，像那晚杯底留下的水痕。",
+      "background": "apartment"
+    },
+    {
+      "id": "s01_memory_bridge",
+      "chapter": "S01",
+      "title": "现在 · 一封不在预料里的邮件",
+      "background": "apartment",
+      "speaker": "我 · 心声",
+      "text": "我记得他把这张纸拿走时，连折都没舍得折。那晚下着雨。我还以为，往后有的是再见的机会。"
+    },
+    {
+      "id": "s02_00",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "我 · 心声",
+      "text": "同事们散得早，我又在吧台坐了一会儿。那位常客一直在旁边，外套搭在椅背上，面前一杯淡绿的酒。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_01",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "我",
+      "text": "又是 Last Word？你每次来，都点它。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_02",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "那位客人",
+      "text": "知道自己喜欢什么，没必要每晚换。怎么，你又带着作业来了？",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_03",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "我",
+      "text": "带了个改编。绿查特的位置，我换了午夜蓝草本酒。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_04",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "那位客人",
+      "text": "因为便宜？少一笔成本，换个颜色，就准备说和原来一样了？",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_05",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "我",
+      "text": "最早确实想省一点。在家常做，总得考虑一瓶酒用完之后，还愿不愿意再买。但试过才知道，替换没那么简单。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_extra_01",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "那位客人",
+      "text": "那你先说说，原来的那杯，为什么非得是它们四个。"
+    },
+    {
+      "id": "s02_extra_02",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "我",
+      "text": "经典配方是金酒、绿查特、Maraschino 樱桃利口酒、鲜青柠汁，等份。这杯各二十二点五毫升，加冰摇和，再过滤进冰镇杯。"
+    },
+    {
+      "id": "s02_extra_03",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "我",
+      "text": "我喜欢它的地方，是四样都有存在感。金酒的杜松、查特复杂的草本、Maraschino 的果核香，还有青柠的酸。谁都不太肯退后。"
+    },
+    {
+      "id": "s02_extra_04",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "那位客人",
+      "text": "所以写成一比一比一比一，就一定平衡？"
+    },
+    {
+      "id": "s02_extra_05",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "我",
+      "text": "也不一定。青柠每次酸度会变，换瓶金酒也会变。摇出来的温度和融水不一样，同一张配方也会喝出差别。"
+    },
+    {
+      "id": "s02_extra_06",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "我",
+      "text": "我第一版犯的就是这个错。以为毫升数一样，味道也会自己站到一样的位置。结果入口挺香，后面却散了。"
+    },
+    {
+      "id": "s02_06",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "那位客人",
+      "text": "至少，你没有把那杯散掉的也叫“创新”。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_07",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "我",
+      "text": "午夜蓝是另一种草本酒。龙胆、杜松、柠檬马鞭草的方向更明显，尾段有苦味。它是钴蓝色，但蓝色不是我要留下它的理由。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_extra_07",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "我",
+      "text": "我想留住那种喝下去以后，草本还回得来的感觉。前面让青柠把它提起来，后面不要只剩甜。"
+    },
+    {
+      "id": "s02_08",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "那位客人",
+      "text": "你试了几版？",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_09",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "我",
+      "text": "今天第五版。第三版加过糖，越补越闷。第四版又摇得太久，香气和酒感都薄了。今天回到四种各一份，不额外加糖。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_10",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "调酒师",
+      "text": "下午你留下的笔记，我照着复了一杯。新开的青柠，杯子也冰过了。先尝，再争。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_taste_01",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "旁白",
+      "text": "他把自己的那杯推开一点，拿起蓝色的酒。先闻了一下，喝得比刚才说话慢。"
+    },
+    {
+      "id": "s02_11",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "那位客人",
+      "text": "入口的酸挺清楚。草本没有绿查特那么厚，倒是尾巴干净。樱桃的果核香留着，最后那点苦……比我预想的好。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_taste_02",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "我",
+      "text": "嗯。它做不出原来那种密实的草本层次。我后来就没再逼它。让它清一点，把自己能留下的那部分做好。"
+    },
+    {
+      "id": "s02_taste_03",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "那位客人",
+      "text": "你怎么不用更甜的樱桃酒把中间补满？"
+    },
+    {
+      "id": "s02_taste_04",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "我",
+      "text": "我想留的是 Maraschino 的果核调性，不是把它调成樱桃糖水。如果只顾着填满，中间会黏，青柠也会显得突兀。"
+    },
+    {
+      "id": "s02_12",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "我",
+      "text": "那你会选哪杯？别照顾我。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_13",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "那位客人",
+      "text": "要熟悉的味道，我还是选 Last Word。但这一杯，我愿意慢慢喝完。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_14",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "我",
+      "text": "以前做项目，我最怕听“还可以”。总觉得差一点，就等于没做好。做酒倒逼着我学了一件事：你不选它，也不代表它白做了。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_15",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "speaker": "那位客人",
+      "text": "刚才我话说得重了。我以为你只想拿个便宜办法，证明别人花了冤枉钱。你是真的在尝。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s02_taste_05",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "旁白",
+      "text": "他不再靠着椅背，把那页笔记拉近了一点。这一次，是他先问我，前四版到底哪里不好。"
+    },
+    {
+      "id": "s02_taste_06",
+      "chapter": "S02",
+      "title": "三年前 · 他杯里的 Last Word",
+      "background": "city-bar-faceless",
+      "speaker": "我 · 心声",
+      "text": "那晚第一次有人问起我的失败版本，却不是为了让我难堪。我一下说了很多。"
+    },
+    {
+      "id": "s03_00",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "那位客人",
+      "text": "别再叫“改版 Last Word”了。这杯叫什么？",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s03_01",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "我",
+      "text": "本来真打算这么写。省得每次从头解释。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s03_02",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "那位客人",
+      "text": "你已经解释得够多了。给它一个自己的名字。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s03_03",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "我",
+      "text": "回响。喝完以后还有一点东西回来……回响，就叫这个。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s03_night_00",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "background": "city-bar-faceless",
+      "speaker": "旁白",
+      "text": "雨一直没停。我们从第一口聊到杯子见底，又点了酒。调酒师收走一排空杯，在手边放了两杯水。"
+    },
+    {
+      "id": "s03_night_01",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "background": "city-bar-faceless",
+      "speaker": "我 · 心声",
+      "text": "后来喝了多少，我记不清了。只记得他讲岛上的风，我讲那些没做成的配方。句子越来越长，杯沿碰在一起，声音却越来越远。"
+    },
+    {
+      "id": "s03_night_02",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "background": "city-bar-faceless",
+      "speaker": "调酒师",
+      "text": "两位，慢一点。这一轮之后，我可要收吧台了。"
+    },
+    {
+      "id": "s03_04",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "那位客人",
+      "text": "你有没有想过……自己开一间？酒吧。你这样的。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s03_05",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "我",
+      "text": "想过。真开又是另一回事。我会给自己调一杯，不代表一晚上能照顾好所有人。现在手上的事，也放不下。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s03_06",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "那位客人",
+      "text": "我岛上……有间小店。吧台，窗户，外面就是海。有空，你去替我看看。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s03_07",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "我",
+      "text": "真让我管？那我先在门口放把椅子。这个你得答应。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s03_08",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "那位客人",
+      "text": "里面……没椅子？",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s03_09",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "我",
+      "text": "里面坐下，总觉得得点点什么。放外面，谁走累了都能坐。不喝酒也行。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s03_night_03",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "background": "city-bar-faceless",
+      "speaker": "旁白",
+      "text": "他沉默了一会儿。我以为他已经睡了，正想把笔记本抽回来，他忽然按住了纸角。"
+    },
+    {
+      "id": "s03_10",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "那位客人",
+      "text": "行。椅子我放。你……有一天来开门。说好了？",
+      "background": "city-bar-faceless",
+      "choices": [
+        {
+          "text": "那就替我留个位置。",
+          "reply": "那位客人：记下了。别让我等得太久。"
+        },
+        {
+          "text": "等我把这杯调稳了再说。",
+          "reply": "那位客人：酒可以慢慢改。地方先留着。"
+        }
+      ]
+    },
+    {
+      "id": "s03_night_04",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "background": "city-bar-faceless",
+      "speaker": "我 · 心声",
+      "text": "我记不清后来是谁先笑的。地址倒记下了，字歪得厉害。我把那页纸夹进本子，以为只是个喝多了的晚上。"
+    },
+    {
+      "id": "s03_11",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "旁白",
+      "text": "之后我们又见过几次。清醒时，他还是提那间店。我寄去新的试调笔记，他回一张酒单、一张码头照片。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s03_night_05",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "background": "city-bar-faceless",
+      "speaker": "那位客人 · 旧消息",
+      "text": "椅子放好了。过来先住几天，看看喜不喜欢。真要接手，我们再把事情一件件说清楚。"
+    },
+    {
+      "id": "s03_12",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "我 · 心声",
+      "text": "我总回：“最近忙，过阵子。”忙完这一个项目，忙完下一轮。他没有催，地址也一直在那里。",
+      "background": "city-bar-faceless"
+    },
+    {
+      "id": "s04_00",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "雨声淡下去，眼前又是我的房间。邮箱还开着。那封私人来信，就在附件里。",
+      "background": "apartment",
+      "mail_id": "private_letter"
+    },
+    {
+      "id": "s04_01",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "交接说明写得很清楚：是否接受，由我决定。我把它往下翻，又停在他的信上。",
+      "background": "apartment"
+    },
+    {
+      "id": "s04_02",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "“门口放了把椅子。”我想起那晚自己说得那么轻，像说一个不必实现的愿望。",
+      "background": "apartment"
+    },
+    {
+      "id": "s04_03",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "原来他后来真的放了。还挪过地方，修过椅脚。那些我一再推迟的日子里，有人在认真做着一件小事。",
+      "background": "apartment"
+    },
+    {
+      "id": "s04_04",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "上一次回信，我写的还是“最近忙，过阵子”。我点开那条记录，才发现已经隔了很久。",
+      "background": "apartment"
+    },
+    {
+      "id": "s04_05",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "光标停在回复框里。我删掉自动带出来的“您好”。这次，不想再写“过阵子”了。",
+      "background": "apartment",
+      "choices": [
+        {
+          "text": "我想去看看。",
+          "reply": "旁白：我写下这句话，联系管家核对了交接安排。"
+        },
+        {
+          "text": "椅子还在那里吗？",
+          "reply": "老管家的回信：在。您来了，就能看见。"
+        }
+      ]
+    },
+    {
+      "id": "s04_06",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "旁白",
+      "text": "几天后，我核对了交接安排，订下船票。行李里还是那本旧笔记。没做成的几版，我也没撕。",
+      "background": "apartment"
+    },
+    {
+      "id": "s05_00",
+      "chapter": "S05",
+      "title": "海路",
+      "speaker": "旁白",
+      "text": "换船以后，手机信号时有时无。",
+      "background": "harbor-sunset"
+    },
+    {
+      "id": "s05_01",
+      "chapter": "S05",
+      "title": "海路",
+      "speaker": "旁白",
+      "text": "我又刷新了一次邮件。然后把手机放回口袋。",
+      "background": "harbor-sunset"
+    },
+    {
+      "id": "s05_02",
+      "chapter": "S05",
+      "title": "海路",
+      "speaker": "旁白",
+      "text": "船绕过岬角，夕阳里的码头才露出来。",
+      "background": "harbor-sunset"
+    },
+    {
+      "id": "s05_03",
+      "chapter": "S05",
+      "title": "海路",
+      "speaker": "旁白",
+      "text": "有人站在那里等。我朝他抬了抬行李。",
+      "background": "harbor-sunset"
+    },
+    {
+      "id": "s06_00",
+      "chapter": "S06",
+      "title": "椅子在原地",
+      "speaker": "老管家",
+      "text": "路上顺利吗？",
+      "background": "porch"
+    },
+    {
+      "id": "s06_01",
+      "chapter": "S06",
+      "title": "椅子在原地",
+      "speaker": "我",
+      "text": "最后一段，差点以为坐错船了。",
+      "background": "porch"
+    },
+    {
+      "id": "s06_02",
+      "chapter": "S06",
+      "title": "椅子在原地",
+      "speaker": "老管家",
+      "text": "第一次来的人常这么说。我先带您看看店。",
+      "background": "porch"
+    },
+    {
+      "id": "s06_03",
+      "chapter": "S06",
+      "title": "椅子在原地",
+      "speaker": "我",
+      "text": "这把椅子……",
+      "background": "porch"
+    },
+    {
+      "id": "s06_04",
+      "chapter": "S06",
+      "title": "椅子在原地",
+      "speaker": "老管家",
+      "text": "放了很久。下雨就搬进去，天晴再摆出来。",
+      "background": "porch"
+    },
+    {
+      "id": "s06_05",
+      "chapter": "S06",
+      "title": "椅子在原地",
+      "speaker": "我",
+      "text": "有人坐吗？",
+      "background": "porch"
+    },
+    {
+      "id": "s06_06",
+      "chapter": "S06",
+      "title": "椅子在原地",
+      "speaker": "老管家",
+      "text": "有。等船的，买完东西歇脚的。有时我也坐。",
+      "background": "porch"
+    },
+    {
+      "id": "s06_07",
+      "chapter": "S06",
+      "title": "椅子在原地",
+      "speaker": "我",
+      "text": "店里以前一直有人打理？",
+      "background": "porch"
+    },
+    {
+      "id": "s06_08",
+      "chapter": "S06",
+      "title": "椅子在原地",
+      "speaker": "老管家",
+      "text": "基本的东西我在照看。账和存货都列好了，您看过再慢慢定。",
+      "background": "porch"
+    },
+    {
+      "id": "s06_09",
+      "chapter": "S06",
+      "title": "椅子在原地",
+      "speaker": "我",
+      "text": "我先试一天。",
+      "background": "porch"
+    },
+    {
+      "id": "s06_10",
+      "chapter": "S06",
+      "title": "椅子在原地",
+      "speaker": "老管家",
+      "text": "先进去吧。",
+      "background": "porch"
+    },
+    {
+      "id": "s07_00",
+      "chapter": "S07",
+      "title": "站到吧台这一边",
+      "speaker": "旁白",
+      "text": "从里面看出去，吧台比我坐着喝酒时宽得多。",
+      "background": "saloon"
+    },
+    {
+      "id": "s07_01",
+      "chapter": "S07",
+      "title": "站到吧台这一边",
+      "speaker": "老管家",
+      "text": "杯子在上面。常用的几样，我放在右边了。",
+      "background": "saloon"
+    },
+    {
+      "id": "s07_02",
+      "chapter": "S07",
+      "title": "站到吧台这一边",
+      "speaker": "我",
+      "text": "这页还是第三版，多加过糖。我后来把那一项划掉，回到四种原料各一份。",
+      "background": "saloon"
+    },
+    {
+      "id": "s07_03",
+      "chapter": "S07",
+      "title": "站到吧台这一边",
+      "speaker": "老管家",
+      "text": "后面还有一张。订在一起了。",
+      "background": "saloon"
+    },
+    {
+      "id": "s07_04",
+      "chapter": "S07",
+      "title": "站到吧台这一边",
+      "speaker": "我",
+      "text": "他连这张也留着。",
+      "background": "saloon"
+    },
+    {
+      "id": "s07_05",
+      "chapter": "S07",
+      "title": "站到吧台这一边",
+      "speaker": "老管家",
+      "text": "今天试这杯？",
+      "background": "saloon"
+    },
+    {
+      "id": "s07_06",
+      "chapter": "S07",
+      "title": "站到吧台这一边",
+      "speaker": "我",
+      "text": "回响。看看我还做不做得出来。",
+      "background": "saloon"
+    },
+    {
+      "id": "s07_07",
+      "chapter": "S07",
+      "title": "站到吧台这一边",
+      "speaker": "老管家",
+      "text": "先不用赶。我陪您认一下这张台面。",
+      "background": "saloon"
+    }
+  ],
+  "mail": {
+    "handover_notice": {
+      "sender": "岛上酒馆 · 代管人",
+      "subject": "关于岛上酒馆的交接安排",
+      "preview": "有一份交接说明，以及他托我转交给您的东西。",
+      "attachment": "附件：旧配方扫描件、给您的私人来信",
+      "body": "您好：\n\n冒昧来信。我是岛上酒馆的代管人。很遗憾地通知您，那位与您常通信的先生，已于近日离世。\n\n他生前多次提到您，留下了关于这间酒馆的交接安排，并嘱托我，将保存的配方笔记和一封私人来信交给您。\n\n附件中的笔记有您的署名。若您愿意前来，可回复这封邮件，我会先与您核对店面、账目及交接事项。是否接受，由您自己决定；不必急于答复。\n\n他让我转告您：门口的椅子还在。\n\n——酒馆代管人",
+      "button": "读完邮件 · 看看那页旧配方"
+    },
+    "private_letter": {
+      "sender": "那位客人 · 留给你的信",
+      "subject": "椅子替你留着",
+      "preview": "你上次问的那本笔记，我找到了。",
+      "attachment": "随信附：回响 / Echo World，第五版配方",
+      "body": "你上次问的那本笔记，我找到了。\n\n门口放了把椅子。你说“谁累了都能坐”，我就没给它配桌子，免得坐下的人又觉得该买杯什么。后来修过一次椅脚，结实得很。\n\n那晚我们都喝多了。我说过什么大话，记不全。但让你来看看这间店，不是随口说的。\n\n你一直问我，回响有没有比 Last Word 更好。我记得的，倒是你肯把做坏的那几版摊开给我看。还有，你明明说服不了我换酒，也没急着把我的杯子拿走。\n\n来这儿不用先证明什么。先住几天，看看窗外，认一认吧台。愿意的话，就替我把灯点起来。开店要做的那些琐碎事，有人会陪你慢慢理。\n\n配方都留着。等你想来的时候，先做一杯看看。",
+      "button": "收好这封信 · 继续"
+    }
+  },
+  "notes": [
+    "回响保持既有正式名称 Echo World；用户口语 Echo Word 不另建酒谱。",
+    "午夜蓝草本酒为虚构原料；品鉴对白是人物感受，不是现实配方验证或固定属性结论。",
+    "经典 Last Word 的四种等份原料和加冰摇和过滤方法已对照 IBA；不混用 Maraschino 与任意甜樱桃糖浆。",
+    "所有序章 CG 禁止出现具体人脸。"
+  ]
+}

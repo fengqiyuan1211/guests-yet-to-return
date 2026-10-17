@@ -1862,6 +1862,111 @@
         "calibration_status": "prototype_visual_anchors"
       },
       "shop_available": false
+    },
+    {
+      "id": "sku_blue_curacao",
+      "ingredient_id": "blue_curacao",
+      "kind": "ingredient",
+      "name": "蓝橙利口酒",
+      "english_name": "Blue Curaçao",
+      "category": "原酒",
+      "source_category": "利口酒",
+      "contains_alcohol": true,
+      "alcohol_status": "confirmed",
+      "abv": null,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 700,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "sweet",
+        "citrus"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/blue_curacao.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/blue_curacao.tres",
+      "provenance": {
+        "source": "opening-echo-world-playtest-1",
+        "status": "游戏试调参数；规格和口味待校准"
+      },
+      "liquid_appearance": {
+        "version": "appearance-echo-1",
+        "rgb": [
+          24,
+          166,
+          250
+        ],
+        "strength": 7.0,
+        "turbidity": 0.015,
+        "carbonation": 0.0,
+        "color_basis": "art_direction_playtest",
+        "reference_note": "蓝色利口酒的游戏近似；强度用于共享混色，不是 ABV"
+      },
+      "shop_enabled": false,
+      "retired_note": "已撤回的开篇试调原料；仅保留既有库存和配方快照兼容，不在商店上架。"
+    },
+    {
+      "id": "sku_bleu_de_minuit",
+      "ingredient_id": "bleu_de_minuit",
+      "kind": "ingredient",
+      "name": "午夜蓝草本酒",
+      "english_name": "Bleu de Minuit",
+      "category": "原酒",
+      "source_category": "虚构高山草本利口酒",
+      "contains_alcohol": true,
+      "alcohol_status": "fictional",
+      "abv": null,
+      "storage_mode": "container",
+      "measurement_unit": "ml",
+      "quantity_unit": "瓶",
+      "package": {
+        "purchase_quantity": 1,
+        "container_capacity": 700,
+        "container_unit": "瓶",
+        "source_amount": null,
+        "capacity_status": "game_default_unconfirmed",
+        "description": "商品规格待选"
+      },
+      "price": null,
+      "price_status": "unconfirmed",
+      "flavor_hints": [
+        "herbal",
+        "gentian",
+        "juniper",
+        "bitter_finish",
+        "floral"
+      ],
+      "unlock_policy": "permanent_on_first_purchase",
+      "image_path": "res://assets/art/supplies/materials/bleu_de_minuit.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/bleu_de_minuit.tres",
+      "provenance": {
+        "source": "用户确认的午夜蓝草本酒设定，2026-10-16",
+        "status": "虚构设计；味觉和包装为游戏试玩配置"
+      },
+      "liquid_appearance": {
+        "version": "midnight-cobalt-1",
+        "rgb": [
+          6,
+          55,
+          205
+        ],
+        "strength": 80.0,
+        "turbidity": 0.005,
+        "carbonation": 0.0,
+        "color_basis": "fictional_art_direction",
+        "reference_note": "通透钴蓝；色强为美术参数，不是酒精浓度。"
+      },
+      "fictional": true,
+      "description": "深钴蓝的高山草本利口酒。龙胆、当归、柠檬马鞭草、百里香、杜松与极少量薰衣草；入口草本清香，中段微甜，尾韵微苦悠长。"
     }
   ],
   "ice": [

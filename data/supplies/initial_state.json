@@ -145,6 +145,16 @@
     "glass_saucer_glass": {
       "unlocked": true,
       "owned": true
+    },
+    "sku_blue_curacao": {
+      "unlocked": false,
+      "quantity": 0,
+      "current_remaining": 0
+    },
+    "sku_bleu_de_minuit": {
+      "unlocked": false,
+      "quantity": 0,
+      "current_remaining": 0
     }
   }
 }

@@ -6,6 +6,7 @@ var was_running := true
 var continue_button: Button
 var restart_button: Button
 var memory_button: Button
+var title_button: Button
 var audio_controls: VBoxContainer
 var volume_sliders: Dictionary = {}
 
@@ -28,6 +29,7 @@ func _ready() -> void:
 	continue_button = _button("继续游戏", _resume)
 	restart_button = _button("重新开始", _ask_restart)
 	memory_button = _button("童年球场 · 练习", _launch_memory)
+	title_button = _button("返回开始", _return_title)
 	_build_audio_controls()
 	_show_menu()
 
@@ -129,6 +131,7 @@ func _button(label: String, action: Callable) -> Button:
 func _show_menu() -> void:
 	confirming = false
 	memory_button.show()
+	title_button.show()
 	audio_controls.show()
 	%Tabs.position.y = 538
 	%Description.position.y = 612
@@ -151,6 +154,7 @@ func _ask_restart() -> void:
 		return
 	confirming = true
 	memory_button.hide()
+	title_button.hide()
 	audio_controls.hide()
 	%Tabs.position.y = 440
 	%Description.position.y = 250
@@ -160,6 +164,14 @@ func _ask_restart() -> void:
 	%Description.text = "将回到第 1 天傍晚，金币恢复为 300。\n人物相识、故事进度、老虎机保底和奖励记录都会重置。"
 	continue_button.text = "取消，继续游戏"
 	restart_button.text = "确认重新开始"
+
+func _return_title() -> void:
+	if GameSession.resetting: return
+	if not GameSession.save_game():
+		%Description.text = GameSession.last_error
+		return
+	was_running = false
+	OpeningFlow.return_to_title()
 
 func _launch_memory() -> void:
 	if confirming or GameSession.resetting: return

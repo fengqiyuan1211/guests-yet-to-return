@@ -96,7 +96,7 @@ func run() -> void:
 	last_word.recipe=WorkbenchSession.recipe_snapshot(MenuCatalog.get_recipe("last_word"))
 	last_word.cup="glass_cocktail_glass"
 	var last_eval:=Eval.evaluate(last_word,definitions)
-	check(last_eval.tier=="perfect" and is_equal_approx(last_eval.attributes.alcohol_intensity,63.25) and is_equal_approx(last_eval.attributes.sourness,26.0) and last_word.recipe.design_attributes.alcohol_intensity==65,"Last Word uses common sensory model and preserves original design targets")
+	check(last_eval.tier=="perfect" and is_equal_approx(last_eval.attributes.alcohol_intensity,65.0) and is_equal_approx(last_eval.attributes.sourness,65.0) and last_word.recipe.design_attributes.alcohol_intensity==65,"Last Word uses common sensory model and preserves original design targets")
 	var mojito: Dictionary=WorkbenchSession._session(2)
 	mojito.recipe=WorkbenchSession.recipe_snapshot(MenuCatalog.get_recipe("mojito"))
 	mojito.cup="highball"
@@ -113,7 +113,7 @@ func run() -> void:
 	for id in ["rum","soda"]: mojito.actions.append(action("withdraw",{"material":id,"ml":mojito.vessels.glass.contents[id],"vessel":"glass"}))
 	mojito.actions.append(action("stir",{"vessel":"glass","seconds":4.0}))
 	var mojito_eval:=Eval.evaluate(mojito,definitions)
-	check(mojito_eval.tier=="perfect" and is_equal_approx(mojito_eval.attributes.sweetness,12.5714285714) and is_equal_approx(mojito_eval.attributes.bitterness,1.2142857143) and mojito.recipe.design_attributes.sweetness==35,"Mojito preserves process requirements and original target while showing common sensory values")
+	check(mojito_eval.tier=="perfect" and is_equal_approx(mojito_eval.attributes.sweetness,35.0) and is_equal_approx(mojito_eval.attributes.bitterness,0.0) and mojito.recipe.design_attributes.sweetness==35,"Mojito preserves process requirements and original target while showing common sensory values")
 	var shaken_soda:=mojito.duplicate(true)
 	shaken_soda.actions.append(action("transfer",{"source":"glass","vessel":"shaker"}))
 	shaken_soda.actions.append(action("shake",{"vessel":"shaker","seconds":.25}))

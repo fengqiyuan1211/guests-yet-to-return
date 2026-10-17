@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "recipe_id": "echo_world",
+  "recipe_version": "echo-midnight-2",
+  "shake_seconds": 6.0,
+  "ice_g": 150,
+  "minimum_fraction": 0.8,
+  "stock": {
+    "sku_gin_london_dry": 135,
+    "sku_bleu_de_minuit": 135,
+    "sku_maraschino": 135,
+    "sku_lime_juice": 135
+  },
+  "note": "独立教学包，不扣仓库。午夜蓝草本酒为用户确认的虚构高山草本利口酒；四种原料各 22.5 ml。"
+}

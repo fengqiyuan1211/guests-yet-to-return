@@ -25,6 +25,8 @@
     "sku_mint_sprig": 10,
     "sku_lime_wedge": 10,
     "sku_lemon_slice": 10,
-    "sku_cocktail_cherry": 18
+    "sku_cocktail_cherry": 18,
+    "sku_blue_curacao": 65,
+    "sku_bleu_de_minuit": 180
   }
 }

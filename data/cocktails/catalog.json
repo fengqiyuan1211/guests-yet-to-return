@@ -1899,6 +1899,155 @@
         "multiplier": 1.5,
         "price": 17
       }
+    },
+    {
+      "id": "echo_world",
+      "source_id": "B1",
+      "source_code": "B1",
+      "name": "回响",
+      "english_name": "Echo World",
+      "type": "特调",
+      "image_path": "res://assets/art/cocktails/echo_world.png",
+      "version": "echo-midnight-2",
+      "aliases": [
+        "回声",
+        "ECHO WORD"
+      ],
+      "alcohol_intensity": 0,
+      "sweetness": 0,
+      "sourness": 0,
+      "bitterness": 0,
+      "scores_status": "derived",
+      "flavor_tags": [
+        "杜松",
+        "高山草本",
+        "微苦樱桃",
+        "青柠"
+      ],
+      "mouthfeel_tags": [
+        "清冷",
+        "短饮",
+        "余韵悠长"
+      ],
+      "ingredients": [
+        {
+          "id": "B1-01",
+          "ingredient_id": "gin_london_dry",
+          "sku_id": "sku_gin_london_dry",
+          "name": "伦敦干金酒",
+          "amount": 22.5,
+          "unit": "ml",
+          "inventory_amount": 22.5,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "基酒",
+          "quantity_status": "playtest"
+        },
+        {
+          "id": "B1-02",
+          "ingredient_id": "bleu_de_minuit",
+          "sku_id": "sku_bleu_de_minuit",
+          "name": "午夜蓝草本酒",
+          "amount": 22.5,
+          "unit": "ml",
+          "inventory_amount": 22.5,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "草本利口酒",
+          "quantity_status": "playtest"
+        },
+        {
+          "id": "B1-03",
+          "ingredient_id": "maraschino",
+          "sku_id": "sku_maraschino",
+          "name": "马拉斯奇诺樱桃利口酒",
+          "amount": 22.5,
+          "unit": "ml",
+          "inventory_amount": 22.5,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "配料",
+          "quantity_status": "playtest"
+        },
+        {
+          "id": "B1-04",
+          "ingredient_id": "lime_juice",
+          "sku_id": "sku_lime_juice",
+          "name": "鲜榨青柠汁",
+          "amount": 22.5,
+          "unit": "ml",
+          "inventory_amount": 22.5,
+          "inventory_unit": "ml",
+          "required": true,
+          "use": "配料",
+          "quantity_status": "playtest"
+        }
+      ],
+      "ice": [
+        {
+          "name": "标准方冰",
+          "amount": 150,
+          "unit": "g",
+          "sku_id": "sku_ice_standard_cube",
+          "inventory_amount": 150,
+          "inventory_unit": "g"
+        }
+      ],
+      "glass": "碟形鸡尾酒杯",
+      "glass_id": "coupe",
+      "equipment": [
+        "摇壶",
+        "量酒器",
+        "轻压棒",
+        "滤器"
+      ],
+      "display_equipment": [
+        "量酒器",
+        "摇壶",
+        "滤器"
+      ],
+      "display_steps": [
+        {
+          "number": 1,
+          "operation": "选杯",
+          "instruction": "选择碟形鸡尾酒杯。"
+        },
+        {
+          "number": 2,
+          "operation": "量取",
+          "instruction": "金酒、午夜蓝草本酒、马拉斯奇诺樱桃利口酒、鲜榨青柠汁各 22.5 ml，依次量取并倒入摇壶。"
+        },
+        {
+          "number": 3,
+          "operation": "加冰",
+          "instruction": "摇壶加入 150 g 方冰：每份 50 g / 4 块，共 3 份。"
+        },
+        {
+          "number": 4,
+          "operation": "摇和",
+          "instruction": "盖好摇壶，拖起快速往复摇和；有效摇和建议 6—10 秒（试玩值）。"
+        },
+        {
+          "number": 5,
+          "operation": "过滤",
+          "instruction": "拖动盖好的摇壶到成品杯，滤盖留下冰块，倒入钴蓝色酒液。"
+        }
+      ],
+      "story": "用午夜蓝草本酒替代绿查特的回响。杜松与森林草本，微苦樱桃和青柠酸度，最后留下一点悠长的回声。",
+      "preparation": "四种原料等量量取→加制作冰→摇和→过滤",
+      "codex_order": 1,
+      "recipe_status": "用户确认四种原料各 22.5 ml；午夜蓝草本酒为虚构设定，颜色和感官参数仍为游戏试玩值",
+      "recipe_review_status": "playtest",
+      "quality_rule": {
+        "mix": "shake",
+        "mix_ice": true,
+        "filter": true,
+        "cup": "coupe",
+        "time_window": [
+          6,
+          10
+        ]
+      }
     }
   ],
   "sensory_model_version": "sensory-calibrated-1"

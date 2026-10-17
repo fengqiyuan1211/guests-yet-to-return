@@ -73,7 +73,14 @@ static func replay(actions: Array, rule: Dictionary, definitions: Dictionary, ve
 			"shake", "stir":
 				if float(p.get("seconds",0))<=0: continue
 				if action.has("liquid_model"): LiquidState.mix(v.liquid,float(p.seconds),action.kind,float(p.get("control",1)),action.liquid_model,lot_groups)
+				var herb_id:=str(rule.get("muddle","sku_mint_leaf"))
+				var vessel_ml:=total(v.liquid.contents)
 				for lot in v.lots:
+					# Mixing distributes the aroma of leaves muddled in this vessel.
+					# Keep a proportional contribution so filtered/partial pours retain provenance.
+					if v.herb and float(v.solids.get(herb_id,0))>0 and vessel_ml>0:
+						lot.herb=true
+						lot.extracted_solids={herb_id:float(v.solids[herb_id])*float(lot.ml)/vessel_ml}
 					if action.kind==rule.get("mix",""):
 						lot.seconds+=float(p.seconds)
 						lot.controlled+=float(p.seconds)*float(p.get("control",1))
@@ -105,6 +112,10 @@ static func replay(actions: Array, rule: Dictionary, definitions: Dictionary, ve
 					var share:=clampf(float(moved_lots.get(lot.key,0))/maxf(.000001,float(lot.ml)),0,1)
 					var moved: Dictionary=lot.duplicate(true)
 					moved.ml=float(lot.ml)*share
+					if lot.has("extracted_solids"):
+						for solid in lot.extracted_solids:
+							moved.extracted_solids[solid]*=share
+							lot.extracted_solids[solid]*=1-share
 					if action.kind=="filter": moved.filtered=true
 					if moved.ml>.000001:
 						lot_serial+=1
@@ -143,8 +154,10 @@ static func replay(actions: Array, rule: Dictionary, definitions: Dictionary, ve
 				v.ice=false
 				v.herb=false
 
-	var result: Dictionary={"traced":0.0,"mixed":0.0,"iced":0.0,"filtered":0.0,"herb":0.0,"flat":0.0,"carbonated":0.0,"readiness":0.0,"min_seconds":INF,"max_seconds":0.0}
+	var result: Dictionary={"extracted_solids":{},"traced":0.0,"mixed":0.0,"iced":0.0,"filtered":0.0,"herb":0.0,"flat":0.0,"carbonated":0.0,"readiness":0.0,"min_seconds":INF,"max_seconds":0.0}
 	for lot in vessels.get(vessel_id,vessels.glass).lots:
+		for id in lot.get("extracted_solids",{}):
+			result.extracted_solids[id]=float(result.extracted_solids.get(id,0))+float(lot.extracted_solids[id])
 		result.min_seconds=minf(result.min_seconds,lot.seconds)
 		result.max_seconds=maxf(result.max_seconds,lot.seconds)
 		var window: Array=rule.get("time_window",[0,100000])
@@ -198,6 +211,7 @@ static func evaluate(session: Dictionary, definitions: Dictionary) -> Dictionary
 	for id in expected_solids:
 		var wanted:=float(expected_solids[id])
 		var found:=float(actual_solids.get(id,0))
+		if rule.get("filter",false): found=maxf(found,float(trace.extracted_solids.get(id,0)))
 		var deviation:=absf(found-wanted)/maxf(1,wanted)
 		recipe_score=maxf(0,recipe_score-minf(20,deviation*20))
 		if deviation>.1: reasons.append(_name(id,definitions)+"的份数与配方不同。")
