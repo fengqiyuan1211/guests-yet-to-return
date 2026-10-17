@@ -52,7 +52,7 @@ func _ready() -> void:
 		reduced_motion = bool(config.get_value("display","reduced_motion",false))
 
 func fresh() -> Dictionary:
-	return {"version":1,"story_version":2,"node_id":str(story.nodes[0].id),"phase":"new","node":0,"choices":{},"mail_read":{},"tutorial":{},"stock":{},"tutorial_status":"not_started","reward_claimed":false,"legacy":false,"arrival_pending":false}
+	return {"version":1,"story_version":3,"node_id":str(story.nodes[0].id),"phase":"new","node":0,"choices":{},"mail_read":{},"history":[],"tutorial":{},"stock":{},"tutorial_status":"not_started","reward_claimed":false,"legacy":false,"arrival_pending":false}
 
 func node_index(id: String) -> int:
 	for i in range(story.nodes.size()):
@@ -63,16 +63,23 @@ func upgrade_story_progress(value: Variant) -> Variant:
 	# Old saves used array offsets. Recover their original scene before inserting new dialogue.
 	# This only builds an in-memory copy: a damaged save is never rewritten here.
 	if not value is Dictionary or value.get("version")!=1: return value
-	if value.has("story_version"): return value
+	if value.get("story_version")==3: return value
+	if value.has("story_version") and value.story_version!=2: return value
+	if not value.get("mail_read",{}) is Dictionary: return value
 	var old_index: Variant=value.get("node")
-	var legacy: Array=JSON.parse_string(FileAccess.get_file_as_string("res://data/opening/story-v1-index.json"))
+	var legacy: Array=JSON.parse_string(FileAccess.get_file_as_string("res://data/opening/story-v2-index.json" if value.has("story_version") else "res://data/opening/story-v1-index.json"))
 	if not (old_index is int or old_index is float) or not is_finite(float(old_index)): return value
 	if old_index<0 or old_index!=floor(old_index) or old_index>=legacy.size() or not value.get("choices") is Dictionary: return value
 	var next: Dictionary=value.duplicate(true)
 	next.node_id=str(legacy[int(old_index)])
+	if value.has("story_version") and value.get("node_id")!=next.node_id: return value
 	next.node=node_index(next.node_id)
-	next.story_version=2
-	next.mail_read={}
+	next.story_version=3
+	next.mail_read=value.get("mail_read",{}).duplicate(true)
+	# Reconstruct only old-version lines up to the saved position; inserted lines stay unseen.
+	next.history=[]
+	if value.get("phase","new")!="new" and not value.get("legacy",false):
+		for i in range(int(old_index)+1): next.history.append(str(legacy[i]))
 	next.choices={}
 	for key in value.choices:
 		var id:=str(key)
@@ -89,7 +96,12 @@ func valid(value: Variant) -> bool:
 	if not (value.get("node") is int or value.get("node") is float) or value.node < 0 or value.node != floor(value.node): return false
 	var nodes: Array = story.nodes
 	if value.node >= nodes.size(): return false
-	if value.get("story_version")!=2 or value.get("node_id")!=nodes[int(value.node)].id: return false
+	if value.get("story_version")!=3 or value.get("node_id")!=nodes[int(value.node)].id: return false
+	if not value.get("history") is Array or value.history.size()>nodes.size(): return false
+	var seen: Dictionary={}
+	for id in value.history:
+		if not id is String or node_index(id)<0 or seen.has(id): return false
+		seen[id]=true
 	if not value.get("mail_read") is Dictionary: return false
 	for id in value.mail_read:
 		if not story.mail.has(id) or not value.mail_read[id] is bool: return false
@@ -128,6 +140,7 @@ func set_reduced_motion(value: bool) -> void:
 func begin_story() -> bool:
 	var next := fresh()
 	next.phase = "cg"
+	next.history.append(str(next.node_id))
 	return _commit(next)
 
 func advance(node: int, choice: String = "") -> bool:
@@ -135,8 +148,24 @@ func advance(node: int, choice: String = "") -> bool:
 	var next := state.duplicate(true)
 	next.node = node
 	next.node_id = str(story.nodes[node].id)
+	if not next.history.has(next.node_id): next.history.append(str(next.node_id))
 	if not choice.is_empty(): next.choices[str(state.node_id)] = choice
 	return _commit(next)
+
+func history_entries() -> Array[Dictionary]:
+	var entries: Array[Dictionary]=[]
+	for id: String in state.history:
+		var node: Dictionary=story.nodes[node_index(id)]
+		entries.append({"chapter":node.chapter+" · "+node.title,"speaker":node.speaker,"text":node.text})
+		var selected:=str(state.choices.get(id,""))
+		for choice: Dictionary in node.get("choices",[]):
+			if selected==choice.text:
+				entries.append({"chapter":"","speaker":"我 · 当时的选择","text":selected+"\n"+str(choice.reply)})
+		var mail_id:=str(node.get("mail_id",""))
+		if not mail_id.is_empty() and state.mail_read.get(mail_id,false):
+			var mail: Dictionary=story.mail[mail_id]
+			entries.append({"chapter":"","speaker":"邮件 · "+str(mail.subject),"text":str(mail.sender)+"\n\n"+str(mail.body)})
+	return entries
 
 func mark_mail_read(id: String) -> bool:
 	if not story.mail.has(id) or story.nodes[int(state.node)].get("mail_id","")!=id: return false

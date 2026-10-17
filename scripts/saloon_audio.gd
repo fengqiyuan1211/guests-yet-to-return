@@ -15,6 +15,11 @@ const WORKBENCH_TRACK := "res://assets/audio/music/workbench-george-street.mp3"
 const SCENE_TRACKS := {
 	"title": "res://assets/audio/music/night-laura-source.mp3",
 	"opening": "res://assets/audio/music/night-laura-source.mp3",
+	"opening_solitude": "res://assets/audio/opening/quiet-room.wav",
+	"opening_memory": "res://assets/audio/music/research-bossa-antigua.mp3",
+	"opening_bar": "res://assets/audio/music/night-jazz.mp3",
+	"opening_harbor": "res://assets/audio/music/night-laura-source.mp3",
+	"opening_home": "res://assets/audio/music/night-laura-source.mp3",
 	"workbench": WORKBENCH_TRACK,
 	"shop": "res://assets/audio/music/shop-carpe-diem.mp3",
 	"research": "res://assets/audio/music/research-bossa-antigua.mp3",
@@ -214,6 +219,16 @@ func acquire_scene(owner: Node, context: String) -> void:
 		hall_position=players[active_index].get_playback_position() if active_index>=0 else 0.0
 	scene_owners[id]=context
 	owner.tree_exiting.connect(_release_scene.bind(id),CONNECT_ONE_SHOT)
+	if active_path!=_scene_track(): _play_path(_scene_track())
+
+func set_scene_context(owner: Node, context: String) -> void:
+	# Keep ownership while a story changes scene, avoiding a brief return to hall music.
+	var id:=owner.get_instance_id()
+	if not SCENE_TRACKS.has(context): return
+	if not scene_owners.has(id):
+		acquire_scene(owner,context)
+		return
+	scene_owners[id]=context
 	if active_path!=_scene_track(): _play_path(_scene_track())
 
 func _release_scene(id: int) -> void:
