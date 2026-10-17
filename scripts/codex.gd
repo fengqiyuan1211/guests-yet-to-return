@@ -216,56 +216,98 @@ func _missing_material_tooltip(recipe_id: String) -> String:
 				names.append(name_value)
 	return "缺少：\n" + "\n".join(names)
 
+func _card_text(parent: Node, node_name: String, rect: Rect2, value: String, font_size: int, color: Color, lines := 1) -> Label:
+	var label := _label(parent, rect, value, font_size, color)
+	label.name = node_name
+	# All card copy uses the same book face; only size and ink establish hierarchy.
+	label.add_theme_font_override("font", get_theme_font("font", "Label"))
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.clip_text = true
+	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	label.max_lines_visible = lines
+	if lines > 1:
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.tooltip_text = value
+	return label
+
 func _populate_card(card: Button, recipe: Dictionary) -> void:
 	var ink := INK if recipe.unlocked else Color("624e35")
-	_label(card, Rect2(29, 13, 80, 28), "%03d" % int(recipe.get("codex_order", card.get_meta("slot_number"))), 15, Color("8b6a45"))
+	_card_text(card, "CardNumber", Rect2(26, 18, 70, 25), "%03d" % int(recipe.get("codex_order", card.get_meta("slot_number"))), 14, Color("8b6a45"))
 	var motif := str(recipe.get("decoration_id", "herbal"))
 	if motif not in ["herbal", "mint_citrus", "citrus", "cherry"]:
 		motif = "herbal"
 	var art_path := "res://assets/codex/decorations/%s.svg" % motif
 	if ResourceLoader.exists(art_path):
 		var decoration := TextureRect.new()
-		decoration.position = Vector2(15, 55)
-		decoration.size = Vector2(90, 127)
+		decoration.position = Vector2(21, 64)
+		decoration.size = Vector2(84, 110)
 		decoration.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		decoration.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		decoration.texture = load(art_path)
-		decoration.modulate.a = 0.65
+		decoration.modulate.a = 0.32
 		decoration.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		card.add_child(decoration)
 	var drink := TextureRect.new()
 	drink.name = "DrinkPicture"
-	drink.position = Vector2(15, 36)
-	drink.size = Vector2(144, 155)
+	drink.position = Vector2(18, 45)
+	drink.size = Vector2(128, 137)
 	drink.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	drink.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	drink.texture = CocktailDatabase.get_image(str(recipe.id))
-	if drink.texture == null and not str(recipe.get("thumbnail", "")).is_empty() and ResourceLoader.exists(str(recipe.get("thumbnail", ""))):
-		drink.texture = load(str(recipe.thumbnail))
+	for path_value in [recipe.get("image_path", ""), recipe.get("thumbnail", ""), recipe.get("result", {}).get("image_path", "")]:
+		var path := str(path_value)
+		if drink.texture == null and not path.is_empty():
+			if path.begins_with("user://") and FileAccess.file_exists(path):
+				var image := Image.load_from_file(path)
+				if image != null: drink.texture = ImageTexture.create_from_image(image)
+			elif ResourceLoader.exists(path):
+				drink.texture = load(path)
+	var locked_material := ShaderMaterial.new()
+	locked_material.shader = LOCKED_SHADER
 	if not recipe.unlocked:
-		var material_instance := ShaderMaterial.new()
-		material_instance.shader = LOCKED_SHADER
-		drink.material = material_instance
+		drink.material = locked_material
 		drink.modulate.a = 0.82
 	drink.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(drink)
-	if recipe.get("source_kind")=="diy" or recipe.get("unlock_kind")=="legendary_mastery":
-		var preview:=preload("res://scripts/workbench_drink_preview.gd").new()
-		preview.position=drink.position
-		preview.size=drink.size
-		preview.result=preload("res://scripts/research_data.gd").preview_result(recipe)
-		preview.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	# Character recipes may have no generated art yet. Reuse the real recipe preview,
+	# without the workbench's dark frame, and render only when a picture is unavailable.
+	if drink.texture == null:
+		var preview := preload("res://scripts/workbench_drink_preview.gd").new()
+		preview.name = "RecipePreview"
+		preview.position = Vector2(5, 40)
+		preview.size = Vector2(320, 300)
+		preview.scale = Vector2(0.48, 0.48)
+		preview.reference_only = true
+		preview.result = preload("res://scripts/research_data.gd").preview_result(recipe)
+		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		preview.set_process(false)
+		if not recipe.unlocked:
+			preview.material = locked_material
+			preview.modulate.a = 0.82
 		card.add_child(preview)
-	var stamp := _panel(card, Rect2(218, 14, 59, 29), _style(Color.TRANSPARENT, Color(0.40, 0.26, 0.11, 0.65)))
-	_label(stamp, Rect2(0, 0, 59, 29), str(recipe.get("type", recipe.category)), 17, ink, HORIZONTAL_ALIGNMENT_CENTER)
-	var title := _label(card, Rect2(153, 66, 133, 37), str(recipe.name), 24 if str(recipe.name).length() > 4 else 26, ink)
-	title.clip_text = true
-	var english := _label(card, Rect2(154, 106, 128, 41), str(recipe.get("english_name", "")), 12, Color("8b7354"))
-	english.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_label(card, Rect2(153, 153, 132, 28), " · ".join(recipe.get("mouthfeel_tags", [])), 16, ink)
-	_label(card, Rect2(43 if not recipe.unlocked else 25, 192, 127, 28), "已点亮" if recipe.unlocked else "未点亮", 16, ink)
+	var category := str(recipe.get("type", recipe.get("category", "特调")))
+	var font := get_theme_font("font", "Label")
+	var stamp_width := clampf(ceilf(font.get_string_size(category, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x) + 22, 52, 132)
+	var stamp := _panel(card, Rect2(270 - stamp_width, 22, stamp_width, 25), _style(Color.TRANSPARENT, Color(0.40, 0.26, 0.11, 0.5)))
+	stamp.name = "CategoryStamp"
+	var stamp_text := _card_text(stamp, "CategoryText", Rect2(8, 0, stamp_width - 16, 25), category, 14, ink)
+	stamp_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var title_text := str(recipe.name)
+	var title_size := 23
+	while title_size > 19 and font.get_string_size(title_text, HORIZONTAL_ALIGNMENT_LEFT, -1, title_size).x > 126:
+		title_size -= 1
+	# Balance longer CJK titles across two lines instead of leaving one orphaned glyph.
+	if title_text.length() > 6 and not title_text.contains(" ") and font.get_string_size(title_text, HORIZONTAL_ALIGNMENT_LEFT, -1, title_size).x > 126:
+		var split_at := ceili(title_text.length() / 2.0)
+		title_text = title_text.substr(0, split_at) + "\n" + title_text.substr(split_at)
+		title_size = 21
+	_card_text(card, "DrinkTitle", Rect2(151, 49, 126, 65), title_text, title_size, ink, 2)
+	_card_text(card, "EnglishTitle", Rect2(152, 114, 125, 39), str(recipe.get("english_name", "")), 11, Color("8b7354"), 2)
+	_card_text(card, "Mouthfeel", Rect2(152, 156, 125, 27), " · ".join(recipe.get("mouthfeel_tags", [])), 13, ink)
+	_card_text(card, "UnlockStatus", Rect2(43 if not recipe.unlocked else 25, 192, 113, 24), "已点亮" if recipe.unlocked else "未点亮", 14, ink)
 	var progress := MenuCatalog.ingredient_progress(recipe)
-	_label(card, Rect2(168, 193, 111, 27), "原料 %d / %d" % [progress.owned, progress.total], 15, ink, HORIZONTAL_ALIGNMENT_RIGHT)
+	var progress_label := _card_text(card, "IngredientProgress", Rect2(162, 192, 108, 24), "原料 %d / %d" % [progress.owned, progress.total], 14, ink)
+	progress_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
 func show_detail(id: String) -> void:
 	if turning:

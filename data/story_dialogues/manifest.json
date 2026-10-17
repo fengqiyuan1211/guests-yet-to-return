@@ -153,13 +153,37 @@
     {
       "guest_id": "yellow_creature",
       "name": "黄色生物",
-      "story_summary": "固定梗，无背景故事。",
+      "story_summary": "固定梗加括号口味旁白，共五次来访；第五次之后沿用基准口味。",
       "episodes": [
         {
           "id": "yellow_creature_repeat",
           "episode": 1,
-          "title": "固定梗",
+          "title": "先来一杯莫吉托",
           "file": "yellow_creature/repeat.json"
+        },
+        {
+          "id": "yellow_creature_02",
+          "episode": 2,
+          "title": "今天想甜一点",
+          "file": "yellow_creature/02.json"
+        },
+        {
+          "id": "yellow_creature_03",
+          "episode": 3,
+          "title": "酒味轻一点",
+          "file": "yellow_creature/03.json"
+        },
+        {
+          "id": "yellow_creature_04",
+          "episode": 4,
+          "title": "这次想酸一点",
+          "file": "yellow_creature/04.json"
+        },
+        {
+          "id": "yellow_creature_05",
+          "episode": 5,
+          "title": "还是第一次那杯",
+          "file": "yellow_creature/05.json"
         }
       ]
     }

@@ -121,10 +121,10 @@
     },
     "yellow_creature": {
       "targets": {
-        "alcohol_intensity": 0,
-        "sweetness": 65,
-        "sourness": 25,
-        "bitterness": 5
+        "alcohol_intensity": 40.0,
+        "sweetness": 35.0,
+        "sourness": 45.0,
+        "bitterness": 0.0
       },
       "weights": {
         "alcohol_intensity": 1.0,
@@ -138,11 +138,14 @@
         "sourness": 5.0,
         "bitterness": 5.0
       },
-      "restrictions": [
-        "alcohol"
-      ],
+      "restrictions": [],
       "no_bubbles": false,
-      "request_text": "甜一点、有果香，不要酒精。"
+      "request_text": "（它似乎想要一杯[b]莫吉托[/b]。）",
+      "base_reference": {
+        "recipe_id": "mojito",
+        "basis": "当前共享感官模型标准杯数值"
+      },
+      "profile_version": "yellow-mojito-five-v1"
     }
   },
   "events": {
@@ -295,6 +298,56 @@
         "bitterness": -5
       },
       "request_text": "今天柔和一点。你按配方做就好，不用怕我皱眉又补糖。"
+    },
+    "yellow_creature_repeat": {
+      "guest_id": "yellow_creature",
+      "delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "request_text": "（它似乎想要一杯[b]莫吉托[/b]。）"
+    },
+    "yellow_creature_02": {
+      "guest_id": "yellow_creature",
+      "delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 15,
+        "sourness": -15,
+        "bitterness": 0
+      },
+      "request_text": "（它似乎想喝[b]甜一点、没那么酸[/b]的。）"
+    },
+    "yellow_creature_03": {
+      "guest_id": "yellow_creature",
+      "delta": {
+        "alcohol_intensity": -15,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "request_text": "（它似乎想喝[b]酒味轻一点[/b]的，甜味和酸味照平常就好。）"
+    },
+    "yellow_creature_04": {
+      "guest_id": "yellow_creature",
+      "delta": {
+        "alcohol_intensity": 0,
+        "sweetness": -10,
+        "sourness": 15,
+        "bitterness": 0
+      },
+      "request_text": "（它似乎想喝[b]酸一点、少甜一点[/b]的。）"
+    },
+    "yellow_creature_05": {
+      "guest_id": "yellow_creature",
+      "delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "request_text": "（它似乎又想喝[b]第一次点的莫吉托[/b]了。）"
     }
   },
   "recipe_buffs": {}

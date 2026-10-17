@@ -1,16 +1,16 @@
 {
   "schema_version": "2.0",
   "id": "yellow_creature_repeat",
-  "story_id": "yellow_creature_fixed",
+  "story_id": "yellow_creature_taste_visits",
   "guest_id": "yellow_creature",
   "guest_name": "黄色生物",
   "episode": 1,
-  "title": "固定梗",
+  "title": "先来一杯莫吉托",
   "entry": "start",
   "status": "integrated",
   "availability": {
     "previous_episode_id": null,
-    "repeatable": true
+    "repeatable": false
   },
   "nodes": {
     "start": {
@@ -25,19 +25,24 @@
       ]
     },
     "handoff": {
+      "speaker": "guest",
+      "presentation": "parenthetical_observation",
+      "text": "（它似乎想要一杯[b]莫吉托[/b]。）",
+      "reveals_identity": true,
+      "taste_event": "yellow_creature_repeat",
       "transition": "resume_existing_dialogue_loop"
     }
   },
   "after_story": {
     "transition": "resume_existing_dialogue_loop",
-    "dialogue_source": "external",
+    "dialogue_source": "fixed_order_observation",
     "preserve_current_guest": true,
     "leave_on": "drink_served"
   },
   "progression": {
     "mark_completed_on": "story_closing_acknowledged",
-    "next_episode_id": "yellow_creature_repeat",
+    "next_episode_id": "yellow_creature_02",
     "start_next_on": "next_guest_visit",
-    "after_last_episode": "existing_dialogue_loop"
+    "after_last_episode": "repeat_last_visit"
   }
 }

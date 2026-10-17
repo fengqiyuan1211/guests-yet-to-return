@@ -392,6 +392,151 @@
       "persistent": false,
       "soft_state_penalty_additions": [],
       "buff_affinity_overrides": {}
+    },
+    {
+      "event_id": "yellow_creature_visit_01",
+      "event_version": "yellow-mojito-five-v1",
+      "guest_id": "yellow_creature",
+      "story_episode_id": "yellow_creature_repeat",
+      "preference_delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "expected_target": {
+        "alcohol_intensity": 40.0,
+        "sweetness": 35.0,
+        "sourness": 45.0,
+        "bitterness": 0
+      },
+      "persistent": false,
+      "mood_note": "（它似乎想要一杯莫吉托。）",
+      "demand_line_ref": {
+        "episode_id": "yellow_creature_repeat",
+        "node_id": "handoff"
+      },
+      "lock_before": "first_order_clue_displayed",
+      "reroll_on_screen_change": false,
+      "soft_state_penalty_additions": [],
+      "buff_affinity_overrides": {},
+      "requested_recipe_id": "mojito"
+    },
+    {
+      "event_id": "yellow_creature_visit_02",
+      "event_version": "yellow-mojito-five-v1",
+      "guest_id": "yellow_creature",
+      "story_episode_id": "yellow_creature_02",
+      "preference_delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 15,
+        "sourness": -15,
+        "bitterness": 0
+      },
+      "expected_target": {
+        "alcohol_intensity": 40.0,
+        "sweetness": 50.0,
+        "sourness": 30.0,
+        "bitterness": 0
+      },
+      "persistent": false,
+      "mood_note": "（它似乎想喝甜一点、没那么酸的。）",
+      "demand_line_ref": {
+        "episode_id": "yellow_creature_02",
+        "node_id": "handoff"
+      },
+      "lock_before": "first_order_clue_displayed",
+      "reroll_on_screen_change": false,
+      "soft_state_penalty_additions": [],
+      "buff_affinity_overrides": {},
+      "requested_recipe_id": ""
+    },
+    {
+      "event_id": "yellow_creature_visit_03",
+      "event_version": "yellow-mojito-five-v1",
+      "guest_id": "yellow_creature",
+      "story_episode_id": "yellow_creature_03",
+      "preference_delta": {
+        "alcohol_intensity": -15,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "expected_target": {
+        "alcohol_intensity": 25.0,
+        "sweetness": 35.0,
+        "sourness": 45.0,
+        "bitterness": 0
+      },
+      "persistent": false,
+      "mood_note": "（它似乎想喝酒味轻一点的，甜味和酸味照平常就好。）",
+      "demand_line_ref": {
+        "episode_id": "yellow_creature_03",
+        "node_id": "handoff"
+      },
+      "lock_before": "first_order_clue_displayed",
+      "reroll_on_screen_change": false,
+      "soft_state_penalty_additions": [],
+      "buff_affinity_overrides": {},
+      "requested_recipe_id": ""
+    },
+    {
+      "event_id": "yellow_creature_visit_04",
+      "event_version": "yellow-mojito-five-v1",
+      "guest_id": "yellow_creature",
+      "story_episode_id": "yellow_creature_04",
+      "preference_delta": {
+        "alcohol_intensity": 0,
+        "sweetness": -10,
+        "sourness": 15,
+        "bitterness": 0
+      },
+      "expected_target": {
+        "alcohol_intensity": 40.0,
+        "sweetness": 25.0,
+        "sourness": 60.0,
+        "bitterness": 0
+      },
+      "persistent": false,
+      "mood_note": "（它似乎想喝酸一点、少甜一点的。）",
+      "demand_line_ref": {
+        "episode_id": "yellow_creature_04",
+        "node_id": "handoff"
+      },
+      "lock_before": "first_order_clue_displayed",
+      "reroll_on_screen_change": false,
+      "soft_state_penalty_additions": [],
+      "buff_affinity_overrides": {},
+      "requested_recipe_id": ""
+    },
+    {
+      "event_id": "yellow_creature_visit_05",
+      "event_version": "yellow-mojito-five-v1",
+      "guest_id": "yellow_creature",
+      "story_episode_id": "yellow_creature_05",
+      "preference_delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
+      "expected_target": {
+        "alcohol_intensity": 40.0,
+        "sweetness": 35.0,
+        "sourness": 45.0,
+        "bitterness": 0
+      },
+      "persistent": false,
+      "mood_note": "（它似乎又想喝第一次点的莫吉托了。）",
+      "demand_line_ref": {
+        "episode_id": "yellow_creature_05",
+        "node_id": "handoff"
+      },
+      "lock_before": "first_order_clue_displayed",
+      "reroll_on_screen_change": false,
+      "soft_state_penalty_additions": [],
+      "buff_affinity_overrides": {},
+      "requested_recipe_id": "mojito"
     }
   ],
   "demand_policy": {

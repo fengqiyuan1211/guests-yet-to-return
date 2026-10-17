@@ -13,6 +13,7 @@ const NIGHT_TRACKS := [
 ]
 const WORKBENCH_TRACK := "res://assets/audio/music/workbench-george-street.mp3"
 const SCENE_TRACKS := {
+	"yellow_ski": "res://assets/audio/music/yellow-ski-hajimi.ogg",
 	"workbench": WORKBENCH_TRACK,
 	"shop": "res://assets/audio/music/shop-carpe-diem.mp3",
 	"research": "res://assets/audio/music/research-bossa-antigua.mp3",

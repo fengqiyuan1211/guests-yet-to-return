@@ -240,6 +240,9 @@ func begin_guest(profile: Dictionary, visit: int, restoring: bool) -> bool:
 	var number := int(StoryDialogue.progress.get(str(profile.id), {}).get("completed", 0)) + 1
 	if restoring and StoryDialogue.guest_id == str(profile.id) and not StoryDialogue.episode.is_empty(): number = int(StoryDialogue.episode.get("episode", number))
 	var episode_id := "%s_%02d" % [profile.id, number]
+	if profile.id == "yellow_creature":
+		number = mini(number, StoryDialogue.catalog["yellow_creature"].size())
+		episode_id = str(StoryDialogue.catalog["yellow_creature"][number - 1].id)
 	var p: Dictionary = profiles[str(profile.id)].duplicate(true)
 	var demand: Dictionary = {"target": p.base_preferences.duplicate(true), "weights": p.weights.duplicate(true),
 		"tolerances": p.tolerances.duplicate(true), "constraints": p.get("constraints", []).duplicate(true),
@@ -400,6 +403,17 @@ func _legacy_cup_signature(result: Dictionary) -> String:
 
 func has_delivery() -> bool:
 	return not str(state.active.get("delivery_id", "")).is_empty()
+
+func claim_yellow_laugh(expected_id: String) -> bool:
+	# Persist before playback so reloads, duplicate feedback and mode switches cannot repeat it.
+	var record := current_record()
+	var rules := preload("res://scripts/yellow_laugh_rules.gd")
+	if str(record.get("id", "")) != expected_id or not rules.eligible(record): return false
+	record[rules.RECEIPT_KEY] = true
+	if not _write():
+		record.erase(rules.RECEIPT_KEY)
+		return false
+	return true
 
 func current_record() -> Dictionary:
 	return state.deliveries.get(str(state.active.get("delivery_id", "")), {})

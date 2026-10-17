@@ -841,18 +841,27 @@ func _service_cup() -> bool:
 
 func _send_finished_drink() -> void:
 	if data.get("status") != "finished" or not _service_cup(): return
-	CustomerService.deliver(data.result)
+	if _served_record().is_empty(): CustomerService.deliver(data.result)
 	_result()
 
 func _return_after_serving() -> void:
-	# Delivery receipts make closing/reopening this card safe to repeat.
-	if CustomerService.deliver(data.result): Navigation.go_to(&"home")
-	else: _result()
+	# Old result cards must remain closable after that reception has ended.
+	if not _served_record().is_empty() or str(data.get("guest",{}).get("visit_id","")) != str(CustomerService.state.active.get("id","")):
+		Navigation.go_to(&"home")
+		return
+	if CustomerService.deliver(data.result):
+		Navigation.go_to(&"home")
+	else:
+		# Keep the actual cup for retry, but never trap the player in a modal loop.
+		_clear_modal()
+		status_label.text = CustomerService.last_error + " 这杯酒已保留，可稍后重试。"
 
 func _served_record() -> Dictionary:
-	var record: Dictionary = CustomerService.current_record()
-	if record.get("status") == "settled" and record.get("drink_id") == data.get("result", {}).get("drink_id") and record.get("visit_id") == data.get("guest", {}).get("visit_id"):
-		return record
+	var drink_id := str(data.get("result",{}).get("drink_id",""))
+	var visit_id := str(data.get("guest",{}).get("visit_id",""))
+	for record: Dictionary in CustomerService.state.deliveries.values():
+		if record.get("status") == "settled" and record.get("drink_id") == drink_id and record.get("visit_id") == visit_id:
+			return record
 	return {}
 
 func _result() -> void:

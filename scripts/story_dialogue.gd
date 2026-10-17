@@ -3,7 +3,7 @@ extends Node
 signal changed
 signal story_finished(guest_id: String, episode_id: String)
 signal smalltalk_requested(guest_id: String, context: Dictionary)
-const CONTENT_REVISIONS := {"stick": "stick-v0.3"}
+const CONTENT_REVISIONS := {"stick": "stick-v0.3", "yellow_creature": "yellow-mojito-five-v1"}
 const DATA_ROOT := "res://data/story_dialogues/"
 var catalog: Dictionary = {}
 var introductions: Dictionary = {}
@@ -42,7 +42,7 @@ func _ready() -> void:
 			elif character.guest_id == "yellow_creature":
 				chapter.nodes.handoff.reveals_identity = true
 			var taste_cfg: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/guest_service.json"))
-			if character.guest_id!="stick" and taste_cfg.events.has(chapter.id):
+			if character.guest_id not in ["stick", "yellow_creature"] and taste_cfg.events.has(chapter.id):
 				for closing_id in chapter.nodes.keys():
 					var closing: Dictionary=chapter.nodes[closing_id]
 					if closing.has("transition"):
@@ -104,9 +104,9 @@ func _valid_save(data: Variant) -> bool:
 		if not pending is Dictionary:
 			return false
 		if not pending.is_empty():
-			if int(done) >= catalog[key].size():
+			if int(done) >= catalog[key].size() and key != "yellow_creature":
 				return false
-			var chapter: Dictionary = catalog[key][int(done)]
+			var chapter: Dictionary = catalog[key][mini(int(done), catalog[key].size() - 1)]
 			if pending.get("episode_id") != chapter.id or not chapter.nodes.has(pending.get("node", "")) or not pending.get("history") is Array:
 				return false
 	return true
@@ -149,13 +149,14 @@ func start_guest(id: String) -> void:
 	var state := _state()
 	var done := int(state.completed)
 	if id == "yellow_creature":
-		done = 0
+		done = mini(done, catalog[id].size() - 1)
 	if done >= catalog[id].size():
 		phase = "idle"
 		episode = {}
 		_chat()
 		return
 	episode = catalog[id][done]
+	if id == "yellow_creature": taste_event_id = str(episode.id)
 	phase = "story"
 	var pending: Dictionary = state.get("pending", {})
 	if not pending.is_empty() and pending.get("episode_id") == episode.id:
@@ -176,7 +177,9 @@ func _show_node(id: String, record := true) -> void:
 	if node.has("taste_event"):
 		taste_event_id=str(node.taste_event)
 		var locked: Dictionary=GuestService.ledger().demands.get(GuestService.current_visit(),{})
-		if not locked.is_empty(): speech=str(locked.get("request_text",speech))+" 这一杯就按刚才说的来。"
+		if not locked.is_empty():
+			if guest_id == "yellow_creature": speech = _yellow_observation(str(locked.get("request_text", speech)))
+			else: speech=str(locked.get("request_text",speech))+" 这一杯就按刚才说的来。"
 	if record:
 		history.append({"speaker": "guest", "node": id, "text": speech})
 		_archive_line(episode.id, history.back())
@@ -200,10 +203,9 @@ func choose(choice_id: String, expected_revision: int) -> bool:
 func continue_talking() -> void:
 	if phase == "idle":
 		if guest_id == "yellow_creature":
-			phase = "story"
-			episode = catalog[guest_id][0]
-			history = []
-			_show_node(episode.entry)
+			# Stay on the same order; clicks do not start another visit or change taste.
+			revision += 1
+			changed.emit()
 		else:
 			_chat()
 	elif phase == "story":
@@ -215,8 +217,7 @@ func continue_talking() -> void:
 
 func _finish_story() -> void:
 	var state := _state()
-	if guest_id != "yellow_creature":
-		state.completed = maxi(int(state.completed), int(episode.episode))
+	state.completed = maxi(int(state.completed), int(episode.episode))
 	state.pending = {}
 	state.heard[episode.id] = history.duplicate(true)
 	_save()
@@ -298,6 +299,7 @@ func restore_session(data: Dictionary) -> void:
 		if data.get("content_revision", "") != content_revision(guest_id):
 			node_id = str(episode.get("story_entry", episode.entry) if is_known(guest_id) else episode.entry)
 			history = []
+		if guest_id == "yellow_creature": taste_event_id = str(episode.id)
 		# Scene snapshots cache text; always display the current authored line.
 		speech = str(episode.nodes[node_id].get("text", ""))
 		_state().pending = {"episode_id": episode.id, "node": node_id, "history": history.duplicate(true)}
@@ -337,3 +339,7 @@ func unlock_activity(id: String, activity_id: String, source_event: String) -> b
 		return false
 	changed.emit()
 	return true
+
+func _yellow_observation(value: String) -> String:
+	if value.begins_with("（") and value.ends_with("）"): return value
+	return "（它这次的要求没有变：[b]%s[/b]）" % value

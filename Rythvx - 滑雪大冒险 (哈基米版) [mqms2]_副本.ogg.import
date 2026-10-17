@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://cqvwb8rmlp4me"
+path="res://.godot/imported/Rythvx - 滑雪大冒险 (哈基米版) [mqms2]_副本.ogg-aed7f2fa1a35c71e5459267a66c5481c.oggvorbisstr"
+
+[deps]
+
+source_file="res://Rythvx - 滑雪大冒险 (哈基米版) [mqms2]_副本.ogg"
+dest_files=["res://.godot/imported/Rythvx - 滑雪大冒险 (哈基米版) [mqms2]_副本.ogg-aed7f2fa1a35c71e5459267a66c5481c.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -42,6 +42,7 @@ func _setup_mode_button() -> void:
 var _memory_lines: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/story_dialogues/stick/memory_event.json"))
 
 func _ready() -> void:
+	Navigation.register_page(&"yellow_ski",preload("res://scenes/yellow_ski.tscn"))
 	for activity in preload("res://scripts/guest_activity_rules.gd").IDS:
 		Navigation.register_page(StringName(activity),preload("res://scenes/guest_activity.tscn"))
 	Navigation.register_page(&"stick_demo",preload("res://scenes/stick_badminton_demo.tscn"))
@@ -75,6 +76,7 @@ func _ready() -> void:
 	CustomerService.changed.connect(_on_customer_changed)
 	_on_customer_changed()
 	%GuestLayer.guest_spawned.connect(_on_guest_spawned)
+	%GuestLayer.yellow_laugh_finished.connect(_on_yellow_laugh_finished)
 	%NextGuestButton.hide()
 	%TalkButton.hide()
 	%GuestPortrait.hide()
@@ -362,6 +364,7 @@ func _setup_dialogue_input() -> void:
 	%GuestSpeech.add_theme_font_override("bold_font", bold)
 
 func _can_advance_dialogue() -> bool:
+	if %GuestLayer.yellow_laugh_active(): return false
 	if PlayModes.mode=="mixing": return false
 	if _memory_inviting:
 		var kind := CustomerService.memory_dialogue_kind()
@@ -520,6 +523,7 @@ func _choose_story(choice_id: String, revision: int) -> void:
 	StoryDialogue.choose(choice_id, revision)
 
 func on_drink_served() -> void:
+	if %GuestLayer.yellow_laugh_active(): return
 	# Departure only. Receiving the actual cup is CustomerService.deliver().
 	if not service_started:
 		return
@@ -581,6 +585,7 @@ func _render_customer_feedback() -> void:
 		%GuestTags.text += "    " + "★".repeat(int(review.stars)) + "☆".repeat(5 - int(review.stars))
 	%OrderKicker.hide()
 	%NoteOrder.hide()
+	if _show_yellow_laugh(record): return
 	%NextGuestButton.disabled = record.status != "settled" or not feedback.done or StoryDialogue.phase == "story"
 	%NextGuestButton.text = "送客，结束营业" if TimeManager.closing_pending else "送客，迎接下一位"
 	if feedback.done:
@@ -623,6 +628,23 @@ func _render_customer_feedback() -> void:
 			button.pressed.connect(CustomerService.choose_feedback.bind(i, round_number))
 			story_choices.add_child(button)
 
+func _show_yellow_laugh(record: Dictionary) -> bool:
+	if Navigation.current_route != &"home" or %GuestLayer.spawned_profile.get("id") != "yellow_creature": return false
+	if not %GuestLayer.yellow_laugh_active() and preload("res://scripts/yellow_laugh_rules.gd").eligible(record):
+		if CustomerService.claim_yellow_laugh(str(record.id)):
+			%GuestLayer.play_yellow_laugh()
+	if not %GuestLayer.yellow_laugh_active(): return false
+	%GuestSpeech.text = "（它抱住肚子笑弯了腰，连帽子都跟着一颤一颤的。）"
+	%NextGuestButton.disabled = true
+	%TalkButton.hide()
+	_clear_story_choices()
+	find_child("GuestDialogue", true, false).mouse_default_cursor_shape = Control.CURSOR_ARROW
+	return true
+
+func _on_yellow_laugh_finished() -> void:
+	# Guest/mode changes can finish the effect while rebuilding the home. Render after that.
+	call_deferred("_render_dialogue")
+
 func _show_activity_hint() -> void:
 	if PlayModes.mode!="story" or StoryDialogue.phase=="story": return
 	var invitations:=0
@@ -651,6 +673,7 @@ func _on_time_changed(day: int, minutes: int) -> void:
 func _on_route_requested(route_id: StringName) -> void:
 	if is_instance_valid(active_page) and active_page.has_method("can_close") and not active_page.can_close():
 		return
+	if route_id != &"home": %GuestLayer.stop_yellow_laugh()
 	if is_instance_valid(active_page):
 		active_page.queue_free()
 		active_page = null
@@ -703,7 +726,10 @@ func _on_route_requested(route_id: StringName) -> void:
 		active_page.configure(Navigation.ROUTES[route_id])
 	if active_page.has_signal("close_requested"):
 		active_page.connect("close_requested", func():
-			if str(route_id) in preload("res://scripts/guest_activity_rules.gd").IDS:
+			if route_id == &"yellow_ski":
+				Navigation.journal_focus_guest="yellow_creature"
+				Navigation.go_to(&"journal")
+			elif str(route_id) in preload("res://scripts/guest_activity_rules.gd").IDS:
 				Navigation.journal_focus_guest=GuestActivities.config(str(route_id)).guest_id
 				Navigation.go_to(&"journal")
 			elif route_id==&"stick_demo" or (route_id==&"stick_badminton" and Navigation.memory_from_journal):

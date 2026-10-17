@@ -192,7 +192,7 @@ func _render_profile() -> void:
 	if profile.is_empty() or not StoryDialogue.is_known(selected_id):
 		_label(profile_column,"？",100,MUTED)
 		_label(profile_column,"尚未相识",30)
-		_label(profile_column,"等他推开酒馆的门，再从一句问候开始。",23)
+		_label(profile_column,"等它推开酒馆的门，再从一句问候开始。" if selected_id=="yellow_creature" else "等他推开酒馆的门，再从一句问候开始。",23)
 		_label(profile_column,"资料、偏好与故事会在相识后出现。",18,MUTED)
 		return
 	var row := HBoxContainer.new()

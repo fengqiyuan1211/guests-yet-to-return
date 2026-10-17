@@ -2,6 +2,7 @@ extends Node2D
 ## Independent guest art, profiles and shuffle bag. Background always stays empty.
 signal guest_spawned(profile: Dictionary)
 signal guest_cleared
+signal yellow_laugh_finished
 const DATA_PATH := "res://data/guests.json"
 # The rear edge of the foreground counter in the 1600 × 900 home layout.
 # Guests stand behind it; lower bodies must never render onto the tabletop.
@@ -16,6 +17,7 @@ var _window: Control
 var _art: TextureRect
 var _arrival: Tween
 var _elapsed := 0.0
+var _laugh: Node2D
 var _textures: Dictionary = {}
 
 func _ready() -> void:
@@ -99,6 +101,7 @@ func _process(delta: float) -> void:
 		_art.position.y = sin(_elapsed * 1.4) * 1.5
 
 func _clear_art() -> void:
+	stop_yellow_laugh()
 	if _arrival and _arrival.is_valid():
 		_arrival.kill()
 	if is_instance_valid(_window):
@@ -111,3 +114,23 @@ func clear_guest() -> void:
 	_clear_art()
 	spawned_profile = {}
 	guest_cleared.emit()
+
+func yellow_laugh_active() -> bool:
+	return is_instance_valid(_laugh) and _laugh.active
+
+func play_yellow_laugh() -> bool:
+	if spawned_profile.get("id") != "yellow_creature" or not is_instance_valid(_art) or yellow_laugh_active(): return false
+	_laugh = preload("res://scripts/yellow_laugh.gd").new()
+	_laugh.position = Vector2(195, 0)
+	_laugh.finished.connect(_finish_yellow_laugh)
+	_art.hide()
+	_window.add_child(_laugh)
+	return true
+
+func stop_yellow_laugh() -> void:
+	if is_instance_valid(_laugh): _laugh.stop()
+
+func _finish_yellow_laugh() -> void:
+	_laugh = null
+	if is_instance_valid(_art): _art.show()
+	yellow_laugh_finished.emit()

@@ -202,15 +202,50 @@ func _entry() -> void:
 	desk.add_child(library)
 	_label(library,Rect2(0,0,220,40),"我的配方",30).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	_label(library,Rect2(0,42,220,28),"已收藏 %d / %d 份" % [WorkbenchSession.research_recipes().size(),int(Research.config().get("max_saved_recipes",64))],18,MUTED).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
-	var session: Dictionary=WorkbenchSession.state.session
-	if not session.is_empty() and session.status in ["mixing","finished"]:
-		var resume:=_button(desk,Rect2(955,95,590,45),"继续桌上这一杯 · "+str(session.recipe.name),func(): Navigation.go_to(&"mixing"))
-		resume.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
+	_cup_button(desk, Rect2(955,95,590,45))
+
+func _cup_link() -> Dictionary:
+	var s: Dictionary = WorkbenchSession.state.session
+	if s.is_empty(): return {}
+	var caption := ""
+	if s.get("status") == "mixing":
+		caption = "继续桌上这一杯"
+	elif s.get("status") == "finished":
+		if WorkbenchSession.is_research(s):
+			if s.mode == "research_diy" and WorkbenchSession.research_state().saved_drinks.has(s.result.drink_id): return {}
+			caption = "查看试调结果" if s.mode == "research_diy" else "查看研习结果"
+		else:
+			# A completed sale is history, not unfinished work on the research desk.
+			if s.get("result",{}).has("customer_receipt"): return {}
+			for record: Dictionary in CustomerService.state.deliveries.values():
+				if record.get("drink_id") == s.get("result",{}).get("drink_id") and record.get("status") == "settled": return {}
+			if str(s.get("guest",{}).get("visit_id","")).is_empty() or s.guest.visit_id != CustomerService.state.active.get("id",""): return {}
+			caption = "查看待送出的酒"
+	if caption.is_empty(): return {}
+	return {"id":s.id,"status":s.status,"caption":caption + " · " + str(s.recipe.name)}
+
+func _cup_button(parent: Control, rect: Rect2) -> void:
+	var link := _cup_link()
+	if link.is_empty(): return
+	var button := _button(parent, rect, str(link.caption), _open_cup.bind(str(link.id),str(link.status)))
+	button.name = "ResumeCupButton" if link.status == "mixing" else "FinishedCupButton"
+	button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+
+func _open_cup(expected_id: String, expected_status: String) -> void:
+	# Recheck after the input callback; an old queued button must not open a different cup.
+	call_deferred("_open_current_cup", expected_id, expected_status)
+
+func _open_current_cup(expected_id: String, expected_status: String) -> void:
+	if not is_inside_tree() or is_queued_for_deletion(): return
+	var link := _cup_link()
+	if link.get("id") != expected_id or link.get("status") != expected_status:
+		_refresh()
+		return
+	Navigation.go_to(&"mixing")
 
 func _resume_button() -> void:
-	var s: Dictionary=WorkbenchSession.state.session
-	if not s.is_empty() and s.status in ["mixing","finished"]:
-		_button(body,Rect2(710,355,565,58),"继续桌上这一杯 · "+str(s.recipe.name),func(): Navigation.go_to(&"mixing"))
+	_cup_button(body, Rect2(710,355,565,58))
+	if WorkbenchSession.state.session.get("status") == "mixing":
 		_label(body,Rect2(710,418,570,40),"开始另一杯前，请先完成或明确丢弃半成品。",18,MUTED)
 
 func _begin(mode: String, recipe_id: String="") -> void:

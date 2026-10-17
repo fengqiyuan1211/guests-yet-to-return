@@ -169,13 +169,13 @@
     },
     {
       "guest_id": "yellow_creature",
-      "profile_version": "yellow_creature-playtest-v1",
+      "profile_version": "yellow-mojito-five-v1",
       "status": "playtest_unconfirmed",
       "base_preferences": {
-        "alcohol_intensity": 0,
-        "sweetness": 65,
-        "sourness": 25,
-        "bitterness": 0
+        "alcohol_intensity": 40.0,
+        "sweetness": 35.0,
+        "sourness": 45.0,
+        "bitterness": 0.0
       },
       "weights": {
         "alcohol_intensity": 1,
@@ -189,18 +189,25 @@
         "sourness": 5,
         "bitterness": 5
       },
-      "constraints": [
-        {
-          "kind": "max_attribute",
-          "attribute": "alcohol_intensity",
-          "maximum": 0,
-          "label": "不喝含酒精的饮品"
-        }
-      ],
+      "constraints": [],
       "soft_state_penalties": [],
-      "permanent_delta": {},
+      "permanent_delta": {
+        "alcohol_intensity": 0,
+        "sweetness": 0,
+        "sourness": 0,
+        "bitterness": 0
+      },
       "long_term_changes_enabled": false,
-      "buff_affinities": {}
+      "buff_affinities": {},
+      "base_reference": {
+        "recipe_id": "mojito",
+        "basis": "与当前图鉴及共享感官模型标准杯一致"
+      },
+      "descriptive_preferences": [
+        "清爽",
+        "青柠",
+        "接受薄荷与气泡"
+      ]
     }
   ],
   "runtime_enabled": true

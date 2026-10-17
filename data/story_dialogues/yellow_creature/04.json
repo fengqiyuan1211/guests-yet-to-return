@@ -1,0 +1,48 @@
+{
+  "schema_version": "2.0",
+  "id": "yellow_creature_04",
+  "story_id": "yellow_creature_taste_visits",
+  "guest_id": "yellow_creature",
+  "guest_name": "黄色生物",
+  "episode": 4,
+  "title": "这次想酸一点",
+  "entry": "start",
+  "status": "integrated",
+  "availability": {
+    "previous_episode_id": "yellow_creature_03",
+    "repeatable": false
+  },
+  "nodes": {
+    "start": {
+      "speaker": "guest",
+      "text": "我是奶龙",
+      "choices": [
+        {
+          "id": "yellow_creature_04.start.c1",
+          "text": "我才是奶龙",
+          "next": "handoff"
+        }
+      ]
+    },
+    "handoff": {
+      "speaker": "guest",
+      "presentation": "parenthetical_observation",
+      "text": "（它似乎想喝[b]酸一点、少甜一点[/b]的。）",
+      "reveals_identity": true,
+      "taste_event": "yellow_creature_04",
+      "transition": "resume_existing_dialogue_loop"
+    }
+  },
+  "after_story": {
+    "transition": "resume_existing_dialogue_loop",
+    "dialogue_source": "fixed_order_observation",
+    "preserve_current_guest": true,
+    "leave_on": "drink_served"
+  },
+  "progression": {
+    "mark_completed_on": "story_closing_acknowledged",
+    "next_episode_id": "yellow_creature_05",
+    "start_next_on": "next_guest_visit",
+    "after_last_episode": "repeat_last_visit"
+  }
+}

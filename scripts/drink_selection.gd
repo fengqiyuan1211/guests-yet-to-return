@@ -30,6 +30,7 @@ func _ready() -> void:
 	resized.connect(_fit)
 	_fit()
 	MenuCatalog.changed.connect(_reload)
+	WorkbenchSession.changed.connect(_workbench_changed)
 	_reload()
 
 func _fit() -> void:
@@ -227,7 +228,17 @@ func _manage_menu() -> void:
 		_reload()
 	)
 
+func _workbench_changed() -> void:
+	if not starting: call_deferred("_refresh_current_cup")
+
+func _refresh_current_cup() -> void:
+	if is_inside_tree() and not is_queued_for_deletion(): _reload()
+
 func _resume() -> void:
+	var session: Dictionary = WorkbenchSession.state.session
+	if session.get("status") != "mixing" or str(session.get("id", "")) != replacing_id:
+		_reload()
+		return
 	Navigation.go_to(&"mixing")
 
 func _start() -> void:
