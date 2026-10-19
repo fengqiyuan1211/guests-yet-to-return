@@ -30,6 +30,11 @@ var autoplay = preload("res://scripts/story_autoplay.gd").new()
 var auto_button: Button
 var fast_forward = preload("res://scripts/story_fast_forward.gd").new()
 var speed_hint: Panel
+var scene_cover: ColorRect
+var prop_tween: Tween
+var prop_key := ""
+var water_cup: Control
+var sign_face: Button
 
 func _ready() -> void:
 	OpeningFlow.front_end=true
@@ -47,10 +52,18 @@ func _ready() -> void:
 	props=Control.new()
 	props.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	stage.add_child(props)
+	scene_cover=ColorRect.new()
+	scene_cover.size=Vector2(1600,900)
+	scene_cover.color=Color("10181f")
+	scene_cover.modulate.a=0
+	scene_cover.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	stage.add_child(scene_cover)
 	var chapter:=UI.panel(stage,Rect2(45,30,875,70))
 	heading=UI.label(chapter,Rect2(25,12,825,46),"先把今晚的灯点起来",28)
 	UI.button(stage,Rect2(1035,35,200,48),"历史对话 H",_history,true)
-	UI.button(stage,Rect2(1260,35,290,48),"保存并返回开始",OpeningFlow.return_to_title,true)
+	UI.button(stage,Rect2(1260,35,290,48),"保存并返回开始",func():
+		if not busy: OpeningFlow.return_to_title()
+	,true)
 	speed_hint=UI.panel(stage,Rect2(1220,95,320,44))
 	speed_hint.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	UI.label(speed_hint,Rect2(12,5,296,34),"快进中 ×3 · 松开恢复",21,Color("ffe7a7"))
@@ -126,13 +139,27 @@ func _render() -> void:
 	status.text="回看 · 长按空格 3 倍速 · 不改变经营进度" if OpeningFlow.replaying else "点击/短按继续 · 长按空格 3 倍速 · H 历史"
 	next_button.text=str(row.get("button","继续 · 空格"))
 	next_button.disabled=false
+	if OpeningFlow.replaying and row.get("action")=="finish": next_button.text="结束回看 · 返回开始"
 	background.texture=preload("res://scripts/pixel_art.gd").texture("res://assets/art/saloon-day-unlit-v2.png" if row.background=="saloon" else "res://assets/art/opening/porch.png")
 	background.material.set_shader_parameter("ocean",false)
 	story_audio.present(row,self)
+	if is_instance_valid(prop_tween): prop_tween.kill()
+	props.position=Vector2.ZERO
+	props.modulate=Color.WHITE
 	_clear(props)
+	water_cup=null
+	sign_face=null
 	hint_target=null
 	tip.text=""
 	_render_prop()
+	var next_prop:=str(row.get("prop",""))
+	if next_prop!=prop_key and next_prop in ["parcel","receipt","ledger","sign"]:
+		props.modulate.a=0
+		props.position.y=0 if OpeningFlow.reduced_motion else 18
+		prop_tween=create_tween().set_parallel()
+		prop_tween.tween_property(props,"modulate:a",1.0,.35)
+		prop_tween.tween_property(props,"position:y",0.0,.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	prop_key=next_prop
 	if row.get("action")=="prepare": _show_preparation()
 
 func _paper(rect: Rect2) -> TextureRect:
@@ -171,17 +198,21 @@ func _render_prop() -> void:
 		var image:=preload("res://scripts/workbench_drink_preview.gd").new()
 		image.reference_only=true
 		image.result={"cup":"highball","capacity_ml":300,"contents":{"contents":{"drinking_water":170},"ice":"none","garnish":false},"liquid_profiles":{"drinking_water":{"version":"story-water-1","rgb":[237,247,255],"strength":0.0,"turbidity":0.0}}}
-		image.position=Vector2(1010,205)
-		image.size=Vector2(210,350)
+		image.position=Vector2(970,330) if row.get("action")=="water" else Vector2(860,358)
+		image.size=Vector2(180,235)
+		image.tabletop_shadow=true
+		image.visible=OpeningFlow.state.departure.water or row.get("action")=="water"
 		image.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		props.add_child(image)
-		var caption:=UI.panel(props,Rect2(555,280,430,160))
+		water_cup=image
+		var caption:=UI.panel(props,Rect2(390,235,430,160))
 		UI.label(caption,Rect2(25,25,380,100),"门口的椅子还在。\n给赶路的人，留一杯水。",28)
 	elif prop=="sign":
 		var opened: bool=OpeningFlow.state.departure.opened
 		var paper:=_paper(Rect2(595,235,410,265))
 		paper.rotation=.025
 		var button:=UI.button(props,Rect2(635,285,330,135),"营 业 中" if opened else "准 备 中",_advance)
+		sign_face=button
 		button.add_theme_font_size_override("font_size",42)
 		button.add_theme_color_override("font_color",Color("563a23"))
 		for color_key in ["font_disabled_color","font_hover_color","font_focus_color","font_pressed_color"]:
@@ -234,7 +265,7 @@ func _toggle_auto() -> void:
 
 func _advance() -> void:
 	autoplay.reset()
-	if busy or next_button.disabled or row.is_empty() or is_instance_valid(history_panel) or is_instance_valid(conversation) or is_instance_valid(external_page) or is_instance_valid(preparation): return
+	if busy or OpeningTransition.busy or next_button.disabled or row.is_empty() or is_instance_valid(history_panel) or is_instance_valid(conversation) or is_instance_valid(external_page) or is_instance_valid(preparation): return
 	if dialogue.visible_characters>=0 and dialogue.visible_characters<dialogue.text.length():
 		clock=dialogue.text.length()
 		dialogue.visible_characters=-1
@@ -258,8 +289,72 @@ func _advance() -> void:
 	var i:=current_index()
 	if i+1>=nodes.size(): return
 	patch.node=nodes[i+1].id
-	if OpeningFlow.update_departure(patch): _render()
-	else: status.text=OpeningFlow.last_error
+	if not OpeningFlow.update_departure(patch):
+		status.text=OpeningFlow.last_error
+		return
+	busy=true
+	next_button.disabled=true
+	_cancel_fast_forward()
+	await _perform_action(str(row.get("action","")))
+	var changed_room: bool=nodes[i+1].background!=row.background
+	if changed_room:
+		var out:=create_tween()
+		out.tween_property(scene_cover,"modulate:a",1.0,.3)
+		await out.finished
+	_render()
+	if changed_room:
+		busy=true
+		var reveal:=create_tween()
+		reveal.tween_property(scene_cover,"modulate:a",0.0,.5)
+		await reveal.finished
+		busy=false
+
+func _perform_action(action: String) -> void:
+	if action.is_empty(): return
+	if is_instance_valid(prop_tween): prop_tween.kill()
+	props.position=Vector2.ZERO
+	props.modulate=Color.WHITE
+	if is_instance_valid(hint_target): hint_target.hide()
+	tip.text=""
+	match action:
+		"sign":
+			story_audio.play_cue("paper")
+			var stamp:=UI.label(props,Rect2(790,365,230,60),"已 签 收",36,Color("8b4435"))
+			stamp.pivot_offset=stamp.size*.5
+			stamp.rotation=-.1
+			stamp.scale=Vector2.ONE*(1.0 if OpeningFlow.reduced_motion else 1.25)
+			stamp.modulate.a=0
+			var imprint:=create_tween().set_parallel()
+			imprint.tween_property(stamp,"modulate:a",1.0,.25)
+			imprint.tween_property(stamp,"scale",Vector2.ONE,.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+			await imprint.finished
+			status.text="已签收 · 从今天起，这里有了新的收件人。"
+			await get_tree().create_timer(.6).timeout
+		"water":
+			if is_instance_valid(water_cup):
+				var pass_cup:=create_tween().set_parallel()
+				pass_cup.tween_property(water_cup,"position",Vector2(860,358),.65).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+				pass_cup.tween_property(water_cup,"scale",Vector2.ONE,.65)
+				await pass_cup.finished
+			story_audio.play_cue("clink")
+			status.text="水递过去了。门外的人坐了下来。"
+			await get_tree().create_timer(.45).timeout
+		"open":
+			# Paper and lettering share one hinge so the sign turns as one object.
+			if is_instance_valid(sign_face): sign_face.show()
+			props.pivot_offset=Vector2(800,365)
+			var turn:=create_tween()
+			turn.tween_property(props,"scale:x",.03,.23)
+			await turn.finished
+			if is_instance_valid(sign_face):
+				sign_face.text="营 业 中"
+				sign_face.disabled=true
+			story_audio.play_cue("door")
+			var settle_sign:=create_tween()
+			settle_sign.tween_property(props,"scale:x",1.0,.32).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+			await settle_sign.finished
+			status.text="营业中 · 今晚，先等一位客人。"
+			await get_tree().create_timer(.55).timeout
 
 func _show_preparation() -> void:
 	narrative_panel.hide()
@@ -413,6 +508,7 @@ func _publish() -> void:
 	_render()
 
 func _history() -> void:
+	if busy or OpeningTransition.busy: return
 	if is_instance_valid(history_panel) or is_instance_valid(conversation) or is_instance_valid(external_page) or is_instance_valid(preparation): return
 	_cancel_fast_forward()
 	history_panel=preload("res://scripts/opening_history.gd").new()
@@ -428,6 +524,9 @@ func _close_history() -> void:
 	next_button.grab_focus()
 
 func _input(event: InputEvent) -> void:
+	if busy or OpeningTransition.busy:
+		get_viewport().set_input_as_handled()
+		return
 	if not event is InputEventKey or is_instance_valid(conversation) or is_instance_valid(external_page): return
 	var key: int=event.physical_keycode if event.physical_keycode!=0 else event.keycode
 	if key not in [KEY_SPACE,KEY_ESCAPE,KEY_H,KEY_A]: return

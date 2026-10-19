@@ -294,6 +294,7 @@ func observe_departure(row: Dictionary) -> bool:
 	return update_departure({"seen":seen})
 
 func finish_opening() -> bool:
+	if OpeningTransition.busy: return false
 	if state.phase != "ending": return false
 	if replaying:
 		return_to_title()
@@ -313,6 +314,7 @@ func finish_opening() -> bool:
 	return enter_game()
 
 func enter_game() -> bool:
+	if OpeningTransition.busy: return false
 	if not GameSession.writable or not WorkbenchSession.writable or not SlotWallet.writable or not PlayModes.writable or not Supplies.writable or not MenuCatalog.writable or not StoryDialogue.writable or not CustomerService.writable:
 		last_error = "现有存档需要恢复，已保留原文件，暂未进入游戏。"
 		return false
@@ -320,9 +322,8 @@ func enter_game() -> bool:
 	front_end = false
 	Navigation.current_route = &"home"
 	SaloonAudio.hall_path = ""
-	TimeManager.set_running(true)
-	get_tree().change_scene_to_file("res://scenes/home.tscn")
-	return true
+	TimeManager.set_running(not arrival_pending())
+	return OpeningTransition.go("res://scenes/home.tscn")
 
 func arrival_pending() -> bool:
 	return not replaying and bool(state.get("arrival_pending",false))
@@ -333,6 +334,7 @@ func acknowledge_arrival() -> bool:
 	return _commit(next)
 
 func return_to_title() -> void:
+	if OpeningTransition.busy: return
 	leave_tutorial()
 	if replaying:
 		state = _return_state
@@ -341,4 +343,4 @@ func return_to_title() -> void:
 	front_end = true
 	TimeManager.set_running(false)
 	GameSession.home = null
-	get_tree().change_scene_to_file("res://scenes/title_screen.tscn")
+	OpeningTransition.go("res://scenes/title_screen.tscn","title")

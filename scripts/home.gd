@@ -25,6 +25,8 @@ var _memory_match_started := false
 var _memory_paper: Control
 var mode_button: Button
 var relationship_hint: Button
+var arrival_presenting := false
+var arrival_scene: Control
 
 func _setup_mode_button() -> void:
 	var rail:=find_child("MenuButton",true,false).get_parent()
@@ -43,6 +45,8 @@ func _setup_mode_button() -> void:
 var _memory_lines: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/story_dialogues/stick/memory_event.json"))
 
 func _ready() -> void:
+	arrival_presenting=OpeningFlow.arrival_pending()
+	if arrival_presenting: TimeManager.set_running(false)
 	for activity in preload("res://scripts/guest_activity_rules.gd").IDS:
 		Navigation.register_page(StringName(activity),preload("res://scenes/guest_activity.tscn"))
 	Navigation.register_page(&"stick_demo",preload("res://scenes/stick_badminton_demo.tscn"))
@@ -107,8 +111,10 @@ func _ready() -> void:
 	_on_time_changed(TimeManager.day, TimeManager.minutes_since_midnight)
 	%OpenButton.grab_focus()
 	GameSession.save_game()
-	if OpeningFlow.arrival_pending() and not TimeManager.is_open:
-		TimeManager.start_early()
+	if arrival_presenting:
+		arrival_scene=preload("res://scripts/opening_arrival.gd").new()
+		arrival_scene.home=self
+		%Stage.add_child(arrival_scene)
 
 func _setup_settings_button() -> void:
 	var emblem: TextureRect = find_child("Emblem", true, false)
@@ -184,7 +190,7 @@ func _on_business_opened(_day: int) -> void:
 		else:
 			%GuestLayer.spawn_random_guest()
 	_sync_service_controls()
-	if OpeningFlow.arrival_pending() and GameSession.save_game(): OpeningFlow.acknowledge_arrival()
+	if OpeningFlow.arrival_pending() and not arrival_presenting and GameSession.save_game(): OpeningFlow.acknowledge_arrival()
 	service_preview_started.emit()
 
 func _on_business_closed(completed_day: int) -> void:
@@ -566,7 +572,7 @@ func _refresh_reputation() -> void:
 	_on_customer_changed()
 
 func _refresh_relationship_hint() -> void:
-	if is_instance_valid(relationship_hint): relationship_hint.visible=Navigation.current_route==&"home" and Relationships.guide_pending()
+	if is_instance_valid(relationship_hint): relationship_hint.visible=not arrival_presenting and Navigation.current_route==&"home" and Relationships.guide_pending()
 
 func _on_customer_changed() -> void:
 	var stars := CustomerService.average_stars()
@@ -764,6 +770,9 @@ func _on_game_restarted() -> void:
 	GameSession.save_game()
 
 func _unhandled_key_input(event: InputEvent) -> void:
+	if arrival_presenting or OpeningTransition.busy:
+		get_viewport().set_input_as_handled()
+		return
 	if event.is_action_pressed("ui_cancel") and Navigation.current_route != &"home":
 		Navigation.go_to(&"home")
 		get_viewport().set_input_as_handled()

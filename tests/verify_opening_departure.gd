@@ -15,6 +15,7 @@ func topic_to_end() -> void:
 	check(limit<20,"merchant topic completes by mouse")
 
 func next_line() -> void:
+	while is_instance_valid(page) and page.busy: await get_tree().process_frame
 	page.dialogue.visible_characters=page.dialogue.text.length()
 	await key_press(KEY_SPACE)
 
@@ -107,7 +108,7 @@ func run() -> void:
 	await capture("departure-03-open")
 	get_tree().current_scene=null
 	await next_line()
-	await settle()
+	await settle_opening_transition()
 	var home: Control=get_tree().current_scene
 	page.queue_free()
 	page=null
@@ -181,7 +182,7 @@ func run() -> void:
 	check(OpeningFlow.begin_departure(),"replay departure starts")
 	check(not Relationships.observe_line("merchant_intro",0),"replay cannot modify official merchant relation")
 	OpeningFlow.return_to_title()
-	await settle()
+	await settle_opening_transition()
 	check(Relationships.state==before and SlotWallet.balance==gold and Supplies.inventory.serialize()==baseline,"replay preserves relationship wallet inventory")
 	check(Relationships.load_state() and Relationships.state==before,"relationship record restores durable state")
 	print("DEPARTURE RESUME: %d checks, %d failures" % [count,failures.size()])

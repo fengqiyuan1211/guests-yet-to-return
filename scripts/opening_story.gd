@@ -138,6 +138,11 @@ func _render_mail(node: Dictionary) -> void:
 	var mail: Dictionary=OpeningFlow.story.mail[active_mail_id]
 	var read: bool=OpeningFlow.state.mail_read.get(active_mail_id,false)
 	mail_card=UI.panel(stage,Rect2(690,160,820,255))
+	mail_card.modulate.a=0
+	mail_card.position.y=160 if OpeningFlow.reduced_motion else 145
+	var arrival:=create_tween().set_parallel()
+	arrival.tween_property(mail_card,"modulate:a",1.0,.3)
+	arrival.tween_property(mail_card,"position:y",160.0,.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	UI.label(mail_card,Rect2(28,15,740,32),"邮件  ·  已阅读" if read else "●  收到一封新邮件",20,Color("eac88d"))
 	UI.label(mail_card,Rect2(28,55,740,48),str(mail.subject),30)
 	UI.label(mail_card,Rect2(28,109,740,31),str(mail.sender),20,Color("caba9e"))
@@ -232,8 +237,11 @@ func _advance() -> void:
 	else: error_label.text=OpeningFlow.last_error
 
 func _skip() -> void:
-	if ending or is_instance_valid(history_panel) or is_instance_valid(mail_reader): return
-	if OpeningFlow.begin_tutorial(): get_tree().change_scene_to_file("res://scenes/workbench.tscn")
+	if busy or OpeningTransition.busy or ending or is_instance_valid(history_panel) or is_instance_valid(mail_reader): return
+	_cancel_fast_forward()
+	if OpeningFlow.begin_tutorial():
+		busy=true
+		OpeningTransition.go("res://scenes/workbench.tscn","workbench")
 	else: error_label.text=OpeningFlow.last_error
 
 func _open_history() -> void:
@@ -262,6 +270,9 @@ func _focus_story_action() -> void:
 				break
 
 func _input(event: InputEvent) -> void:
+	if OpeningTransition.busy:
+		get_viewport().set_input_as_handled()
+		return
 	if not is_instance_valid(dialogue): return
 	# Reserved story keys run before Control's ui_accept (Space). Consuming both
 	# edges prevents focused History/Skip buttons from firing on key release.

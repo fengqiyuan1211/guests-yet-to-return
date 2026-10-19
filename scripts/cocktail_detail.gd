@@ -44,7 +44,7 @@ func _rule(parent: Node, rect: Rect2) -> void:
 	line.size = rect.size
 	parent.add_child(line)
 
-func _texture(parent: Node, rect: Rect2, texture: Texture2D) -> void:
+func _texture(parent: Node, rect: Rect2, texture: Texture2D, stretch := TextureRect.STRETCH_KEEP_ASPECT_CENTERED) -> void:
 	if texture == null:
 		return
 	var picture := TextureRect.new()
@@ -52,12 +52,13 @@ func _texture(parent: Node, rect: Rect2, texture: Texture2D) -> void:
 	picture.size = rect.size
 	picture.texture = texture
 	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	picture.stretch_mode = stretch
 	picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(picture)
 
 func _background() -> void:
-	_texture(self, Rect2(Vector2.ZERO, size), paper)
+	# Paper fills the complete three-column page; artwork keeps its own aspect ratio.
+	_texture(self, Rect2(Vector2.ZERO, size), paper, TextureRect.STRETCH_SCALE)
 	_rule(self, Rect2(134, 100, 1040, 6))
 	for x in [465, 844]:
 		var line := ColorRect.new()
@@ -127,16 +128,17 @@ func _left_column() -> void:
 		add_child(bar)
 		_label(self, Rect2(398, y - 4, 38, 28), str(int(recipe.get(fields[i], 0))), 19, INK, HORIZONTAL_ALIGNMENT_RIGHT)
 	_label(self, Rect2(145, 576, 292, 22), "统一感官试算 · 策划原值已保留" if recipe.has("design_attributes") else "试调记录 · 感官数值", 14, MUTED)
-	_label(self, Rect2(145, 600, 250, 35), "风味标签", 23)
-	_rule(self, Rect2(140, 622, 298, 5))
+	_label(self, Rect2(145, 600, 250, 32), "风味标签", 23)
+	_rule(self, Rect2(140, 634, 298, 5))
+	var flavor_scroll := _scroll(self, Rect2(146, 644, 288, 45))
+	flavor_scroll.name = "FlavorScroll"
 	var flavors := HFlowContainer.new()
 	flavors.name = "FlavorTags"
-	flavors.position = Vector2(146, 636)
-	flavors.size = Vector2(288, 49)
+	flavors.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	flavors.add_theme_constant_override("h_separation", 24)
 	flavors.add_theme_constant_override("v_separation", 4)
 	flavors.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(flavors)
+	flavor_scroll.add_child(flavors)
 	for tag in recipe.get("flavor_tags", []):
 		var text := Label.new()
 		text.text = str(tag)
@@ -226,8 +228,12 @@ func _ingredients_column() -> void:
 		title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_label(self, Rect2(489, 611, 315, 32), "制作过程", 23)
 	_rule(self, Rect2(482, 643, 343, 5))
-	var method := _label(self, Rect2(491, 653, 330, 40), str(recipe.get("preparation", "")), 17, MUTED)
-	method.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var method_scroll := _scroll(self, Rect2(491, 653, 330, 36))
+	method_scroll.name = "MethodScroll"
+	var methods := VBoxContainer.new()
+	methods.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	method_scroll.add_child(methods)
+	_flow_label(methods, str(recipe.get("preparation", "")), 17, MUTED)
 
 func _scroll(parent: Node, rect: Rect2) -> ScrollContainer:
 	var scroll := ScrollContainer.new()

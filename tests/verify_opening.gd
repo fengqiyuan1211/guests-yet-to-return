@@ -20,6 +20,13 @@ func op(kind: String,payload: Dictionary={}) -> bool:
 func settle() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
+func settle_opening_transition() -> void:
+	if OpeningTransition.busy: await OpeningTransition.finished
+	await settle()
+	var destination:=get_tree().current_scene
+	if is_instance_valid(destination) and destination.get("arrival_presenting")==true:
+		await destination.arrival_scene.completed
+	await settle()
 func key_press(code: Key) -> void:
 	for down in [true,false]:
 		var event:=InputEventKey.new()
@@ -363,11 +370,20 @@ func run() -> void:
 	check(float(page.data.result.evaluation.score)>=95,"correct midnight herbal recipe receives high quality")
 	page._result()
 	await capture("06-result")
-	check(OpeningFlow.finish_tutorial(),"real finished cup completes tutorial")
+	get_tree().current_scene=null
+	var tutorial_page:=page
+	tutorial_page._finish_tutorial()
+	check(tutorial_page.tutorial_departing,"real finished cup starts handoff animation")
+	while not OpeningTransition.busy: await get_tree().process_frame
+	await settle_opening_transition()
+	check(OpeningFlow.state.phase=="ending","animated handoff completes tutorial")
+	tutorial_page.queue_free()
+	page=get_tree().current_scene
+	await settle()
 	check(not WorkbenchSession.tutorial_active,"leaving restores normal workshop")
 	check(Supplies.inventory.serialize()==baseline and SlotWallet.balance==wallet_before,"full tutorial preserves warehouse wallet")
 	check(WorkbenchSession.state.session==bench_before.session,"normal work in progress restored exactly")
-	await show_scene("res://scenes/opening_departure.tscn")
+	check(page.scene_file_path.ends_with("opening_departure.tscn"),"handoff enters the post-tutorial story directly")
 	await capture("07-ready-to-open")
 	check(not OpeningFlow.finish_opening(),"opening cannot bypass stock and sign")
 	check(Supplies.purchase("sku_tonic_water",1),"buy actual first-night shortage")
@@ -376,7 +392,7 @@ func run() -> void:
 	baseline=Supplies.inventory.serialize().duplicate(true)
 	get_tree().current_scene=null
 	check(OpeningFlow.finish_opening(),"opening enters real home")
-	await settle()
+	await settle_opening_transition()
 	check(OpeningFlow.state.phase=="ready" and OpeningFlow.state.reward_claimed,"completion durable")
 	check(MenuCatalog.unlocked_ids.has("echo_world"),"echo unlocked in codex")
 	TimeManager._process(5)
@@ -389,7 +405,7 @@ func run() -> void:
 	check(OpeningFlow.begin_tutorial(),"replay uses isolated practice materials")
 	check(OpeningFlow.finish_tutorial(true),"optional skip leads to ending")
 	check(OpeningFlow.finish_opening(),"replay returns to title")
-	await settle()
+	await settle_opening_transition()
 	check(OpeningFlow.state==actual_state and not OpeningFlow.replaying,"replay restores actual story phase")
 	check(StoryDialogue.session_snapshot()==story_before and Supplies.inventory.serialize()==baseline,"replay does not change formal guest or stock")
 	print("OPENING: %d checks, %d failures" % [count,failures.size()])

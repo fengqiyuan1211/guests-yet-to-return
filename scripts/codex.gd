@@ -38,7 +38,7 @@ var research_button: Button
 func _ready() -> void:
 	_load_settings()
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	paper = load("res://assets/pixel_b/paper.svg")
+	paper = load("res://assets/pixel_b/journal-paper-wide.svg")
 	_build_frame()
 	page_content = _make_page(page_index)
 	page_content.position = PAGE_ORIGIN
@@ -336,9 +336,13 @@ func _build_controls() -> void:
 	next_button.name = "NextPage"
 	next_button.tooltip_text = "下一页 · →"
 	next_button.pressed.connect(turn_page.bind(1))
-	navigation_hint = _label(self, Rect2(260, 860, 850, 28), "轻点卡片查看酒谱  ·  轻点纸张两侧，或左右滑动翻页", 15, Color("d2b789"))
-	research_button=_button(Rect2(1245,853,280,42),"以此研发 →")
-	for color_key in ["font_color","font_hover_color","font_pressed_color"]: research_button.add_theme_color_override(color_key,Color("efdab3"))
+	# Keep page help in the gap below the top bar, and put
+	# the detail action beside its return control instead of over the version label.
+	navigation_hint = _label(self, Rect2(430, 102, 1100, 20), "轻点卡片查看酒谱  ·  轻点纸张两侧，或左右滑动翻页", 14, Color("d2b789"))
+	research_button=_button(Rect2(PAGE_ORIGIN+Vector2(136,68),Vector2(170,28)),"以此研发 →")
+	research_button.name="ResearchFromRecipe"
+	research_button.add_theme_font_size_override("font_size",19)
+	for color_key in ["font_color","font_hover_color","font_pressed_color"]: research_button.add_theme_color_override(color_key,INK)
 	research_button.pressed.connect(func():
 		Navigation.research_view="entry"
 		Navigation.research_base_id=detail_id

@@ -96,6 +96,7 @@ func _fit() -> void:
 	stage.position=(size-stage.size*scale_factor)*.5
 
 func _continue() -> void:
+	if OpeningTransition.busy: return
 	var phase:=str(OpeningFlow.state.phase)
 	if phase=="new" and not OpeningFlow.begin_story():
 		hint.text=OpeningFlow.last_error
@@ -103,10 +104,10 @@ func _continue() -> void:
 	if phase=="ready":
 		if not OpeningFlow.enter_game(): hint.text=OpeningFlow.last_error
 	elif phase=="tutorial":
-		if OpeningFlow.begin_tutorial(): get_tree().change_scene_to_file("res://scenes/workbench.tscn")
+		if OpeningFlow.begin_tutorial(): OpeningTransition.go("res://scenes/workbench.tscn","workbench")
 		else: hint.text=OpeningFlow.last_error
-	elif phase=="ending": get_tree().change_scene_to_file("res://scenes/opening_departure.tscn")
-	else: get_tree().change_scene_to_file("res://scenes/opening_story.tscn")
+	elif phase=="ending": OpeningTransition.go("res://scenes/opening_departure.tscn")
+	else: OpeningTransition.go("res://scenes/opening_story.tscn","opening_solitude")
 
 func _close() -> void:
 	if is_instance_valid(modal):
@@ -133,14 +134,16 @@ func _ask_new() -> void:
 	text.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	UI.button(p,Rect2(44,442,350,70),"保留当前旅程",_close).grab_focus()
 	UI.button(p,Rect2(510,442,400,70),"备份后开始新旅程",func():
+		if OpeningTransition.busy: return
 		if GameSession.restart_game():
-			get_tree().change_scene_to_file("res://scenes/opening_story.tscn")
+			OpeningTransition.go("res://scenes/opening_story.tscn","opening_solitude")
 		else: text.text=GameSession.last_error
 	)
 	_wire_hover(p)
 
 func _replay() -> void:
-	if OpeningFlow.begin_replay(): get_tree().change_scene_to_file("res://scenes/opening_story.tscn")
+	if OpeningTransition.busy: return
+	if OpeningFlow.begin_replay(): OpeningTransition.go("res://scenes/opening_story.tscn","opening_solitude")
 	else: hint.text=OpeningFlow.last_error
 
 func _settings() -> void:

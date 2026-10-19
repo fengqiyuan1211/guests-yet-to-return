@@ -48,6 +48,7 @@ var serve_armed := false
 var technique := "shake"
 var category := "基酒"
 var pending_item := ""
+var tutorial_departing := false
 var data: Dictionary = {}
 var counter := 0
 var dose_overrides: Dictionary = {}
@@ -502,6 +503,7 @@ func _act(kind: String,payload: Dictionary={}) -> void:
 		_rebuild_context()
 
 func _refresh() -> void:
+	if tutorial_departing: return
 	data=WorkbenchSession.snapshot().session
 	table.set_materials(WorkbenchSession.state.get("table_materials",[]))
 	table.apply_snapshot(data)
@@ -898,7 +900,7 @@ func _result() -> void:
 	_text(p,Rect2(34,20,800,30),"这一杯的出品",23,INK)
 	if WorkbenchSession.tutorial_active:
 		_button(p,Rect2(40,705,360,44),"重做练习 · 不扣仓库",_restart)
-		_button(p,Rect2(525,705,435,44),"记下这一杯，准备开门 · 空格",_finish_tutorial,true)
+		_button(p,Rect2(525,705,435,44),"把这一杯递过去 · 空格",_finish_tutorial,true)
 		pending_confirm=_finish_tutorial
 		return
 	if WorkbenchSession.is_research(data):
@@ -1084,6 +1086,9 @@ func _log() -> void:
 	scroll.add_child(label)
 
 func _input(event: InputEvent) -> void:
+	if tutorial_departing or OpeningTransition.busy:
+		get_viewport().set_input_as_handled()
+		return
 	if is_instance_valid(image_dialog): return
 	if is_instance_valid(external_page): return
 	var focus:=get_viewport().gui_get_focus_owner()
@@ -1166,9 +1171,43 @@ func _skip_tutorial() -> void:
 	pending_confirm=_finish_tutorial.bind(true)
 
 func _finish_tutorial(skipped := false) -> void:
+	if tutorial_departing or OpeningTransition.busy: return
+	var completed_cup: Dictionary=data.get("result",{}).duplicate(true)
+	tutorial_departing=true
 	if OpeningFlow.finish_tutorial(skipped):
-		get_tree().change_scene_to_file("res://scenes/opening_departure.tscn")
-	else: status_label.text=OpeningFlow.last_error
+		sfx.silence()
+		table.stop_gesture()
+		SaloonAudio.set_scene_context(self,"opening_home")
+		var handoff:=Control.new()
+		handoff.size=Vector2(1600,900)
+		handoff.mouse_filter=Control.MOUSE_FILTER_STOP
+		surface.add_child(handoff)
+		var backdrop:=TextureRect.new()
+		backdrop.texture=load(preload("res://scripts/saloon_composition.gd").BACKGROUND_PATH)
+		backdrop.size=handoff.size
+		backdrop.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+		backdrop.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
+		backdrop.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		handoff.add_child(backdrop)
+		handoff.modulate.a=0
+		var reveal:=create_tween()
+		reveal.tween_property(handoff,"modulate:a",1.0,.4)
+		if not skipped:
+			var cup:=preload("res://scripts/workbench_drink_preview.gd").new()
+			cup.result=completed_cup
+			cup.reference_only=true
+			cup.tabletop_shadow=true
+			cup.position=Vector2(1000,368 if OpeningFlow.reduced_motion else 410)
+			cup.size=Vector2(240,270)
+			handoff.add_child(cup)
+			reveal.tween_property(cup,"position:y",368.0,.75).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		await reveal.finished
+		sfx.tap()
+		await get_tree().create_timer(.35).timeout
+		OpeningTransition.go("res://scenes/opening_departure.tscn")
+	else:
+		tutorial_departing=false
+		status_label.text=OpeningFlow.last_error
 
 func _material_info(id: String) -> Dictionary:
 	return WorkbenchSession.MATERIALS.get(id,WorkbenchSession.SOLIDS.get(id,WorkbenchSession.GARNISHES.get(id,{})))

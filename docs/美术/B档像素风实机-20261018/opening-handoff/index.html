@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>序章与营业衔接 · Godot 实机</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#161d20;color:#f0e2c6;font:16px/1.75 system-ui,-apple-system,sans-serif}main{max-width:1320px;margin:auto;padding:48px 24px 72px}.eyebrow{color:#bd9d69;letter-spacing:.2em;font-size:13px}h1{font-size:clamp(26px,4vw,42px);margin:8px 0 16px;font-weight:550}header p{max-width:880px;color:#c7c0b3}nav{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0}nav span{padding:8px 16px;background:#223333;border:1px solid #47635d;font-size:14px;border-radius:4px}article{margin:32px 0 42px;background:#20292b;border:1px solid #475149;border-radius:8px;overflow:hidden}.caption{display:flex;gap:22px;padding:22px 26px}.caption>span{color:#c7a566;font-size:26px}.caption h2{margin:0;font-size:21px;font-weight:550}.caption p{color:#c6c4b7;margin:4px 0 0}.shot{width:100%;padding:0;border:0;background:#101619;display:block;cursor:zoom-in}.shot img{width:100%;height:auto;display:block}aside{border-left:3px solid #73998b;background:#202b2c;padding:20px 24px;color:#d1d1bf}aside p{margin:6px 0}footer{margin-top:24px;color:#899895;font-size:14px}a{color:#dcbd86}dialog{padding:0;border:1px solid #a38a59;background:#111;max-width:96vw;max-height:96vh}dialog::backdrop{background:#000d}dialog img{display:block;max-width:95vw;max-height:90vh;object-fit:contain}dialog button{position:absolute;right:8px;top:8px;background:#182328;color:#fff;border:1px solid #bfa56d;padding:8px 15px;cursor:pointer}
+</style>
+<main><header><div class="eyebrow">致未归的客人 / GODOT 实际运行截图 / 2026.10.19</div><h1>从“学会调酒”，到“我来开门”</h1><p>这一版补齐教程递杯、开业交接和正式营业之间的动作与停顿。下面均为 Godot 实机截图；图片展示动作的关键帧，实际游戏包含移动、翻面、淡入淡出和声音。</p><nav><span>教程结果 → 把酒递过去</span><span>签收 · 递水 · 备料</span><span>翻牌 → 空酒馆 → 来客</span><span>界面淡入 → 接管营业</span></nav></header>
+<div id="shots"></div>
+<aside><strong>交互和进度处理</strong><p>短按空格或点击继续；签收、递水、翻牌有完成反馈。长按空格 3 倍速仍保留，新加入的进店演出也支持。</p><p>跨场景时会先接住画面，并等待空格或鼠标松开后再恢复输入，避免一次按键误触下一页。正常开业直接进入酒馆；回看序章结束仍返回开始界面，按钮会明确说明。</p><p>演出期间暂停营业计时。购物仍使用真实库存和金币；教学杯不消耗仓库，演出不会重复结算。中断入场后恢复同一位客人和对话进度。</p></aside>
+<footer>检查覆盖：完整教学杯交接、商店备料、重复按键、长按跨场景、开业中断重启、回看与旧存档。<a href="../opening-revision/">查看上一轮序章画面调整</a></footer></main>
+<dialog><button aria-label="关闭放大图">关闭 ×</button><img alt="放大的实机截图"></dialog>
+<script>
+const shots=[
+['01-signed-receipt','签收有落点','点一下签收或按空格，纸面出现签收标记，并短暂停留后接上投递员的回答。'],
+['02-water-delivered','给赶路的人留一杯水','杯子向门口移过去，停在木桶台面上。缩小杯子并加接触阴影，让递水动作有明确终点。'],
+['03-sign-open','亲手把营业牌翻过来','牌子连同文字一起翻面，再出现“营业中”。动作完成前不会被连点越过。'],
+['04-empty-saloon','先留一口气','开门后先进入空酒馆，绿桌垫与营业场景保持一致。经营按钮暂时不出现，主角说完自己的心声。'],
+['05-first-guest','第一位客人出现','开门声响起，米洛入场。先以“门口的客人”称呼，保留后续正式自我介绍。'],
+['06-business-ready','把操作交还给玩家','对话栏、来客信息和经营界面淡入，随后恢复营业计时，继续原有的第一位客人剧情。']
+];
+document.querySelector('#shots').innerHTML=shots.map(([file,title,desc],i)=>`<article><div class="caption"><span>0${i+1}</span><div><h2>${title}</h2><p>${desc}</p></div></div><button class="shot" aria-label="放大：${title}"><img src="${file}.png" alt="${title}" loading="lazy"></button></article>`).join('');
+const d=document.querySelector('dialog');document.querySelectorAll('.shot').forEach(b=>b.onclick=()=>{const i=b.querySelector('img');d.querySelector('img').src=i.src;d.querySelector('img').alt=i.alt;d.showModal()});d.querySelector('button').onclick=()=>d.close();d.onclick=e=>{if(e.target===d)d.close()};
+</script></html>
