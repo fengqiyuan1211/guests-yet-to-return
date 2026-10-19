@@ -1,9 +1,9 @@
 extends Control
 signal close_requested
-const PAPER=preload("res://assets/codex/journal-paper-v1.png")
+const PAPER=preload("res://assets/pixel_b/paper.svg")
 const Preview=preload("res://scripts/workbench_drink_preview.gd")
 const Research=preload("res://scripts/research_data.gd")
-const DESK=preload("res://assets/research/research-desk-v1.png")
+const DESK=preload("res://assets/pixel_b/v2/research.png")
 const Hotspot=preload("res://scripts/research_desk_hotspot.gd")
 const INK=Color("513921")
 const MUTED=Color("806243")
@@ -54,7 +54,7 @@ func _ready() -> void:
 	badge_style.bg_color=Color("f1dfba")
 	badge_style.border_color=Color("956d3b")
 	badge_style.set_border_width_all(2)
-	badge_style.set_corner_radius_all(5)
+	badge_style.set_corner_radius_all(0)
 	surface.add_child(badge)
 	badge.add_theme_stylebox_override("panel",badge_style)
 	balance=_label(badge,Rect2(16,8,185,38),"",24)
@@ -65,7 +65,7 @@ func _ready() -> void:
 	message_style.bg_color=Color(.12,.075,.035,.9)
 	message_style.border_color=Color("9e7944")
 	message_style.set_border_width_all(1)
-	message_style.set_corner_radius_all(6)
+	message_style.set_corner_radius_all(0)
 	message_panel.add_theme_stylebox_override("panel",message_style)
 	message_panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	surface.add_child(message_panel)
@@ -120,7 +120,7 @@ func _button(parent: Node, rect: Rect2, text: String, callback: Callable) -> But
 		style.bg_color=Color("735133") if state_name=="normal" else Color("936a42")
 		style.border_color=Color("ba945c")
 		style.set_border_width_all(2)
-		style.set_corner_radius_all(6)
+		style.set_corner_radius_all(0)
 		button.add_theme_stylebox_override(state_name,style)
 	button.pressed.connect(callback)
 	parent.add_child(button)

@@ -28,7 +28,7 @@ func _ready() -> void:
 	paper.size=Vector2(1168,337)
 	var style:=StyleBoxFlat.new()
 	style.bg_color=Color("f0e2c6")
-	style.set_corner_radius_all(5)
+	style.set_corner_radius_all(0)
 	paper.add_theme_stylebox_override("panel",style)
 	p.add_child(paper)
 	reader=RichTextLabel.new()

@@ -21,9 +21,9 @@ const POS := {"jigger": Vector2(738,665), "shaker": Vector2(465,615), "mixing": 
 const NAMES := {"jigger":"量酒器","shaker":"三件式摇壶","mixing":"搅拌杯","glass":"成品杯","lid":"摇壶滤盖","cap":"摇壶顶盖","spoon":"吧勺","strainer":"滤冰器","muddler":"轻压棒","bottle":"取用的材料"}
 const RECTS := {
 	"mixing":Rect2(145,525,150,230), "glass":Rect2(1030,330,185,240),
-	"shaker":Rect2(375,535,180,260), "jigger":Rect2(695,625,85,150),
+	"shaker":Rect2(375,510,180,255), "jigger":Rect2(695,610,85,150),
 	"lid":Rect2(560,535,100,85), "cap":Rect2(563,630,48,38),
-	"spoon":Rect2(292,535,35,205), "strainer":Rect2(1090,720,130,130),
+	"spoon":Rect2(292,535,35,205), "strainer":Rect2(1090,685,115,85),
 	"muddler":Rect2(1160,535,66,180)
 }
 var materials: Array = []
@@ -106,11 +106,11 @@ var background: Texture2D
 var lighting: TextureRect
 
 func _init() -> void:
-	texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 
 func _ready() -> void:
 	if ResourceLoader.exists(Art.ROOT+"background.png"):
-		background = load(Art.ROOT+"background.png")
+		background = preload("res://scripts/pixel_art.gd").texture(Art.ROOT+"background.png")
 	lighting=preload("res://scripts/workbench_day_night.gd").new()
 	lighting.size=Vector2(1600,900)
 	lighting.show_behind_parent=true
@@ -301,8 +301,8 @@ func _destination(point: Vector2) -> String:
 
 func _rect(id: String) -> Rect2:
 	if data.get("lid",false):
-		if id=="lid": return Rect2(376,440,178,150)
-		if id=="cap": return Rect2(439,421,52,50)
+		if id=="lid": return Rect2(376,415,178,150)
+		if id=="cap": return Rect2(430,411,70,60)
 	if id=="bottle": return bottle_rect(bottle)
 	return RECTS[id]
 
@@ -450,7 +450,9 @@ func _draw() -> void:
 		if vessel.get("garnish",false):
 			var ages: Array=[]
 			for time in garnish_effects.get(id,[]): ages.append(clock-float(time))
-			Garnish.draw(self,fill_rect,WorkbenchSession.garnishes(vessel),ages,clock,coupe_shape,shape)
+			var pivot:=rect.position+Vector2(rect.size.x*.5,rect.size.y)
+			var garnish_frame:=Transform2D(0,pivot)*Transform2D(angle,Vector2.ZERO)*Transform2D(0,-pivot)
+			Garnish.draw(self,fill_rect,WorkbenchSession.garnishes(vessel),ages,clock,coupe_shape,shape,garnish_frame)
 		if id=="jigger" and not dragging: _draw_jigger_marks(rect,qty)
 		if (id==hover or id==selected) and not pouring:
 			_ellipse(rect.position+Vector2(rect.size.x*.5,rect.size.y+3),Vector2(rect.size.x*.48,5),Color(.93,.72,.34,.30))
@@ -650,7 +652,7 @@ func shaker_drag_pose() -> Transform2D:
 func shaker_pour_pose(progress: float=-1.0) -> Transform2D:
 	if progress<0: progress=animation_progress
 	var rest: Vector2=POS.shaker
-	var mouth: Vector2=Vector2(465,440) if data.get("lid",false) else Vector2(465,546)
+	var mouth: Vector2=Vector2(465,415) if data.get("lid",false) else rim_point("shaker")
 	var target_id:=animated_destination if animated_destination in POS else "glass"
 	var side:=1.0 if rim_point(target_id).x>rest.x else -1.0
 	var angle:=side*1.05
@@ -663,7 +665,7 @@ func shaker_pour_pose(progress: float=-1.0) -> Transform2D:
 func _draw_pourable_shaker() -> void:
 	var pouring_now:=animated_source=="shaker"
 	var pose:=shaker_pour_pose() if pouring_now else shaker_drag_pose()
-	_ellipse(Vector2(465,790),Vector2(80,9),Color(0,0,0,.18))
+	_ellipse(Vector2(465,765),Vector2(80,9),Color(0,0,0,.18))
 	_sprite("shaker",_rect("shaker"),0,Color.WHITE,pose)
 	if data.get("lid",false):
 		_sprite("lid",_rect("lid"),0,Color.WHITE,pose)
@@ -671,7 +673,7 @@ func _draw_pourable_shaker() -> void:
 		if pouring_now: _sprite("cap",RECTS.cap)
 		else: _sprite("cap",_rect("cap"),0,Color.WHITE,pose)
 	if pouring_now and animation_progress>.24 and animation_progress<.82:
-		var mouth: Vector2=Vector2(465,440) if data.get("lid",false) else Vector2(465,546)
+		var mouth: Vector2=Vector2(465,415) if data.get("lid",false) else rim_point("shaker")
 		var flow:=smoothstep(.24,.32,animation_progress)*(1-smoothstep(.62,.72,animation_progress))
 		Liquid.stream(self,(pose if animation_progress<.72 else shaker_pour_pose(.65))*mouth,liquid_impact_point(animated_destination),stream_color(),clock,flow,maxf(0,(animation_progress-.62)/.20))
 	elif moving_shaker:
@@ -695,7 +697,7 @@ func _draw_held_shaker() -> void:
 				var t:=i/17.0
 				arc.append(center+Vector2(side*(116+sin(t*PI)*12),lerpf(-58,58,t)))
 			draw_polyline(arc,Color(.94,.84,.61,.35*motion_energy),1.8,true)
-	var shadow := Vector2(465,790).lerp(Vector2(625,790),lift_blend)
+	var shadow := Vector2(465,765).lerp(Vector2(625,765),lift_blend)
 	_ellipse(shadow,Vector2(88+lift_blend*40,9+lift_blend*5),Color(0,0,0,.23-lift_blend*.13))
 	_sprite("shaker",_rect("shaker"),0,Color.WHITE,pose)
 	if data.get("lid",false):

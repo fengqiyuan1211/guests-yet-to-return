@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-19",
+  "tool": "image_gen built-in",
+  "prompt": "Use case: precise-object-edit. Edit this pixel-art 2-column by 3-row storyboard atlas, exact same 1672x941 size and grid. Change ONLY the TWO seated silhouettes in the MIDDLE-RIGHT panel (bounds x836-1672,y314-627): both must now be clearly adult MEN seen strictly from behind, no face visible. The left figure currently has long shoulder length hair: replace with masculine short cropped hair, exposed nape, modestly broader shoulders, dark collared jacket. Right figure also adult man with short hair and dark jacket. Natural adult proportions, two different subtle builds. Keep their seating positions, stool heights, gestures, silhouettes scale and dark anonymity. Maintain warm lantern rim lighting, existing chunky pixel clusters and nighttime blue city vista. Keep all other pixels/objects/architecture of this panel as close as possible, and all five other panels unchanged. Do not add writing, UI, beard profiles, faces or extra people. Output same entire 2x3 atlas composition; not a collage redesign.",
+  "source": "/Users/wit/.codex/generated_images/01a14db2-8e33-7ff0-988b-05063d02389d/exec-22feedf0-303e-4e05-80f3-b752de9adbe1.png",
+  "region": [
+    836,
+    314,
+    836,
+    313
+  ],
+  "note": "Only middle-right panel used; original atlas preserved for all other scenes."
+}

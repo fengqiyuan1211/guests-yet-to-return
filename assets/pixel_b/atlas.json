@@ -1,0 +1,672 @@
+{
+  "gin_london_dry": {
+    "sheet": "bottles",
+    "rect": [
+      136,
+      14,
+      126,
+      330
+    ],
+    "path": "res://assets/pixel_b/sprites/gin_london_dry.tres"
+  },
+  "bleu_de_minuit": {
+    "sheet": "bottles",
+    "rect": [
+      382,
+      35,
+      137,
+      309
+    ],
+    "path": "res://assets/pixel_b/sprites/bleu_de_minuit.tres"
+  },
+  "green_chartreuse": {
+    "sheet": "bottles",
+    "rect": [
+      631,
+      34,
+      136,
+      310
+    ],
+    "path": "res://assets/pixel_b/sprites/green_chartreuse.tres"
+  },
+  "maraschino": {
+    "sheet": "bottles",
+    "rect": [
+      884,
+      40,
+      133,
+      304
+    ],
+    "path": "res://assets/pixel_b/sprites/maraschino.tres"
+  },
+  "white_rum": {
+    "sheet": "bottles",
+    "rect": [
+      130,
+      344,
+      132,
+      334
+    ],
+    "path": "res://assets/pixel_b/sprites/white_rum.tres"
+  },
+  "vodka": {
+    "sheet": "bottles",
+    "rect": [
+      379,
+      344,
+      146,
+      333
+    ],
+    "path": "res://assets/pixel_b/sprites/vodka.tres"
+  },
+  "tequila": {
+    "sheet": "bottles",
+    "rect": [
+      618,
+      344,
+      162,
+      334
+    ],
+    "path": "res://assets/pixel_b/sprites/tequila.tres"
+  },
+  "cointreau": {
+    "sheet": "bottles",
+    "rect": [
+      873,
+      344,
+      155,
+      334
+    ],
+    "path": "res://assets/pixel_b/sprites/cointreau.tres"
+  },
+  "rye_whiskey": {
+    "sheet": "bottles",
+    "rect": [
+      123,
+      695,
+      151,
+      313
+    ],
+    "path": "res://assets/pixel_b/sprites/rye_whiskey.tres"
+  },
+  "sweet_red_vermouth": {
+    "sheet": "bottles",
+    "rect": [
+      388,
+      695,
+      133,
+      313
+    ],
+    "path": "res://assets/pixel_b/sprites/sweet_red_vermouth.tres"
+  },
+  "angostura_bitters": {
+    "sheet": "bottles",
+    "rect": [
+      645,
+      742,
+      114,
+      266
+    ],
+    "path": "res://assets/pixel_b/sprites/angostura_bitters.tres"
+  },
+  "blue_curacao": {
+    "sheet": "bottles",
+    "rect": [
+      878,
+      704,
+      151,
+      304
+    ],
+    "path": "res://assets/pixel_b/sprites/blue_curacao.tres"
+  },
+  "tonic_water": {
+    "sheet": "bottles",
+    "rect": [
+      133,
+      1032,
+      129,
+      320
+    ],
+    "path": "res://assets/pixel_b/sprites/tonic_water.tres"
+  },
+  "soda_water": {
+    "sheet": "bottles",
+    "rect": [
+      387,
+      1038,
+      132,
+      314
+    ],
+    "path": "res://assets/pixel_b/sprites/soda_water.tres"
+  },
+  "cola": {
+    "sheet": "bottles",
+    "rect": [
+      635,
+      1032,
+      131,
+      320
+    ],
+    "path": "res://assets/pixel_b/sprites/cola.tres"
+  },
+  "simple_syrup": {
+    "sheet": "bottles",
+    "rect": [
+      886,
+      1038,
+      136,
+      314
+    ],
+    "path": "res://assets/pixel_b/sprites/simple_syrup.tres"
+  },
+  "lime_juice": {
+    "sheet": "ingredients",
+    "rect": [
+      87,
+      39,
+      197,
+      323
+    ],
+    "path": "res://assets/pixel_b/sprites/lime_juice.tres"
+  },
+  "lemon_juice": {
+    "sheet": "ingredients",
+    "rect": [
+      440,
+      39,
+      198,
+      323
+    ],
+    "path": "res://assets/pixel_b/sprites/lemon_juice.tres"
+  },
+  "lime_wedge": {
+    "sheet": "ingredients",
+    "rect": [
+      724,
+      109,
+      358,
+      253
+    ],
+    "path": "res://assets/pixel_b/sprites/lime_wedge.tres"
+  },
+  "lemon_slice": {
+    "sheet": "ingredients",
+    "rect": [
+      1150,
+      140,
+      254,
+      222
+    ],
+    "path": "res://assets/pixel_b/sprites/lemon_slice.tres"
+  },
+  "mint_sprig": {
+    "sheet": "ingredients",
+    "rect": [
+      21,
+      362,
+      341,
+      362
+    ],
+    "path": "res://assets/pixel_b/sprites/mint_sprig.tres"
+  },
+  "mint_leaf": {
+    "sheet": "ingredients",
+    "rect": [
+      362,
+      362,
+      362,
+      362
+    ],
+    "path": "res://assets/pixel_b/sprites/mint_leaf.tres"
+  },
+  "white_cane_sugar": {
+    "sheet": "ingredients",
+    "rect": [
+      724,
+      362,
+      362,
+      360
+    ],
+    "path": "res://assets/pixel_b/sprites/white_cane_sugar.tres"
+  },
+  "cocktail_cherry": {
+    "sheet": "ingredients",
+    "rect": [
+      1086,
+      362,
+      296,
+      362
+    ],
+    "path": "res://assets/pixel_b/sprites/cocktail_cherry.tres"
+  },
+  "standard_cube": {
+    "sheet": "ingredients",
+    "rect": [
+      41,
+      724,
+      321,
+      306
+    ],
+    "path": "res://assets/pixel_b/sprites/standard_cube.tres"
+  },
+  "crushed_ice": {
+    "sheet": "ingredients",
+    "rect": [
+      386,
+      724,
+      338,
+      322
+    ],
+    "path": "res://assets/pixel_b/sprites/crushed_ice.tres"
+  },
+  "card": {
+    "sheet": "ingredients",
+    "rect": [
+      724,
+      778,
+      362,
+      225
+    ],
+    "path": "res://assets/pixel_b/sprites/card.tres"
+  },
+  "coin": {
+    "sheet": "ingredients",
+    "rect": [
+      1086,
+      779,
+      305,
+      224
+    ],
+    "path": "res://assets/pixel_b/sprites/coin.tres"
+  },
+  "shaker_body": {
+    "sheet": "tools_b",
+    "rect": [
+      97,
+      47,
+      211,
+      295
+    ],
+    "path": "res://assets/pixel_b/sprites/shaker_body.tres"
+  },
+  "jigger": {
+    "sheet": "tools_b",
+    "rect": [
+      470,
+      73,
+      169,
+      270
+    ],
+    "path": "res://assets/pixel_b/sprites/jigger.tres"
+  },
+  "shaker_strainer_top": {
+    "sheet": "tools_b",
+    "rect": [
+      1134,
+      439,
+      263,
+      285
+    ],
+    "path": "res://assets/pixel_b/sprites/shaker_strainer_top.tres"
+  },
+  "shaker_cap": {
+    "sheet": "tools_b",
+    "rect": [
+      114,
+      867,
+      171,
+      143
+    ],
+    "path": "res://assets/pixel_b/sprites/shaker_cap.tres"
+  },
+  "bar_spoon": {
+    "sheet": "tools_b",
+    "rect": [
+      509,
+      724,
+      91,
+      335
+    ],
+    "path": "res://assets/pixel_b/sprites/bar_spoon.tres"
+  },
+  "muddler": {
+    "sheet": "tools_b",
+    "rect": [
+      846,
+      724,
+      105,
+      335
+    ],
+    "path": "res://assets/pixel_b/sprites/muddler.tres"
+  },
+  "strainer": {
+    "sheet": "tools_b",
+    "rect": [
+      1134,
+      724,
+      257,
+      335
+    ],
+    "path": "res://assets/pixel_b/sprites/strainer.tres"
+  },
+  "drink_last_word": {
+    "sheet": "cocktails_b",
+    "rect": [
+      97,
+      49,
+      389,
+      463
+    ],
+    "path": "res://assets/pixel_b/sprites/drink_last_word.tres"
+  },
+  "drink_mojito": {
+    "sheet": "cocktails_b",
+    "rect": [
+      629,
+      23,
+      313,
+      489
+    ],
+    "path": "res://assets/pixel_b/sprites/drink_mojito.tres"
+  },
+  "drink_gin_and_tonic": {
+    "sheet": "cocktails_b",
+    "rect": [
+      1121,
+      38,
+      282,
+      443
+    ],
+    "path": "res://assets/pixel_b/sprites/drink_gin_and_tonic.tres"
+  },
+  "drink_long_island_iced_tea": {
+    "sheet": "cocktails_b",
+    "rect": [
+      117,
+      512,
+      314,
+      475
+    ],
+    "path": "res://assets/pixel_b/sprites/drink_long_island_iced_tea.tres"
+  },
+  "drink_manhattan": {
+    "sheet": "cocktails_b",
+    "rect": [
+      596,
+      512,
+      346,
+      472
+    ],
+    "path": "res://assets/pixel_b/sprites/drink_manhattan.tres"
+  },
+  "drink_echo_world": {
+    "sheet": "cocktails_b",
+    "rect": [
+      1074,
+      558,
+      345,
+      424
+    ],
+    "path": "res://assets/pixel_b/sprites/drink_echo_world.tres"
+  },
+  "police": {
+    "sheet": "activity_pieces",
+    "rect": [
+      93,
+      74,
+      180,
+      267
+    ],
+    "path": "res://assets/pixel_b/sprites/police.tres"
+  },
+  "prisoner": {
+    "sheet": "activity_pieces",
+    "rect": [
+      437,
+      81,
+      175,
+      261
+    ],
+    "path": "res://assets/pixel_b/sprites/prisoner.tres"
+  },
+  "boat": {
+    "sheet": "activity_pieces",
+    "rect": [
+      724,
+      154,
+      362,
+      176
+    ],
+    "path": "res://assets/pixel_b/sprites/boat.tres"
+  },
+  "lantern": {
+    "sheet": "activity_pieces",
+    "rect": [
+      1086,
+      53,
+      273,
+      300
+    ],
+    "path": "res://assets/pixel_b/sprites/lantern.tres"
+  },
+  "crate": {
+    "sheet": "activity_pieces",
+    "rect": [
+      66,
+      407,
+      230,
+      257
+    ],
+    "path": "res://assets/pixel_b/sprites/crate.tres"
+  },
+  "crate_goal": {
+    "sheet": "activity_pieces",
+    "rect": [
+      429,
+      407,
+      230,
+      257
+    ],
+    "path": "res://assets/pixel_b/sprites/crate_goal.tres"
+  },
+  "hank_pawn": {
+    "sheet": "activity_pieces",
+    "rect": [
+      807,
+      411,
+      195,
+      258
+    ],
+    "path": "res://assets/pixel_b/sprites/hank_pawn.tres"
+  },
+  "rope": {
+    "sheet": "activity_pieces",
+    "rect": [
+      1150,
+      434,
+      258,
+      252
+    ],
+    "path": "res://assets/pixel_b/sprites/rope.tres"
+  },
+  "mechanism": {
+    "sheet": "activity_pieces",
+    "rect": [
+      64,
+      749,
+      251,
+      251
+    ],
+    "path": "res://assets/pixel_b/sprites/mechanism.tres"
+  },
+  "gear": {
+    "sheet": "activity_pieces",
+    "rect": [
+      406,
+      733,
+      297,
+      290
+    ],
+    "path": "res://assets/pixel_b/sprites/gear.tres"
+  },
+  "spring": {
+    "sheet": "activity_pieces",
+    "rect": [
+      812,
+      774,
+      230,
+      223
+    ],
+    "path": "res://assets/pixel_b/sprites/spring.tres"
+  },
+  "hand": {
+    "sheet": "activity_pieces",
+    "rect": [
+      1228,
+      730,
+      78,
+      270
+    ],
+    "path": "res://assets/pixel_b/sprites/hand.tres"
+  },
+  "apartment": {
+    "sheet": "story",
+    "rect": [
+      0,
+      0,
+      836,
+      314
+    ],
+    "path": "res://assets/pixel_b/scenes/apartment.tres"
+  },
+  "office-success-faceless": {
+    "sheet": "story",
+    "rect": [
+      836,
+      0,
+      836,
+      314
+    ],
+    "path": "res://assets/pixel_b/scenes/office-success-faceless.tres"
+  },
+  "office-departure-faceless": {
+    "sheet": "story",
+    "rect": [
+      0,
+      314,
+      836,
+      313
+    ],
+    "path": "res://assets/pixel_b/scenes/office-departure-faceless.tres"
+  },
+  "city-bar-faceless": {
+    "sheet": "story",
+    "rect": [
+      836,
+      314,
+      836,
+      313
+    ],
+    "path": "res://assets/pixel_b/scenes/city-bar-faceless.tres"
+  },
+  "porch": {
+    "sheet": "story",
+    "rect": [
+      0,
+      627,
+      836,
+      314
+    ],
+    "path": "res://assets/pixel_b/scenes/porch.tres"
+  },
+  "saloon": {
+    "sheet": "story",
+    "rect": [
+      836,
+      627,
+      836,
+      314
+    ],
+    "path": "res://assets/pixel_b/scenes/saloon.tres"
+  },
+  "milo_ferry": {
+    "sheet": "activities",
+    "rect": [
+      0,
+      0,
+      836,
+      470
+    ],
+    "path": "res://assets/pixel_b/scenes/milo_ferry.tres"
+  },
+  "ada_watch_memory": {
+    "sheet": "activities",
+    "rect": [
+      836,
+      0,
+      836,
+      470
+    ],
+    "path": "res://assets/pixel_b/scenes/ada_watch_memory.tres"
+  },
+  "hank_lantern": {
+    "sheet": "activities",
+    "rect": [
+      0,
+      470,
+      836,
+      471
+    ],
+    "path": "res://assets/pixel_b/scenes/hank_lantern.tres"
+  },
+  "milo_failure": {
+    "sheet": "activities",
+    "rect": [
+      836,
+      470,
+      836,
+      471
+    ],
+    "path": "res://assets/pixel_b/scenes/milo_failure.tres"
+  },
+  "harbor_merchant": {
+    "sheet": "characters_b",
+    "rect": [
+      36,
+      49,
+      590,
+      609
+    ],
+    "path": "res://assets/pixel_b/sprites/harbor_merchant.tres"
+  },
+  "hank": {
+    "sheet": "characters_b",
+    "rect": [
+      637,
+      48,
+      599,
+      610
+    ],
+    "path": "res://assets/pixel_b/sprites/hank.tres"
+  },
+  "ada": {
+    "sheet": "characters_b",
+    "rect": [
+      37,
+      662,
+      591,
+      566
+    ],
+    "path": "res://assets/pixel_b/sprites/ada.tres"
+  },
+  "milo": {
+    "sheet": "characters_b",
+    "rect": [
+      639,
+      662,
+      601,
+      566
+    ],
+    "path": "res://assets/pixel_b/sprites/milo.tres"
+  }
+}

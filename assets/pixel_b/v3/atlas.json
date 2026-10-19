@@ -1,0 +1,299 @@
+{
+  "shaker_body": {
+    "sheet": "metalware.png",
+    "rect": [
+      106,
+      56,
+      419,
+      594
+    ]
+  },
+  "jigger": {
+    "sheet": "metalware.png",
+    "rect": [
+      660,
+      56,
+      388,
+      589
+    ]
+  },
+  "shaker_strainer_top": {
+    "sheet": "metalware.png",
+    "rect": [
+      1134,
+      228,
+      503,
+      429
+    ]
+  },
+  "shaker_cap": {
+    "sheet": "metalware.png",
+    "rect": [
+      1769,
+      370,
+      327,
+      287
+    ]
+  },
+  "highball_glass": {
+    "sheet": "glassware.png",
+    "rect": [
+      74,
+      73,
+      248,
+      579
+    ]
+  },
+  "mixing_glass": {
+    "sheet": "glassware.png",
+    "rect": [
+      425,
+      73,
+      367,
+      581
+    ]
+  },
+  "cocktail_glass": {
+    "sheet": "glassware.png",
+    "rect": [
+      845,
+      111,
+      362,
+      532
+    ]
+  },
+  "saucer_glass": {
+    "sheet": "glassware.png",
+    "rect": [
+      1253,
+      141,
+      463,
+      497
+    ]
+  },
+  "balloon_glass": {
+    "sheet": "glassware.png",
+    "rect": [
+      1781,
+      70,
+      355,
+      573
+    ]
+  },
+  "bar_spoon": {
+    "sheet": "small_tools.png",
+    "rect": [
+      495,
+      21,
+      148,
+      684
+    ]
+  },
+  "muddler": {
+    "sheet": "small_tools.png",
+    "rect": [
+      993,
+      17,
+      186,
+      688
+    ]
+  },
+  "strainer": {
+    "sheet": "small_tools.png",
+    "rect": [
+      1420,
+      112,
+      439,
+      593
+    ]
+  },
+  "gin_london_dry": {
+    "sheet": "bottles_0.png",
+    "rect": [
+      141,
+      33,
+      290,
+      679
+    ]
+  },
+  "green_chartreuse": {
+    "sheet": "bottles_0.png",
+    "rect": [
+      568,
+      33,
+      246,
+      679
+    ]
+  },
+  "maraschino": {
+    "sheet": "bottles_0.png",
+    "rect": [
+      963,
+      18,
+      246,
+      694
+    ]
+  },
+  "white_rum": {
+    "sheet": "bottles_0.png",
+    "rect": [
+      1366,
+      33,
+      246,
+      676
+    ]
+  },
+  "vodka": {
+    "sheet": "bottles_0.png",
+    "rect": [
+      1744,
+      133,
+      322,
+      576
+    ]
+  },
+  "tequila": {
+    "sheet": "bottles_1.png",
+    "rect": [
+      94,
+      103,
+      395,
+      581
+    ]
+  },
+  "cointreau": {
+    "sheet": "bottles_1.png",
+    "rect": [
+      564,
+      66,
+      291,
+      618
+    ]
+  },
+  "rye_whiskey": {
+    "sheet": "bottles_1.png",
+    "rect": [
+      946,
+      109,
+      334,
+      576
+    ]
+  },
+  "sweet_red_vermouth": {
+    "sheet": "bottles_1.png",
+    "rect": [
+      1390,
+      37,
+      235,
+      659
+    ]
+  },
+  "angostura_bitters": {
+    "sheet": "bottles_1.png",
+    "rect": [
+      1783,
+      123,
+      228,
+      560
+    ]
+  },
+  "blue_curacao": {
+    "sheet": "bottles_2.png",
+    "rect": [
+      171,
+      15,
+      293,
+      734
+    ]
+  },
+  "bleu_de_minuit": {
+    "sheet": "bottles_2.png",
+    "rect": [
+      639,
+      15,
+      302,
+      734
+    ]
+  },
+  "tonic_water": {
+    "sheet": "bottles_2.png",
+    "rect": [
+      1133,
+      22,
+      300,
+      727
+    ]
+  },
+  "soda_water": {
+    "sheet": "bottles_2.png",
+    "rect": [
+      1628,
+      20,
+      293,
+      728
+    ]
+  },
+  "cola": {
+    "sheet": "bottles_3.png",
+    "rect": [
+      152,
+      48,
+      262,
+      706
+    ]
+  },
+  "simple_syrup": {
+    "sheet": "bottles_3.png",
+    "rect": [
+      617,
+      48,
+      256,
+      706
+    ]
+  },
+  "lime_juice": {
+    "sheet": "bottles_3.png",
+    "rect": [
+      1036,
+      142,
+      338,
+      612
+    ]
+  },
+  "lemon_juice": {
+    "sheet": "bottles_3.png",
+    "rect": [
+      1522,
+      107,
+      392,
+      647
+    ]
+  },
+  "lime_wedge": {
+    "sheet": "garnishes.png",
+    "rect": [
+      247,
+      175,
+      453,
+      389
+    ]
+  },
+  "lemon_slice": {
+    "sheet": "garnishes.png",
+    "rect": [
+      867,
+      111,
+      476,
+      494
+    ]
+  },
+  "cocktail_cherry": {
+    "sheet": "garnishes.png",
+    "rect": [
+      1578,
+      87,
+      373,
+      502
+    ]
+  }
+}

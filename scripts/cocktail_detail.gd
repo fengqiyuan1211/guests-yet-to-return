@@ -94,7 +94,7 @@ func _header() -> void:
 	style.bg_color = Color.TRANSPARENT
 	style.border_color = Color(0.42, 0.29, 0.15, 0.7)
 	style.set_border_width_all(1)
-	style.set_corner_radius_all(3)
+	style.set_corner_radius_all(0)
 	stamp.add_theme_stylebox_override("panel", style)
 	add_child(stamp)
 	_label(stamp, Rect2(0, 1, 68, 28), str(recipe.get("type", recipe.get("category", "经典"))), 19, INK, HORIZONTAL_ALIGNMENT_CENTER)
@@ -241,7 +241,7 @@ func _scroll(parent: Node, rect: Rect2) -> ScrollContainer:
 	for state in ["scroll", "grabber", "grabber_highlight", "grabber_pressed"]:
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color(0.41, 0.28, 0.14, 0.08 if state == "scroll" else 0.35)
-		style.set_corner_radius_all(2)
+		style.set_corner_radius_all(0)
 		scrollbar.add_theme_stylebox_override(state, style)
 	return scroll
 

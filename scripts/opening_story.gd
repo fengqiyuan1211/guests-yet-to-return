@@ -25,10 +25,20 @@ var history_panel: Control
 var history_button: Button
 var chapter_panel: Panel
 var story_audio: Node
+var autoplay = preload("res://scripts/story_autoplay.gd").new()
+var auto_button: Button
+var fast_forward = preload("res://scripts/story_fast_forward.gd").new()
+var speed_hint: Panel
 
 func _ready() -> void:
+	if OpeningFlow.state.phase=="ending":
+		ending=true
+		var departure:=preload("res://scenes/opening_departure.tscn").instantiate()
+		add_child(departure)
+		return
 	OpeningFlow.front_end=true
 	TimeManager.set_running(false)
+	UI.backdrop(self)
 	nodes=JSON.parse_string(FileAccess.get_file_as_string(STORY_PATH)).nodes
 	story_audio=preload("res://scripts/opening_audio.gd").new()
 	add_child(story_audio)
@@ -49,6 +59,10 @@ func _ready() -> void:
 	history_button=UI.button(stage,Rect2(1035,35,155,48),"历史对话 H",_open_history,true)
 	UI.button(stage,Rect2(1210,35,155,48),"跳过剧情",_skip,true)
 	UI.button(stage,Rect2(1380,35,155,48),"返回开始",OpeningFlow.return_to_title,true)
+	speed_hint=UI.panel(stage,Rect2(1220,95,320,44))
+	speed_hint.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	UI.label(speed_hint,Rect2(12,5,296,34),"快进中 ×3 · 松开恢复",21,Color("ffe7a7"))
+	speed_hint.hide()
 	var panel:=UI.panel(stage,Rect2(55,650,1490,208))
 	panel.gui_input.connect(func(event: InputEvent):
 		if event is InputEventMouseButton and event.button_index==MOUSE_BUTTON_LEFT and event.pressed: _advance()
@@ -56,8 +70,11 @@ func _ready() -> void:
 	speaker=UI.label(panel,Rect2(35,17,1290,39),"",24,Color("eac88d"))
 	dialogue=UI.label(panel,Rect2(35,66,1400,83),"",28)
 	dialogue.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
-	progress=UI.label(panel,Rect2(35,165,1050,29),"",16,Color("bfb5a2"))
+	progress=UI.label(panel,Rect2(35,165,805,29),"",16,Color("bfb5a2"))
+	auto_button=UI.button(panel,Rect2(850,150,240,48),"自动播放：关 A",_toggle_auto,true)
+	auto_button.tooltip_text="文字播放完后自动继续；邮件、选项和教学入口等待手动操作。"
 	next_button=UI.button(panel,Rect2(1110,150,330,48),"空格 · 继续",_advance,true)
+	next_button.tooltip_text="短按空格或点击继续；长按空格以 3 倍速播放，遇到交互会暂停。"
 	choices=Control.new()
 	choices.position=Vector2(600,475)
 	stage.add_child(choices)
@@ -72,6 +89,7 @@ func _fit() -> void:
 	stage.position=(size-stage.size*factor)*.5
 
 func _render() -> void:
+	autoplay.reset()
 	ending=OpeningFlow.state.phase=="ending"
 	var index:=int(OpeningFlow.state.node)
 	var node: Dictionary=nodes[index]
@@ -79,7 +97,7 @@ func _render() -> void:
 	var bg: String="porch" if ending else str(node.background)
 	if bg!=current_background:
 		current_background=bg
-		background.texture=load("res://assets/art/saloon-day-unlit-v2.png" if bg=="saloon" else "res://assets/art/opening/"+bg+".png")
+		background.texture=preload("res://scripts/pixel_art.gd").texture("res://assets/art/saloon-day-unlit-v2.png" if bg=="saloon" else "res://assets/art/opening/"+bg+".png")
 		background.material.set_shader_parameter("ocean",bg=="harbor-sunset")
 		if is_instance_valid(transition): transition.kill()
 		fade.modulate.a=1
@@ -90,7 +108,7 @@ func _render() -> void:
 	heading.size.x=chapter_panel.size.x-44.0
 	speaker.text="老管家" if ending else node.speaker
 	dialogue.text="开门了，才知道谁会来。\n回响的配方会留在图鉴，之后由您决定是否放进营业酒单。" if ending else node.text
-	progress.text="回看结束后返回开始界面；不改变原旅程。" if OpeningFlow.replaying else ("教学杯不计收入；正式原料需要从商店备齐。" if ending else "%d / %d · 空格/点击继续 · Esc 保存并返回" % [index+1,nodes.size()])
+	progress.text="回看 · 长按空格 3 倍速 · 不改变原旅程" if OpeningFlow.replaying else ("教学杯不计收入；正式原料需要从商店备齐。" if ending else "%d / %d · 点击/短按继续 · 长按空格 3 倍速" % [index+1,nodes.size()])
 	for child in choices.get_children():
 		child.hide()
 		child.queue_free()
@@ -129,6 +147,7 @@ func _render_mail(node: Dictionary) -> void:
 
 func _open_mail() -> void:
 	if active_mail_id.is_empty() or is_instance_valid(mail_reader) or is_instance_valid(history_panel): return
+	_cancel_fast_forward()
 	mail_reader=preload("res://scripts/opening_mail.gd").new()
 	mail_reader.mail=OpeningFlow.story.mail[active_mail_id]
 	mail_reader.closed.connect(_close_mail)
@@ -136,6 +155,7 @@ func _open_mail() -> void:
 	stage.add_child(mail_reader)
 
 func _close_mail() -> void:
+	autoplay.reset()
 	if is_instance_valid(mail_reader):
 		mail_reader.hide()
 		mail_reader.queue_free()
@@ -152,18 +172,45 @@ func _read_mail() -> void:
 	_advance()
 
 func _process(delta: float) -> void:
-	if is_instance_valid(history_panel) or is_instance_valid(mail_reader): return
+	if not is_instance_valid(dialogue): return
+	if not get_window().has_focus() or is_instance_valid(history_panel) or is_instance_valid(mail_reader):
+		autoplay.reset()
+		_cancel_fast_forward()
+		return
+	var playback:=fast_forward.step(delta,_can_auto_advance())
+	speed_hint.visible=fast_forward.active
+	background.playback_speed=playback
+	if is_instance_valid(transition): transition.set_speed_scale(playback)
 	if dialogue.visible_characters<dialogue.text.length():
-		type_clock+=delta*32
+		type_clock+=delta*32*playback
 		dialogue.visible_characters=mini(int(type_clock),dialogue.text.length())
+	if autoplay.tick(delta*playback,dialogue.text.length(),dialogue.visible_characters>=dialogue.text.length(),_can_auto_advance(),fast_forward.active): _advance()
+
+func _cancel_fast_forward() -> void:
+	fast_forward.cancel()
+	if is_instance_valid(speed_hint): speed_hint.hide()
+	if is_instance_valid(background): background.playback_speed=1.0
+	if is_instance_valid(transition): transition.set_speed_scale(1.0)
+
+func _notification(what: int) -> void:
+	if what==NOTIFICATION_APPLICATION_FOCUS_OUT: _cancel_fast_forward()
+
+func _can_auto_advance() -> bool:
+	return not busy and not ending and not next_button.disabled and active_mail_id.is_empty() and int(OpeningFlow.state.node)<nodes.size()-1 and not is_instance_valid(history_panel) and not is_instance_valid(mail_reader)
+
+func _toggle_auto() -> void:
+	auto_button.text="自动播放：开 A" if autoplay.toggle() else "自动播放：关 A"
+	_focus_story_action()
 
 func _choose(text: String) -> void:
+	_cancel_fast_forward()
 	if not OpeningFlow.advance(int(OpeningFlow.state.node),text):
 		error_label.text=OpeningFlow.last_error
 		return
 	_render()
 
 func _advance() -> void:
+	autoplay.reset()
 	if busy or is_instance_valid(mail_reader) or is_instance_valid(history_panel): return
 	if not active_mail_id.is_empty() and not OpeningFlow.state.mail_read.get(active_mail_id,false):
 		_open_mail()
@@ -191,12 +238,14 @@ func _skip() -> void:
 
 func _open_history() -> void:
 	if is_instance_valid(history_panel) or is_instance_valid(mail_reader): return
+	_cancel_fast_forward()
 	history_panel=preload("res://scripts/opening_history.gd").new()
 	history_panel.entries=OpeningFlow.history_entries()
 	history_panel.closed.connect(_close_history)
 	stage.add_child(history_panel)
 
 func _close_history() -> void:
+	autoplay.reset()
 	if is_instance_valid(history_panel):
 		history_panel.hide()
 		history_panel.queue_free()
@@ -213,25 +262,37 @@ func _focus_story_action() -> void:
 				break
 
 func _input(event: InputEvent) -> void:
+	if not is_instance_valid(dialogue): return
 	# Reserved story keys run before Control's ui_accept (Space). Consuming both
 	# edges prevents focused History/Skip buttons from firing on key release.
 	if not is_visible_in_tree() or not event is InputEventKey: return
-	if event.keycode not in [KEY_SPACE,KEY_H,KEY_ESCAPE] and event.physical_keycode not in [KEY_SPACE,KEY_H,KEY_ESCAPE]: return
+	if event.keycode not in [KEY_SPACE,KEY_H,KEY_ESCAPE,KEY_A] and event.physical_keycode not in [KEY_SPACE,KEY_H,KEY_ESCAPE,KEY_A]: return
 	get_viewport().set_input_as_handled()
 	_unhandled_key_input(event)
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	if not event is InputEventKey or not event.pressed or event.echo: return
+	if not is_instance_valid(dialogue): return
+	if not event is InputEventKey or event.echo: return
+	if event.physical_keycode==KEY_SPACE or event.keycode==KEY_SPACE:
+		get_viewport().set_input_as_handled()
+		if is_instance_valid(history_panel) or is_instance_valid(mail_reader):
+			_cancel_fast_forward()
+		elif event.pressed: fast_forward.press()
+		else:
+			var tap: bool=fast_forward.release()
+			_cancel_fast_forward()
+			if tap: _advance()
+		return
+	if not event.pressed: return
 	if event.keycode==KEY_ESCAPE:
 		get_viewport().set_input_as_handled()
 		if is_instance_valid(history_panel): _close_history()
 		elif is_instance_valid(mail_reader): _close_mail()
 		else: OpeningFlow.return_to_title()
+	elif event.physical_keycode==KEY_A or event.keycode==KEY_A:
+		if not is_instance_valid(history_panel) and not is_instance_valid(mail_reader): _toggle_auto()
 	elif event.physical_keycode==KEY_H or event.keycode==KEY_H:
 		get_viewport().set_input_as_handled()
 		if is_instance_valid(history_panel): _close_history()
 		else: _open_history()
-	elif event.physical_keycode==KEY_SPACE or event.keycode==KEY_SPACE:
-		get_viewport().set_input_as_handled()
-		_advance()
 	else: return

@@ -5,6 +5,8 @@ const CUES={
 	"chuckle":["res://assets/audio/opening/chuckle.wav",-12.0],
 	"clink":["res://assets/audio/workbench/clink.wav",-9.0],
 	"paper":["res://assets/audio/interface/foley/leaf-1.wav",-17.0],
+	"knock":["res://assets/audio/interface/foley/wood-1.wav",-8.0],
+	"door":["res://assets/audio/interface/foley/wood-2.wav",-12.0],
 }
 var voice: AudioStreamPlayer
 var ambience: AudioStreamPlayer

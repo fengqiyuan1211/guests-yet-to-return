@@ -17,10 +17,8 @@ func _ready() -> void:
 	var daylight := _painting(DAY_PATH)
 	texture = _painting(DUSK_PATH, daylight)
 	var blend := ShaderMaterial.new()
-	blend.shader = preload("res://assets/art/day_night.gdshader")
-	blend.set_shader_parameter("day_texture", daylight)
-	blend.set_shader_parameter("night_texture", _painting(NIGHT_PATH, daylight))
-	blend.set_shader_parameter("dawn_texture", _painting(DAWN_PATH, daylight))
+	blend.shader = preload("res://shaders/pixel_day_night.gdshader")
+	texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	material = blend
 	# The shop updates this first, then tints its portraits and objects in one frame.
 	set_process(false)
@@ -28,7 +26,7 @@ func _ready() -> void:
 
 
 func _painting(path: String, fallback: Texture2D = null) -> Texture2D:
-	return load(path) as Texture2D if ResourceLoader.exists(path) else fallback
+	return preload("res://scripts/pixel_art.gd").texture(path) if ResourceLoader.exists(path) else fallback
 
 
 func update_lighting(minute: float) -> void:

@@ -48,4 +48,5 @@ func get_texture(id: String) -> Texture2D:
 	var item := get_item(id)
 	if item.is_empty():
 		return null
-	return load(item.texture_resource_path) as Texture2D
+	var pixel: Texture2D=preload("res://scripts/pixel_art.gd").sprite(id)
+	return pixel if pixel!=null else load(item.texture_resource_path) as Texture2D

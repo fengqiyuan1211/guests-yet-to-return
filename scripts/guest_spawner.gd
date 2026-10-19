@@ -3,10 +3,7 @@ extends Node2D
 signal guest_spawned(profile: Dictionary)
 signal guest_cleared
 const DATA_PATH := "res://data/guests.json"
-# The rear edge of the foreground counter in the 1600 × 900 home layout.
-# Guests stand behind it; lower bodies must never render onto the tabletop.
-const COUNTER_EDGE_Y := 600.0
-const GUEST_TOP_Y := 135.0
+const Composition = preload("res://scripts/saloon_composition.gd")
 var profiles: Array = []
 var rng := RandomNumberGenerator.new()
 var spawned_profile: Dictionary = {}
@@ -24,7 +21,7 @@ func _ready() -> void:
 	if data is Array:
 		profiles = data
 	for profile in profiles:
-		_textures[profile.id] = load(profile.texture)
+		_textures[profile.id] = preload("res://scripts/pixel_art.gd").person(profile)
 
 func _can_arrive(index: int) -> bool:
 	if index < 0 or index >= profiles.size(): return false
@@ -63,17 +60,21 @@ func show_guest(index: int) -> Dictionary:
 	_last_id = spawned_profile.id
 	_window = Control.new()
 	_window.name = "GuestWindow"
-	_window.position = Vector2(350, GUEST_TOP_Y)
-	_window.size = Vector2(790, COUNTER_EDGE_Y - GUEST_TOP_Y)
-	_window.clip_contents = true
+	var placement := Composition.guest_rect(str(spawned_profile.id))
+	_window.position = Vector2(350, placement.position.y)
+	_window.size = Vector2(790, placement.size.y)
+	_window.clip_contents = false
 	_window.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_window)
 	_art = TextureRect.new()
 	_art.name = "GuestArt"
 	_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_art.texture = _textures[spawned_profile.id]
-	_art.size = Vector2(400, 600)
-	_art.position = Vector2(195, 0)
+	_art.size = placement.size
+	_art.position = Vector2(placement.position.x - 350, 0)
+	if str(spawned_profile.id) in preload("res://scripts/pixel_art.gd").PEOPLE:
+		_art.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		_art.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_window.add_child(_art)
 	_elapsed = 0.0
@@ -86,6 +87,7 @@ func show_guest(index: int) -> Dictionary:
 	return spawned_profile.duplicate(true)
 
 func portrait_texture(profile: Dictionary) -> Texture2D:
+	if str(profile.id) in preload("res://scripts/pixel_art.gd").PEOPLE: return preload("res://scripts/pixel_art.gd").person(profile,true)
 	var portrait := AtlasTexture.new()
 	portrait.atlas = _textures[profile.id]
 	var r: Array = profile.portrait

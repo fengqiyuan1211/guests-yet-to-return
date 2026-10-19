@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/guest_journal.gd" id="1"]
-[ext_resource type="Theme" path="res://assets/western_theme.tres" id="2"]
+[ext_resource type="Theme" path="res://assets/pixel_b/theme.tres" id="2"]
 
 [node name="GuestJournal" type="Control"]
 offset_right = 1600.0

@@ -9,6 +9,7 @@ var accent:=Color("dbb455")
 var clock:=0.0
 var saved_art: Texture2D
 var reference_only := false
+var tabletop_shadow := false
 
 func _ready() -> void:
 	var path:=str(result.get("image_path",""))
@@ -17,7 +18,7 @@ func _ready() -> void:
 		if picture != null: saved_art=ImageTexture.create_from_image(picture)
 
 func _init() -> void:
-	texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 
 func _process(delta: float) -> void:
 	clock+=delta
@@ -39,16 +40,26 @@ func _draw() -> void:
 		ring.bg_color=Color.TRANSPARENT
 		ring.border_color=Color(accent,.015+(8-i)*.006)
 		ring.set_border_width_all(3)
-		ring.set_corner_radius_all(22+i)
+		ring.set_corner_radius_all(0)
 		draw_style_box(ring,Rect2(14-i,14-i,size.x-28+i*2,size.y-28+i*2))
 	var panel:=StyleBoxFlat.new()
 	panel.bg_color=Color("352b25")
 	panel.border_color=accent
 	panel.set_border_width_all(2)
-	panel.set_corner_radius_all(18)
+	panel.set_corner_radius_all(0)
 	if not reference_only: draw_style_box(panel,Rect2(14,14,size.x-28,size.y-28))
 	var extent:=texture.get_size()*minf((size.x-78)/texture.get_width(),(size.y-95)/texture.get_height())
 	var rect:=Rect2(Vector2((size.x-extent.x)*.5,size.y-48-extent.y),extent)
+	if tabletop_shadow:
+		# A quiet contact shadow under the foot, only for in-scene tabletop props.
+		var center:=Vector2(rect.get_center().x,rect.end.y-2)
+		for layer in range(2):
+			var points:=PackedVector2Array()
+			var radius:=Vector2(rect.size.x*(.36 if layer==0 else .28),5.0 if layer==0 else 3.0)
+			for i in range(24):
+				var angle:=TAU*float(i)/24.0
+				points.append(center+Vector2(cos(angle),sin(angle))*radius)
+			draw_colored_polygon(points,Color(0.05,0.09,0.08,.15 if layer==0 else .2))
 	var fill:=rect
 	var coupe:=cup in ["coupe","glass_cocktail_glass"]
 	var contents: Dictionary=vessel.get("contents",{})

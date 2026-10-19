@@ -1,0 +1,123 @@
+{
+  "tool": "image_gen.imagegen (built-in)",
+  "mode": "reference-guided style-transfer, transparent sprites",
+  "date": "2026-10-19",
+  "jobs": [
+    {
+      "id": "metalware",
+      "ids": [
+        "shaker_body",
+        "jigger",
+        "shaker_strainer_top",
+        "shaker_cap"
+      ],
+      "refs": [
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/docs/美术/B档像素风实机-20261018/v3-preview/01-components.png",
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v2/metalware.png"
+      ],
+      "prompt": "Use case: style-transfer. PRODUCTION game sprite atlas with TRUE ALPHA transparent background, not a concept board. One horizontal row of independent sprites, all fully visible with at least 8 percent empty margins top/bottom and clear transparent gaps between items. No framing, caption, panels, landscape, ground, shadows or extra props. First input is the user's APPROVED PIXEL STYLE; use ONLY its item rendering style, not the board or lettering. Subsequent inputs are SHAPE/IDENTITY references. Redraw from scratch in this fine but unmistakable 16-bit pixel art style. Tall items logical 90–110 pixels high, enlarged as crisp square clusters. At normal game size they must read as hand-placed pixel art, not detailed painted sprites. Limited 6–8 tones per material, stepwise flat highlight bands, visible pixel stair steps, restrained gold/champagne highlights with cool steel shadows. NO smooth gradients, NO anti-aliased outlines, NO photo textures, NO speckled or dithering noise. Preserve the exact referenced shape, proportions, label design and identifying motifs, simplified into deliberate pixel clusters. Refine beyond generic chunky 32px icons. Do not crop ANY cap, rim, foot or handle. Exactly FOUR objects, left-to-right: OPEN tapered silver shaker BODY WITHOUT LID; gold double-ended hourglass jigger with small 30 and15 marks; SEPARATE domed silver strainer lid with narrow cylindrical perforated neck; SEPARATE small round silver cap. The four parts must be independently extractable, no assembled shaker. Preserve shape/aspect ratio of each object in input2. Shaker body has about 6 bold vertically broken reflection bands and a narrow bottom seam, transparent background, solid steel body; lid holes truly transparent. Jigger rims thin and stepped, solid gold body, dark empty interior.",
+      "source": "/Users/wit/.codex/generated_images/01a14db2-8e33-7ff0-988b-05063d02389d/exec-25f3611e-2f12-479b-b1b5-26181161940e.png",
+      "saved_path": "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v3/metalware.png"
+    },
+    {
+      "id": "glassware",
+      "ids": [
+        "highball_glass",
+        "mixing_glass",
+        "cocktail_glass",
+        "saucer_glass",
+        "balloon_glass"
+      ],
+      "refs": [
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/docs/美术/B档像素风实机-20261018/v3-preview/01-components.png",
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v2/glassware.png"
+      ],
+      "prompt": "Use case: style-transfer. PRODUCTION game sprite atlas with TRUE ALPHA transparent background, not a concept board. One horizontal row of independent sprites, all fully visible with at least 8 percent empty margins top/bottom and clear transparent gaps between items. No framing, caption, panels, landscape, ground, shadows or extra props. First input is the user's APPROVED PIXEL STYLE; use ONLY its item rendering style, not the board or lettering. Subsequent inputs are SHAPE/IDENTITY references. Redraw from scratch in this fine but unmistakable 16-bit pixel art style. Tall items logical 90–110 pixels high, enlarged as crisp square clusters. At normal game size they must read as hand-placed pixel art, not detailed painted sprites. Limited 6–8 tones per material, stepwise flat highlight bands, visible pixel stair steps, restrained gold/champagne highlights with cool steel shadows. NO smooth gradients, NO anti-aliased outlines, NO photo textures, NO speckled or dithering noise. Preserve the exact referenced shape, proportions, label design and identifying motifs, simplified into deliberate pixel clusters. Refine beyond generic chunky 32px icons. Do not crop ANY cap, rim, foot or handle. Exactly FIVE EMPTY glasses left-to-right matching input2 in exact order: narrow straight highball with thick clear bottom; straight mixing glass with spout on RIGHT; rounded deep cocktail coupe; wide shallow saucer coupe; round balloon stemmed glass. All are EMPTY, no liquid, no ice, no garnish. Carefully preserve normalized bowl depth and stem length from input2 so the game liquid masks can still fit. Interior of every glass bowl MUST be true alpha transparent, NOT black/gray/cyan/white fill. Sparse 1-logical-pixel white, warm cream and muted blue-grey stepped highlights trace thin sidewalls and elliptic lips. Don't turn clear glass into metal or thick opaque stripes. Thick bottoms only at physical base, no white cartoon slabs. Transparent area inside the stems and under bowls.",
+      "source": "/Users/wit/.codex/generated_images/01a14db2-8e33-7ff0-988b-05063d02389d/exec-7a9de182-08d3-4840-b46e-12a30ee37eb2.png",
+      "saved_path": "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v3/glassware.png"
+    },
+    {
+      "id": "small_tools",
+      "ids": [
+        "bar_spoon",
+        "muddler",
+        "strainer"
+      ],
+      "refs": [
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/docs/美术/B档像素风实机-20261018/v3-preview/01-components.png",
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/art/supplies/equipment/bar_spoon.png",
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/art/supplies/equipment/muddler.png",
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/art/supplies/equipment/strainer.png"
+      ],
+      "prompt": "Use case: style-transfer. PRODUCTION game sprite atlas with TRUE ALPHA transparent background, not a concept board. One horizontal row of independent sprites, all fully visible with at least 8 percent empty margins top/bottom and clear transparent gaps between items. No framing, caption, panels, landscape, ground, shadows or extra props. First input is the user's APPROVED PIXEL STYLE; use ONLY its item rendering style, not the board or lettering. Subsequent inputs are SHAPE/IDENTITY references. Redraw from scratch in this fine but unmistakable 16-bit pixel art style. Tall items logical 90–110 pixels high, enlarged as crisp square clusters. At normal game size they must read as hand-placed pixel art, not detailed painted sprites. Limited 6–8 tones per material, stepwise flat highlight bands, visible pixel stair steps, restrained gold/champagne highlights with cool steel shadows. NO smooth gradients, NO anti-aliased outlines, NO photo textures, NO speckled or dithering noise. Preserve the exact referenced shape, proportions, label design and identifying motifs, simplified into deliberate pixel clusters. Refine beyond generic chunky 32px icons. Do not crop ANY cap, rim, foot or handle. Exactly THREE independently extractable upright objects left-to-right: silver twisted bar spoon with spoon bowl at TOP and tiny knob at bottom, slim original handle; brown wooden muddler with bulb grip TOP and widened grooved pressing base BOTTOM; silver Hawthorne strainer with original coiled spring and round perforated disk TOP and slim handle BOTTOM. Keep actual identities/shapes from references2,3,4. All about100 logical pixels high, clear pixel shading, narrow rims, wooden grain suggested by just3 shade clusters, no natural photo texture. No glow. Filter holes and gaps true transparency.",
+      "source": "/Users/wit/.codex/generated_images/01a14db2-8e33-7ff0-988b-05063d02389d/exec-456f7995-e7d8-4a9d-acbe-7385aa698096.png",
+      "saved_path": "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v3/small_tools.png"
+    },
+    {
+      "id": "bottles_0",
+      "ids": [
+        "gin_london_dry",
+        "green_chartreuse",
+        "maraschino",
+        "white_rum",
+        "vodka"
+      ],
+      "refs": [
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/docs/美术/B档像素风实机-20261018/v3-preview/01-components.png",
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v2/bottles_0.png"
+      ],
+      "prompt": "Use case: style-transfer. PRODUCTION game sprite atlas with TRUE ALPHA transparent background, not a concept board. One horizontal row of independent sprites, all fully visible with at least 8 percent empty margins top/bottom and clear transparent gaps between items. No framing, caption, panels, landscape, ground, shadows or extra props. First input is the user's APPROVED PIXEL STYLE; use ONLY its item rendering style, not the board or lettering. Subsequent inputs are SHAPE/IDENTITY references. Redraw from scratch in this fine but unmistakable 16-bit pixel art style. Tall items logical 90–110 pixels high, enlarged as crisp square clusters. At normal game size they must read as hand-placed pixel art, not detailed painted sprites. Limited 6–8 tones per material, stepwise flat highlight bands, visible pixel stair steps, restrained gold/champagne highlights with cool steel shadows. NO smooth gradients, NO anti-aliased outlines, NO photo textures, NO speckled or dithering noise. Preserve the exact referenced shape, proportions, label design and identifying motifs, simplified into deliberate pixel clusters. Refine beyond generic chunky 32px icons. Do not crop ANY cap, rim, foot or handle. Exactly 5 bottles in ONE ROW, same identities and order as the second reference image: gin_london_dry, green_chartreuse, maraschino, white_rum, vodka. Keep original distinctive caps, bottle geometry, glass tint, liquid color, shoulder shape, proportions and labels; do not replace all bottles with one generic silhouette. Simplify botanical illustrations into pixel motifs; keep short original label text where present, no text outside labels. Pixel clusters and stepped reflection strips should match the approved GIN and BLEU examples in input1. Much clearer pixel structure than input2's nearly painted treatment. Entire bottles including cap and base comfortably inside canvas with generous transparent gutters. Do NOT add cork to bottles with screw caps or swap label designs.",
+      "source": "/Users/wit/.codex/generated_images/01a14db2-8e33-7ff0-988b-05063d02389d/exec-3c8fe047-a53e-4fa3-a28d-645512365350.png",
+      "saved_path": "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v3/bottles_0.png"
+    },
+    {
+      "id": "bottles_1",
+      "ids": [
+        "tequila",
+        "cointreau",
+        "rye_whiskey",
+        "sweet_red_vermouth",
+        "angostura_bitters"
+      ],
+      "refs": [
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/docs/美术/B档像素风实机-20261018/v3-preview/01-components.png",
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v2/bottles_1.png"
+      ],
+      "prompt": "Use case: style-transfer. PRODUCTION game sprite atlas with TRUE ALPHA transparent background, not a concept board. One horizontal row of independent sprites, all fully visible with at least 8 percent empty margins top/bottom and clear transparent gaps between items. No framing, caption, panels, landscape, ground, shadows or extra props. First input is the user's APPROVED PIXEL STYLE; use ONLY its item rendering style, not the board or lettering. Subsequent inputs are SHAPE/IDENTITY references. Redraw from scratch in this fine but unmistakable 16-bit pixel art style. Tall items logical 90–110 pixels high, enlarged as crisp square clusters. At normal game size they must read as hand-placed pixel art, not detailed painted sprites. Limited 6–8 tones per material, stepwise flat highlight bands, visible pixel stair steps, restrained gold/champagne highlights with cool steel shadows. NO smooth gradients, NO anti-aliased outlines, NO photo textures, NO speckled or dithering noise. Preserve the exact referenced shape, proportions, label design and identifying motifs, simplified into deliberate pixel clusters. Refine beyond generic chunky 32px icons. Do not crop ANY cap, rim, foot or handle. Exactly 5 bottles in ONE ROW, same identities and order as the second reference image: tequila, cointreau, rye_whiskey, sweet_red_vermouth, angostura_bitters. Keep original distinctive caps, bottle geometry, glass tint, liquid color, shoulder shape, proportions and labels; do not replace all bottles with one generic silhouette. Simplify botanical illustrations into pixel motifs; keep short original label text where present, no text outside labels. Pixel clusters and stepped reflection strips should match the approved GIN and BLEU examples in input1. Much clearer pixel structure than input2's nearly painted treatment. Entire bottles including cap and base comfortably inside canvas with generous transparent gutters. Do NOT add cork to bottles with screw caps or swap label designs.",
+      "source": "/Users/wit/.codex/generated_images/01a14db2-8e33-7ff0-988b-05063d02389d/exec-8adb21c3-ec56-4d19-929d-625dbebe4e38.png",
+      "saved_path": "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v3/bottles_1.png"
+    },
+    {
+      "id": "bottles_2",
+      "ids": [
+        "blue_curacao",
+        "bleu_de_minuit",
+        "tonic_water",
+        "soda_water"
+      ],
+      "refs": [
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/docs/美术/B档像素风实机-20261018/v3-preview/01-components.png",
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v2/bottles_2.png"
+      ],
+      "prompt": "Use case: style-transfer. PRODUCTION game sprite atlas with TRUE ALPHA transparent background, not a concept board. One horizontal row of independent sprites, all fully visible with at least 8 percent empty margins top/bottom and clear transparent gaps between items. No framing, caption, panels, landscape, ground, shadows or extra props. First input is the user's APPROVED PIXEL STYLE; use ONLY its item rendering style, not the board or lettering. Subsequent inputs are SHAPE/IDENTITY references. Redraw from scratch in this fine but unmistakable 16-bit pixel art style. Tall items logical 90–110 pixels high, enlarged as crisp square clusters. At normal game size they must read as hand-placed pixel art, not detailed painted sprites. Limited 6–8 tones per material, stepwise flat highlight bands, visible pixel stair steps, restrained gold/champagne highlights with cool steel shadows. NO smooth gradients, NO anti-aliased outlines, NO photo textures, NO speckled or dithering noise. Preserve the exact referenced shape, proportions, label design and identifying motifs, simplified into deliberate pixel clusters. Refine beyond generic chunky 32px icons. Do not crop ANY cap, rim, foot or handle. Exactly 4 bottles in ONE ROW, same identities and order as the second reference image: blue_curacao, bleu_de_minuit, tonic_water, soda_water. Keep original distinctive caps, bottle geometry, glass tint, liquid color, shoulder shape, proportions and labels; do not replace all bottles with one generic silhouette. Simplify botanical illustrations into pixel motifs; keep short original label text where present, no text outside labels. Pixel clusters and stepped reflection strips should match the approved GIN and BLEU examples in input1. Much clearer pixel structure than input2's nearly painted treatment. Entire bottles including cap and base comfortably inside canvas with generous transparent gutters. Do NOT add cork to bottles with screw caps or swap label designs.",
+      "source": "/Users/wit/.codex/generated_images/01a14db2-8e33-7ff0-988b-05063d02389d/exec-c8dfef3c-d15e-4eb7-824c-796a19c47cfc.png",
+      "saved_path": "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v3/bottles_2.png"
+    },
+    {
+      "id": "bottles_3",
+      "ids": [
+        "cola",
+        "simple_syrup",
+        "lime_juice",
+        "lemon_juice"
+      ],
+      "refs": [
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/docs/美术/B档像素风实机-20261018/v3-preview/01-components.png",
+        "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v2/bottles_3.png"
+      ],
+      "prompt": "Use case: style-transfer. PRODUCTION game sprite atlas with TRUE ALPHA transparent background, not a concept board. One horizontal row of independent sprites, all fully visible with at least 8 percent empty margins top/bottom and clear transparent gaps between items. No framing, caption, panels, landscape, ground, shadows or extra props. First input is the user's APPROVED PIXEL STYLE; use ONLY its item rendering style, not the board or lettering. Subsequent inputs are SHAPE/IDENTITY references. Redraw from scratch in this fine but unmistakable 16-bit pixel art style. Tall items logical 90–110 pixels high, enlarged as crisp square clusters. At normal game size they must read as hand-placed pixel art, not detailed painted sprites. Limited 6–8 tones per material, stepwise flat highlight bands, visible pixel stair steps, restrained gold/champagne highlights with cool steel shadows. NO smooth gradients, NO anti-aliased outlines, NO photo textures, NO speckled or dithering noise. Preserve the exact referenced shape, proportions, label design and identifying motifs, simplified into deliberate pixel clusters. Refine beyond generic chunky 32px icons. Do not crop ANY cap, rim, foot or handle. Exactly 4 bottles in ONE ROW, same identities and order as the second reference image: cola, simple_syrup, lime_juice, lemon_juice. Keep original distinctive caps, bottle geometry, glass tint, liquid color, shoulder shape, proportions and labels; do not replace all bottles with one generic silhouette. Simplify botanical illustrations into pixel motifs; keep short original label text where present, no text outside labels. Pixel clusters and stepped reflection strips should match the approved GIN and BLEU examples in input1. Much clearer pixel structure than input2's nearly painted treatment. Entire bottles including cap and base comfortably inside canvas with generous transparent gutters. Do NOT add cork to bottles with screw caps or swap label designs.",
+      "source": "/Users/wit/.codex/generated_images/01a14db2-8e33-7ff0-988b-05063d02389d/exec-ec019e11-1054-4587-b2a8-bf403177db95.png",
+      "saved_path": "/Users/wit/Documents/GitHub/guests-yet-to-return/assets/pixel_b/v3/bottles_3.png"
+    }
+  ]
+}

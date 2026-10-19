@@ -56,7 +56,7 @@ class StorageGrid extends Control:
 		inset.set_border_width_all(1)
 		inset.border_width_top = 2
 		inset.border_width_bottom = 2
-		inset.set_corner_radius_all(6)
+		inset.set_corner_radius_all(0)
 		for slot in range(6):
 			draw_style_box(inset, Rect2((slot % 3) * 268, floori(slot / 3.0) * 238, 252, 221))
 
@@ -118,7 +118,7 @@ func _style(fill: Color, border: Color, width := 1, radius := 6) -> StyleBoxFlat
 	style.bg_color = fill
 	style.border_color = border
 	style.set_border_width_all(width)
-	style.set_corner_radius_all(radius)
+	style.set_corner_radius_all(0)
 	style.set_content_margin_all(4)
 	return style
 

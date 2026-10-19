@@ -93,6 +93,7 @@ func upgrade_story_progress(value: Variant) -> Variant:
 func valid(value: Variant) -> bool:
 	if not value is Dictionary or value.get("version") != 1: return false
 	if value.get("phase") not in ["new","cg","tutorial","ending","ready"]: return false
+	if value.has("departure") and not valid_departure(value.departure): return false
 	if not (value.get("node") is int or value.get("node") is float) or value.node < 0 or value.node != floor(value.node): return false
 	var nodes: Array = story.nodes
 	if value.node >= nodes.size(): return false
@@ -250,11 +251,56 @@ func finish_tutorial(skipped := false) -> bool:
 	leave_tutorial()
 	return true
 
+func departure_nodes() -> Array:
+	return JSON.parse_string(FileAccess.get_file_as_string("res://data/opening/departure.json")).nodes
+
+func valid_departure(value: Variant) -> bool:
+	if not value is Dictionary or not value.get("node") is String or not value.get("seen") is Array or not value.get("recipe") is String: return false
+	var ids: Array=[]
+	for row: Dictionary in departure_nodes(): ids.append(row.id)
+	if not ids.has(value.node) or value.seen.size()>ids.size(): return false
+	var seen: Array=[]
+	for row in value.seen:
+		if not row is Dictionary or not ids.has(row.get("id")) or seen.has(row.id): return false
+		if not row.get("text") is String or not row.get("speaker") is String or not row.get("chapter") is String: return false
+		seen.append(row.id)
+	for flag in ["signed","water","opened","merchant_met","seed_heard"]:
+		if not value.get(flag) is bool: return false
+	return true
+
+func begin_departure() -> bool:
+	if state.phase!="ending": return false
+	if not replaying and not MenuCatalog.unlock_recipe("echo_world"):
+		last_error=MenuCatalog.last_error
+		return false
+	if state.has("departure"): return true
+	var next:=state.duplicate(true)
+	next.departure={"node":"cup_today","seen":[],"recipe":"echo_world","signed":false,"water":false,"opened":false,"merchant_met":false,"seed_heard":false}
+	return _commit(next)
+
+func update_departure(patch: Dictionary) -> bool:
+	if state.phase!="ending" or not state.has("departure"): return false
+	var next:=state.duplicate(true)
+	for key in patch:
+		if not next.departure.has(key): return false
+		next.departure[key]=patch[key]
+	return _commit(next)
+
+func observe_departure(row: Dictionary) -> bool:
+	for seen: Dictionary in state.departure.seen:
+		if seen.id==row.id: return true
+	var seen: Array=state.departure.seen.duplicate(true)
+	seen.append({"id":row.id,"chapter":row.chapter,"speaker":row.speaker,"text":row.text})
+	return update_departure({"seen":seen})
+
 func finish_opening() -> bool:
 	if state.phase != "ending": return false
 	if replaying:
 		return_to_title()
 		return true
+	if not state.get("departure",{}).get("opened",false) or not preload("res://scripts/opening_preparation.gd").ready_menu():
+		last_error="先备齐一款酒、确认上架，再翻转营业牌。"
+		return false
 	# Unlocking an official ID is idempotent; no menu insertion, sales or guest progress.
 	if not MenuCatalog.unlock_recipe("echo_world"):
 		last_error = MenuCatalog.last_error

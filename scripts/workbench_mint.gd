@@ -1,8 +1,8 @@
 extends RefCounted
-## B concept: soft painted leaf with a deforming mesh; shared by pantry, cup and result.
+## Pixel leaf with the existing bending / bruising / tearing mesh and liquid clipping.
 const Liquid=preload("res://scripts/workbench_liquid.gd")
 const Ice=preload("res://scripts/workbench_ice.gd")
-const TEXTURE=preload("res://assets/workbench/mint/mint-b-leaf.png")
+const TEXTURE=preload("res://assets/pixel_b/mint-leaf.svg")
 
 static func _mesh_point(uv: Vector2,length: float,variant: int,flutter: float) -> Vector2:
 	var cross_leaf:=uv.x-.5

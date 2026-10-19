@@ -11,7 +11,7 @@ const GarnishPreview = preload("res://scripts/workbench_garnish_preview.gd")
 const IcePreview = preload("res://scripts/workbench_ice_preview.gd")
 const Measure = preload("res://scripts/workbench_measure.gd")
 const DraftPanel=preload("res://scripts/research_draft_panel.gd")
-const PAPER = preload("res://assets/codex/journal-paper-v1.png")
+const PAPER = preload("res://assets/pixel_b/paper.svg")
 const INK := Color("573c28")
 const CREAM := Color("efdab3")
 var surface: Control
@@ -106,7 +106,7 @@ func _style(fill: Color, border := Color("916c43")) -> StyleBoxFlat:
 	box.bg_color = fill
 	box.border_color = border
 	box.set_border_width_all(2)
-	box.set_corner_radius_all(7)
+	box.set_corner_radius_all(0)
 	box.set_content_margin_all(10)
 	return box
 
@@ -227,7 +227,7 @@ func _build() -> void:
 		var bar:=StyleBoxFlat.new()
 		bar.bg_color=Color("d8c8a9") if key=="background" else Color("b4924f")
 		bar.set_content_margin_all(0)
-		bar.set_corner_radius_all(4)
+		bar.set_corner_radius_all(0)
 		technique_progress.add_theme_stylebox_override(key,bar)
 	technique_panel.add_child(technique_progress)
 	var footer_panel:=_panel(surface,Rect2(22,817,300,71),Color("f3e2c2"))
@@ -264,12 +264,12 @@ func _show_category(value: String) -> void:
 	stock_labels.clear()
 	var items: Array=WorkbenchSession.pantry_items(value)
 	pantry_empty.visible=items.is_empty()
-	pantry_items.custom_minimum_size=Vector2(268,maxi(510,ceili(items.size()/2.0)*167))
+	pantry_items.custom_minimum_size=Vector2(268,maxi(510,ceili(items.size()/2.0)*185))
 	pantry_scroll.scroll_vertical=0
 	for i in range(items.size()):
 		var id: String=items[i][0]
 		var label: String=items[i][1]
-		var b:=_button(pantry_items,Rect2((i%2)*136,(i/2)*167,132,165),"",func(): pass)
+		var b:=_button(pantry_items,Rect2((i%2)*136,(i/2)*185,132,181),"",func(): pass)
 		b.set_meta("custom_audio",true)
 		b.gui_input.connect(_pantry_input.bind(value,id))
 		b.add_theme_stylebox_override("normal",_style(Color(0,0,0,0),Color(.45,.32,.17,.25)))
@@ -287,11 +287,14 @@ func _show_category(value: String) -> void:
 			texture.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			texture.texture=Art.texture(id)
 			art=texture
-		art.position=Vector2(26,8)
-		art.size=Vector2(88,111)
+		art.position=Vector2(22,8)
+		art.size=Vector2(88,98)
 		art.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		b.add_child(art)
-		var title:=_text(b,Rect2(4,111,124,34),label,16,INK)
+		var title:=_text(b,Rect2(6,108,120,47),label,16,INK)
+		title.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		title.max_lines_visible=2
+		title.clip_text=true
 		title.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		title.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
 		if value=="器具":
@@ -299,7 +302,8 @@ func _show_category(value: String) -> void:
 			b.tooltip_text=ToolHelp.description(id)
 		title.add_theme_font_size_override("font_size",14 if label.length()>8 else 17)
 		if WorkbenchSession.MATERIALS.has(id) or WorkbenchSession.GARNISHES.has(id) or WorkbenchSession.SOLIDS.has(id):
-			var quantity_label:=_text(b,Rect2(4,142,132,20),"",14,INK)
+			var quantity_label:=_text(b,Rect2(6,157,120,22),"",14,INK)
+			quantity_label.clip_text=true
 			quantity_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 			stock_labels[id]=quantity_label
 		if value=="冰块":
@@ -871,7 +875,7 @@ func _result() -> void:
 	var accent:=Color(str(evaluation.get("color","8c9aa2")))
 	var style:=_style(Color("f1e2c3"),accent)
 	style.set_border_width_all(3)
-	style.set_corner_radius_all(12)
+	style.set_corner_radius_all(0)
 	p.add_theme_stylebox_override("panel",style)
 	var paper:=TextureRect.new()
 	paper.texture=PAPER
@@ -1163,7 +1167,7 @@ func _skip_tutorial() -> void:
 
 func _finish_tutorial(skipped := false) -> void:
 	if OpeningFlow.finish_tutorial(skipped):
-		get_tree().change_scene_to_file("res://scenes/opening_story.tscn")
+		get_tree().change_scene_to_file("res://scenes/opening_departure.tscn")
 	else: status_label.text=OpeningFlow.last_error
 
 func _material_info(id: String) -> Dictionary:

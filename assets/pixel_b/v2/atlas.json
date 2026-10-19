@@ -1,0 +1,301 @@
+{
+  "gin_london_dry": {
+    "sheet": "bottles_0.png",
+    "rect": [
+      93,
+      28,
+      279,
+      754
+    ]
+  },
+  "green_chartreuse": {
+    "sheet": "bottles_0.png",
+    "rect": [
+      501,
+      24,
+      218,
+      757
+    ]
+  },
+  "maraschino": {
+    "sheet": "bottles_0.png",
+    "rect": [
+      874,
+      8,
+      205,
+      774
+    ]
+  },
+  "white_rum": {
+    "sheet": "bottles_0.png",
+    "rect": [
+      1237,
+      13,
+      233,
+      769
+    ]
+  },
+  "vodka": {
+    "sheet": "bottles_0.png",
+    "rect": [
+      1587,
+      161,
+      316,
+      618
+    ]
+  },
+  "tequila": {
+    "sheet": "bottles_1.png",
+    "rect": [
+      48,
+      61,
+      442,
+      644
+    ]
+  },
+  "cointreau": {
+    "sheet": "bottles_1.png",
+    "rect": [
+      552,
+      39,
+      304,
+      656
+    ]
+  },
+  "rye_whiskey": {
+    "sheet": "bottles_1.png",
+    "rect": [
+      954,
+      64,
+      364,
+      631
+    ]
+  },
+  "sweet_red_vermouth": {
+    "sheet": "sweet_red_vermouth.png",
+    "rect": [
+      448,
+      21,
+      358,
+      1221
+    ],
+    "note": "individual override; complete bottle cap or garnish"
+  },
+  "angostura_bitters": {
+    "sheet": "bottles_1.png",
+    "rect": [
+      1845,
+      77,
+      227,
+      608
+    ]
+  },
+  "blue_curacao": {
+    "sheet": "bottles_2.png",
+    "rect": [
+      157,
+      12,
+      283,
+      773
+    ]
+  },
+  "bleu_de_minuit": {
+    "sheet": "bottles_2.png",
+    "rect": [
+      596,
+      12,
+      294,
+      773
+    ]
+  },
+  "tonic_water": {
+    "sheet": "bottles_2.png",
+    "rect": [
+      1071,
+      14,
+      288,
+      771
+    ]
+  },
+  "soda_water": {
+    "sheet": "bottles_2.png",
+    "rect": [
+      1546,
+      14,
+      271,
+      771
+    ]
+  },
+  "cola": {
+    "sheet": "bottles_3.png",
+    "rect": [
+      143,
+      12,
+      259,
+      770
+    ]
+  },
+  "simple_syrup": {
+    "sheet": "bottles_3.png",
+    "rect": [
+      611,
+      12,
+      261,
+      770
+    ]
+  },
+  "lime_juice": {
+    "sheet": "bottles_3.png",
+    "rect": [
+      1027,
+      117,
+      349,
+      660
+    ]
+  },
+  "lemon_juice": {
+    "sheet": "bottles_3.png",
+    "rect": [
+      1517,
+      74,
+      395,
+      698
+    ]
+  },
+  "highball_glass": {
+    "sheet": "glassware.png",
+    "rect": [
+      71,
+      75,
+      256,
+      578
+    ]
+  },
+  "mixing_glass": {
+    "sheet": "glassware.png",
+    "rect": [
+      430,
+      80,
+      368,
+      573
+    ]
+  },
+  "cocktail_glass": {
+    "sheet": "glassware.png",
+    "rect": [
+      851,
+      118,
+      376,
+      531
+    ]
+  },
+  "saucer_glass": {
+    "sheet": "glassware.png",
+    "rect": [
+      1273,
+      135,
+      462,
+      510
+    ]
+  },
+  "balloon_glass": {
+    "sheet": "glassware.png",
+    "rect": [
+      1779,
+      75,
+      357,
+      574
+    ]
+  },
+  "shaker_body": {
+    "sheet": "metalware.png",
+    "rect": [
+      110,
+      60,
+      399,
+      584
+    ]
+  },
+  "jigger": {
+    "sheet": "metalware.png",
+    "rect": [
+      664,
+      60,
+      342,
+      584
+    ]
+  },
+  "shaker_strainer_top": {
+    "sheet": "metalware.png",
+    "rect": [
+      1116,
+      235,
+      511,
+      421
+    ]
+  },
+  "shaker_cap": {
+    "sheet": "metalware.png",
+    "rect": [
+      1734,
+      335,
+      356,
+      309
+    ]
+  },
+  "drink_last_word": {
+    "sheet": "cocktails_0.png",
+    "rect": [
+      159,
+      93,
+      494,
+      631
+    ]
+  },
+  "drink_mojito": {
+    "sheet": "drink_mojito.png",
+    "rect": [
+      270,
+      42,
+      715,
+      1183
+    ],
+    "note": "individual override; complete bottle cap or garnish"
+  },
+  "drink_gin_and_tonic": {
+    "sheet": "cocktails_0.png",
+    "rect": [
+      1526,
+      82,
+      389,
+      644
+    ]
+  },
+  "drink_long_island_iced_tea": {
+    "sheet": "cocktails_1.png",
+    "rect": [
+      188,
+      12,
+      440,
+      687
+    ]
+  },
+  "drink_manhattan": {
+    "sheet": "cocktails_1.png",
+    "rect": [
+      842,
+      54,
+      485,
+      645
+    ]
+  },
+  "drink_echo_world": {
+    "sheet": "cocktails_1.png",
+    "rect": [
+      1566,
+      54,
+      484,
+      645
+    ]
+  }
+}

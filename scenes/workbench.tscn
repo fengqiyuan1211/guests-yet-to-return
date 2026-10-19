@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/workbench.gd" id="1"]
-[ext_resource type="Theme" path="res://assets/western_theme.tres" id="2"]
+[ext_resource type="Theme" path="res://assets/pixel_b/theme.tres" id="2"]
 
 [node name="Workbench" type="Control"]
 layout_mode = 3
@@ -11,4 +11,5 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2")
+texture_filter = 1
 script = ExtResource("1")

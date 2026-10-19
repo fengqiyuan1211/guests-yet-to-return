@@ -30,7 +30,7 @@ var drag_kind:=-1
 var drag_origin:=""
 
 func _ready() -> void:
-	texture_filter=CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	mouse_default_cursor_shape=Control.CURSOR_POINTING_HAND
 	clip_contents=true
 func advance(delta: float) -> void:
@@ -46,7 +46,7 @@ func cancel_drag() -> void:
 func _text(at: Vector2, value: String, px:=22, color:=INK) -> void:
 	draw_string(FONT,at,value,HORIZONTAL_ALIGNMENT_LEFT,-1,px,color)
 func _box(rect: Rect2, fill: Color, border:=Color("9f7d4d"), radius:=8) -> void:
-	var s:=StyleBoxFlat.new(); s.bg_color=fill; s.border_color=border; s.set_border_width_all(2); s.set_corner_radius_all(radius); draw_style_box(s,rect)
+	var s:=StyleBoxFlat.new(); s.bg_color=fill; s.border_color=border; s.set_border_width_all(2); s.set_corner_radius_all(0); draw_style_box(s,rect)
 func _tag(rect: Rect2, value: String, px:=22) -> void:
 	_box(rect,Color("f1ddaf")); _text(rect.position+Vector2(13,rect.size.y*.68),value,px)
 func sprite_region(index: int) -> Rect2:
@@ -58,13 +58,18 @@ func sprite_region(index: int) -> Rect2:
 	var r: Rect2=normalized[index]; var dim:=OBJECTS.get_size()
 	return Rect2(r.position*dim,r.size*dim)
 func _sprite(rect: Rect2, index: int, tint:=Color.WHITE) -> void:
-	draw_texture_rect_region(PEOPLE if index<2 else OBJECTS,rect,sprite_region(index),tint)
+	var texture: Texture2D=preload("res://scripts/pixel_art.gd").sprite(["police","prisoner","boat","lantern"][index])
+	if index<2:
+		# Keep both people on the same foot line without stretching their bodies.
+		var extent:=texture.get_size()*minf(rect.size.x/texture.get_width(),rect.size.y/texture.get_height())
+		rect=Rect2(rect.position+Vector2((rect.size.x-extent.x)*.5,rect.size.y-extent.y),extent)
+	draw_texture_rect(texture,rect,false,tint)
 func _ellipse(center: Vector2, radius: Vector2, color: Color) -> void:
 	var points:=PackedVector2Array()
 	for i in range(40): points.append(center+Vector2(cos(i*TAU/40),sin(i*TAU/40))*radius)
 	draw_colored_polygon(points,color)
 func _draw() -> void:
-	draw_texture_rect(BACKGROUNDS[game.activity_id],Rect2(Vector2.ZERO,size),false)
+	draw_texture_rect(preload("res://scripts/pixel_art.gd").scene(game.activity_id),Rect2(Vector2.ZERO,size),false)
 	if game.activity_id=="milo_ferry": _ferry()
 	elif game.activity_id=="ada_watch_memory": _watch()
 	else: _lantern()
@@ -138,13 +143,11 @@ func mechanics_region(index: int) -> Rect2:
 	var regions: Array=[Rect2(.046,.048,.414,.377),Rect2(.548,.047,.403,.384),Rect2(.127,.525,.29,.433),Rect2(.711,.499,.073,.456)]
 	return regions[index]
 func _mechanic(rect: Rect2, index: int, tint:=Color.WHITE) -> void:
-	var region:=mechanics_region(index); var dim:=MECHANICS.get_size()
-	draw_texture_rect_region(MECHANICS,rect,Rect2(region.position*dim,region.size*dim),tint)
+	draw_texture_rect(preload("res://scripts/pixel_art.gd").sprite(["mechanism","gear","spring","hand"][index]),rect,false,tint)
 func _gear(at: Vector2, radius: float, angle: float, alive: bool) -> void:
-	var points:=PackedVector2Array(); var uvs:=PackedVector2Array(); var region:=mechanics_region(1)
-	for corner in [Vector2(0,0),Vector2(1,0),Vector2(1,1),Vector2(0,1)]:
-		points.append(at+((corner-Vector2.ONE*.5)*radius*2.2).rotated(angle)); uvs.append(region.position+corner*region.size)
-	draw_polygon(points,PackedColorArray([Color(1.14,1.1,.96) if alive else Color(.78,.75,.67)]),uvs,MECHANICS)
+	draw_set_transform(at,angle)
+	draw_texture_rect(preload("res://scripts/pixel_art.gd").sprite("gear"),Rect2(Vector2.ONE*-radius*1.1,Vector2.ONE*radius*2.2),false,Color(1.14,1.1,.96) if alive else Color(.78,.75,.67))
+	draw_set_transform(Vector2.ZERO)
 func _plate(rect: Rect2, id: int, alive: bool) -> void:
 	var s: Dictionary=game.state(); var cfg:=Watch.level(int(s.stage)); var center:=rect.get_center()
 	var angle:=float(angles.get(id,int(s.pieces[id].turns)*PI/2))
@@ -292,8 +295,15 @@ func _get_drag_data(at: Vector2) -> Variant:
 	if kind<0: kind=_hit(passengers,at); origin="boat"
 	if kind<0: return null
 	dragging=true; drag_kind=kind; drag_origin=origin; game.audio.cue("pick")
-	var wrapper:=Control.new(); var preview:=TextureRect.new(); var atlas:=AtlasTexture.new(); atlas.atlas=PEOPLE if kind<2 else OBJECTS; atlas.region=sprite_region(kind)
-	preview.expand_mode=TextureRect.EXPAND_IGNORE_SIZE; preview.texture=atlas; preview.size=Vector2(82,148)*game.surface.scale.x; preview.position=-preview.size*.5; preview.mouse_filter=Control.MOUSE_FILTER_IGNORE; wrapper.add_child(preview); set_drag_preview(wrapper)
+	var wrapper:=Control.new(); var preview:=TextureRect.new()
+	preview.texture=preload("res://scripts/pixel_art.gd").sprite("police" if drag_kind==0 else "prisoner")
+	var extent:=preview.texture.get_size()*minf(82.0/preview.texture.get_width(),148.0/preview.texture.get_height())
+	preview.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
+	preview.size=extent*game.surface.scale.x
+	preview.position=Vector2(-extent.x*.5,71-extent.y)*game.surface.scale.x
+	preview.mouse_filter=Control.MOUSE_FILTER_IGNORE; wrapper.add_child(preview); set_drag_preview(wrapper)
 	return {"kind":kind,"origin":origin}
 func _can_drop_data(at: Vector2, data: Variant) -> bool:
 	if game.paused or not game.playing or is_instance_valid(game.overlay) or game.sailing>0: return false

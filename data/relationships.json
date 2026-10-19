@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "status": "playtest",
+  "note": "本轮实现的可调整试玩参数；不是最终平衡数值。现有小游戏条件不读取本表。",
+  "stages": [{"minimum":0,"name":"初识"},{"minimum":2,"name":"熟悉"},{"minimum":8,"name":"信任"},{"minimum":18,"name":"深交"}],
+  "chapter_points": 1,
+  "satisfied_points": 2,
+  "satisfied_minimum": 70,
+  "merchant_return_points": 2,
+  "old_invoice_minimum": 2,
+  "topics": {
+    "merchant_intro": [
+      {"speaker":"老板娘","text":"船刚靠岸，今天的货都在这儿了。要买什么？"},
+      {"speaker":"我","text":"我接了那边的酒馆。今天想先来认认门。"},
+      {"speaker":"老板娘","text":"原来那盏灯是你点的。缺什么就来这里，不急着买，先看看也行。"},
+      {"speaker":"我","text":"是不是该先把架子摆满？"},
+      {"speaker":"老板娘","text":"先别。今晚想做什么，就先备什么。架子满不满，客人未必在意；酒里少了什么，一口就知道。"}
+    ],
+    "merchant_seed": [
+      {"speaker":"老板娘","text":"说起来，以前给酒馆的送货单，我这儿还有几张。"},
+      {"speaker":"我","text":"还有没结的账？"},
+      {"speaker":"老板娘","text":"账早结清了。有一张一直没舍得扔。那张背面写的，不是买卖的事。"},
+      {"speaker":"老板娘","text":"今晚先忙开门吧。以后有空坐下来，再聊。"},
+      {"speaker":"我","text":"好，等忙完我再来。"}
+    ],
+    "merchant_return": [
+      {"speaker":"老板娘","text":"又来了。第一位客人招待完了？"},
+      {"speaker":"我","text":"嗯。做的时候手忙脚乱，听他说话，倒慢慢没那么紧张了。"},
+      {"speaker":"老板娘","text":"我刚接这间店时，也把每个来问价的人都当成考试。"},
+      {"speaker":"我","text":"你也会这样？"},
+      {"speaker":"老板娘","text":"会啊。后来发现，把话听清、把东西点对，就已经能少慌一点。今天要是不赶时间，就坐坐。"}
+    ],
+    "old_invoice": [
+      {"speaker":"我","text":"你上次说，那张一直留着的送货单……"},
+      {"speaker":"老板娘","text":"嗯，放在账本后面了。你看，货款那一栏，早就划掉了。"},
+      {"speaker":"我 · 看向纸背","text":"纸背只有四个字：留到风停。","evidence":true},
+      {"speaker":"我","text":"留什么？"},
+      {"speaker":"老板娘","text":"这就是我一直没舍得扔的原因。那天他没说清，我也以为，总还有机会再问。"},
+      {"speaker":"我","text":"那就先记下来。如果以后听到了别的，我再来告诉你。"},
+      {"speaker":"老板娘","text":"好。纸先留在我这里，你想看，随时来。"}
+    ]
+  }
+}

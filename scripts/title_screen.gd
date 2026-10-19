@@ -19,9 +19,9 @@ func _ready() -> void:
 	var backgrounds: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/opening/backgrounds.json"))
 	for entry: Dictionary in backgrounds.stages:
 		if entry.id==backgrounds.active and entry.status=="active":
-			bg.texture=load(entry.background)
+			bg.texture=preload("res://scripts/pixel_art.gd").texture(entry.background)
 			bg.waves=bool(entry.get("ocean",false))
-	if bg.texture==null: bg.texture=preload("res://assets/art/opening/harbor-sunset.png")
+	if bg.texture==null: bg.texture=preload("res://assets/pixel_b/harbor.png")
 	bg.size=stage.size
 	stage.add_child(bg)
 	# Quiet left-side tint makes the real text readable without an opaque menu card.
@@ -105,6 +105,7 @@ func _continue() -> void:
 	elif phase=="tutorial":
 		if OpeningFlow.begin_tutorial(): get_tree().change_scene_to_file("res://scenes/workbench.tscn")
 		else: hint.text=OpeningFlow.last_error
+	elif phase=="ending": get_tree().change_scene_to_file("res://scenes/opening_departure.tscn")
 	else: get_tree().change_scene_to_file("res://scenes/opening_story.tscn")
 
 func _close() -> void:

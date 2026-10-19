@@ -24,6 +24,7 @@ var _memory_inviting := false
 var _memory_match_started := false
 var _memory_paper: Control
 var mode_button: Button
+var relationship_hint: Button
 
 func _setup_mode_button() -> void:
 	var rail:=find_child("MenuButton",true,false).get_parent()
@@ -59,6 +60,17 @@ func _ready() -> void:
 	Navigation.register_page(&"reviews", preload("res://scenes/customer_reviews.tscn"))
 	_setup_settings_button()
 	_setup_mode_button()
+	relationship_hint=Button.new()
+	relationship_hint.position=Vector2(990,103)
+	relationship_hint.size=Vector2(540,48)
+	relationship_hint.text="手帐更新 · 认识的人与未完的话"
+	relationship_hint.add_theme_font_size_override("font_size",21)
+	relationship_hint.focus_mode=Control.FOCUS_NONE
+	%Stage.add_child(relationship_hint)
+	relationship_hint.pressed.connect(func(): Navigation.go_to(&"journal"))
+	Relationships.changed.connect(_refresh_relationship_hint)
+	Navigation.page_changed.connect(func(_route): _refresh_relationship_hint())
+	_refresh_relationship_hint()
 	selected_navigation_style = %HomeButton.get_theme_stylebox("normal")
 	SlotWallet.balance_changed.connect(_on_balance_changed)
 	_on_balance_changed(SlotWallet.balance)
@@ -118,6 +130,11 @@ func _fit_layout() -> void:
 	var factor := minf(size.x / DESIGN_SIZE.x, size.y / DESIGN_SIZE.y)
 	%Stage.scale = Vector2.ONE * factor
 	%Stage.position = (size - DESIGN_SIZE * factor) * 0.5
+	# The room and its foreground crop must use exactly the same fit as the guests.
+	$Background.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	$Background.stretch_mode = TextureRect.STRETCH_SCALE
+	$Background.position = %Stage.position
+	$Background.size = DESIGN_SIZE * factor
 
 func _on_balance_changed(value: int) -> void:
 	%GoldValue.text = str(value)
@@ -327,6 +344,7 @@ func _on_guest_spawned(profile: Dictionary) -> void:
 	%GuestName.text = profile.name
 	%GuestRole.text = profile.role
 	%GuestPortrait.texture = %GuestLayer.portrait_texture(profile)
+	%GuestPortrait.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST if str(profile.id) in preload("res://scripts/pixel_art.gd").PEOPLE else CanvasItem.TEXTURE_FILTER_LINEAR
 	%GuestPortrait.show()
 	%TalkButton.show()
 	%GuestRole.tooltip_text = profile.bio
@@ -546,6 +564,9 @@ func on_drink_served() -> void:
 
 func _refresh_reputation() -> void:
 	_on_customer_changed()
+
+func _refresh_relationship_hint() -> void:
+	if is_instance_valid(relationship_hint): relationship_hint.visible=Navigation.current_route==&"home" and Relationships.guide_pending()
 
 func _on_customer_changed() -> void:
 	var stars := CustomerService.average_stars()
