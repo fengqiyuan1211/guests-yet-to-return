@@ -155,6 +155,7 @@ func _select_guest(id: String) -> void:
 	_refresh()
 
 func _select_tab(index: int) -> void:
+	if index == 3 and not _has_unlocked_activity(selected_id): return
 	tab = index
 	page = 0
 	_render_content()
@@ -165,7 +166,7 @@ func _refresh() -> void:
 	guest_buttons.clear()
 	for profile in profiles:
 		var known := StoryDialogue.is_known(profile.id)
-		var button := _button(sidebar,str(profile.name) if known else (str(profile.name)+" · 演示" if _has_demo(str(profile.id)) else "尚未相识"),_select_guest.bind(str(profile.id)),profile.id == selected_id)
+		var button := _button(sidebar,str(profile.name) if known else "尚未相识",_select_guest.bind(str(profile.id)),profile.id == selected_id)
 		button.custom_minimum_size.y = 76
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		if known:
@@ -229,14 +230,15 @@ func _render_profile() -> void:
 func _render_content() -> void:
 	_clear(content)
 	content_scroll.scroll_vertical = 0
+	var has_game := _has_unlocked_activity(selected_id)
+	if tab == 3 and not has_game: tab = 0
+	tab_buttons[3].text = "专属小游戏" if has_game else "？"
+	tab_buttons[3].disabled = not has_game
 	for i in range(tab_buttons.size()):
 		tab_buttons[i].add_theme_stylebox_override("normal",_style(Color("916033") if i == tab else Color("59402b")))
 	if not StoryDialogue.is_known(selected_id):
 		summary.text = "尚未相识"
-		if _has_demo(selected_id):
-			_label(content,"内测期间，可提前体验小游戏。",21,MUTED)
-			_activities()
-		else: _label(content,"这一页，还在等待一位客人。",28)
+		_label(content,"这一页，还在等待一位客人。",28)
 		return
 	var drinks := Data.drinks(selected_id,WorkbenchSession.state)
 	var groups := Data.conversations(selected_id,StoryDialogue.progress,StoryDialogue.catalog,WorkbenchSession.state)
@@ -378,23 +380,25 @@ func _restore_scroll(value: int) -> void:
 	if is_instance_valid(content_scroll): content_scroll.scroll_vertical = value
 
 func _activities() -> void:
-	_label(content,"专属小游戏",28)
+	_label(content,"专属小游戏" if _has_unlocked_activity(selected_id) else "？",28)
 	var items := Data.activities(selected_id,StoryDialogue.progress)
 	if items.is_empty():
 		_label(content,"这位客人还没有留下小游戏邀请。",22)
 		return
 	for item in items:
 		var column := _card(content)
+		if not item.unlocked:
+			var locked := _button(column,"？",func(): pass)
+			locked.disabled = true
+			continue
 		_label(column,str(item.name),26)
 		_label(column,str(item.description),21,MUTED)
 		var available := Navigation.registered_pages.has(StringName(item.route))
-		_label(column,"已解锁 · 正式邀请" if item.unlocked else ("内测演示 · 暂时开放" if item.demo else "尚未解锁"),22)
+		_label(column,"已解锁 · 正式邀请",22)
 		var action := _button(column,"开始游戏  →" if available and item.accessible else ("尚未开放" if item.unlocked else "等待客人的邀请"),_launch_activity.bind(str(item.id)))
 		action.disabled = not available or not item.accessible
-		if item.demo and not item.unlocked: action.tooltip_text = "内测演示：暂时开放体验，不代表正式剧情已解锁；不推进剧情、不发放奖励。"
-		if item.id in preload("res://scripts/guest_activity_rules.gd").IDS:
+		if item.id in preload("res://scripts/guest_activity_rules.gd").INVITATION_IDS:
 			var info: Dictionary=GuestActivities.progress(item.id)
-			_label(column,"邀请进度："+GuestActivities.requirement_text(item.id,true),20)
 			if int(info.required_chapters)<StoryDialogue.catalog.get(selected_id,[]).size():
 				_label(column,"小游戏解锁后，后面的来访故事仍会继续。",19,MUTED)
 			if not info.keepsake.is_empty():
@@ -404,20 +408,20 @@ func _activities() -> void:
 			if not info.reward.is_empty():
 				var recipe:=preload("res://scripts/research_data.gd").legendary(info.reward.recipe_id)
 				_label(column,"首通已领取：《%s》配方 · 灵感 +%d" % [recipe.get("name",""),info.reward.inspiration],21,Color("506537"))
-			else: _label(column,"本小游戏正式首通：专属配方＋%d 点研发灵感；演示不发奖。" % int(item.get("reward_inspiration",0)),18,MUTED)
+			elif not str(item.get("reward_recipe_id","")).is_empty(): _label(column,"本小游戏首次通关：专属配方＋%d 点研发灵感。" % int(item.get("reward_inspiration",0)),18,MUTED)
 		if item.id=="stick_minigame":
-			_label(column,"这里可随时练习；正式邀请与纪念奖励在酒馆剧情中触发。",19,MUTED)
+			_label(column,"小线的邀请已记录在这里。纪念酒单只领取一次。",19,MUTED)
 
 func _launch_activity(id: String) -> void:
 	# Check again at click time; presentation state does not grant access.
 	for item in Data.activities(selected_id,StoryDialogue.progress):
 		if item.id == id and item.accessible and Navigation.registered_pages.has(StringName(item.route)):
 			if item.route=="stick_badminton":
-				Navigation.memory_match_context={"mode":"practice"}
+				Navigation.memory_match_context=CustomerService.memory_match_context()
 				Navigation.memory_from_journal=true
 			Navigation.go_to(StringName(item.route))
 
-func _has_demo(id: String) -> bool:
+func _has_unlocked_activity(id: String) -> bool:
 	for item in Data.activities(id,StoryDialogue.progress):
-		if item.demo: return true
+		if item.unlocked: return true
 	return false

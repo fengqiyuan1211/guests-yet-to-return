@@ -5,7 +5,7 @@
   "guest_name": "艾达",
   "episode": 5,
   "title": "第一次空下来的下午",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -61,7 +61,7 @@
     },
     "watch": {
       "speaker": "guest",
-      "text": "昨天下午真空下来了，我没回牧场，把怀表修好了。托马收工后过来，我还以为出了什么事，结果他来送新班表，下周那半天又给我留着。",
+      "text": "昨天下午真空下来了，我没回牧场，把怀表拆开擦干净了。托马收工后过来，我还以为出了什么事，结果他来送新班表，下周那半天又给我留着。",
       "choices": [
         {
           "id": "ada_05.watch.c1",
@@ -77,7 +77,7 @@
     },
     "close": {
       "speaker": "guest",
-      "text": "表还走得稍微快一点，过两天再调。这次总算不是揣着坏表来找你了。合同还没谈，先说到这，下回来再跟你讲。",
+      "text": "零件还没装回去，我装在小盒里带来了。合同的事过两天再谈，今天总算能慢慢坐一会儿。先尝尝你这杯。",
       "transition": "resume_existing_dialogue_loop"
     },
     "watch_plan": {
@@ -89,6 +89,11 @@
       "speaker": "guest",
       "text": "知道。他找我借过工具，还说等他空下来也想学。我就把那半天填上修表，省得回头又排成别的。",
       "next": "close"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "今天不赶时间，[b]酒味轻一点，酸味少些，略甜[/b]，[b]不要薄荷[/b]。",
+      "next": "start"
     }
   },
   "story_id": "ada_story",

@@ -324,22 +324,8 @@ func _refresh_receipt() -> void:
 		var recipe := _recipe(str(entry.id))
 		var y := 118 + i * 57
 		_label(receipt, Rect2(35, y + 6, 210, 35), str(recipe.get("name", "")), 21, INK)
-		var price := SpinBox.new()
-		price.position = Vector2(247, y + 3)
-		price.size = Vector2(105, 42)
-		price.min_value = 1
-		price.max_value = 9999
-		price.step = 1
-		price.value = entry.price
-		price.add_theme_font_size_override("font_size", 20)
-		price.get_line_edit().add_theme_color_override("font_color", INK)
-		price.get_line_edit().add_theme_stylebox_override("normal", _style(Color(1, 0.92, 0.75, 0.22), Color(0.5, 0.35, 0.16, 0.2)))
-		price.value_changed.connect(func(value: float):
-			entry.price = value
-			revision += 1
-		)
-		receipt.add_child(price)
-		price.tooltip_text = "原料成本推荐价：%d 金币；可自行调整售价。" % int(recipe.reference_price)
+		entry.price = recipe.reference_price
+		_label(receipt, Rect2(247, y + 6, 105, 35), "%d" % int(entry.price), 21, INK)
 		_button(receipt, Rect2(364, y + 3, 40, 42), "×", _toggle_recipe.bind(str(entry.id)), false, true)
 	_label(receipt, Rect2(35, 481, 370, 41), "好酒不必太多，合心意就好。", 17, MUTED)
 	if is_instance_valid(next_button):
@@ -387,7 +373,7 @@ func _enter_samples() -> void:
 			var seen: Array = []
 			for entry in saved.entries:
 				if entry is Dictionary and entry.get("id") is String and not _recipe(entry.id).is_empty() and not seen.has(entry.id) and MenuCatalog._number(entry.get("price"), 1, 9999):
-					candidate.append(entry)
+					candidate.append({"id":entry.id,"price":_recipe(entry.id).reference_price})
 					seen.append(entry.id)
 			if candidate.size() <= 6:
 				selected = candidate

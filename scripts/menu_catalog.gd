@@ -98,7 +98,7 @@ func load_catalog() -> bool:
 			if not quote.ok: return _catalog_error()
 			recipe["reference_price"]=quote.price
 			recipe["pricing"]=quote
-			recipe["price_status"]="ingredient_cost_recommendation"
+			recipe["price_status"]="fixed_ingredient_cost"
 		if not _valid_recipe(recipe) or next_by_id.has(recipe.id):
 			return _catalog_error()
 		next_recipes.append(recipe.duplicate(true))
@@ -233,10 +233,23 @@ func all_recipes() -> Array:
 # stores IDs and prices; official unlocks and sample catalogues stay separate.
 func bind_research(service: Node) -> void:
 	_research_service = service
+	if not service.changed.is_connected(_refresh_fixed_prices):
+		service.changed.connect(_refresh_fixed_prices)
 	if _waiting_for_research:
 		_waiting_for_research = false
 		load_state()
 	changed.emit()
+
+func _refresh_fixed_prices() -> void:
+	if not writable or not _using_finished_catalog or _waiting_for_research: return
+	var next := entries.duplicate(true)
+	var updated := false
+	for entry in next:
+		var recipe := get_recipe(entry.id)
+		if not recipe.is_empty() and entry.price != recipe.reference_price:
+			entry.price = recipe.reference_price
+			updated = true
+	if updated: save_menu(next, design)
 
 func _diy_recipes() -> Dictionary:
 	if not _using_finished_catalog or not is_instance_valid(_research_service) or not _research_service.writable:
@@ -254,20 +267,29 @@ func _character_recipes() -> Dictionary:
 			r.attributes_complete=standard.missing.is_empty()
 			r.unlocked=_research_service.research_state().acquired.has(r.id)
 			r.preview_only=false
+			r=_fixed_recipe(r)
 			records[r.id]=r
 	return records
 
 func _menu_diy(record: Dictionary) -> Dictionary:
-	var recipe := record.duplicate(true)
+	var recipe := preload("res://scripts/recipe_quantities.gd").recipe(record)
 	var standard:=preload("res://scripts/research_data.gd").standard(record)
 	recipe.design_attributes=record.attributes.duplicate(true)
 	for key in standard.attributes: recipe[key]=standard.attributes[key]
 	recipe.attributes_version=standard.version
 	recipe.attributes_complete=standard.missing.is_empty()
 	recipe.merge({"category":"DIY", "subtitle":"自创特调", "thumbnail":"",
-		"reference_price":record.get("reference_price",1), "price_status":"ingredient_cost_recommendation",
+		"reference_price":record.get("reference_price",1), "price_status":"fixed_ingredient_cost",
 		"unlocked":true, "unlocked_by_default":false, "preview_only":false,
 		"recipe_status":"已保存的 DIY 配方 · v%s" % str(record.get("version",1))}, true)
+	return _fixed_recipe(recipe)
+
+func _fixed_recipe(recipe: Dictionary) -> Dictionary:
+	var quote:=preload("res://scripts/drink_pricing.gd").quote(recipe)
+	if quote.ok:
+		recipe.reference_price=quote.price
+		recipe.pricing=quote
+		recipe.price_status="fixed_ingredient_cost"
 	return recipe
 
 func unlocked_recipes() -> Array:
@@ -326,7 +348,7 @@ func _normalize_entries(value: Variant, available: Array, deduplicate: bool) -> 
 				continue
 			return {"ok": false, "message": "酒单中有重复的酒。"}
 		seen[entry.id] = true
-		result.append({"id": entry.id, "price": entry.price})
+		result.append({"id": entry.id, "price": get_recipe(entry.id).reference_price if _using_finished_catalog else entry.price})
 	if result.size() > MAX_MENU_SIZE:
 		return {"ok": false, "message": "一张酒单最多上架六款酒。"}
 	return {"ok": true, "entries": result}

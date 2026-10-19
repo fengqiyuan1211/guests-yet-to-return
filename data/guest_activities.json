@@ -2,9 +2,12 @@
   "stick": {
     "stick_minigame": {
       "name": "童年拾忆 · 小线的羽毛球",
-      "description": "陪小线再打一场羽毛球；手帐内可练习，正式故事邀请获胜后领取童年酒单。",
+      "description": "陪小线再打一场羽毛球。正式邀请获胜后，他会把童年酒单交给你。",
       "route": "stick_badminton",
-      "demo_unlocked": true
+      "demo_unlocked": false,
+      "guest_id": "stick",
+      "required_chapters": 5,
+      "gate_rules": "res://data/minigames/story_activity_gate.json"
     }
   },
   "milo": {
@@ -12,11 +15,10 @@
       "name": "把路画到家 · 雨后渡口",
       "description": "三名警察与三名囚犯乘两人小船过河。有警察的一岸，警察少于囚犯就会暴动。",
       "route": "milo_ferry",
-      "demo_unlocked": true,
+      "demo_unlocked": false,
       "guest_id": "milo",
       "rules_version": 1,
-      "required_chapters": 2,
-      "required_satisfied": 0,
+      "required_chapters": 5,
       "keepsake": {
         "id": "milo_ferry_keepsake",
         "name": "渡口夹页",
@@ -24,7 +26,8 @@
       },
       "reward_recipe_id": "character_milo",
       "reward_inspiration": 3,
-      "invitation": "罗恩以前拿渡河题教我检查路线。我带了木偶，陪我摆一遍？先把回程也算清楚，这张草稿留在你这里。"
+      "invitation": "罗恩以前拿渡河题教我检查路线。我带了木偶，陪我摆一遍？先把回程也算清楚，这张草稿留在你这里。",
+      "gate_rules": "res://data/minigames/story_activity_gate.json"
     }
   },
   "ada": {
@@ -32,11 +35,10 @@
       "name": "慢半拍的下午 · 机芯复位",
       "description": "拖动、旋转机芯组件，把发条接到秒针与摆轮，让怀表重新走起来。",
       "route": "ada_watch_memory",
-      "demo_unlocked": true,
+      "demo_unlocked": false,
       "guest_id": "ada",
       "rules_version": 2,
       "required_chapters": 5,
-      "required_satisfied": 2,
       "keepsake": {
         "id": "ada_watch_memory_keepsake",
         "name": "修表零件盒",
@@ -44,7 +46,8 @@
       },
       "reward_recipe_id": "character_ada",
       "reward_inspiration": 3,
-      "invitation": "今天有空，陪我把自己的怀表修好？这盒零件留给你。"
+      "invitation": "今天有空，陪我把自己的怀表修好？这盒零件留给你。",
+      "gate_rules": "res://data/minigames/story_activity_gate.json"
     }
   },
   "hank": {
@@ -52,27 +55,34 @@
       "name": "灯下有名 · 风沙前的货棚",
       "description": "五关货棚推箱子：绕行、借位与装箱顺序逐渐进阶。陪老霍克备齐物资，也给回头接人的路留出空位。",
       "route": "hank_lantern",
-      "demo_unlocked": true,
+      "demo_unlocked": false,
       "guest_id": "hank",
       "rules_version": 2,
-      "required_chapters": 3,
-      "required_satisfied": 0,
+      "required_chapters": 5,
       "keepsake": {
         "id": "hank_lantern_keepsake",
         "name": "旧货棚清单",
-        "description": "玛莎的灯与绳、齐恩的物资账、车夫认出的归路；尚未查清的姓名，先留着空位。"
+        "description": "玛莎的灯与绳、齐恩的物资账、尼尔·贝克认出的归路；这回，帮过忙的人都有了名字。"
       },
       "reward_recipe_id": "character_hank",
       "reward_inspiration": 3,
-      "invitation": "那晚的事说到这里，咱们用货棚草图摆一遍吧。灯、油、绳要备齐，走动的路也得留出来。"
+      "invitation": "那晚的事说到这里，咱们用货棚草图摆一遍吧。灯、油、绳要备齐，走动的路也得留出来。",
+      "gate_rules": "res://data/minigames/story_activity_gate.json"
     }
   },
   "yellow_creature": {
     "yellow_ski": {
       "name": "奶龙大冒险",
-      "description": "踩着扁牛滑过雪山，跳过石头和倒木，在雪崩追上之前回到酒馆。",
+      "description": "踩着扁牛滑过雪山，跳过石头和倒木，在雪崩追上之前回到酒馆。首次通关获得传说吧勺「我是奶龙」。",
       "route": "yellow_ski",
-      "demo_unlocked": true
+      "demo_unlocked": false,
+      "guest_id": "yellow_creature",
+      "required_chapters": 5,
+      "gate_rules": "res://data/minigames/story_activity_gate.json",
+      "invitation": "（它把那头扁扁的牛推到你面前，又指了指远处的雪山。）",
+      "invitation_accept": "一起去滑雪",
+      "reward_recipe_id": "",
+      "reward_item_id": "tool_yellow_bar_spoon"
     }
   }
 }

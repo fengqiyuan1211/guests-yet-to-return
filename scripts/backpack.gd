@@ -348,7 +348,8 @@ func _refresh_inventory() -> void:
 				continue
 			owned_count += 1
 			if category == "全部" or str(item.category) == category:
-				products.append(item)
+				if item.get("rarity")=="legendary": products.push_front(item)
+				else: products.append(item)
 	for item: Dictionary in StoryItems.owned_items():
 		owned_count += 1
 		if category == "全部" or str(item.category) == category: products.append(item)
@@ -435,6 +436,9 @@ func _build_item_slot(item: Dictionary, slot: int) -> void:
 	var recessed := _style(Color("2d261f"), Color("705438"))
 	recessed.border_width_top = 2
 	recessed.border_width_bottom = 2
+	if item.get("rarity")=="legendary":
+		recessed.border_color=Color("d6ad58")
+		recessed.set_border_width_all(2)
 	button.add_theme_stylebox_override("normal", recessed)
 	button.add_theme_stylebox_override("hover", _style(Color("3b3025"), Color("a5814d")))
 	button.add_theme_stylebox_override("pressed", _style(Color("443527"), Color("c4a061"), 1))
@@ -471,7 +475,7 @@ func _texture(id: String) -> Texture2D:
 func _stock_summary(item: Dictionary) -> String:
 	var state := _state(str(item.id))
 	if str(item.storage_mode) == "permanent":
-		return "已拥有"
+		return "传说 · 永久拥有" if item.get("rarity")=="legendary" else "已拥有"
 	return "%d %s" % [int(state.get("quantity", 0)), _quantity_unit(item)]
 
 
@@ -548,6 +552,9 @@ func _render_details() -> void:
 		"permanent":
 			detail_status.text = "%s · 可重复使用" % item.category
 			detail_note.text = "已经放在酒馆里，\n调酒时随手取用。"
+			if item.get("rarity")=="legendary":
+				detail_status.text="传说吧勺 · 黄色生物赠予"
+				detail_note.text=str(item.get("description",""))+"\n在调酒台的器具栏取用。"
 			detail_note.show()
 
 

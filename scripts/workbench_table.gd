@@ -285,7 +285,7 @@ func can_target(id: String, tab: String, target: String) -> bool:
 	if tab in ["装饰","杯子"]: return target=="glass"
 	if id in ["lid","cap"]: return target in ["shaker","lid","cap"]
 	if id=="strainer": return target in ["shaker","mixing"]
-	if id in ["spoon","muddler"]: return target in ["shaker","mixing","glass"]
+	if id in ["spoon","tool_yellow_bar_spoon","muddler"]: return target in ["shaker","mixing","glass"]
 	return false
 
 func _destination(point: Vector2) -> String:
@@ -318,7 +318,7 @@ func _hit(point: Vector2) -> String:
 	if prop_visible("spoon"):
 		var geometry:=spoon_geometry()
 		var handle: Vector2=geometry.handle
-		if point.distance_to(Geometry2D.get_closest_point_to_segment(point,handle,handle+Vector2(0,32)))<10: return "spoon"
+		if point.distance_to(Geometry2D.get_closest_point_to_segment(point,handle,handle+Vector2(0,32)))<(22 if data.get("spoon_tool_id")=="tool_yellow_bar_spoon" else 10): return "spoon"
 	if lift_blend>.01:
 		var local := shaker_pose().affine_inverse()*point
 		for part in ["cap","lid","shaker"]:
@@ -503,15 +503,16 @@ func spoon_geometry() -> Dictionary:
 	var orbit:=minf(18,fill.size.x*.12)
 	tip+=Vector2(cos(stir_angle)*orbit,sin(stir_angle)*orbit*.2)*stir_energy
 	var lean: float=.08+sin(stir_angle)*.06*stir_energy
-	return {"tip":tip,"height":height,"angle":PI+lean,"handle":tip+Vector2(0,height*.82).rotated(PI+lean)}
+	return {"tip":tip,"height":height,"angle":PI+lean,"handle":tip+Vector2(0,height*.82).rotated(PI+lean),"tool_id":data.get("spoon_tool_id","tool_bar_spoon")}
 
 func _draw_attached_spoon(geometry: Dictionary, opacity:=1.0) -> void:
 	if geometry.is_empty(): return
-	var texture:=Art.texture("spoon")
+	var legendary: bool=geometry.get("tool_id")=="tool_yellow_bar_spoon"
+	var texture:=Art.texture("tool_yellow_bar_spoon" if legendary else "spoon")
 	var height: float=geometry.height
 	var width:=height*texture.get_width()/texture.get_height()
-	draw_set_transform(geometry.tip,geometry.angle)
-	draw_texture_rect(texture,Rect2(-width*.5,-height*.12,width,height),false,Color(1,1,1,opacity))
+	draw_set_transform(geometry.tip,geometry.angle-PI if legendary else geometry.angle)
+	draw_texture_rect(texture,Rect2(-width*.5,-height*.90 if legendary else -height*.12,width,height),false,Color(1,1,1,opacity))
 	draw_set_transform(Vector2.ZERO)
 
 func _draw_stir_swirl(rect: Rect2, contents: Dictionary, capacity: float, coupe: bool, mixing: bool, ice: bool, ice_fraction:=1.0, shape:="") -> void:

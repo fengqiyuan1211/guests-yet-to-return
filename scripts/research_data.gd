@@ -179,9 +179,13 @@ static func preview_result(recipe: Dictionary) -> Dictionary:
 		elif row.get("use")=="装饰":
 			for i in range(int(row.get("inventory_amount",1))): garnishes.append(row.sku_id)
 	var cup: String={"高球杯":"highball","古典杯":"rocks","碟形杯":"coupe","马天尼杯":"martini"}.get(recipe.get("glass","高球杯"),"highball")
-	var ice_mass:=0.0
-	for row: Dictionary in recipe.get("ice",[]):
-		if row.get("use")=="出品冰": ice_mass+=float(row.get("amount",0))
 	var batches: Array=[]
-	if ice_mass>0: batches.append({"kind":"cube","volume":ice_mass,"mass_g":ice_mass,"pieces":maxi(1,roundi(ice_mass/12.5))})
-	return {"image_path":recipe.get("image_path",""),"cup":cup,"capacity_ml":WorkbenchSession.CUP_CAPACITIES.get(cup,350),"contents":{"contents":liquids,"ice":"cube" if ice_mass>0 else "none","ice_batches":batches,"garnishes":garnishes}}
+	for row: Dictionary in preload("res://scripts/recipe_quantities.gd").ice_rows(recipe.get("ice",[])):
+		if row.use!="出品冰": continue
+		var mass:=float(row.amount)
+		var piece_mass:=12.5 if row.kind=="cube" else 5.0
+		while mass>0.00001:
+			var portion:=minf(50.0,mass)
+			batches.append({"kind":row.kind,"volume":portion,"mass_g":portion,"pieces":maxi(1,roundi(portion/piece_mass))})
+			mass-=portion
+	return {"image_path":recipe.get("image_path",""),"cup":cup,"capacity_ml":WorkbenchSession.CUP_CAPACITIES.get(cup,350),"contents":{"contents":liquids,"ice":batches[0].kind if not batches.is_empty() else "none","ice_batches":batches,"garnishes":garnishes}}

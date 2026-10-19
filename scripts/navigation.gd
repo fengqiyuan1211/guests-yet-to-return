@@ -38,6 +38,15 @@ func register_page(route_id: StringName, scene: PackedScene) -> void:
 	registered_pages[route_id] = scene
 
 func go_to(route_id: StringName) -> void:
+	# Hidden pages cannot be reached through a stale button or old navigation state.
+	if route_id == &"stick_demo": return
+	if route_id == &"stick_badminton":
+		var allowed := CustomerService.can_award_memory(str(CustomerService.state.active.get("id","")))
+		for item in preload("res://scripts/guest_journal_data.gd").activities("stick",StoryDialogue.progress):
+			allowed = allowed or item.unlocked
+		if not allowed: return
+	if route_id in [&"milo_ferry", &"ada_watch_memory", &"hank_lantern", &"yellow_ski"]:
+		if not GuestActivities.progress(str(route_id)).get("unlocked",false): return
 	if route_id==&"reviews": route_id=&"journal"
 	if current_route == &"settings" and GameSession.resetting:
 		return

@@ -21,7 +21,8 @@ func _own_default_equipment() -> void:
 	# Workbench tools and serving glasses are supplied with the bar.
 	for item: Dictionary in catalog.list_items():
 		if item.storage_mode == "permanent":
-			_states[item.id] = {"unlocked": true, "owned": true}
+			var default_owned: bool = item.get("unlock_policy", "available_by_default") == "available_by_default"
+			_states[item.id] = {"unlocked": default_owned, "owned": default_owned}
 
 func get_state(id: String) -> Dictionary:
 	return _states.get(id, {}).duplicate(true)
@@ -115,7 +116,7 @@ func restore(data: Variant) -> bool:
 	var candidate := _states.duplicate(true)
 	for item: Dictionary in catalog.list_items():
 		var id: String = item.id
-		if item.storage_mode == "permanent":
+		if item.storage_mode == "permanent" and item.get("unlock_policy", "available_by_default") == "available_by_default":
 			candidate[id] = {"unlocked": true, "owned": true}
 			continue
 		if not data.items.has(id):

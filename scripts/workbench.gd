@@ -296,7 +296,10 @@ func _show_category(value: String) -> void:
 		title.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
 		if value=="器具":
 			b.set_script(ToolButton)
-			b.tooltip_text=ToolHelp.description(id)
+			b.tooltip_text="传说吧勺 · 我是奶龙\n拖入打开的杯子或搅拌杯，按住画圈搅拌。" if id=="tool_yellow_bar_spoon" else ToolHelp.description(id)
+			if id=="tool_yellow_bar_spoon":
+				b.add_theme_stylebox_override("normal",_style(Color(.77,.58,.29,.16),Color("d4ad59")))
+				_text(b,Rect2(4,144,124,20),"传说",14,Color("986e25")).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		title.add_theme_font_size_override("font_size",14 if label.length()>8 else 17)
 		if WorkbenchSession.MATERIALS.has(id) or WorkbenchSession.GARNISHES.has(id) or WorkbenchSession.SOLIDS.has(id):
 			var quantity_label:=_text(b,Rect2(4,142,132,20),"",14,INK)
@@ -424,9 +427,11 @@ func _dropped(tab: String, id: String, target: String, dragged: bool) -> void:
 	elif tab=="器具":
 		if id in ["lid","cap"] and target in ["shaker","lid","cap"]:
 			if not data.lid: _act("lid")
-		elif id in ["spoon","muddler"] and target in ["shaker","mixing","glass"]:
+		elif id in ["spoon","tool_yellow_bar_spoon"] and target in ["shaker","mixing","glass"]:
+			_equip_spoon(id,target)
+		elif id=="muddler" and target in ["shaker","mixing","glass"]:
 			_select(target)
-			_set_technique("stir" if id=="spoon" else "muddle")
+			_set_technique("muddle")
 		elif id=="strainer" and target in ["shaker","mixing"]:
 			_act("filter",{"source":target,"vessel":"glass"})
 		else: status_label.text="将器具拖到对应容器上。"
@@ -450,6 +455,8 @@ func _choose_item(tab: String, id: String) -> void:
 	elif tab in ["冰块","装饰"]:
 		pending_item=id
 		status_label.text="已取用%s，点击桌上%s。" % [WorkbenchSession.GARNISHES[id].name if WorkbenchSession.GARNISHES.has(id) else "冰块","成品杯放置" if WorkbenchSession.GARNISHES.has(id) else "容器加入"]
+	elif tab=="器具" and id in ["spoon","tool_yellow_bar_spoon"]:
+		_equip_spoon(id, selected if selected in ["glass","mixing","shaker"] else "mixing")
 	elif tab=="杯子":
 		_act("cup",{"cup":id})
 		_select("glass")
@@ -599,6 +606,15 @@ func _select(id: String) -> void:
 			else: _act("garnish",{"material":item})
 		else: _act("ice",{"vessel":id,"ice":item})
 	_refresh()
+
+func _equip_spoon(id: String, target: String) -> void:
+	var tool_id := "tool_yellow_bar_spoon" if id=="tool_yellow_bar_spoon" else "tool_bar_spoon"
+	if not _issue("spoon", {"target":target,"tool_id":tool_id}):
+		status_label.text=WorkbenchSession.last_error
+		return
+	_select(target)
+	_set_technique("stir")
+	status_label.text="%s已插入，按住杯中吧勺画圈搅拌。" % ("「我是奶龙」" if id=="tool_yellow_bar_spoon" else "吧勺")
 
 func _prop(id: String) -> void:
 	if data.get("status")!="mixing": return

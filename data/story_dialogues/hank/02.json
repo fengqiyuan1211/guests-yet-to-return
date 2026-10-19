@@ -5,7 +5,7 @@
   "guest_name": "老霍克",
   "episode": 2,
   "title": "谁领走了灯油",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -89,6 +89,11 @@
       "speaker": "guest",
       "text": "账本我得好好收着，别让它散了。下回我从出门说起，跟你讲清楚那晚到底怎么回来的。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "今天[b]酒味稍轻，甜味再少些，苦味多一点[/b]。这账本得一行一行看，[b]不用额外糖浆[/b]。",
+      "next": "start"
     }
   },
   "story_id": "hank_story",

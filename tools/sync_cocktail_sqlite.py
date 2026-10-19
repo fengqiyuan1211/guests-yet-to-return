@@ -35,17 +35,24 @@ def sync():
             step_fields = ['number','operation','instruction','equipment','min_seconds','max_seconds','planned_image_path','image_status','source_image_status','source_sheet_row']
             for record in rows:
                 parent = {k:record.get(k) for k in fields}
-                parent.update(source_sheet_row=record['source']['row'],record_json=dump(record))
+                parent['glass_status'] = record.get('glass_status', 'game_defined')
+                parent['equipment_status'] = record.get('equipment_status', 'game_defined')
+                # -1 explicitly means game-authored, without a spreadsheet row.
+                parent.update(source_sheet_row=record.get('source', {}).get('row', -1),record_json=dump(record))
                 insert('cocktails', parent)
                 for position,item in enumerate(record['ingredients'],1):
                     values = {k:item.get(k) for k in ingredient_fields}
+                    for key in ['conversion_status','specification_status','quantity_status']:
+                        values[key] = item.get(key, 'game_defined')
+                    values['source_sheet_row'] = item.get('source_sheet_row', -1)
                     values.update(cocktail_id=record['id'],position=position)
                     insert('cocktail_ingredients',values)
                 for position,item in enumerate(record.get('ice',[]),1):
                     values = {k:item.get(k) for k in ['id','name','use','amount','unit','inventory_policy','source_sheet_row']}
+                    values['source_sheet_row'] = item.get('source_sheet_row', -1)
                     values.update(cocktail_id=record['id'],position=position,record_json=dump(item))
                     insert('cocktail_ice',values)
-                insert('cocktail_codex_presentation',{'cocktail_id':record['id'],'codex_order':record['codex_order'],'decoration_id':record['decoration_id'],'preparation':record['preparation'],'story':record['story'],'display_equipment_json':dump(record['display_equipment']),'display_steps_json':dump(record['display_steps']),'story_sources_json':dump(record.get('story_sources',[]))})
+                insert('cocktail_codex_presentation',{'cocktail_id':record['id'],'codex_order':record['codex_order'],'decoration_id':record.get('decoration_id','herbal'),'preparation':record['preparation'],'story':record['story'],'display_equipment_json':dump(record['display_equipment']),'display_steps_json':dump(record['display_steps']),'story_sources_json':dump(record.get('story_sources',[]))})
                 for item in record.get('steps',[]):
                     values = {k:item.get(k) for k in step_fields}
                     values['cocktail_id'] = record['id']
@@ -55,9 +62,9 @@ def sync():
                         insert('cocktail_tags',{'cocktail_id':record['id'],'kind':kind,'position':position,'value':text})
                 for position,name in enumerate(record.get('equipment',[]),1):
                     insert('cocktail_equipment',{'cocktail_id':record['id'],'position':position,'name':name})
-                unlock = record['unlock']
+                unlock = record.get('unlock', {'status':'game_defined','scope':'game_rules'})
                 insert('cocktail_unlock_reference',dict({'cocktail_id':record['id']},**{k:unlock.get(k) for k in ['value','status','source_value','rule','scope']}))
-                for reference in record['provenance'].get('source_references',[]):
+                for reference in record.get('provenance',{}).get('source_references',[]):
                     insert('cocktail_sources',{'cocktail_id':record['id'],'reference_id':reference})
             assert connection.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
             assert not connection.execute('PRAGMA foreign_key_check').fetchall()

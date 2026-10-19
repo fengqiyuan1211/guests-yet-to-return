@@ -42,35 +42,6 @@ static func completed_visit(record: Dictionary, story: Dictionary) -> bool:
 	var lines: Variant = record.get("story", [])
 	return heard is Array and not heard.is_empty() and lines is Array and lines == heard
 
-static func summarize(story: Dictionary, deliveries: Dictionary, settings: Dictionary = {}) -> Dictionary:
-	var rule := config() if settings.is_empty() else settings
-	var count := 5
-	var threshold := float(rule.get("minimum_average_total_score", 60))
-	var candidates: Array = []
-	for record: Variant in deliveries.values():
-		if record is Dictionary and record.get("play_mode")=="mixing": continue
-		if not record is Dictionary or record.get("guest_id") != "stick" or record.get("status") != "settled": continue
-		if total_score(record) == null or not completed_visit(record, story) or sequence(record) < 0: continue
-		candidates.append(record)
-	candidates.sort_custom(func(a,b): return sequence(a) < sequence(b))
-	var visits: Dictionary = {}
-	var chapters: Dictionary = {}
-	for record: Dictionary in candidates:
-		var key := visit_key(record)
-		var id := chapter(record)
-		if key.is_empty() or visits.has(key) or id not in ["stick_01", "stick_02", "stick_03", "stick_04", "stick_05"] or chapters.has(id): continue
-		visits[key] = true
-		chapters[id] = record
-	var total := 0.0
-	var ids: Array = []
-	for i in range(1, 6):
-		var id := "stick_%02d" % i
-		if chapters.has(id):
-			var record: Dictionary = chapters[id]
-			total += float(total_score(record))
-			ids.append(str(record.id))
-	var ready := ids.size() == count
-	return {"eligible": int(story.get("completed", 0)) >= count and ready and total >= threshold * count,
-		"story_completed": int(story.get("completed", 0)), "score_count": ids.size(), "required_scores": count,
-		"average": total / count if ready else null, "minimum_average": threshold,
-		"score_window": "story_five", "score_source": "review.satisfaction", "delivery_ids": ids}
+static func summarize(story: Dictionary, deliveries: Dictionary, settings: Dictionary = {}, legacy: Dictionary = {}) -> Dictionary:
+	var gate=preload("res://scripts/story_activity_gate.gd")
+	return gate.summarize("stick",story,gate.episodes("stick"),deliveries,legacy,settings)

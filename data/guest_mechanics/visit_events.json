@@ -167,7 +167,11 @@
       "mood_note": "有橙子的香气就好，甜一点也行，别把酸味全盖住。不要奶制品。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "milo_01",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "milo_02",
@@ -183,7 +187,11 @@
       "mood_note": "今天轻一点，甜味收住，酸味可以明显些。不要奶制品，我想慢慢看完这几页。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "milo_02",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "milo_03",
@@ -199,7 +207,11 @@
       "mood_note": "还是要一点橙香。今天这杯，哪边都别太抢，不用奶制品。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "milo_03",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "milo_04",
@@ -215,7 +227,11 @@
       "mood_note": "甜味少些，有一点收尾的苦也行。奶制品就不放了。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "milo_04",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "milo_05",
@@ -231,7 +247,11 @@
       "mood_note": "今天可以甜一点，酸味柔和些，还是不要奶制品。回家那几天，我大概连杯子都得自己洗。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "milo_05",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "ada_01",
@@ -247,7 +267,11 @@
       "mood_note": "清爽一点，酸味可以有，别放薄荷。我今天刚从外面回来。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "ada_01",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "ada_02",
@@ -263,7 +287,11 @@
       "mood_note": "酸味少一点吧。可以有一点点甜，别像糖水，薄荷还是不要。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "ada_02",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "ada_03",
@@ -279,7 +307,11 @@
       "mood_note": "给我调轻些，少甜、酸一点，不要薄荷。我想把明天要说的话理清楚。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "ada_03",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "ada_04",
@@ -295,7 +327,11 @@
       "mood_note": "照我平常喜欢的清爽低甜来，不用薄荷。今天这张表，先不用我重写了。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "ada_04",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "ada_05",
@@ -311,7 +347,11 @@
       "mood_note": "今天不赶时间，柔和一点，微酸、略甜，不要薄荷。杯子放那儿，我慢慢喝。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "ada_05",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "hank_01",
@@ -327,7 +367,11 @@
       "mood_note": "照平常来，厚实一点，收尾带点苦。别临时多添糖浆。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "hank_01",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "hank_02",
@@ -343,7 +387,11 @@
       "mood_note": "甜味再少些，苦味留着，酒感稍轻。这账本得一行一行看，不要额外糖浆。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "hank_02",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "hank_03",
@@ -359,7 +407,11 @@
       "mood_note": "今天别那么冲，甜味少些。味道留着就好，我想坐久一点，不用额外糖浆。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "hank_03",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "hank_04",
@@ -375,7 +427,11 @@
       "mood_note": "还是老味道，厚实、少甜、微苦。糖浆不用额外加。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "hank_04",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "hank_05",
@@ -391,7 +447,11 @@
       "mood_note": "今天柔和一点。你按配方做就好，不用怕我皱眉又补糖。",
       "persistent": false,
       "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
+      "buff_affinity_overrides": {},
+      "demand_line_ref": {
+        "episode_id": "hank_05",
+        "node_id": "order_request"
+      }
     },
     {
       "event_id": "yellow_creature_visit_01",

@@ -1,6 +1,7 @@
 extends RefCounted
 ## Pure reducers. Animation never changes counts or grants rewards.
 const IDS := ["milo_ferry", "ada_watch_memory", "hank_lantern"]
+const INVITATION_IDS := ["milo_ferry", "ada_watch_memory", "hank_lantern", "yellow_ski"]
 const Crates=preload("res://scripts/hank_crate_rules.gd")
 const Watch=preload("res://scripts/watch_repair_rules.gd")
 const SEQUENCES := [[2,1,2], [0,2,3,1], [1,0,3,2,1]]
@@ -161,7 +162,7 @@ static func valid_book(book: Variant) -> bool:
 	for key in ["unlocks","runs","rewards"]:
 		if not book.get(key) is Dictionary: return false
 	for id in book.unlocks:
-		if id not in IDS or not book.unlocks[id] is Dictionary or not book.unlocks[id].get("source") is String: return false
+		if id not in INVITATION_IDS or not book.unlocks[id] is Dictionary or not book.unlocks[id].get("source") is String: return false
 	for id in book.runs:
 		var run: Variant=book.runs[id]
 		if id not in IDS or not run is Dictionary or not run.get("id") is String or run.get("activity_id")!=id or run.get("version")!=1 or not valid(id,run.get("state")): return false

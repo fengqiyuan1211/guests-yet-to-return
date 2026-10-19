@@ -5,7 +5,7 @@
   "guest_name": "艾达",
   "episode": 3,
   "title": "新买家的时间表",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -89,6 +89,11 @@
       "speaker": "guest",
       "text": "他说明天把排班表带来，大家一起看。我先不替他猜了，到时候看他怎么排。下次过来再告诉你。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "今天[b]酒味轻些，少甜、酸一点[/b]，[b]不要薄荷[/b]。我想把明天要说的话理清楚。",
+      "next": "start"
     }
   },
   "story_id": "ada_story",

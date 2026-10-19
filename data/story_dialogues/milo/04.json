@@ -5,7 +5,7 @@
   "guest_name": "米洛",
   "episode": 4,
   "title": "橱窗里的旧地图",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -89,6 +89,11 @@
       "speaker": "guest",
       "text": "明早得给他们答复。签了当然省事，可我已经签错过一回了。今天先说到这儿，等这张说明真发出去，下次拿来给你看。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "今天[b]酒味轻些，甜味少些[/b]，收尾带[b]一点苦[/b]也行。[b]奶制品就不放了[/b]。",
+      "next": "start"
     }
   },
   "story_id": "milo_story",

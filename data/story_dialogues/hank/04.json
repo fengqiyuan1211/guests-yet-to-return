@@ -5,7 +5,7 @@
   "guest_name": "老霍克",
   "episode": 4,
   "title": "把稿子退回去",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -89,6 +89,11 @@
       "speaker": "guest",
       "text": "现在就等那几封信。我把稿子留了副本，下回来带着。真找着那个车夫的名字，可算少欠人家一句交代。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "还是老味道，[b]厚实、少甜，苦味留足[/b]。[b]糖浆不用额外加[/b]。",
+      "next": "start"
     }
   },
   "story_id": "hank_story",

@@ -83,9 +83,10 @@ static func activities(id: String, progress: Dictionary) -> Array:
 		var item: Dictionary = config[id][key].duplicate(true)
 		item.id = key
 		item.unlocked = progress.get(id, {}).get("activity_unlocks", {}).has(key)
-		if key=="stick_minigame": item.unlocked = item.unlocked or CustomerService.memory_summary().eligible
-		item.demo = item.get("demo_unlocked", false) == true
-		item.accessible = item.unlocked or item.demo
+		if key=="stick_minigame":
+			item.unlocked = item.unlocked or WorkbenchSession.research_state().get("story_items",{}).has("item_recipe_after_school") or (CustomerService.memory_summary().eligible and CustomerService.memory_dialogue_step("invitation")>=2)
+		item.demo = false
+		item.accessible = item.unlocked
 		rows.append(item)
 	return rows
 

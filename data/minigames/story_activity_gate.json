@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "minimum_average_total_score": 60,
+  "comparison": "gt",
+  "score_source": "review.satisfaction",
+  "score_window": "fixed_story_chapters",
+  "include_final_cup": true,
+  "rejected_score": 0,
+  "note": "每段正式剧情首次有效交付各取一杯，包含最后一杯。全部剧情完成且均分严格大于60；不以重访或自由模式补分。"
+}

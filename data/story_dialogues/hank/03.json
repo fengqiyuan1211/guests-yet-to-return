@@ -5,7 +5,7 @@
   "guest_name": "老霍克",
   "episode": 3,
   "title": "回来那一路",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -87,8 +87,13 @@
     },
     "closing": {
       "speaker": "guest",
-      "text": "明天我就退稿。货棚的草图我带来了，找几个木箱摆摆？灯、油、绳备齐，也给走动的人留路。车夫的姓名先空着，还得查。下回来，你再问我退稿没有。",
+      "text": "明天我就退稿。货棚的草图我还留着，上面记着灯、油和绳。那些空着的名字得一个个查清。下回来，你再问我退稿没有。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "今天[b]酒味别那么冲，少甜、少苦，酸味可以多一点[/b]。我想坐久一点，[b]不用额外糖浆[/b]。",
+      "next": "start"
     }
   },
   "story_id": "hank_story",

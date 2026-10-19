@@ -74,6 +74,7 @@ func _ready() -> void:
 	StoryDialogue.changed.connect(_render_dialogue)
 	GuestService.changed.connect(_on_customer_changed)
 	CustomerService.changed.connect(_on_customer_changed)
+	GuestActivities.changed.connect(_on_customer_changed)
 	_on_customer_changed()
 	%GuestLayer.guest_spawned.connect(_on_guest_spawned)
 	%GuestLayer.yellow_laugh_finished.connect(_on_yellow_laugh_finished)
@@ -236,6 +237,7 @@ func _sync_service_controls() -> void:
 
 func _on_next_guest_pressed() -> void:
 	if service_started and Navigation.current_route == &"home":
+		if _show_activity_invitation(): return
 		if _memory_invitation_available():
 			_show_memory_invitation()
 			return
@@ -373,6 +375,7 @@ func _setup_dialogue_input() -> void:
 	%GuestSpeech.add_theme_font_override("bold_font", bold)
 
 func _can_advance_dialogue() -> bool:
+	if not GuestActivities.current_invitation().is_empty(): return false
 	if %GuestLayer.yellow_laugh_active(): return false
 	if PlayModes.mode=="mixing": return false
 	if _memory_inviting:
@@ -478,6 +481,7 @@ func _render_dialogue() -> void:
 			%GuestSpeech.text = str(_memory_lines.farewell)
 			_clear_story_choices()
 		return
+	if _show_activity_invitation(): return
 	var legacy_receipt:=GuestService.visit_receipt(reception_id)
 	if not legacy_receipt.is_empty():
 		_clear_story_choices(); _layout_dialogue(false)
@@ -595,6 +599,7 @@ func _render_customer_feedback() -> void:
 	%OrderKicker.hide()
 	%NoteOrder.hide()
 	if _show_yellow_laugh(record): return
+	if _show_activity_invitation(): return
 	%NextGuestButton.disabled = record.status != "settled" or not feedback.done or StoryDialogue.phase == "story"
 	%NextGuestButton.text = "送客，结束营业" if TimeManager.closing_pending else "送客，迎接下一位"
 	if feedback.done:
@@ -654,15 +659,38 @@ func _on_yellow_laugh_finished() -> void:
 	# Guest/mode changes can finish the effect while rebuilding the home. Render after that.
 	call_deferred("_render_dialogue")
 
+func _show_activity_invitation() -> bool:
+	if Navigation.current_route!=&"home" or %GuestLayer.yellow_laugh_active(): return false
+	var id:=GuestActivities.current_invitation()
+	if id.is_empty() or GuestActivities.config(id).guest_id!=guest_profile.get("id"): return false
+	var c:=GuestActivities.config(id)
+	_clear_story_choices(); _layout_dialogue(true)
+	%GuestSpeech.text=str(c.invitation)
+	%GuestTags.text="向你发出了邀请 · "+str(c.name); %GuestTags.show()
+	%GuestSpeech.size.y=60
+	%GuestTags.position.y=148
+	story_choices.show()
+	%TalkButton.hide(); %NextGuestButton.disabled=true
+	_memory_choice(str(c.get("invitation_accept","接受邀请")),_accept_activity_invitation.bind(id))
+	_memory_choice("稍后去，先把邀请收好",_defer_activity_invitation.bind(id))
+	find_child("GuestDialogue",true,false).mouse_default_cursor_shape=Control.CURSOR_ARROW
+	return true
+
+func _accept_activity_invitation(id: String) -> void:
+	if not GuestActivities.acknowledge_invitation(id): return
+	Navigation.go_to(StringName(GuestActivities.config(id).route))
+
+func _defer_activity_invitation(id: String) -> void:
+	if GuestActivities.acknowledge_invitation(id): _render_dialogue()
+
 func _show_activity_hint() -> void:
+	if _show_activity_invitation(): return
 	if PlayModes.mode!="story" or StoryDialogue.phase=="story": return
-	var invitations:=0
-	for activity in preload("res://scripts/guest_activity_rules.gd").IDS:
-		if GuestActivities.config(activity).guest_id==StoryDialogue.guest_id and GuestActivities.progress(activity).unlocked:
-			invitations+=1
-	if invitations>0:
-		%GuestTags.text+=" · %d 个小游戏邀请已收进手帐" % invitations
-		%GuestTags.show()
+	for id in preload("res://scripts/guest_activity_rules.gd").INVITATION_IDS:
+		if GuestActivities.config(id).guest_id==StoryDialogue.guest_id and GuestActivities.progress(id).unlocked:
+			%GuestTags.text+=" · 小游戏邀请已收进手帐"
+			%GuestTags.show()
+			break
 
 func _update_bottom_status() -> void:
 	if guest_profile.is_empty():

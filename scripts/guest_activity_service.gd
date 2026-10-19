@@ -12,6 +12,7 @@ func _ready() -> void:
 	GuestService.changed.connect(_queue_reconcile)
 	CustomerService.changed.connect(_queue_reconcile)
 	call_deferred("reconcile")
+	call_deferred("migrate_legacy_ski_spoon")
 
 func _queue_reconcile() -> void:
 	if not _reconciling: call_deferred("reconcile")
@@ -36,24 +37,42 @@ func satisfied_count(guest: String) -> int:
 	return visits.size()
 
 func progress(id: String) -> Dictionary:
-	var c:=config(id)
-	var b:=book()
-	var chapters:=int(StoryDialogue.progress.get(c.get("guest_id",""),{}).get("completed",0))
-	var satisfied:=satisfied_count(str(c.get("guest_id","")))
-	var required_chapters:=maxi(0,int(c.get("required_chapters",0)))
-	var required_satisfied:=maxi(0,int(c.get("required_satisfied",0)))
-	return {"chapters":chapters,"satisfied":satisfied,"required_chapters":required_chapters,"required_satisfied":required_satisfied,
-		"eligible":not c.is_empty() and chapters>=required_chapters and satisfied>=required_satisfied,
-		"unlocked":b.unlocks.has(id),"reward":b.rewards.get(id,{}),"keepsake":c.get("keepsake",{}) if b.unlocks.has(id) else {}}
+	var c:=config(id); var guest:=str(c.get("guest_id","")); var b:=book()
+	var gate=preload("res://scripts/story_activity_gate.gd")
+	var summary: Dictionary=gate.summarize(guest,StoryDialogue.progress.get(guest,{}),StoryDialogue.catalog.get(guest,[]),CustomerService.state.deliveries,GuestService.ledger().deliveries)
+	return {"chapters":summary.story_completed,"satisfied":satisfied_count(guest),"required_chapters":summary.required_scores,"required_satisfied":0,
+		"eligible":not c.is_empty() and summary.eligible,"unlocked":b.unlocks.has(id),"reward":b.rewards.get(id,{}),
+		"keepsake":c.get("keepsake",{}) if b.unlocks.has(id) else {},"summary":summary}
 
 func requirement_text(id: String, show_progress:=false) -> String:
-	var p:=progress(id)
-	var parts:=PackedStringArray()
-	if p.required_chapters>0:
-		parts.append("剧情 %d / %d 轮" % [mini(p.chapters,p.required_chapters),p.required_chapters] if show_progress else "完成第 %d 轮剧情" % p.required_chapters)
-	if p.required_satisfied>0:
-		parts.append("满意招待 %d / %d 次" % [mini(p.satisfied,p.required_satisfied),p.required_satisfied] if show_progress else "%d 次满意招待" % p.required_satisfied)
-	return " · ".join(parts)
+	var p:=progress(id); var summary: Dictionary=p.summary
+	if not show_progress: return "讲完全部 %d 次来访故事，送酒平均总分高于 %.0f 分" % [p.required_chapters,summary.minimum_average]
+	var average: String="待完成" if summary.average==null else "%.1f 分" % float(summary.average)
+	return "故事 %d / %d · 已送酒 %d / %d · 均分 %s（需高于 %.0f）" % [mini(p.chapters,p.required_chapters),p.required_chapters,summary.score_count,summary.required_scores,average,summary.minimum_average]
+
+func current_invitation() -> String:
+	if PlayModes.mode!="story" or StoryDialogue.phase!="idle": return ""
+	var guest:=str(CustomerService.state.active.get("guest_id",""))
+	if guest!=StoryDialogue.guest_id: return ""
+	var record:=CustomerService.current_record()
+	var receipt_id:=""
+	if not record.is_empty():
+		if record.status!="settled" or not record.feedback.done or record.feedback.pending: return ""
+		receipt_id=str(record.id)
+	else:
+		var receipt:=GuestService.visit_receipt(GuestService.current_visit())
+		receipt_id=str(receipt.get("id",""))
+	if receipt_id.is_empty(): return ""
+	for id in Rules.INVITATION_IDS:
+		if config(id).guest_id!=guest: continue
+		var p:=progress(id)
+		if p.unlocked and p.eligible and p.summary.final_delivery_id==receipt_id and not book().unlocks[id].get("invitation_seen",false): return id
+	return ""
+
+func acknowledge_invitation(id: String) -> bool:
+	if current_invitation()!=id: return _error("这次邀请已变化，请返回酒馆查看。")
+	var b:=book(); b.unlocks[id]["invitation_seen"]=true
+	return _commit(b)
 
 func _commit(b: Dictionary, research: Dictionary={}) -> bool:
 	if not Rules.valid_book(b) or not WorkbenchSession.writable: return _error("活动记录暂时无法保存，请保留当前页面后重试。")
@@ -73,12 +92,12 @@ func reconcile() -> bool:
 	if _reconciling or GameSession.resetting or not StoryDialogue.writable or not GameSession.writable or not WorkbenchSession.writable: return false
 	_reconciling=true
 	var ok:=true
-	for id in Rules.IDS:
+	for id in Rules.INVITATION_IDS:
 		var c:=config(id)
 		var p:=progress(id)
 		var b:=book()
 		if not p.unlocked and p.eligible:
-			b.unlocks[id]={"source":"character-invite:"+id,"day":TimeManager.day}
+			b.unlocks[id]={"source":"character-invite:"+id,"day":TimeManager.day,"gate_version":1,"average_total":p.summary.average,"delivery_ids":p.summary.delivery_ids,"invitation_seen":false}
 			if not _commit(b): ok=false; break
 		if book().unlocks.has(id) and not StoryDialogue.unlock_activity(c.guest_id,id,str(book().unlocks[id].source)):
 			ok=_error("邀请已保存，手帐同步暂未完成，下次打开会继续恢复。")
@@ -103,6 +122,7 @@ func begin(id: String, restart:=false) -> bool:
 			migration_notice="移灯影戏已更新为推箱子备货，本局从第一关开始；邀请与已领取奖励保留。"
 		if id=="hank_lantern" and active.state.get("model")==2 and Rules.Crates.edition(active.state)==1:
 			migration_notice="正在继续旧版三关进度；这局的位置和撤回记录保留。完成后再玩一局，将进入新版五关。"
+		if id=="hank_lantern" and active.state.get("model")==2: active.state=Rules.Crates.normalized(active.state)
 		b.runs[id]=active.duplicate(true)
 		if not _commit(b): active={}; return false
 	last_error=""
@@ -149,3 +169,18 @@ func end() -> bool:
 	if not checkpoint(): return false
 	active={}
 	return true
+
+func migrate_legacy_ski_spoon() -> bool:
+	# One-time import only: all-time ski records must not regrant after a new game.
+	var path := "user://yellow_ski.cfg"
+	if not GameSession.save_path.begins_with("user://"):
+		path=GameSession.save_path.get_base_dir().path_join("yellow_ski.cfg")
+	var record:=ConfigFile.new()
+	if FileAccess.file_exists(path) and record.load(path)!=OK: return false
+	if record.get_value("legendary_spoon","migration_checked",false): return true
+	if not Supplies.writable or not WorkbenchSession.writable or GameSession.resetting: return false
+	if int(record.get_value("best","distance",0))>=2000 and book().unlocks.has("yellow_ski"):
+		if not Supplies.grant_activity_equipment("tool_yellow_bar_spoon","yellow_ski"): return false
+	record.set_value("legendary_spoon","migration_checked",true)
+	if record.save(path+".tmp")!=OK: return false
+	return DirAccess.rename_absolute(path+".tmp",path)==OK

@@ -5,7 +5,7 @@
   "guest_name": "米洛",
   "episode": 5,
   "title": "夹进旧图的那一页",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -87,8 +87,13 @@
     },
     "closing": {
       "speaker": "guest",
-      "text": "旧图已经开始补了，名单还得接着追。月底回家看看橱窗拆成什么样。渡河草稿你留着，想摆时再叫我。补图也一样，去程、回程，还有路上的人，都得核对清楚。",
+      "text": "旧图已经开始补了，名单还得接着追。月底回家看看橱窗拆成什么样。渡河的木偶和草稿我也带来了。补图也一样，去程、回程，还有路上的人，都得核对清楚。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "今天可以[b]甜一点，酸味柔和些[/b]，还是[b]不要奶制品[/b]。",
+      "next": "start"
     }
   },
   "story_id": "milo_story",

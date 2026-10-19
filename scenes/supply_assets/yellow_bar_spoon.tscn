@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/supply_tool.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/art/supplies/textures/yellow_bar_spoon.tres" id="art"]
+[sub_resource type="RectangleShape2D" id="shape"]
+size = Vector2(68, 285)
+[node name="YellowBarSpoon" type="Node2D"]
+script = ExtResource("script")
+tool_id = "tool_yellow_bar_spoon"
+[node name="Body" type="Sprite2D" parent="."]
+position = Vector2(0, -142.5)
+scale = Vector2(0.189747, 0.189747)
+texture = ExtResource("art")
+[node name="HitArea" type="Area2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+input_pickable = true
+[node name="Shape" type="CollisionShape2D" parent="HitArea"]
+position = Vector2(0, -142.5)
+shape = SubResource("shape")
+[node name="GrabPoint" type="Marker2D" parent="."]
+position = Vector2(0, -245)
+[node name="RestPoint" type="Marker2D" parent="."]
+[node name="WorkingPoint" type="Marker2D" parent="."]
+position = Vector2(0, -32)

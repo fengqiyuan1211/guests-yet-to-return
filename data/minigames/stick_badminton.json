@@ -10,7 +10,7 @@
   "reward_item_id": "item_recipe_after_school",
   "assist_preserves_rewards": true,
   "buff_awarded_by_match": false,
-  "recipe_content_status": "reserved_empty",
+  "recipe_content_status": "configured",
   "required_story_episodes": 5,
   "required_scores": 5,
   "score_source": "review.satisfaction",
@@ -18,5 +18,7 @@
   "settings_entry_mode": "practice",
   "story_entry_mode": "story",
   "minimum_average_total_score": 60,
-  "rejected_score_for_gate": 0
+  "rejected_score_for_gate": 0,
+  "gate_rules": "res://data/minigames/story_activity_gate.json",
+  "comparison": "gt"
 }

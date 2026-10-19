@@ -146,14 +146,7 @@ func _left_column() -> void:
 		flavors.add_child(text)
 
 static func amount_text(item: Dictionary) -> String:
-	var value := float(item.get("amount", 0))
-	var number := str(int(value)) if is_equal_approx(value, roundf(value)) else str(value)
-	var unit := str(item.get("unit", ""))
-	if unit == "sprig":
-		unit = "枝"
-	elif unit == "piece":
-		unit = "片" if str(item.get("name", "")).contains("叶") or str(item.get("name", "")).ends_with("片") else ("颗" if str(item.get("name", "")).ends_with("樱桃") else "块")
-	return number + " " + unit
+	return preload("res://scripts/recipe_quantities.gd").amount_text(item)
 
 func _ingredients_column() -> void:
 	_label(self, Rect2(489, 115, 315, 35), "配方", 25)
@@ -203,7 +196,7 @@ func _ingredients_column() -> void:
 			text.text += "＊"
 	var ice_info: Array[String] = []
 	for item: Dictionary in recipe.get("ice", []):
-		ice_info.append(str(item.name) + " " + amount_text(item))
+		ice_info.append(preload("res://scripts/recipe_quantities.gd").ice_text(item))
 	if not ice_info.is_empty():
 		var info := _label(self, Rect2(491, 435, 332, 25), "用冰  " + " · ".join(ice_info), 17, MUTED)
 		info.name = "IceInfo"

@@ -1967,6 +1967,62 @@
       },
       "fictional": true,
       "description": "深钴蓝的高山草本利口酒。龙胆、当归、柠檬马鞭草、百里香、杜松与极少量薰衣草；入口草本清香，中段微甜，尾韵微苦悠长。"
+    },
+    {
+      "id": "tool_yellow_bar_spoon",
+      "asset_id": "yellow_bar_spoon",
+      "kind": "equipment",
+      "name": "我是奶龙",
+      "english_name": "I Am Nailong",
+      "category": "器材",
+      "storage_mode": "permanent",
+      "unlock_policy": "activity_reward",
+      "price": null,
+      "price_status": "unconfirmed",
+      "operations": [
+        "stir"
+      ],
+      "image_path": "res://assets/art/supplies/equipment/yellow_bar_spoon.png",
+      "texture_resource_path": "res://assets/art/supplies/textures/yellow_bar_spoon.tres",
+      "scene_path": "res://scenes/supply_assets/yellow_bar_spoon.tscn",
+      "parts": [
+        {
+          "id": "yellow_bar_spoon",
+          "image_path": "res://assets/art/supplies/equipment/yellow_bar_spoon.png",
+          "texture_resource_path": "res://assets/art/supplies/textures/yellow_bar_spoon.tres"
+        }
+      ],
+      "provenance": {
+        "source": "用户确认的黄色生物吧勺概念图",
+        "date": "2026-10-18"
+      },
+      "operations_status": "playable",
+      "interaction_geometry": {
+        "coordinates": "scene_local_pixels",
+        "origin": "base_center",
+        "default_visible_height": 285,
+        "anchors": {
+          "GrabPoint": [
+            0,
+            -245
+          ],
+          "RestPoint": [
+            0,
+            0
+          ],
+          "WorkingPoint": [
+            0,
+            -32
+          ]
+        },
+        "liquid_polygon": [],
+        "calibration_status": "gameplay_spoon_v1"
+      },
+      "shop_available": false,
+      "rarity": "legendary",
+      "shop_enabled": false,
+      "description": "它坚持说自己不是勺子，但搅得还挺匀。",
+      "reward_activity_id": "yellow_ski"
     }
   ],
   "ice": [

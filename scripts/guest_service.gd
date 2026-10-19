@@ -99,7 +99,7 @@ func deliver(drink_id: String) -> bool:
 				tip=roundi(base*float(tier.rate))
 				break
 	var receipt:={"id":"sale-"+drink_id,"delivered":true,"paid":true,"status":evaluation.status,"score":evaluation.score,"satisfaction":evaluation.satisfaction,"base_paid":base,"tip":tip,"total_paid":base+tip,"evaluation":evaluation,"reaction":evaluation.reaction,"order_id":order.id,"visit_id":order.visit_id,"model_version":order.demand.version}
-	book.deliveries[drink_id]={"drink_id":drink_id,"order":order,"receipt":receipt,"phase":"pending"}
+	book.deliveries[drink_id]={"drink_id":drink_id,"order":order,"receipt":receipt,"phase":"pending","play_mode":PlayModes.mode}
 	var next:=WorkbenchSession.snapshot()
 	next.service=book
 	if not WorkbenchSession._commit(next): return _error(WorkbenchSession.last_error)

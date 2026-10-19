@@ -155,6 +155,9 @@ func _clear_overlay() -> void:
 	if is_instance_valid(jump_button): jump_button.show()
 
 func _start() -> void:
+	if model.state=="won" and GuestActivities.book().unlocks.has("yellow_ski") and not _claim_spoon():
+		_finish()
+		return
 	_clear_overlay(); model.reset(); model.start(); world.reset_camera()
 	paused=false; record_saved=false; heard_event=-1; elapsed_bank=0
 	held_sources.clear(); queued_jump=false; jump_button.disabled=false; pause_button.disabled=false; pause_button.text="暂停 Ⅱ"
@@ -249,14 +252,26 @@ func _finish() -> void:
 	var total:=model.score+model.distance()
 	var title:="到酒馆了！" if model.state=="won" else "它从雪里探出了头"
 	var body:="我是奶龙。" if model.state=="won" else "牛还在。抖掉身上的雪，再来一次。"
+	if model.state=="won":
+		var already_owned := Supplies.is_owned("tool_yellow_bar_spoon")
+		if _claim_spoon():
+			body+="\n（它把一把长得像自己的吧勺塞给你。）\n传说吧勺「我是奶龙」"+("已在背包里。" if already_owned else "已收入背包。")
+		else:
+			body+="\n"+Supplies.last_error+" 返回时会再次尝试。"
 	_panel(title,body+"\n\n"+record_error,880,550)
+	if model.state=="won" and Supplies.is_owned("tool_yellow_bar_spoon"):
+		var gift:=Sprite2D.new()
+		gift.texture=Supplies.catalog.get_texture("tool_yellow_bar_spoon")
+		gift.position=Vector2(785,78)
+		gift.scale=Vector2.ONE*(125.0/gift.texture.get_height())
+		overlay.add_child(gift)
 	var metrics: Array=[["滑行距离",str(model.distance())+" 米"],["本次得分",str(total)],["翻滚落地",str(model.flips)+" 次"],["最长连续",str(model.max_combo)+" 次"]]
 	for i in range(metrics.size()):
-		var card:=Panel.new(); card.position=Vector2(38+i*204,247); card.size=Vector2(192,122)
+		var card:=Panel.new(); card.position=Vector2(38+i*204,280); card.size=Vector2(192,95)
 		card.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		card.add_theme_stylebox_override("panel",_style(Color("e9dfc5"),Color("d2c19c"))); overlay.add_child(card)
 		_label(card,Rect2(16,17,160,25),metrics[i][0],18,Color("758174"))
-		_label(card,Rect2(16,54,160,43),metrics[i][1],28,Color("345b58"))
+		_label(card,Rect2(16,48,160,39),metrics[i][1],28,Color("345b58"))
 	_label(overlay,Rect2(38,392,800,29),"最佳 %d 分   ·   最远 %d 米" % [best_score,best_distance],20,Color("9a7542"))
 	_button(overlay,Rect2(38,452,390,65),"再滑一次",_start)
 	_button(overlay,Rect2(452,452,390,65),"返回手帐",_leave)
@@ -272,7 +287,10 @@ func _save_record() -> void:
 	if record_saved: return
 	record_saved=true
 	best_distance=maxi(best_distance,model.distance()); best_score=maxi(best_score,model.score+model.distance()); best_flips=maxi(best_flips,model.flips)
-	var file:=ConfigFile.new(); file.set_value("best","distance",best_distance); file.set_value("best","score",best_score); file.set_value("best","flips",best_flips)
+	var file:=ConfigFile.new()
+	file.load(save_path)
+	file.set_value("legendary_spoon","migration_checked",true)
+	file.set_value("best","distance",best_distance); file.set_value("best","score",best_score); file.set_value("best","flips",best_flips)
 	var error:=file.save(save_path+".tmp")
 	if error==OK: error=DirAccess.rename_absolute(save_path+".tmp",save_path)
 	record_error="" if error==OK else "这次纪录没能保存，还可以继续玩。"
@@ -294,8 +312,18 @@ func _restore_clock() -> void:
 	if clock_restored: return
 	clock_restored=true; TimeManager.set_running(previous_running)
 
+func _claim_spoon() -> bool:
+	if model.state!="won" or model.distance()<2000: return false
+	if not GuestActivities.book().unlocks.has("yellow_ski"):
+		Supplies.last_error="收到它的正式邀请后通关，即可获得吧勺。"
+		return false
+	return Supplies.grant_activity_equipment("tool_yellow_bar_spoon","yellow_ski")
+
 func _leave() -> void:
 	if closing: return
+	if model.state=="won" and GuestActivities.book().unlocks.has("yellow_ski") and not _claim_spoon():
+		_finish()
+		return
 	closing=true; _restore_clock()
 	if close_requested.get_connections().is_empty(): get_tree().change_scene_to_file("res://scenes/home.tscn")
 	else: close_requested.emit()

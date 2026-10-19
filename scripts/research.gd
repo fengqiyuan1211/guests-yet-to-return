@@ -301,7 +301,7 @@ func _library() -> void:
 	_button(body,Rect2(5,480,330,48),"管理配方 / 历史版本",_manage_saved)
 	var details:=_scroll(Rect2(725,87,550,370))
 	var text:="成品配方 · v%d\n" % int(record.version)
-	for row in record.ingredients: text+="%s  %s %s\n" % [row.name,WorkbenchSession.format_amount(float(row.amount)),row.unit]
+	for row in record.ingredients: text+="%s  %s\n" % [row.name,preload("res://scripts/recipe_quantities.gd").amount_text(row)]
 	text+="\n酒感 %d · 甜 %d · 酸 %d · 苦 %d\n" % [record.attributes.alcohol_intensity,record.attributes.sweetness,record.attributes.sourness,record.attributes.bitterness]
 	for line in record.instructions: text+="\n"+str(line)
 	if not record.notes.is_empty(): text+="\n\n复做笔记\n"+str(record.notes)
@@ -348,7 +348,7 @@ func _legendary() -> void:
 	_label(body,Rect2(385,50,840,32),"已掌握 · 可加入营业酒单" if mastered else "已获得 · 按配方完美出品后掌握",20,MUTED)
 	var rows:=_scroll(Rect2(610,95,640,275))
 	for row: Dictionary in r.ingredients:
-		var line:=_label(rows,Rect2(),"%s  %s %s" % [row.name,WorkbenchSession.format_amount(float(row.amount)),"颗" if row.unit=="piece" else row.unit],21)
+		var line:=_label(rows,Rect2(),"%s  %s" % [row.name,preload("res://scripts/recipe_quantities.gd").amount_text(row)],21)
 		line.custom_minimum_size=Vector2(590,32)
 	var glass_line:=_label(rows,Rect2(),str(r.glass)+" · "+"未完待续" if r.id=="childhood_keepsake" else str(r.glass),21)
 	glass_line.custom_minimum_size=Vector2(590,32)

@@ -54,11 +54,11 @@ func _text(rect: Rect2, value: String, px: int, color := Color("654c32")) -> Lab
 func _populate_recipe() -> void:
 	var ref := preload("res://scripts/research_data.gd").legendary("childhood_keepsake")
 	if ref.is_empty(): return
-	_text(Rect2(554,277,475,28),"高球杯  /  方冰 100 g",18,Color("99784a"))
+	_text(Rect2(554,277,475,28),str(ref.glass)+" / "+preload("res://scripts/recipe_quantities.gd").ice_text(ref.ice[0]),18,Color("99784a"))
 	var y:=315.0
 	for row: Dictionary in ref.ingredients:
 		_text(Rect2(555,y,355,29),str(row.name),21)
-		var amount:=_text(Rect2(909,y,118,29),"%s %s" % [WorkbenchSession.format_amount(float(row.amount)),"颗" if row.unit=="piece" else row.unit],21)
+		var amount:=_text(Rect2(909,y,118,29),preload("res://scripts/recipe_quantities.gd").amount_text(row),21)
 		amount.horizontal_alignment=HORIZONTAL_ALIGNMENT_RIGHT
 		y+=34
 	_text(Rect2(555,502,470,95),"杯中加冰，量取酒与青柠汁。\n加入可乐后轻搅 3—6 秒，放上樱桃。\n留住气泡，不用摇和。",20)

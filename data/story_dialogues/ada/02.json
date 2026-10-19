@@ -5,7 +5,7 @@
   "guest_name": "艾达",
   "episode": 2,
   "title": "口袋里的怀表",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -89,6 +89,11 @@
       "speaker": "guest",
       "text": "今天先收着，零件没带齐。下回来再折腾。牧场这两天来了个新买家，我得先把那边的安排弄清楚。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "[b]酸味少一点[/b]吧。可以有[b]一点点甜[/b]，别像糖水，[b]薄荷还是不要[/b]。",
+      "next": "start"
     }
   },
   "story_id": "ada_story",

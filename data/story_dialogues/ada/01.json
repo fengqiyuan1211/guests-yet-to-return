@@ -5,7 +5,7 @@
   "guest_name": "艾达",
   "episode": 1,
   "title": "提前收工",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -89,6 +89,11 @@
       "speaker": "guest",
       "text": "行了，今天难得早收工，就不把牧场搬过来讲了。下回给你看个东西，一直揣在我口袋里，倒没空管它。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "给我一杯[b]清爽些、酒味轻一点[/b]的，酸味可以明显些，[b]别放薄荷[/b]。",
+      "next": "start"
     }
   },
   "story_id": "ada_story",

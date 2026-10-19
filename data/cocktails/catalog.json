@@ -98,7 +98,7 @@
       "ingredients": [
         {
           "amount": 22.5,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A1-01",
           "ingredient_id": "gin_london_dry",
@@ -123,7 +123,7 @@
         },
         {
           "amount": 22.5,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A1-02",
           "ingredient_id": "green_chartreuse",
@@ -148,7 +148,7 @@
         },
         {
           "amount": 22.5,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A1-03",
           "ingredient_id": "maraschino",
@@ -173,7 +173,7 @@
         },
         {
           "amount": 22.5,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A1-04",
           "ingredient_id": "lime_juice",
@@ -208,7 +208,7 @@
           "inventory_policy": "excluded_from_ingredient_inventory",
           "inventory_unit": "g",
           "name": "标准方冰",
-          "note": "冰量需实测；滤出时不退库存",
+          "note": "制作冰过滤后留在源容器；冰不消耗原料库存。",
           "quantity_basis": "草案",
           "quantity_status": "draft",
           "required": true,
@@ -222,7 +222,8 @@
           "specification_status": "unspecified",
           "step_reference": "03 加冰",
           "unit": "g",
-          "use": "制作冰"
+          "use": "制作冰",
+          "kind": "cube"
         }
       ],
       "steps": [
@@ -329,27 +330,27 @@
       "display_steps": [
         {
           "instruction": "冷却鸡尾酒杯，准备摇壶、量酒器和滤器。",
-          "number": 1.0,
+          "number": 1,
           "operation": "准备"
         },
         {
           "instruction": "量取金酒、绿查特酒、樱桃利口酒和青柠汁，各 22.5 ml，加入摇壶。",
-          "number": 2.0,
+          "number": 2,
           "operation": "量取"
         },
         {
           "instruction": "在摇壶中加入 150 g 标准方冰。",
-          "number": 3.0,
+          "number": 3,
           "operation": "加冰"
         },
         {
           "instruction": "摇匀杯中材料，使酒液充分冷却。",
-          "number": 4.0,
+          "number": 4,
           "operation": "摇和"
         },
         {
           "instruction": "将酒液过滤到冷却的鸡尾酒杯中，摇壶中的冰块不倒入成品。",
-          "number": 5.0,
+          "number": 5,
           "operation": "过滤"
         }
       ],
@@ -410,7 +411,8 @@
         "cost": 12.552857142857142,
         "multiplier": 1.5,
         "price": 18
-      }
+      },
+      "quantity_schema_version": 1
     },
     {
       "id": "mojito",
@@ -445,7 +447,7 @@
       "ingredients": [
         {
           "amount": 45.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A2-01",
           "ingredient_id": "white_rum",
@@ -470,7 +472,7 @@
         },
         {
           "amount": 15.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A2-02",
           "ingredient_id": "simple_syrup",
@@ -495,7 +497,7 @@
         },
         {
           "amount": 20.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A2-03",
           "ingredient_id": "lime_juice",
@@ -520,7 +522,7 @@
         },
         {
           "amount": 60.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A2-04",
           "ingredient_id": "soda_water",
@@ -545,7 +547,7 @@
         },
         {
           "amount": 6.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A2-05",
           "ingredient_id": "mint_leaf",
@@ -570,7 +572,7 @@
         },
         {
           "amount": 1.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A2-07",
           "ingredient_id": "mint_sprig",
@@ -595,7 +597,7 @@
         },
         {
           "amount": 1.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A2-08",
           "ingredient_id": "lime_wedge",
@@ -644,7 +646,8 @@
           "specification_status": "unspecified",
           "step_reference": "03 加冰",
           "unit": "g",
-          "use": "出品冰"
+          "use": "出品冰",
+          "kind": "crushed"
         }
       ],
       "steps": [
@@ -751,27 +754,27 @@
       "display_steps": [
         {
           "instruction": "准备高球杯、量酒器、轻压棒和吧勺。",
-          "number": 1.0,
+          "number": 1,
           "operation": "准备"
         },
         {
           "instruction": "杯中加入 6 片薄荷叶、20 ml 青柠汁和 15 ml 糖浆。轻压薄荷，避免压碎叶片。",
-          "number": 2.0,
+          "number": 2,
           "operation": "轻压"
         },
         {
           "instruction": "加入 150 g 碎冰。",
-          "number": 3.0,
+          "number": 3,
           "operation": "加冰"
         },
         {
           "instruction": "加入 45 ml 白朗姆酒与 60 ml 苏打水，用吧勺轻搅混匀。",
-          "number": 4.0,
+          "number": 4,
           "operation": "加酒"
         },
         {
           "instruction": "以 1 枝薄荷和 1 块青柠角装饰。",
-          "number": 5.0,
+          "number": 5,
           "operation": "装饰"
         }
       ],
@@ -836,7 +839,8 @@
         "cost": 12.42142857142857,
         "multiplier": 1.5,
         "price": 18
-      }
+      },
+      "quantity_schema_version": 1
     },
     {
       "id": "gin_and_tonic",
@@ -869,7 +873,7 @@
       "ingredients": [
         {
           "amount": 50.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A3-01",
           "ingredient_id": "gin_london_dry",
@@ -894,7 +898,7 @@
         },
         {
           "amount": 150.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A3-02",
           "ingredient_id": "tonic_water",
@@ -919,7 +923,7 @@
         },
         {
           "amount": 1.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A3-04",
           "ingredient_id": "lime_wedge",
@@ -968,7 +972,8 @@
           "specification_status": "unspecified",
           "step_reference": "01 加冰",
           "unit": "g",
-          "use": "出品冰"
+          "use": "出品冰",
+          "kind": "cube"
         }
       ],
       "steps": [
@@ -1038,17 +1043,17 @@
       "display_steps": [
         {
           "instruction": "高球杯中加入 150 g 标准方冰。",
-          "number": 1.0,
+          "number": 1,
           "operation": "加冰"
         },
         {
           "instruction": "加入 50 ml 金酒和 150 ml 汤力水，用吧勺轻搅。",
-          "number": 2.0,
+          "number": 2,
           "operation": "轻搅"
         },
         {
           "instruction": "以 1 块青柠角装饰。",
-          "number": 3.0,
+          "number": 3,
           "operation": "装饰"
         }
       ],
@@ -1106,7 +1111,8 @@
         "cost": 14.366666666666667,
         "multiplier": 1.5,
         "price": 21
-      }
+      },
+      "quantity_schema_version": 1
     },
     {
       "id": "long_island_iced_tea",
@@ -1139,7 +1145,7 @@
       "ingredients": [
         {
           "amount": 15.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A4-01",
           "ingredient_id": "vodka",
@@ -1164,7 +1170,7 @@
         },
         {
           "amount": 15.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A4-02",
           "ingredient_id": "tequila",
@@ -1189,7 +1195,7 @@
         },
         {
           "amount": 15.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A4-03",
           "ingredient_id": "white_rum",
@@ -1214,7 +1220,7 @@
         },
         {
           "amount": 15.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A4-04",
           "ingredient_id": "gin_london_dry",
@@ -1239,7 +1245,7 @@
         },
         {
           "amount": 15.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A4-05",
           "ingredient_id": "cointreau",
@@ -1264,7 +1270,7 @@
         },
         {
           "amount": 25.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A4-06",
           "ingredient_id": "lemon_juice",
@@ -1289,7 +1295,7 @@
         },
         {
           "amount": 30.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A4-07",
           "ingredient_id": "simple_syrup",
@@ -1314,7 +1320,7 @@
         },
         {
           "amount": 60.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A4-08",
           "ingredient_id": "cola",
@@ -1339,7 +1345,7 @@
         },
         {
           "amount": 1.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A4-10",
           "ingredient_id": "lemon_slice",
@@ -1388,7 +1394,8 @@
           "specification_status": "unspecified",
           "step_reference": "01 加冰",
           "unit": "g",
-          "use": "出品冰"
+          "use": "出品冰",
+          "kind": "cube"
         }
       ],
       "steps": [
@@ -1474,22 +1481,22 @@
       "display_steps": [
         {
           "instruction": "高球杯中加入 150 g 标准方冰。",
-          "number": 1.0,
+          "number": 1,
           "operation": "加冰"
         },
         {
           "instruction": "加入伏特加、龙舌兰酒、白朗姆酒、金酒和君度橙酒各 15 ml，再加入 25 ml 柠檬汁与 30 ml 糖浆。",
-          "number": 2.0,
+          "number": 2,
           "operation": "量取"
         },
         {
           "instruction": "加入 60 ml 可乐，用吧勺轻搅混匀。",
-          "number": 3.0,
+          "number": 3,
           "operation": "补可乐"
         },
         {
           "instruction": "可用 1 片柠檬片装饰，也可以不加。",
-          "number": 4.0,
+          "number": 4,
           "operation": "装饰"
         }
       ],
@@ -1554,7 +1561,8 @@
         "cost": 16.554545454545455,
         "multiplier": 1.5,
         "price": 24
-      }
+      },
+      "quantity_schema_version": 1
     },
     {
       "id": "manhattan",
@@ -1587,7 +1595,7 @@
       "ingredients": [
         {
           "amount": 50.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A5-01",
           "ingredient_id": "rye_whiskey",
@@ -1612,7 +1620,7 @@
         },
         {
           "amount": 20.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A5-02",
           "ingredient_id": "sweet_red_vermouth",
@@ -1637,7 +1645,7 @@
         },
         {
           "amount": 1.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "configured",
           "id": "A5-03",
           "ingredient_id": "angostura_bitters",
@@ -1657,12 +1665,16 @@
           "specification": "商品规格待选",
           "specification_status": "unspecified",
           "step_reference": "02 加料",
-          "unit": "dash",
-          "use": "配料"
+          "unit": "ml",
+          "use": "配料",
+          "source_quantity": {
+            "amount": 1.0,
+            "unit": "dash"
+          }
         },
         {
           "amount": 1.0,
-          "conversion_factor": 1.0,
+          "conversion_factor": 1,
           "conversion_status": "source_value",
           "id": "A5-05",
           "ingredient_id": "cocktail_cherry",
@@ -1711,7 +1723,8 @@
           "specification_status": "unspecified",
           "step_reference": "03 搅拌",
           "unit": "g",
-          "use": "制作冰"
+          "use": "制作冰",
+          "kind": "cube"
         }
       ],
       "steps": [
@@ -1817,27 +1830,27 @@
       "display_steps": [
         {
           "instruction": "冷却鸡尾酒杯，准备调酒杯、量酒器、吧勺和滤器。",
-          "number": 1.0,
+          "number": 1,
           "operation": "准备"
         },
         {
-          "instruction": "调酒杯中加入 50 ml 黑麦威士忌、20 ml 甜红味美思和 1 dash 安格仕苦精。",
-          "number": 2.0,
+          "instruction": "调酒杯中加入 50 ml 黑麦威士忌、20 ml 甜红味美思和 1 ml 安格仕苦精。",
+          "number": 2,
           "operation": "量取"
         },
         {
           "instruction": "加入 150 g 标准方冰，用吧勺搅拌，使酒液充分冷却。",
-          "number": 3.0,
+          "number": 3,
           "operation": "搅拌"
         },
         {
           "instruction": "将酒液过滤到冷却的鸡尾酒杯中，制作冰不留在成品内。",
-          "number": 4.0,
+          "number": 4,
           "operation": "过滤"
         },
         {
           "instruction": "以 1 颗鸡尾酒樱桃装饰。",
-          "number": 5.0,
+          "number": 5,
           "operation": "装饰"
         }
       ],
@@ -1898,7 +1911,8 @@
         "cost": 11.575,
         "multiplier": 1.5,
         "price": 17
-      }
+      },
+      "quantity_schema_version": 1
     },
     {
       "id": "echo_world",
@@ -1941,7 +1955,8 @@
           "inventory_unit": "ml",
           "required": true,
           "use": "基酒",
-          "quantity_status": "playtest"
+          "quantity_status": "playtest",
+          "conversion_factor": 1
         },
         {
           "id": "B1-02",
@@ -1954,7 +1969,8 @@
           "inventory_unit": "ml",
           "required": true,
           "use": "草本利口酒",
-          "quantity_status": "playtest"
+          "quantity_status": "playtest",
+          "conversion_factor": 1
         },
         {
           "id": "B1-03",
@@ -1967,7 +1983,8 @@
           "inventory_unit": "ml",
           "required": true,
           "use": "配料",
-          "quantity_status": "playtest"
+          "quantity_status": "playtest",
+          "conversion_factor": 1
         },
         {
           "id": "B1-04",
@@ -1980,7 +1997,8 @@
           "inventory_unit": "ml",
           "required": true,
           "use": "配料",
-          "quantity_status": "playtest"
+          "quantity_status": "playtest",
+          "conversion_factor": 1
         }
       ],
       "ice": [
@@ -1990,7 +2008,10 @@
           "unit": "g",
           "sku_id": "sku_ice_standard_cube",
           "inventory_amount": 150,
-          "inventory_unit": "g"
+          "inventory_unit": "g",
+          "kind": "cube",
+          "use": "制作冰",
+          "inventory_policy": "excluded_from_ingredient_inventory"
         }
       ],
       "glass": "碟形鸡尾酒杯",
@@ -2047,7 +2068,8 @@
           6,
           10
         ]
-      }
+      },
+      "quantity_schema_version": 1
     }
   ],
   "sensory_model_version": "sensory-calibrated-1"

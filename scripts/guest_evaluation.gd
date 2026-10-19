@@ -80,7 +80,7 @@ static func evaluate(cup: Dictionary, target: Dictionary, definitions: Dictionar
 	var buff: Dictionary=target.get("recipe_buffs",{}).get(cup.recipe.id,{})
 	if not buff.is_empty() and quality.get("tier")=="perfect" and buff.get("version")==cup.recipe.version:
 		bonus=clampf(float(buff.get("bonus",0)),0,10)
-	var score:=maxf(0,base+bonus-soft)
+	var score:=clampf(base+bonus-soft,0,100)
 	var satisfied:=score>=float(target.satisfied_min)
 	var label:="非常满意" if score>=90 else ("满意" if satisfied else ("不太满意" if score>=40 else "不满意"))
 	var reasons: Array=[]

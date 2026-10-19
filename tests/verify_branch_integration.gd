@@ -97,7 +97,12 @@ func run() -> void:
 	check(CustomerService.state.active.delivery_id==first_record,"story reception restores separately")
 	check(CustomerService.state.deliveries.has(free_id) and Journal.drinks("milo",WorkbenchSession.state).size()==2,"both modes retain shared history")
 	# A real new-model hard restriction is recorded without charging or granting tips.
-	home.get_node("%GuestLayer").show_guest(4); await settle(); talk(); await settle()
+	home.get_node("%GuestLayer").show_guest(4); await settle()
+	# Yellow's current authored preferences allow alcohol. Explicitly lock a hard
+	# restriction in this isolated fixture to continue testing the refusal pathway.
+	CustomerService.state.active.demand.constraints=[{"kind":"forbid_items","items":["sku_gin_london_dry"],"label":"本次测试不接受金酒"}]
+	CustomerService._write()
+	talk(); await settle()
 	home._on_open_pressed(); await settle(); bench=home.active_page; bench._select("gin_and_tonic"); bench._start(); await settle(); bench=home.active_page
 	finish_gin(); await settle()
 	var refused_balance:=SlotWallet.balance

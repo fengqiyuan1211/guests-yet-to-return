@@ -78,9 +78,10 @@ func verify_cup(id: String, number: int) -> void:
 	check(not record.is_empty(), "receipt exists " + id)
 	if record.is_empty(): return
 	equal_attributes(record.actual.attributes, standard.attributes, "customer " + id)
-	var tip := roundi(80 * (0.2 if record.review.satisfaction>=90 else 0.1 if record.review.satisfaction>=70 else 0.0))
-	check(record.base_paid==80 and record.tip==tip and SlotWallet.balance == before + 80 + tip, "locked payment plus configured tip " + id)
-	check(CustomerService.deliver(cup) and SlotWallet.balance == before + 80 + tip, "idempotent payment " + id)
+	var fixed_price := int(CustomerService.state.active.order.price)
+	var tip := roundi(fixed_price * (0.2 if record.review.satisfaction>=90 else 0.1 if record.review.satisfaction>=70 else 0.0))
+	check(record.base_paid==fixed_price and record.tip==tip and SlotWallet.balance == before + fixed_price + tip, "locked payment plus configured tip " + id)
+	check(CustomerService.deliver(cup) and SlotWallet.balance == before + fixed_price + tip, "idempotent payment " + id)
 	check(CustomerService._valid_saved_state(CustomerService.state), "save validates " + id)
 	check(WorkbenchSession._valid(WorkbenchSession.state), "workbench save validates " + id)
 	rows.append({"id":id, "name":source.name, "catalog":standard.attributes, "bench":cup.evaluation.attributes, "diy":diy.attributes, "customer":record.actual.attributes, "craft":cup.evaluation.score, "total":record.review.satisfaction})
@@ -162,7 +163,7 @@ func _ready() -> void:
 	var purchased: Dictionary = {}
 	MenuCatalog.entries = []
 	for record: Dictionary in CocktailDatabase.list_cocktails():
-		MenuCatalog.entries.append({"id":record.id,"price":80})
+		MenuCatalog.entries.append({"id":record.id,"price":MenuCatalog.get_recipe(record.id).reference_price})
 		for row: Dictionary in record.ingredients:
 			if not purchased.has(row.sku_id):
 				check(Supplies.purchase(row.sku_id, 3), "buy " + row.sku_id)

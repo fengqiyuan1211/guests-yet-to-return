@@ -198,7 +198,7 @@ func _select(id: String) -> void:
 		_label(detail,"配方参考 · "+str(recipe.get("recipe_status","")),18)
 		for row in recipe.get("ingredients",[]):
 			var available: bool=MenuCatalog.ingredient_available(row)
-			_label(detail,"%s   %s %s%s" % [row.name,WorkbenchSession.format_amount(float(row.amount)),str(row.unit),"" if available else "  · 库存不足"],19)
+			_label(detail,"%s   %s%s" % [row.name,preload("res://scripts/recipe_quantities.gd").amount_text(row),"" if available else "  · 库存不足"],19)
 		_label(detail,"缺料可在工作台按 S 补货；仍可自由调整做法。",17)
 	var session: Dictionary=WorkbenchSession.snapshot().session
 	var pending: bool=not session.is_empty() and session.get("status")=="mixing" and not session.get("actions",[]).is_empty()

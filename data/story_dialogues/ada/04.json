@@ -5,7 +5,7 @@
   "guest_name": "艾达",
   "episode": 4,
   "title": "托马的排班表",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -89,6 +89,11 @@
       "speaker": "guest",
       "text": "先照这张表试几天吧，光在这儿说，我自己都觉得容易。等真跑过了，下回来再聊，别让我现在就夸口。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "照我平常喜欢的[b]清爽、低甜[/b]来，[b]不用薄荷[/b]。",
+      "next": "start"
     }
   },
   "story_id": "ada_story",

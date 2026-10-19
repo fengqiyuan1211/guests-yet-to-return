@@ -239,6 +239,7 @@ func begin_guest(profile: Dictionary, visit: int, restoring: bool) -> bool:
 	_cancel_request()
 	var number := int(StoryDialogue.progress.get(str(profile.id), {}).get("completed", 0)) + 1
 	if restoring and StoryDialogue.guest_id == str(profile.id) and not StoryDialogue.episode.is_empty(): number = int(StoryDialogue.episode.get("episode", number))
+	var story_number:=number
 	var episode_id := "%s_%02d" % [profile.id, number]
 	if profile.id == "yellow_creature":
 		number = mini(number, StoryDialogue.catalog["yellow_creature"].size())
@@ -265,8 +266,8 @@ func begin_guest(profile: Dictionary, visit: int, restoring: bool) -> bool:
 	var previous: Dictionary = state.active.duplicate(true)
 	state.active = {"id": Crypto.new().generate_random_bytes(16).hex_encode(), "guest_id": profile.id,
 		"day": TimeManager.day, "visit": visit, "demand": demand, "order": {}, "delivery_id": "",
-		"profile": profile.duplicate(true), "story_episode_id": episode_id if number <= StoryDialogue.catalog.get(str(profile.id), []).size() else "",
-		"story_completed": number > StoryDialogue.catalog.get(str(profile.id), []).size(), "rules_snapshot":_rules_snapshot(rules)}
+		"profile": profile.duplicate(true), "story_episode_id": episode_id if story_number <= StoryDialogue.catalog.get(str(profile.id), []).size() else "",
+		"story_completed": story_number > StoryDialogue.catalog.get(str(profile.id), []).size(), "rules_snapshot":_rules_snapshot(rules)}
 	state.active["play_mode"]=PlayModes.mode
 	if PlayModes.mode=="mixing":
 		state.active.story_episode_id=""
@@ -335,7 +336,7 @@ func _visit_story_completed() -> bool:
 	return StoryDialogue.phase != "story"
 
 func memory_summary() -> Dictionary:
-	return MemoryProgress.summarize(StoryDialogue.progress.get("stick", {}), state.deliveries)
+	return MemoryProgress.summarize(StoryDialogue.progress.get("stick", {}), state.deliveries, {}, GuestService.ledger().deliveries)
 
 func _memory_reception_ready() -> bool:
 	if state.active.get("play_mode")=="mixing": return false

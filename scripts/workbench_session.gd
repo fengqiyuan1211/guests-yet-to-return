@@ -100,9 +100,12 @@ func pantry_items(tab: String) -> Array:
 	if tab=="冰块": return [["cube","方冰 · 50 g / 4块"],["crushed","碎冰 · 50 g / 铲"]]
 	for item: Dictionary in Supplies.catalog.list_items(group):
 		if tutorial_active:
+			if item.get("unlock_policy") == "activity_reward": continue
 			if item.storage_mode!="permanent" and float(OpeningFlow.state.stock.get(item.id,0))<=0: continue
 		elif Supplies.total_remaining(item.id)<=0: continue
-		result.append([str(ITEM_ALIASES.get(item.id,item.id)),str(item.name)])
+		var entry: Array=[str(ITEM_ALIASES.get(item.id,item.id)),str(item.name)]
+		if item.get("rarity")=="legendary": result.push_front(entry)
+		else: result.append(entry)
 	return result
 
 func _fresh() -> Dictionary:
@@ -285,6 +288,7 @@ func _valid_session(value: Variant) -> bool:
 		if not s.vessel_capacities is Dictionary: return false
 		for id in CAPACITIES:
 			if not _number(s.vessel_capacities.get(id),1000) or s.vessel_capacities[id]<=0: return false
+	if s.get("spoon_tool_id", "tool_bar_spoon") not in ["tool_bar_spoon", "tool_yellow_bar_spoon"]: return false
 	if s.get("spoon_vessel","") not in ["","mixing","glass","shaker"]: return false
 	if s.get("spoon_vessel","")=="shaker" and s.lid: return false
 	if not s.get("consumed",{}) is Dictionary: return false
@@ -431,7 +435,7 @@ func format_amount(value: float) -> String:
 
 func recipe_note(session: Dictionary) -> String:
 	var current:=draft_amounts(session)
-	var recipe: Dictionary=session.get("recipe",RECIPE)
+	var recipe: Dictionary=preload("res://scripts/recipe_quantities.gd").recipe(session.get("recipe",RECIPE))
 	var rows: Array[String]=[]
 	if recipe.has("ingredient_rows"):
 		for row in recipe.ingredient_rows:
@@ -447,9 +451,9 @@ func recipe_note(session: Dictionary) -> String:
 			if row.get("inventory_amount")==null: progress+=" · 换算待定"
 			rows.append("%s %s %s%s" % [row.name,format_amount(float(row.amount)),unit,progress])
 		for ice in recipe.get("ice",[]):
-			var portion:=float(ice.amount)/ICE_PORTION_G
-			var cube:=not str(ice.get("sku_id","")).contains("crushed")
-			rows.append("%s %s g＝%s份%s\n%s" % [ice.name,format_amount(float(ice.amount)),format_amount(portion),"＝%s块" % format_amount(portion*4) if cube else "", "方冰1份4块，共50g（每块12.5g）" if cube else "碎冰1份1铲，共50g"])
+			rows.append(preload("res://scripts/recipe_quantities.gd").ice_text(ice,true))
+		if not recipe.get("ice",[]).is_empty():
+			rows.append("每份 50 g；方冰 4 块，碎冰 1 铲。")
 
 		rows.append("\n杯型："+str(recipe.get("glass","自选")))
 		for step in recipe.get("display_steps",[]): rows.append("%s. %s" % [str(step.get("number","")),step.instruction])
@@ -851,6 +855,10 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 				var target:=str(payload.get("target",""))
 				if target not in ["","mixing","glass","shaker"] or (target=="shaker" and s.lid):
 					return _error("请将吧勺插入打开的杯子或容器。")
+				var spoon_id := str(payload.get("tool_id", s.get("spoon_tool_id", "tool_bar_spoon")))
+				if spoon_id not in ["tool_bar_spoon", "tool_yellow_bar_spoon"] or (spoon_id == "tool_yellow_bar_spoon" and (tutorial_active or not Supplies.is_owned(spoon_id))):
+					return _error("还没有这把吧勺。")
+				s.spoon_tool_id=spoon_id
 				s.spoon_vessel=target
 			"lid":
 				if not s.lid and s.get("spoon_vessel","")=="shaker": return _error("先点击露出的吧勺收回，再合上摇壶。")
@@ -942,7 +950,7 @@ func _research_record(s: Dictionary, id: String, title: String, english: String,
 		var definition: Dictionary=MATERIALS.get(material,SOLIDS.get(material,GARNISHES.get(material,{})))
 		var unit: String="ml" if MATERIALS.has(material) else str(definition.get("unit","份"))
 		var inventory_unit: String=str(Supplies.get_item(definition.sku_id).get("measurement_unit",unit))
-		ingredients.append({"sku_id":definition.sku_id,"name":definition.name,"amount":amounts[material],"unit":unit,"inventory_amount":amounts[material],"inventory_unit":inventory_unit,"required":true,"use":"装饰" if GARNISHES.has(material) else "原料"})
+		ingredients.append({"sku_id":definition.sku_id,"name":definition.name,"amount":amounts[material],"unit":inventory_unit,"inventory_amount":amounts[material],"inventory_unit":inventory_unit,"required":true,"use":"装饰" if GARNISHES.has(material) else "原料"})
 	var instructions: Array=["按成品用量取料；损耗和留在其他容器的材料不写入配方。"]
 	var used: Dictionary={}
 	for action in s.actions:
@@ -958,7 +966,9 @@ func _research_record(s: Dictionary, id: String, title: String, english: String,
 	record.display_steps=[]
 	for line in instructions: record.display_steps.append({"number":record.display_steps.size()+1,"instruction":line})
 	record.ice=[]
-	for batch in ice_batches(glass): record.ice.append({"name":"方冰" if batch.kind=="cube" else "碎冰","amount":batch.get("mass_g",batch.volume),"unit":"g"})
+	for batch in ice_batches(glass): record.ice.append(preload("res://scripts/recipe_quantities.gd").ice({"kind":batch.kind,"amount":batch.get("mass_g",batch.volume),"unit":"g","use":"出品冰"}))
+	record.ice=preload("res://scripts/recipe_quantities.gd").ice_rows(record.ice)
+	record.quantity_schema_version=1
 	return record
 
 func _error(message: String) -> bool:

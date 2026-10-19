@@ -5,7 +5,7 @@
   "guest_name": "老霍克",
   "episode": 1,
   "title": "牌子上的名字",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -89,6 +89,11 @@
       "speaker": "guest",
       "text": "今天先说这些。我去问问那本账还在不在，下回来跟你说。那张稿子先放我兜里，省得又有人催着签。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "照平常来，[b]厚实一点，收尾带点苦[/b]。[b]别额外加糖浆[/b]。",
+      "next": "start"
     }
   },
   "story_id": "hank_story",

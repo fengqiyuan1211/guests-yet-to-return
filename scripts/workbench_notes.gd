@@ -25,9 +25,9 @@ static func text_for(session: Dictionary, service: Node) -> String:
 	# Keep production ice and serving ice distinct, even after filtering.
 	var expected_ice: Dictionary={}
 	for row in recipe.get("ice",[]):
-		var kind: String="crushed" if str(row.get("sku_id","")).contains("crushed") else "cube"
+		var kind: String=preload("res://scripts/recipe_quantities.gd").ice_kind(row)
 		var purpose:=str(row.get("use","出品冰"))
-		expected_ice[purpose+":"+kind]=float(row.amount)
+		expected_ice[purpose+":"+kind]=float(expected_ice.get(purpose+":"+kind,0))+float(row.amount)
 	var actual_ice: Dictionary={}
 	for vessel_id in session.get("vessels",{}):
 		var purpose: String="出品冰" if vessel_id=="glass" else "制作冰"

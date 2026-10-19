@@ -312,7 +312,7 @@ func load_state() -> bool:
 	# Persist this upgrade immediately rather than leaving old owned=false flags on disk.
 	var needs_default_migration := false
 	for item: Dictionary in catalog.list_items():
-		if item.storage_mode != "permanent":
+		if item.storage_mode != "permanent" or item.get("unlock_policy", "available_by_default") != "available_by_default":
 			continue
 		var prior: Variant = data.inventory.items.get(item.id)
 		if not prior is Dictionary or prior.get("owned") != true or prior.get("unlocked") != true:
@@ -422,4 +422,25 @@ func _sync_menu() -> bool:
 	if not menu.update_supply_inventory(inventory.as_recipe_inventory(), unlocked):
 		last_error = "已保存库存，酒谱更新暂未完成。"
 		return false
+	return true
+
+func grant_activity_equipment(id: String, activity_id: String) -> bool:
+	var item: Dictionary = catalog.get_item(id)
+	if item.get("storage_mode") != "permanent" or item.get("unlock_policy") != "activity_reward" or item.get("reward_activity_id") != activity_id:
+		last_error = "这件纪念品暂时无法领取。"
+		return false
+	if not writable or _busy or not _pending.is_empty():
+		last_error = "纪念品暂未保存，请稍后重试。"
+		return false
+	if is_owned(id): return true
+	var snapshot: Dictionary = inventory.serialize()
+	snapshot.items[id] = {"unlocked": true, "owned": true}
+	var candidate: RefCounted = InventoryScript.new()
+	if not candidate.restore(snapshot):
+		last_error = candidate.last_error
+		return false
+	if not _write(candidate.serialize(), {}): return false
+	inventory.restore(candidate.serialize())
+	changed.emit()
+	shop_changed.emit()
 	return true

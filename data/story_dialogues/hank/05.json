@@ -5,7 +5,7 @@
   "guest_name": "老霍克",
   "episode": 5,
   "title": "这回写全了",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -87,8 +87,13 @@
     },
     "closing": {
       "speaker": "guest",
-      "text": "牌子的事，今天算交代清楚了。货棚清单空着的那一行，也能写上尼尔·贝克了。草图你留着，想摆木箱时咱们再摆。修井时还有些旧事，下回有空再讲。",
+      "text": "牌子的事，今天算交代清楚了。货棚清单空着的那一行，也能写上尼尔·贝克了。那张草图我也带来了。先把这杯喝完，难得今天不赶路。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "今天[b]酒味轻一点，甜些，苦味少些[/b]。按配方做就好，[b]别额外添糖浆[/b]。",
+      "next": "start"
     }
   },
   "story_id": "hank_story",

@@ -5,7 +5,6 @@ var confirming := false
 var was_running := true
 var continue_button: Button
 var restart_button: Button
-var memory_button: Button
 var title_button: Button
 var audio_controls: VBoxContainer
 var volume_sliders: Dictionary = {}
@@ -28,7 +27,6 @@ func _ready() -> void:
 	)
 	continue_button = _button("继续游戏", _resume)
 	restart_button = _button("重新开始", _ask_restart)
-	memory_button = _button("童年球场 · 练习", _launch_memory)
 	title_button = _button("返回开始", _return_title)
 	_build_audio_controls()
 	_show_menu()
@@ -130,7 +128,6 @@ func _button(label: String, action: Callable) -> Button:
 
 func _show_menu() -> void:
 	confirming = false
-	memory_button.show()
 	title_button.show()
 	audio_controls.show()
 	%Tabs.position.y = 538
@@ -153,7 +150,6 @@ func _ask_restart() -> void:
 			%Description.text = GameSession.last_error
 		return
 	confirming = true
-	memory_button.hide()
 	title_button.hide()
 	audio_controls.hide()
 	%Tabs.position.y = 440
@@ -172,13 +168,6 @@ func _return_title() -> void:
 		return
 	was_running = false
 	OpeningFlow.return_to_title()
-
-func _launch_memory() -> void:
-	if confirming or GameSession.resetting: return
-	Navigation.memory_match_context = {"mode":"practice", "visit_id":""}
-	Navigation.memory_resume_running = was_running
-	was_running = false # This retiring settings page must not unpause the new match.
-	Navigation.go_to(&"stick_badminton")
 
 func _resume() -> void:
 	if GameSession.resetting:

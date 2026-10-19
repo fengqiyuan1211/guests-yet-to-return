@@ -5,7 +5,7 @@
   "guest_name": "米洛",
   "episode": 2,
   "title": "样张上的签字",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -87,8 +87,13 @@
     },
     "closing": {
       "speaker": "guest",
-      "text": "明早我带原稿去见罗恩。他以前用渡河题考我：三名警察、三名囚犯，坐两人小船过河。我老忘了算回程。木偶和草稿都带来了，有空陪我摆摆？地图的事，下回再讲。",
+      "text": "明早我带原稿去见罗恩。他以前用渡河题考我，我老忘了算回程。现在想起来，画地图时也是一样，只想着把人带过去。地图的事，下回再讲。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "今天[b]酒味轻一点，甜味收住，酸味明显些[/b]。[b]不要奶制品[/b]，我想慢慢看完这几页。",
+      "next": "start"
     }
   },
   "story_id": "milo_story",

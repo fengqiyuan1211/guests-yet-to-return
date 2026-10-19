@@ -41,11 +41,13 @@ static func step(cfg: Dictionary, player: int, boxes: Array, direction: String) 
 	if not DIRS.has(direction): return {"ok":false,"message":"请选择上下左右方向。"}
 	var dir: Vector2i=DIRS[direction]; var offset: int=dir.y*cfg.width+dir.x; var next:=player+offset
 	if next not in cfg.floor: return {"ok":false,"message":"前面是墙，换一侧绕过去。"}
-	var result:=boxes.duplicate(); var pushed:=boxes.find(next)
+	var result: Array=[]
+	for cell in boxes: result.append(int(cell))
+	var pushed:=result.find(next)
 	if pushed>=0:
 		var dest:=next+offset
 		if dest not in cfg.floor: return {"ok":false,"message":"箱子后面是墙，不能继续推。"}
-		if dest in boxes: return {"ok":false,"message":"不能同时推两只箱子，先腾出通道。"}
+		if dest in result: return {"ok":false,"message":"不能同时推两只箱子，先腾出通道。"}
 		result[pushed]=dest
 	return {"ok":true,"player":next,"boxes":result,"pushed":pushed}
 static func replay(stage: int, moves: Variant, version:=2) -> Dictionary:
@@ -61,7 +63,7 @@ static func replay(stage: int, moves: Variant, version:=2) -> Dictionary:
 static func filled(s: Dictionary) -> int:
 	var goals: Array=config_for(s).goals; var count:=0
 	for cell in s.boxes:
-		if cell in goals: count+=1
+		if int(cell) in goals: count+=1
 	return count
 static func solved(s: Dictionary) -> bool: return filled(s)==s.boxes.size()
 static func whole(v: Variant, maximum: int) -> bool:
@@ -79,9 +81,17 @@ static func valid(s: Dictionary) -> bool:
 	for i in range(s.boxes.size()):
 		if not whole(s.boxes[i],200) or int(s.boxes[i])!=int(replayed.boxes[i]): return false
 	return not s.won or (s.stage==stage_count(s)-1 and solved(s))
+static func normalized(s: Dictionary) -> Dictionary:
+	# JSON numbers are floats; grid membership must compare canonical integer cells.
+	var n:=s.duplicate(true)
+	n.boxes=s.boxes.map(func(cell): return int(cell))
+	for field in ["model","layout_version","stage","player","steps","pushes","hints"]:
+		if n.has(field): n[field]=int(n[field])
+	return n
+
 static func apply(s: Dictionary, action: String, data: Dictionary) -> Dictionary:
 	if s.won: return {"ok":false,"message":"物资已经备妥，可以返回手帐或再玩一局。"}
-	var n:=s.duplicate(true); var cfg:=config_for(s)
+	var n:=normalized(s); var cfg:=config_for(s)
 	if action=="move":
 		if solved(s): return {"ok":false,"message":"这一关备妥了，老霍克说完后会自动继续。"}
 		if n.moves.size()>=2000: return {"ok":false,"message":"本关动作记录已满，请撤回或重来这一关。"}
@@ -119,6 +129,7 @@ static func dead_boxes(s: Dictionary) -> Array:
 	return dead
 static func cornered(s: Dictionary) -> bool: return not dead_boxes(s).is_empty()
 static func reachable(cfg: Dictionary, player: int, boxes: Array) -> Dictionary:
+	boxes=boxes.map(func(cell): return int(cell))
 	var paths: Dictionary={player:""}; var queue: Array=[player]; var head:=0
 	while head<queue.size():
 		var at: int=queue[head]; head+=1
@@ -133,9 +144,9 @@ static func walk_path(s: Dictionary, destination: int) -> Array:
 	for d in path: result.append(d)
 	return result
 static func key(player: int, boxes: Array) -> String:
-	var sorted:=boxes.duplicate(); sorted.sort(); return str(player)+":"+str(sorted)
+	var sorted: Array=boxes.map(func(cell): return int(cell)); sorted.sort(); return str(player)+":"+str(sorted)
 static func hint_search(s: Dictionary) -> Dictionary:
-	var result:={"cfg":config_for(s),"queue":[{"player":int(s.player),"boxes":s.boxes.duplicate(),"first":""}],"seen":{},"head":0,"done":false,"answer":"","visited":0}
+	var result:={"cfg":config_for(s),"queue":[{"player":int(s.player),"boxes":s.boxes.map(func(cell): return int(cell)),"first":""}],"seen":{},"head":0,"done":false,"answer":"","visited":0}
 	if solved(s): result.done=true; result.answer="next"
 	elif cornered(s): result.done=true; result.answer="undo"
 	elif s.get("moves") is Array:

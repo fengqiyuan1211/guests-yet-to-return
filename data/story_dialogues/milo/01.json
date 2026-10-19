@@ -5,7 +5,7 @@
   "guest_name": "米洛",
   "episode": 1,
   "title": "封面上有我的名字",
-  "entry": "start",
+  "entry": "order_request",
   "nodes": {
     "start": {
       "speaker": "guest",
@@ -89,6 +89,11 @@
       "speaker": "guest",
       "text": "今天有个车夫托人留话，让我明早带着地图去货棚，说他照图走岔了。我还不知道是哪段路。先聊到这儿吧，明早见过他，下回来跟你说。",
       "transition": "resume_existing_dialogue_loop"
+    },
+    "order_request": {
+      "speaker": "guest",
+      "text": "有[b]橙子的香气[/b]就好，[b]甜一点[/b]也行，酸味柔和些。[b]不要奶制品[/b]。",
+      "next": "start"
     }
   },
   "story_id": "milo_story",
