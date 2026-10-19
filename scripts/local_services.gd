@@ -5,6 +5,7 @@ var enabled := false
 var report_path := ""
 var boot_pid := -1
 var boot_msec := 0
+var starting := false
 
 func _ready() -> void:
 	process_mode=Node.PROCESS_MODE_ALWAYS
@@ -20,6 +21,14 @@ func _ready() -> void:
 	call_deferred("_start")
 
 func _start() -> void:
+	if starting: return
+	starting=true
+	states={"image":{"status":"starting"},"feedback":{"status":"starting"}}
+	report_path=""
+	await _launch()
+	starting=false
+
+func _launch() -> void:
 	var directory:=ProjectSettings.globalize_path("res://")
 	var helper:=directory.path_join("services/auto_start.py")
 	if not FileAccess.file_exists(helper):
@@ -88,6 +97,9 @@ func _fail(message: String) -> void:
 
 func ensure_ready(kind: String) -> bool:
 	if not enabled: return true
+	# A manual retry rechecks the backends instead of keeping an old startup error.
+	if states.get(kind,{}).get("status")=="error" and not starting:
+		await _start()
 	var deadline:=Time.get_ticks_msec()+40000
 	while states.get(kind,{}).get("status")=="starting" and Time.get_ticks_msec()<deadline:
 		_refresh()

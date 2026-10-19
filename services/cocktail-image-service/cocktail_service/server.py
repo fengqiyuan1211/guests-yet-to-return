@@ -4,6 +4,7 @@ import hmac
 import json
 import re
 import socket
+import sqlite3
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit
 
@@ -55,14 +56,35 @@ def make_server(jobs, host=None, port=None):
                 return False
             return True
 
+        def storage_unavailable(self):
+            self.error(503, "storage_unavailable", "酒图服务暂时无法读写本地记录，请重启酒图服务后重试。这杯酒仍会保留。")
+
         def do_GET(self):
+            try:
+                self.get_response()
+            except (OSError, sqlite3.Error):
+                self.storage_unavailable()
+
+        def get_response(self):
             path = urlsplit(self.path).path
             if path == "/":
                 self.send_bytes(200, (settings.service_root / "web/index.html").read_bytes(), "text/html; charset=utf-8")
                 return
             if path == "/health":
+                try:
+                    jobs.store.check_storage()
+                    restart_required = jobs.configuration_changed()
+                    # stat() alone does not establish that macOS permits reads.
+                    if jobs.env_stamp is not None:
+                        with (settings.service_root / ".env").open("rb") as config:
+                            config.read(1)
+                except (OSError, sqlite3.Error):
+                    self.send_json(503, {"status": "unavailable", "service": "cocktail-image-service",
+                                        "error": {"code": "storage_unavailable", "message": "酒图服务无法访问本地配置或记录，请重启酒图服务后重试。"}})
+                    return
                 self.send_json(200, {"status": "ok", "service": "cocktail-image-service", "provider_configured": jobs.configured,
-                                     "restart_required": jobs.configuration_changed(),
+                                     "restart_required": restart_required,
+                                     "storage_ready": True,
                                      "model": settings.model, "style_id": STYLE_ID,
                                      "prompt_version": PROMPT_VERSION})
                 return
@@ -128,6 +150,8 @@ def make_server(jobs, host=None, port=None):
                 self.error(400, error.code, error.message, error.field)
             except (StoreError, ServiceError) as error:
                 self.error(error.http_status, error.code, error.message)
+            except (OSError, sqlite3.Error):
+                self.storage_unavailable()
             except Exception:
                 self.error(500, "internal_error", "服务暂时无法处理，请检查配置及可写存储目录。")
 

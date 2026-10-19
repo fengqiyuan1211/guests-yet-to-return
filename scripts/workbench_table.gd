@@ -132,7 +132,6 @@ func _process(delta: float) -> void:
 	if material_transition>=1: retired_materials.clear()
 	drain_flash=maxf(0,drain_flash-delta)
 	_advance_stir(delta)
-	stir_energy=move_toward(stir_energy,0,delta*4)
 	motion_energy=move_toward(motion_energy,0,delta*7)
 	var held: bool = dragging and not moving_shaker and selected=="shaker" and technique=="shake" and data.get("lid",false)
 	shaker_offset=shaker_offset.lerp(movement if held else Vector2.ZERO,1-exp(-delta*22))
@@ -160,6 +159,8 @@ func apply_snapshot(snapshot: Dictionary) -> void:
 		muddler_vessel=""
 		returning_spoon={}
 		stir_energy=0
+		stir_rate=0
+		stir_angle=0
 	if data.get("spoon_vessel","")!=snapshot.get("spoon_vessel",""):
 		if data.get("id","")==snapshot.get("id","") and not str(data.get("spoon_vessel","")).is_empty(): returning_spoon=spoon_geometry()
 		spoon_change_time=clock
@@ -318,7 +319,7 @@ func _hit(point: Vector2) -> String:
 	if prop_visible("spoon"):
 		var geometry:=spoon_geometry()
 		var handle: Vector2=geometry.handle
-		if point.distance_to(Geometry2D.get_closest_point_to_segment(point,handle,handle+Vector2(0,32)))<(22 if data.get("spoon_tool_id")=="tool_yellow_bar_spoon" else 10): return "spoon"
+		if point.distance_to(Geometry2D.get_closest_point_to_segment(point,handle,handle+Vector2(0,32).rotated(float(geometry.angle)-PI)))<(22 if data.get("spoon_tool_id")=="tool_yellow_bar_spoon" else 10): return "spoon"
 	if lift_blend>.01:
 		var local := shaker_pose().affine_inverse()*point
 		for part in ["cap","lid","shaker"]:
@@ -454,9 +455,9 @@ func _draw() -> void:
 		if id=="jigger" and not dragging: _draw_jigger_marks(rect,qty)
 		if (id==hover or id==selected) and not pouring:
 			_ellipse(rect.position+Vector2(rect.size.x*.5,rect.size.y+3),Vector2(rect.size.x*.48,5),Color(.93,.72,.34,.30))
-	if not returning_spoon.is_empty() and clock-spoon_change_time<.22:
+	if not returning_spoon.is_empty() and clock-spoon_change_time<.28:
 		var return_pose:=returning_spoon.duplicate()
-		var progress:=clampf((clock-spoon_change_time)/.22,0,1)
+		var progress:=smoothstep(0.0,1.0,clampf((clock-spoon_change_time)/.28,0,1))
 		return_pose.tip+=Vector2(0,-55*progress)
 		_draw_attached_spoon(return_pose,1-progress)
 	if moving_shaker or animated_source=="shaker": _draw_pourable_shaker()
@@ -933,10 +934,13 @@ func transfer_pose(source: String, destination: String, progress: float) -> Dict
 func _advance_stir(delta: float) -> void:
 	var engaged: bool=dragging and technique=="stir" and not moving_mixing and not moving_glass and not moving_shaker and data.get("spoon_vessel","")==selected
 	var responding: bool=engaged and clock-stir_pointer_time<.18 and pointer_speed>=15
-	var target_rate:=clampf(pointer_speed/180.0,.35,3.5)*TAU if responding else 0.0
-	stir_rate=lerpf(stir_rate,target_rate,1-exp(-delta*12))
-	stir_angle=fmod(stir_angle+stir_rate*delta,TAU)
-	if stir_rate>.08: stir_energy=maxf(stir_energy,clampf(stir_rate/TAU,.15,1))
+	# Visual motion has a gentle speed ceiling; grading still uses actual input.
+	var target_rate:=clampf(pointer_speed/360.0,.25,1.25)*TAU if responding else 0.0
+	var previous_rate:=stir_rate
+	stir_rate=lerpf(stir_rate,target_rate,1-exp(-delta*7))
+	stir_angle=fmod(stir_angle+(previous_rate+stir_rate)*.5*delta,TAU)
+	var target_energy:=clampf(stir_rate/(TAU*.65),0,1)
+	stir_energy=lerpf(stir_energy,target_energy,1-exp(-delta*8))
 	if not responding: return
 	last_motion_time=clock
 	motion_energy=1.0

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import sqlite3
 import time
+import tempfile
 import uuid
 from contextlib import contextmanager
 from pathlib import Path
@@ -39,6 +40,16 @@ class JobStore:
                 yield connection
         finally:
             connection.close()
+
+    def check_storage(self):
+        # Probe the real database and output directory, without changing jobs.
+        with self.connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            connection.execute("SELECT COUNT(*) FROM jobs").fetchone()
+            connection.rollback()
+        with tempfile.TemporaryFile(dir=self.root) as probe:
+            probe.write(b"storage-check")
+            probe.flush()
 
     def recover_interrupted(self):
         error = canonical({"code": "service_restarted", "message": "服务重启时这个任务尚未完成；请用新的 request_id 手动再试。", "retryable": True})

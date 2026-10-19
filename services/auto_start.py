@@ -11,6 +11,7 @@ import socket
 import subprocess
 import sys
 import time
+from urllib.error import HTTPError
 from urllib.parse import urlsplit
 from urllib.request import ProxyHandler, Request, build_opener
 
@@ -25,7 +26,7 @@ def atomic_json(path: Path, value: dict) -> None:
 def health(origin: str, kind: str) -> dict | None:
     try:
         request = Request(origin.rstrip("/") + "/health")
-        with build_opener(ProxyHandler({})).open(request, timeout=0.7) as response:
+        with build_opener(ProxyHandler({})).open(request, timeout=2.0) as response:
             if response.status != 200:
                 return None
             value = json.loads(response.read(8192))
@@ -33,6 +34,13 @@ def health(origin: str, kind: str) -> dict | None:
             return value
         if kind == "feedback" and value.get("ok") is True and value.get("max_rounds") == 3:
             return value
+    except HTTPError as error:
+        try:
+            value = json.loads(error.read(8192))
+            if kind == "image" and error.code == 503 and value.get("service") == "cocktail-image-service":
+                return value
+        except (OSError, ValueError):
+            pass
     except (OSError, ValueError):
         pass
     return None
@@ -66,6 +74,10 @@ def python_for(directory: Path, kind: str) -> str | None:
 
 
 def ready_report(value: dict, kind: str, reused: bool, pid: int | None = None) -> dict:
+    if value.get("status") == "unavailable":
+        return {"status": "error", "message": "酒图服务无法访问本地配置或记录，请重启酒图服务后重试。"}
+    if value.get("restart_required"):
+        return {"status": "error", "message": "酒图配置已更新，请重启酒图服务后重试。"}
     return {"status": "ready", "configured": bool(value.get("provider_configured" if kind == "image" else "configured")),
             "reused": reused, "pid": pid, "message": ""}
 
