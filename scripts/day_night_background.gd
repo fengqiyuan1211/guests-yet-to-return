@@ -5,10 +5,9 @@ var guests: Node2D
 
 func _ready() -> void:
 	var blend := ShaderMaterial.new()
-	blend.shader = preload("res://assets/art/day_night.gdshader")
-	blend.set_shader_parameter("day_texture", preload("res://assets/art/saloon-day-unlit-v2.png"))
-	blend.set_shader_parameter("night_texture", preload("res://assets/art/saloon-night-v1.png"))
-	blend.set_shader_parameter("dawn_texture", preload("res://assets/art/saloon-dawn-v1.png"))
+	blend.shader = preload("res://shaders/pixel_day_night.gdshader")
+	texture=load(preload("res://scripts/saloon_composition.gd").BACKGROUND_PATH)
+	texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	material = blend
 	guests = get_node("../Stage/GuestLayer")
 	_process(0.0)

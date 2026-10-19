@@ -141,6 +141,10 @@ func get_image(id: String) -> Texture2D:
 		return null
 	if _textures.has(id):
 		return _textures[id]
+	var pixel: Texture2D=preload("res://scripts/pixel_art.gd").sprite("drink_"+id)
+	if pixel!=null:
+		_textures[id]=pixel
+		return pixel
 	var image_path: String = _by_id[id].image_path
 	if not ResourceLoader.exists(image_path):
 		return null

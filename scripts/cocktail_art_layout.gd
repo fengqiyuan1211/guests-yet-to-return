@@ -4,6 +4,7 @@ static var _visible_textures: Dictionary = {}
 static var _body_layout: Dictionary = {}
 
 static func visible_texture(source: Texture2D) -> Texture2D:
+	if source!=null and source.resource_path.begins_with("res://assets/pixel_b/"): return source
 	if source == null:
 		return null
 	var key := source.get_instance_id()
@@ -52,6 +53,8 @@ static func fit(picture: TextureRect, source: Texture2D, area: Rect2, cocktail_i
 	picture.texture = visible_texture(source)
 	if picture.texture == null:
 		return
+	picture.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
+	if source.resource_path.begins_with("res://assets/pixel_b/"): return
 	if _body_layout.is_empty():
 		var data: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://assets/art/cocktails/layout.json"))
 		if data is Dictionary and data.get("cocktails") is Dictionary:

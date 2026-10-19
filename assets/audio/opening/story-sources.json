@@ -1,0 +1,14 @@
+[
+  {
+    "file": "chuckle.wav",
+    "title": "Voices - male laughter - mild chuckles.wav",
+    "author": "jodybruchon",
+    "page": "https://freesound.org/people/jodybruchon/sounds/459455/",
+    "source": "https://cdn.freesound.org/previews/459/459455_7872308-hq.mp3",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "retrieved": "2026-10-17",
+    "processing": "HQ preview decoded to mono 44.1 kHz PCM16; peak 0.55, 35 ms fade-in, 120 ms fade-out. Played quietly, once per story node.",
+    "sha256": "280e1d154b06bbf566b8ee7d69380793d5cd198dd3d66c3fb899ab591508d0ec"
+  }
+]

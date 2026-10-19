@@ -4,7 +4,7 @@ const Crates=preload("res://scripts/hank_crate_rules.gd")
 const SHED=preload("res://assets/activities/v3/hank-shed.png")
 const CARGO=preload("res://assets/activities/v3/crates.png")
 const TILES=preload("res://assets/activities/v4/hank-tiles.png")
-const PAPER=preload("res://assets/codex/journal-paper-v1.png")
+const PAPER=preload("res://assets/pixel_b/paper.svg")
 var travel:=0.0
 var duration:=.16
 var previous: Dictionary={}
@@ -64,12 +64,19 @@ func _location(cell: int, old_cell: int) -> Vector2:
 	var t:=clampf(1-travel/duration,0,1); t=t*t*(3-2*t)
 	return cell_rect(old_cell).get_center().lerp(to,t)
 func _cargo(rect: Rect2, index: int) -> void:
-	var regions: Array=[Rect2(.068,.046,.39,.423),Rect2(.546,.046,.402,.425),Rect2(.068,.522,.395,.438),Rect2(.581,.493,.378,.451)]
-	var r: Rect2=regions[index]; var dim:=CARGO.get_size()
-	draw_texture_rect_region(CARGO,rect,Rect2(r.position*dim,r.size*dim))
+	draw_texture_rect(preload("res://scripts/pixel_art.gd").sprite(["crate","crate_goal","crate","hank_pawn"][index]),rect,false)
 func _tile(rect: Rect2, index: int, tint:=Color.WHITE) -> void:
-	var extent:=TILES.get_size()*.5
-	draw_texture_rect_region(TILES,rect,Rect2(Vector2(index%2,index/2)*extent,extent),tint)
+	var base: Color=[Color("88603d"),Color("403238"),Color("625452"),Color("986e3b")][index]
+	draw_rect(rect,base*tint)
+	if index==2:
+		draw_rect(rect.grow(-3),Color("81726b")*tint)
+		draw_rect(Rect2(rect.position+Vector2(3,3),Vector2(rect.size.x-6,5)),Color("a5957d")*tint)
+	else:
+		for i in range(1,4):
+			draw_line(rect.position+Vector2(0,rect.size.y*i/4),rect.position+Vector2(rect.size.x,rect.size.y*i/4),Color("513d30")*tint,2)
+		if index==3:
+			draw_rect(rect.grow(-9),Color("eac374")*tint,false,3)
+
 func _arrow(at: Vector2, direction: Vector2, tint: Color) -> void:
 	var tip:=at+direction*28
 	draw_line(at-direction*12,tip,tint,4,true)
@@ -79,7 +86,7 @@ func _paper_card(rect: Rect2) -> void:
 	_box(Rect2(rect.position+Vector2(4,8),rect.size),Color(0,0,0,.3),Color.TRANSPARENT,8)
 	draw_texture_rect(PAPER,rect,false,Color(.95,.9,.8))
 func _draw() -> void:
-	draw_texture_rect(SHED,Rect2(Vector2.ZERO,size),false)
+	draw_texture_rect(preload("res://scripts/pixel_art.gd").scene("hank_lantern"),Rect2(Vector2.ZERO,size),false)
 	draw_rect(Rect2(Vector2.ZERO,size),Color(.075,.055,.035,.30))
 	var s: Dictionary=game.state()
 	if s.get("model")!=2: return

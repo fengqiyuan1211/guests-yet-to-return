@@ -1,11 +1,12 @@
 [gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/drink_menu.gd" id="1"]
-[ext_resource type="Theme" path="res://assets/western_theme.tres" id="2"]
+[ext_resource type="Theme" path="res://assets/pixel_b/theme.tres" id="2"]
 
 [node name="DrinkMenu" type="Control"]
 offset_right = 1600.0
 offset_bottom = 900.0
 mouse_filter = 2
 theme = ExtResource("2")
+texture_filter = 1
 script = ExtResource("1")

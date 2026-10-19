@@ -3,7 +3,7 @@ signal close_requested
 
 const POSTER := preload("res://scripts/menu_poster.gd")
 const DRINK_ICON := preload("res://scripts/menu_drink_icon.gd")
-const PAPER := preload("res://assets/codex/journal-paper-v1.png")
+const PAPER := preload("res://assets/pixel_b/paper.svg")
 const INK := Color("57391f")
 const MUTED := Color("79562f")
 const CREAM := Color("eed9b3")
@@ -62,7 +62,7 @@ func _style(fill: Color, border := Color.TRANSPARENT, width := 1) -> StyleBoxFla
 	box.bg_color = fill
 	box.border_color = border
 	box.set_border_width_all(width)
-	box.set_corner_radius_all(4)
+	box.set_corner_radius_all(0)
 	box.set_content_margin_all(10)
 	return box
 

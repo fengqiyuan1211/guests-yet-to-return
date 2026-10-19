@@ -20,6 +20,86 @@ func op(kind: String,payload: Dictionary={}) -> bool:
 func settle() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
+func key_press(code: Key) -> void:
+	for down in [true,false]:
+		var event:=InputEventKey.new()
+		event.keycode=code
+		event.physical_keycode=code
+		event.pressed=down
+		get_viewport().push_input(event,true)
+	await settle()
+func button_named(parent: Node, caption: String) -> Button:
+	if parent is Button and parent.text==caption: return parent
+	for child in parent.get_children():
+		var found:=button_named(child,caption)
+		if found!=null: return found
+	return null
+func pointer_click(control: Control) -> void:
+	check(is_instance_valid(control),"click target exists")
+	if not is_instance_valid(control): return
+	var point:=control.get_global_rect().get_center()
+	var motion:=InputEventMouseMotion.new()
+	motion.position=point
+	get_viewport().push_input(motion,true)
+	for down in [true,false]:
+		var event:=InputEventMouseButton.new()
+		event.button_index=MOUSE_BUTTON_LEFT
+		event.position=point
+		event.pressed=down
+		get_viewport().push_input(event,true)
+	await settle()
+func exercise_story_inputs() -> void:
+	# Use real viewport dispatch, not signal emission: Control focus caused the regression.
+	page.dialogue.visible_characters=page.dialogue.text.length()
+	page.history_button.grab_focus()
+	await key_press(KEY_SPACE)
+	check(not is_instance_valid(page.history_panel) and OpeningFlow.state.node==1,"Space advances once even with History focused")
+	await pointer_click(page.history_button)
+	check(is_instance_valid(page.history_panel),"history opens by pointer")
+	await pointer_click(button_named(page.history_panel,"返回剧情 · H"))
+	check(not is_instance_valid(page.history_panel),"history closes by pointer")
+	page.dialogue.visible_characters=page.dialogue.text.length()
+	await key_press(KEY_SPACE)
+	check(not is_instance_valid(page.history_panel) and OpeningFlow.state.node==2,"Space after closing history continues instead of reopening")
+	await key_press(KEY_H)
+	check(is_instance_valid(page.history_panel),"H opens history")
+	await key_press(KEY_SPACE)
+	check(is_instance_valid(page.history_panel) and OpeningFlow.state.node==2,"Space cannot advance behind history")
+	await key_press(KEY_ESCAPE)
+	check(not is_instance_valid(page.history_panel),"Escape closes history without leaving story")
+	page.dialogue.visible_characters=page.dialogue.text.length()
+	await pointer_click(page.next_button)
+	check(OpeningFlow.state.node==3,"Continue button pointer advances exactly once")
+	var auto_clock=preload("res://scripts/story_autoplay.gd").new()
+	check(not auto_clock.tick(100,40,true,true),"autoplay defaults off")
+	auto_clock.toggle()
+	check(not auto_clock.tick(100,40,false,true),"autoplay never skips typewriting")
+	check(not auto_clock.tick(100,40,true,false),"interactive beats block autoplay")
+	check(not auto_clock.tick(1,40,true,true),"autoplay leaves time to read")
+	check(auto_clock.tick(4,40,true,true),"autoplay advances after complete reading pause")
+	check(not auto_clock.tick(.1,40,true,true),"autoplay does not cascade through nodes")
+	await pointer_click(page.auto_button)
+	check(page.autoplay.enabled and page._can_auto_advance(),"autoplay click enables ordinary dialogue")
+	await key_press(KEY_A)
+	check(not page.autoplay.enabled,"A key switches autoplay off once")
+	OpeningFlow.advance(OpeningFlow.node_index("s04_05"))
+	page._render()
+	check(not page._can_auto_advance(),"autoplay waits for a dialogue choice")
+	await pointer_click(button_named(page.choices,"椅子还在那里吗？"))
+	check(OpeningFlow.state.choices.get("s04_05")=="椅子还在那里吗？","dialogue option accepts actual pointer input")
+	OpeningFlow.advance(OpeningFlow.node_index("s01_04"))
+	page._render()
+	check(not page._can_auto_advance(),"autoplay waits for explicit mail reading")
+	await pointer_click(page.mail_button)
+	check(is_instance_valid(page.mail_reader),"mail opens by pointer")
+	await pointer_click(button_named(page.mail_reader,"返回收件箱"))
+	check(not is_instance_valid(page.mail_reader),"mail closes by pointer")
+	await pointer_click(page.mail_button)
+	await pointer_click(page.mail_reader.read_button)
+	check(OpeningFlow.state.mail_read.get("handover_notice",false),"mail read action accepts pointer and persists")
+	OpeningFlow.begin_story()
+	page._render()
+	await settle()
 func capture(label: String) -> void:
 	if DisplayServer.get_name()=="headless": return
 	await get_tree().create_timer(.8).timeout
@@ -81,6 +161,18 @@ func run() -> void:
 			bg.set_process(true)
 		check(OpeningFlow.begin_story(),"start CG")
 		await show_scene("res://scenes/opening_story.tscn")
+		await exercise_story_inputs()
+		check(OpeningFlow.state.history==["s01_00"],"fresh backlog has only the first visible line")
+		var history_state:=OpeningFlow.state.duplicate(true)
+		var history_chars: int=page.dialogue.visible_characters
+		page._open_history()
+		await settle()
+		page._advance()
+		page._process(4.0)
+		check(OpeningFlow.state==history_state and page.dialogue.visible_characters==history_chars,"history pauses text and blocks story advancement")
+		check(page.history_panel.entries.size()==1 and not page.history_panel.reader.text.contains("Echo World"),"history does not reveal future scenes")
+		page._close_history()
+		check(page.chapter_panel.size.x>page.heading.size.x and page.heading.get_parent()==page.chapter_panel,"chapter title has its own measured contrast background")
 		page._advance()
 		check(page.dialogue.visible_characters==page.dialogue.text.length(),"space reveals complete line")
 		var index:=int(OpeningFlow.state.node)
@@ -104,6 +196,19 @@ func run() -> void:
 		check(upgraded.choices.get("s03_10")=="那就替我留个位置。" and not old_save.has("node_id"),"legacy choice preserved and source untouched")
 		old_save.node=9999
 		check(not OpeningFlow.valid(OpeningFlow.upgrade_story_progress(old_save)),"corrupt legacy index is rejected without guessing")
+		var v2_ids: Array=JSON.parse_string(FileAccess.get_file_as_string("res://data/opening/story-v2-index.json"))
+		var v2_save:=OpeningFlow.fresh()
+		v2_save.story_version=2
+		v2_save.phase="cg"
+		v2_save.node_id="s04_06"
+		v2_save.node=v2_ids.find("s04_06")
+		v2_save.erase("history")
+		v2_save.mail_read={"private_letter":true}
+		var v3_save: Dictionary=OpeningFlow.upgrade_story_progress(v2_save)
+		check(OpeningFlow.valid(v3_save) and v3_save.node==OpeningFlow.node_index("s04_06") and v3_save.mail_read.private_letter,"v2 resume remaps by stable ID and preserves mail")
+		check(v3_save.history.has("s04_06") and not v3_save.history.has("s04_wait_00"),"migrated backlog never invents newly inserted dialogue")
+		v2_save.node_id="invalid"
+		check(not OpeningFlow.valid(OpeningFlow.upgrade_story_progress(v2_save)),"inconsistent old node/index is rejected")
 		for id in ["s01_young_01","s01_depart_03"]:
 			OpeningFlow.advance(OpeningFlow.node_index(id))
 			page._render()
@@ -141,8 +246,45 @@ func run() -> void:
 		await capture("02-private-letter")
 		page._read_mail()
 		check(OpeningFlow.state.mail_read.get("private_letter",false),"personal letter has its own durable read state")
+		var reply_choice:=OpeningFlow.node_index("s04_05")
+		OpeningFlow.advance(reply_choice)
+		page._render()
+		page._choose("椅子还在那里吗？")
+		check(not page.dialogue.text.contains("老管家的回信"),"sending choice no longer pretends the reply already arrived")
+		page.dialogue.visible_characters=page.dialogue.text.length()
+		page._advance()
+		check(OpeningFlow.state.node_id=="s04_wait_00","sending leads into anticipation before reply")
+		OpeningFlow.advance(OpeningFlow.node_index("s04_reply_arrival"))
+		page._render()
+		var cue_total: int=page.story_audio.cue_count
+		page._render()
+		page._open_history()
+		await settle()
+		check(page.story_audio.cue_count==cue_total and page.story_audio.last_cue=="mail","rerender and backlog do not replay email cue")
+		var history_text: String=page.history_panel.reader.get_parsed_text()
+		check(history_text.contains("椅子还在那里吗？") and history_text.contains("已发送")==false,"backlog keeps selected answer but not unseen waiting nodes")
+		await capture("02-history")
+		page._close_history()
+		OpeningFlow.advance(OpeningFlow.node_index("s04_reply_read"))
+		page._render()
+		page._open_mail()
+		await settle()
+		await capture("02-caretaker-reply")
+		page._read_mail()
+		check(OpeningFlow.state.mail_read.get("caretaker_reply",false) and OpeningFlow.state.node_id=="s04_06","caretaker reply requires reading and then resumes itinerary")
+		check(OpeningFlow.history_entries().any(func(e): return str(e.speaker).contains("椅子还在，您慢慢来")),"read caretaker reply appears in backlog")
+		var disk_history: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(OpeningFlow.save_path))
+		check(disk_history.history==OpeningFlow.state.history and OpeningFlow.valid(disk_history),"backlog and mail persist in same durable state")
+		for node: Dictionary in page.nodes:
+			check(SaloonAudio.SCENE_TRACKS.has(node.music) and ResourceLoader.exists(SaloonAudio.SCENE_TRACKS[node.music]),"story music exists: "+str(node.id))
+		for key in page.story_audio.CUES:
+			check(ResourceLoader.exists(page.story_audio.CUES[key][0]),"story cue exists: "+str(key))
+		OpeningFlow.advance(OpeningFlow.node_index("s01_young_10"))
+		page._render()
+		check(SaloonAudio.active_path==SaloonAudio.SCENE_TRACKS.opening_memory and page.story_audio.last_cue=="chuckle","office switches music and plays brief laughter")
 		OpeningFlow.advance(OpeningFlow.node_index("s02_11"))
 		page._render()
+		check(SaloonAudio.active_path==SaloonAudio.SCENE_TRACKS.opening_bar,"bar switches to jazz without releasing ownership")
 		await capture("03-city-bar")
 		check(OpeningFlow.begin_tutorial(),"enter isolated tutorial: "+OpeningFlow.last_error)
 		if not WorkbenchSession.tutorial_active:
@@ -164,12 +306,15 @@ func run() -> void:
 		await settle()
 		check(guide.gesture=="space" and guide.visible,"dosing replaces drag demonstration with space cue above the modal")
 		await capture("04c-tutorial-space")
-		page._clear_modal()
-		await settle()
 		check(WorkbenchSession.dose_target("gin",page.data)==22.5,"gold target follows recipe")
+		page.measure_waiting=false
+		page.measure.set_process(false)
+		page.measure.progress=22.5/page.measure.volume_limit()
+		await pointer_click(guide.shortcut_button)
+		check(not is_instance_valid(page.measure) and page.data.vessels.jigger.contents.get("gin")==22.5,"tutorial dosing cue accepts pointer above the modal and commits exact dose")
 		var id: String=WorkbenchSession.state.session.id
-		check(WorkbenchSession.command("first-dose",id,"withdraw",{"material":"gin","ml":22.5}),"real jigger dose")
-		check(WorkbenchSession.command("first-dose",id,"withdraw",{"material":"gin","ml":22.5}),"duplicate dose accepted idempotently")
+		var dose: Dictionary=page.data.actions.back()
+		check(WorkbenchSession.command(dose.command_id,id,dose.kind,dose.payload),"duplicate clicked dose accepted idempotently")
 		check(OpeningFlow.state.stock.sku_gin_london_dry==112.5,"duplicate did not deduct again")
 		op("transfer",{"source":"jigger","vessel":"shaker"})
 		check(OpeningFlow.state.stock.sku_gin_london_dry==112.5,"transfer is not consumption")
@@ -209,7 +354,12 @@ func run() -> void:
 	check(not WorkbenchSession.command("fail-dose",str(page.data.id),"withdraw",{"material":"gin","ml":3,"vessel":"mixing"}),"failed tutorial save rejects action")
 	OpeningFlow.save_path=path
 	check(WorkbenchSession.snapshot()==before_failure and OpeningFlow.state.stock==stock_before,"failed save preserves cup and stock atomically")
-	op("finish")
+	page._select("glass")
+	page.serve_armed=true
+	await settle()
+	check(guide.shortcut_button.visible,"tutorial finish key cue is a real clickable button")
+	await pointer_click(guide.shortcut_button)
+	check(page.data.status=="finished","clicking tutorial key cue finishes the actual cup")
 	check(float(page.data.result.evaluation.score)>=95,"correct midnight herbal recipe receives high quality")
 	page._result()
 	await capture("06-result")
@@ -217,8 +367,13 @@ func run() -> void:
 	check(not WorkbenchSession.tutorial_active,"leaving restores normal workshop")
 	check(Supplies.inventory.serialize()==baseline and SlotWallet.balance==wallet_before,"full tutorial preserves warehouse wallet")
 	check(WorkbenchSession.state.session==bench_before.session,"normal work in progress restored exactly")
-	await show_scene("res://scenes/opening_story.tscn")
+	await show_scene("res://scenes/opening_departure.tscn")
 	await capture("07-ready-to-open")
+	check(not OpeningFlow.finish_opening(),"opening cannot bypass stock and sign")
+	check(Supplies.purchase("sku_tonic_water",1),"buy actual first-night shortage")
+	check(preload("res://scripts/opening_preparation.gd").publish("gin_and_tonic"),"publish real craftable recipe")
+	check(OpeningFlow.update_departure({"opened":true}),"sign transition persists")
+	baseline=Supplies.inventory.serialize().duplicate(true)
 	get_tree().current_scene=null
 	check(OpeningFlow.finish_opening(),"opening enters real home")
 	await settle()

@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "legacy_index_path": "res://data/opening/story-v1-index.json",
   "nodes": [
     {
@@ -8,7 +8,8 @@
       "title": "现在 · 项目结束之后",
       "speaker": "我 · 心声",
       "text": "项目群最后一条消息，是“后续材料另行通知”。从那以后，再没人叫过我的名字。",
-      "background": "apartment"
+      "background": "apartment",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_01",
@@ -16,7 +17,8 @@
       "title": "现在 · 项目结束之后",
       "speaker": "我 · 心声",
       "text": "我还是每天七点醒。伸手找手机，想着有没有昨夜漏掉的消息。然后才想起来，已经不用去公司了。",
-      "background": "apartment"
+      "background": "apartment",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_new_01",
@@ -24,7 +26,8 @@
       "title": "现在 · 项目结束之后",
       "background": "apartment",
       "speaker": "我 · 心声",
-      "text": "三十五岁。以前别人问我做什么，我能一口气说完公司、职位和手上的项目。现在，我不知道该从哪里说起。"
+      "text": "三十五岁。以前别人问我做什么，我能一口气说完公司、职位和手上的项目。现在，我不知道该从哪里说起。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_new_02",
@@ -32,7 +35,8 @@
       "title": "现在 · 项目结束之后",
       "background": "apartment",
       "speaker": "我 · 心声",
-      "text": "我做金融，最擅长的事，是把一团乱麻整理成一份看上去很有把握的方案。这次，我也相信了自己那份方案。"
+      "text": "我做金融，最擅长的事，是把一团乱麻整理成一份看上去很有把握的方案。这次，我也相信了自己那份方案。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_02",
@@ -40,7 +44,8 @@
       "title": "现在 · 项目结束之后",
       "speaker": "我 · 心声",
       "text": "项目推进不下去，后续资金没能接上。跟投进去的，是我工作这些年攒下的全部积蓄。最后，连工作也一起丢了。",
-      "background": "apartment"
+      "background": "apartment",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_new_03",
@@ -48,7 +53,8 @@
       "title": "现在 · 项目结束之后",
       "background": "apartment",
       "speaker": "我 · 心声",
-      "text": "风险并不是没人提过。只是前面几次都走得太顺，我以为这一次，也能靠多熬几个晚上补回来。"
+      "text": "风险并不是没人提过。只是前面几次都走得太顺，我以为这一次，也能靠多熬几个晚上补回来。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_03",
@@ -56,7 +62,8 @@
       "title": "现在 · 项目结束之后",
       "speaker": "我 · 心声",
       "text": "房租还剩一个月。我把招聘页面打开，又关上。最难写的不是履历，是“离职原因”那一栏。",
-      "background": "apartment"
+      "background": "apartment",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_new_04",
@@ -64,7 +71,8 @@
       "title": "现在 · 项目结束之后",
       "background": "apartment",
       "speaker": "我 · 心声",
-      "text": "桌边那个纸箱还没拆。杯子、旧笔记本，还有一张已经刷不开任何门的工牌。"
+      "text": "桌边那个纸箱还没拆。杯子、旧笔记本，还有一张已经刷不开任何门的工牌。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_young_00",
@@ -72,7 +80,8 @@
       "title": "三年前 · 大家都说我前途无量",
       "background": "office-success-faceless",
       "speaker": "我 · 心声",
-      "text": "三年前的那个下午，窗外也是这样的光。我刚从会议室出来，就被他们堵在了工位边。"
+      "text": "三年前的那个下午，窗外也是这样的光。我刚从会议室出来，就被他们堵在了工位边。",
+      "music": "opening_memory"
     },
     {
       "id": "s01_young_01",
@@ -80,7 +89,8 @@
       "title": "三年前 · 大家都说我前途无量",
       "background": "office-success-faceless",
       "speaker": "同事甲",
-      "text": "过了？我就说，最后还得你去讲。下次汇报我坐你旁边，沾点运气。"
+      "text": "过了？我就说，最后还得你去讲。下次汇报我坐你旁边，沾点运气。",
+      "music": "opening_memory"
     },
     {
       "id": "s01_young_02",
@@ -88,7 +98,8 @@
       "title": "三年前 · 大家都说我前途无量",
       "background": "office-success-faceless",
       "speaker": "我",
-      "text": "别抢我的咖啡就行。昨天那版材料，你改到两点，也有你一份。"
+      "text": "别抢我的咖啡就行。昨天那版材料，你改到两点，也有你一份。",
+      "music": "opening_memory"
     },
     {
       "id": "s01_young_03",
@@ -96,7 +107,8 @@
       "title": "三年前 · 大家都说我前途无量",
       "background": "office-success-faceless",
       "speaker": "同事乙",
-      "text": "这就开始分功劳了？等你往上走，可别忘了我们。"
+      "text": "这就开始分功劳了？等你往上走，可别忘了我们。",
+      "music": "opening_memory"
     },
     {
       "id": "s01_young_04",
@@ -104,7 +116,8 @@
       "title": "三年前 · 大家都说我前途无量",
       "background": "office-success-faceless",
       "speaker": "我",
-      "text": "忘不了。今晚我请，地方你们挑。"
+      "text": "忘不了。今晚我请，地方你们挑。",
+      "music": "opening_memory"
     },
     {
       "id": "s01_young_05",
@@ -112,7 +125,8 @@
       "title": "三年前 · 大家都说我前途无量",
       "background": "office-success-faceless",
       "speaker": "年轻同事",
-      "text": "那份被退了三次的方案，明天还能再帮我看一眼吗？"
+      "text": "那份被退了三次的方案，明天还能再帮我看一眼吗？",
+      "music": "opening_memory"
     },
     {
       "id": "s01_young_06",
@@ -120,7 +134,8 @@
       "title": "三年前 · 大家都说我前途无量",
       "background": "office-success-faceless",
       "speaker": "我",
-      "text": "能。先把你最想做成的事写清楚，别急着往里面塞漂亮词。"
+      "text": "能。先把你最想做成的事写清楚，别急着往里面塞漂亮词。",
+      "music": "opening_memory"
     },
     {
       "id": "s01_young_07",
@@ -128,7 +143,8 @@
       "title": "三年前 · 大家都说我前途无量",
       "background": "office-success-faceless",
       "speaker": "我 · 心声",
-      "text": "那时候，我真心觉得自己帮得上忙。有人需要我，有人在等我的判断。走进任何一间屋子，我都知道该站在哪里。"
+      "text": "那时候，我真心觉得自己帮得上忙。有人需要我，有人在等我的判断。走进任何一间屋子，我都知道该站在哪里。",
+      "music": "opening_memory"
     },
     {
       "id": "s01_young_08",
@@ -136,7 +152,8 @@
       "title": "三年前 · 大家都说我前途无量",
       "background": "office-success-faceless",
       "speaker": "同事甲",
-      "text": "又去那家小酒吧？你还研究调酒呢？"
+      "text": "又去那家小酒吧？你还研究调酒呢？",
+      "music": "opening_memory"
     },
     {
       "id": "s01_young_09",
@@ -144,7 +161,8 @@
       "title": "三年前 · 大家都说我前途无量",
       "background": "office-success-faceless",
       "speaker": "我",
-      "text": "研究一点。数字在纸上漂亮，不代表倒进杯子就好喝。这件事比做汇报诚实。"
+      "text": "研究一点。数字在纸上漂亮，不代表倒进杯子就好喝。这件事比做汇报诚实。",
+      "music": "opening_memory"
     },
     {
       "id": "s01_young_10",
@@ -152,7 +170,9 @@
       "title": "三年前 · 大家都说我前途无量",
       "background": "office-success-faceless",
       "speaker": "我 · 心声",
-      "text": "他们笑了，我也笑了。那时我还不知道，有一天，自己会很想念这种不用猜意思的笑声。"
+      "text": "他们笑了，我也笑了。那时我还不知道，有一天，自己会很想念这种不用猜意思的笑声。",
+      "music": "opening_memory",
+      "sfx": "chuckle"
     },
     {
       "id": "s01_depart_00",
@@ -160,7 +180,8 @@
       "title": "一周前 · 回公司收拾东西",
       "background": "office-departure-faceless",
       "speaker": "我 · 心声",
-      "text": "一周前，我回公司收东西。同一扇玻璃门，这次得等前台替我刷开。"
+      "text": "一周前，我回公司收东西。同一扇玻璃门，这次得等前台替我刷开。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_depart_01",
@@ -168,7 +189,8 @@
       "title": "一周前 · 回公司收拾东西",
       "background": "office-departure-faceless",
       "speaker": "同事甲",
-      "text": "东西都在桌上。电脑先别拿，行政还要登记。"
+      "text": "东西都在桌上。电脑先别拿，行政还要登记。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_depart_02",
@@ -176,7 +198,8 @@
       "title": "一周前 · 回公司收拾东西",
       "background": "office-departure-faceless",
       "speaker": "我",
-      "text": "我知道。我只拿自己的东西。"
+      "text": "我知道。我只拿自己的东西。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_depart_03",
@@ -184,7 +207,8 @@
       "title": "一周前 · 回公司收拾东西",
       "background": "office-departure-faceless",
       "speaker": "同事乙 · 远处",
-      "text": "以前说得多有把握啊。连自己的钱都放进去，倒真是够相信自己。"
+      "text": "以前说得多有把握啊。连自己的钱都放进去，倒真是够相信自己。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_depart_04",
@@ -192,7 +216,8 @@
       "title": "一周前 · 回公司收拾东西",
       "background": "office-departure-faceless",
       "speaker": "同事甲 · 压低声音",
-      "text": "人还没走呢。"
+      "text": "人还没走呢。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_depart_05",
@@ -200,7 +225,8 @@
       "title": "一周前 · 回公司收拾东西",
       "background": "office-departure-faceless",
       "speaker": "同事乙 · 远处",
-      "text": "我说错了吗？当初谁劝得住。现在收拾烂摊子的又不止他。"
+      "text": "我说错了吗？当初谁劝得住。现在收拾烂摊子的又不止他。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_depart_06",
@@ -208,7 +234,8 @@
       "title": "一周前 · 回公司收拾东西",
       "background": "office-departure-faceless",
       "speaker": "我 · 心声",
-      "text": "音量刚好。足够让我听清，又不够让我转过去问一句。几年前那句“别忘了我们”，忽然显得很远。"
+      "text": "音量刚好。足够让我听清，又不够让我转过去问一句。几年前那句“别忘了我们”，忽然显得很远。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_depart_07",
@@ -216,7 +243,9 @@
       "title": "一周前 · 回公司收拾东西",
       "background": "office-departure-faceless",
       "speaker": "我 · 心声",
-      "text": "我想解释自己不是没努力过。手已经扶上纸箱，才发现他们也没有在等我的解释。"
+      "text": "我想解释自己不是没努力过。手已经扶上纸箱，才发现他们也没有在等我的解释。",
+      "music": "opening_solitude",
+      "sfx": "paper"
     },
     {
       "id": "s01_depart_08",
@@ -224,7 +253,8 @@
       "title": "一周前 · 回公司收拾东西",
       "background": "office-departure-faceless",
       "speaker": "年轻同事",
-      "text": "底下再贴一道吧。你这个箱子有点沉。"
+      "text": "底下再贴一道吧。你这个箱子有点沉。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_depart_09",
@@ -232,7 +262,8 @@
       "title": "一周前 · 回公司收拾东西",
       "background": "office-departure-faceless",
       "speaker": "我",
-      "text": "……谢谢。"
+      "text": "……谢谢。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_depart_10",
@@ -240,7 +271,8 @@
       "title": "一周前 · 回公司收拾东西",
       "background": "office-departure-faceless",
       "speaker": "年轻同事",
-      "text": "那本笔记别落了。你以前说，没做成的版本也留着，下次才知道哪里错了。"
+      "text": "那本笔记别落了。你以前说，没做成的版本也留着，下次才知道哪里错了。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_depart_11",
@@ -248,7 +280,8 @@
       "title": "一周前 · 回公司收拾东西",
       "background": "office-departure-faceless",
       "speaker": "我 · 心声",
-      "text": "他递过来胶带，没有再问别的。我最后带走的，比一个纸箱多一点，也比我曾经以为的少很多。"
+      "text": "他递过来胶带，没有再问别的。我最后带走的，比一个纸箱多一点，也比我曾经以为的少很多。",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_mail_arrival",
@@ -256,7 +289,9 @@
       "title": "现在 · 一封不在预料里的邮件",
       "background": "apartment",
       "speaker": "旁白",
-      "text": "电脑轻轻响了一声。不是招聘回复。屏幕右侧，多了一封来自陌生地址的邮件。"
+      "text": "电脑轻轻响了一声。不是招聘回复。屏幕右侧，多了一封来自陌生地址的邮件。",
+      "music": "opening_solitude",
+      "sfx": "mail"
     },
     {
       "id": "s01_04",
@@ -265,7 +300,8 @@
       "speaker": "我 · 心声",
       "text": "“关于岛上酒馆的交接安排。”我盯着这个标题。岛上……哪一座岛？",
       "background": "apartment",
-      "mail_id": "handover_notice"
+      "mail_id": "handover_notice",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_05",
@@ -273,7 +309,8 @@
       "title": "现在 · 一封不在预料里的邮件",
       "speaker": "我 · 心声",
       "text": "发件人是个陌生人，邮件里提到的那个人，我却认得。只是“离世”这两个字，怎么也没法和他放在一起。",
-      "background": "apartment"
+      "background": "apartment",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_06",
@@ -281,7 +318,8 @@
       "title": "现在 · 一封不在预料里的邮件",
       "speaker": "我 · 心声",
       "text": "附件预览是一页酒谱。右上角那个划掉的数字，是我的笔迹。纸边的圆印，像那晚杯底留下的水痕。",
-      "background": "apartment"
+      "background": "apartment",
+      "music": "opening_solitude"
     },
     {
       "id": "s01_memory_bridge",
@@ -289,7 +327,8 @@
       "title": "现在 · 一封不在预料里的邮件",
       "background": "apartment",
       "speaker": "我 · 心声",
-      "text": "我记得他把这张纸拿走时，连折都没舍得折。那晚下着雨。我还以为，往后有的是再见的机会。"
+      "text": "我记得他把这张纸拿走时，连折都没舍得折。那晚下着雨。我还以为，往后有的是再见的机会。",
+      "music": "opening_solitude"
     },
     {
       "id": "s02_00",
@@ -297,7 +336,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "我 · 心声",
       "text": "同事们散得早，我又在吧台坐了一会儿。那位常客一直在旁边，外套搭在椅背上，面前一杯淡绿的酒。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_01",
@@ -305,7 +345,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "我",
       "text": "又是 Last Word？你每次来，都点它。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_02",
@@ -313,7 +354,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "那位客人",
       "text": "知道自己喜欢什么，没必要每晚换。怎么，你又带着作业来了？",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_03",
@@ -321,7 +363,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "我",
       "text": "带了个改编。绿查特的位置，我换了午夜蓝草本酒。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_04",
@@ -329,7 +372,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "那位客人",
       "text": "因为便宜？少一笔成本，换个颜色，就准备说和原来一样了？",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_05",
@@ -337,7 +381,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "我",
       "text": "最早确实想省一点。在家常做，总得考虑一瓶酒用完之后，还愿不愿意再买。但试过才知道，替换没那么简单。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_extra_01",
@@ -345,7 +390,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "那位客人",
-      "text": "那你先说说，原来的那杯，为什么非得是它们四个。"
+      "text": "那你先说说，原来的那杯，为什么非得是它们四个。",
+      "music": "opening_bar"
     },
     {
       "id": "s02_extra_02",
@@ -353,7 +399,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "我",
-      "text": "经典配方是金酒、绿查特、Maraschino 樱桃利口酒、鲜青柠汁，等份。这杯各二十二点五毫升，加冰摇和，再过滤进冰镇杯。"
+      "text": "经典配方是金酒、绿查特、Maraschino 樱桃利口酒、鲜青柠汁，等份。这杯各二十二点五毫升，加冰摇和，再过滤进冰镇杯。",
+      "music": "opening_bar"
     },
     {
       "id": "s02_extra_03",
@@ -361,7 +408,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "我",
-      "text": "我喜欢它的地方，是四样都有存在感。金酒的杜松、查特复杂的草本、Maraschino 的果核香，还有青柠的酸。谁都不太肯退后。"
+      "text": "我喜欢它的地方，是四样都有存在感。金酒的杜松、查特复杂的草本、Maraschino 的果核香，还有青柠的酸。谁都不太肯退后。",
+      "music": "opening_bar"
     },
     {
       "id": "s02_extra_04",
@@ -369,7 +417,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "那位客人",
-      "text": "所以写成一比一比一比一，就一定平衡？"
+      "text": "所以写成一比一比一比一，就一定平衡？",
+      "music": "opening_bar"
     },
     {
       "id": "s02_extra_05",
@@ -377,7 +426,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "我",
-      "text": "也不一定。青柠每次酸度会变，换瓶金酒也会变。摇出来的温度和融水不一样，同一张配方也会喝出差别。"
+      "text": "也不一定。青柠每次酸度会变，换瓶金酒也会变。摇出来的温度和融水不一样，同一张配方也会喝出差别。",
+      "music": "opening_bar"
     },
     {
       "id": "s02_extra_06",
@@ -385,7 +435,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "我",
-      "text": "我第一版犯的就是这个错。以为毫升数一样，味道也会自己站到一样的位置。结果入口挺香，后面却散了。"
+      "text": "我第一版犯的就是这个错。以为毫升数一样，味道也会自己站到一样的位置。结果入口挺香，后面却散了。",
+      "music": "opening_bar"
     },
     {
       "id": "s02_06",
@@ -393,7 +444,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "那位客人",
       "text": "至少，你没有把那杯散掉的也叫“创新”。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_07",
@@ -401,7 +453,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "我",
       "text": "午夜蓝是另一种草本酒。龙胆、杜松、柠檬马鞭草的方向更明显，尾段有苦味。它是钴蓝色，但蓝色不是我要留下它的理由。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_extra_07",
@@ -409,7 +462,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "我",
-      "text": "我想留住那种喝下去以后，草本还回得来的感觉。前面让青柠把它提起来，后面不要只剩甜。"
+      "text": "我想留住那种喝下去以后，草本还回得来的感觉。前面让青柠把它提起来，后面不要只剩甜。",
+      "music": "opening_bar"
     },
     {
       "id": "s02_08",
@@ -417,7 +471,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "那位客人",
       "text": "你试了几版？",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_09",
@@ -425,7 +480,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "我",
       "text": "今天第五版。第三版加过糖，越补越闷。第四版又摇得太久，香气和酒感都薄了。今天回到四种各一份，不额外加糖。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_10",
@@ -433,7 +489,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "调酒师",
       "text": "下午你留下的笔记，我照着复了一杯。新开的青柠，杯子也冰过了。先尝，再争。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_taste_01",
@@ -441,7 +498,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "旁白",
-      "text": "他把自己的那杯推开一点，拿起蓝色的酒。先闻了一下，喝得比刚才说话慢。"
+      "text": "他把自己的那杯推开一点，拿起蓝色的酒。先闻了一下，喝得比刚才说话慢。",
+      "music": "opening_bar"
     },
     {
       "id": "s02_11",
@@ -449,7 +507,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "那位客人",
       "text": "入口的酸挺清楚。草本没有绿查特那么厚，倒是尾巴干净。樱桃的果核香留着，最后那点苦……比我预想的好。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_taste_02",
@@ -457,7 +516,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "我",
-      "text": "嗯。它做不出原来那种密实的草本层次。我后来就没再逼它。让它清一点，把自己能留下的那部分做好。"
+      "text": "嗯。它做不出原来那种密实的草本层次。我后来就没再逼它。让它清一点，把自己能留下的那部分做好。",
+      "music": "opening_bar"
     },
     {
       "id": "s02_taste_03",
@@ -465,7 +525,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "那位客人",
-      "text": "你怎么不用更甜的樱桃酒把中间补满？"
+      "text": "你怎么不用更甜的樱桃酒把中间补满？",
+      "music": "opening_bar"
     },
     {
       "id": "s02_taste_04",
@@ -473,7 +534,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "我",
-      "text": "我想留的是 Maraschino 的果核调性，不是把它调成樱桃糖水。如果只顾着填满，中间会黏，青柠也会显得突兀。"
+      "text": "我想留的是 Maraschino 的果核调性，不是把它调成樱桃糖水。如果只顾着填满，中间会黏，青柠也会显得突兀。",
+      "music": "opening_bar"
     },
     {
       "id": "s02_12",
@@ -481,7 +543,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "我",
       "text": "那你会选哪杯？别照顾我。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_13",
@@ -489,7 +552,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "那位客人",
       "text": "要熟悉的味道，我还是选 Last Word。但这一杯，我愿意慢慢喝完。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_14",
@@ -497,7 +561,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "我",
       "text": "以前做项目，我最怕听“还可以”。总觉得差一点，就等于没做好。做酒倒逼着我学了一件事：你不选它，也不代表它白做了。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_15",
@@ -505,7 +570,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "那位客人",
       "text": "刚才我话说得重了。我以为你只想拿个便宜办法，证明别人花了冤枉钱。你是真的在尝。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s02_taste_05",
@@ -513,7 +579,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "旁白",
-      "text": "他不再靠着椅背，把那页笔记拉近了一点。这一次，是他先问我，前四版到底哪里不好。"
+      "text": "他不再靠着椅背，把那页笔记拉近了一点。这一次，是他先问我，前四版到底哪里不好。",
+      "music": "opening_bar"
     },
     {
       "id": "s02_taste_06",
@@ -521,7 +588,8 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "我 · 心声",
-      "text": "那晚第一次有人问起我的失败版本，却不是为了让我难堪。我一下说了很多。"
+      "text": "那晚第一次有人问起我的失败版本，却不是为了让我难堪。我一下说了很多。",
+      "music": "opening_bar"
     },
     {
       "id": "s03_00",
@@ -529,7 +597,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "那位客人",
       "text": "别再叫“改版 Last Word”了。这杯叫什么？",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s03_01",
@@ -537,7 +606,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "我",
       "text": "本来真打算这么写。省得每次从头解释。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s03_02",
@@ -545,15 +615,35 @@
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "那位客人",
       "text": "你已经解释得够多了。给它一个自己的名字。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s03_03",
       "chapter": "S03",
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "我",
-      "text": "回响。喝完以后还有一点东西回来……回响，就叫这个。",
-      "background": "city-bar-faceless"
+      "text": "回响。Echo World。不是给 Last Word 换一个词——是喝完以后，那些以为过去了的声音，又回到你身边。",
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
+    },
+    {
+      "id": "s03_name_01",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "那位客人",
+      "text": "Echo World……回响的世界。名字挺大，这杯倒没有急着把话说满。",
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
+    },
+    {
+      "id": "s03_name_02",
+      "chapter": "S03",
+      "title": "那夜后来 · 一句醉话的分量",
+      "speaker": "我",
+      "text": "那就先把这四个字记下来。好不好，等下一次喝的时候再说。",
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s03_night_00",
@@ -561,7 +651,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "background": "city-bar-faceless",
       "speaker": "旁白",
-      "text": "雨一直没停。我们从第一口聊到杯子见底，又点了酒。调酒师收走一排空杯，在手边放了两杯水。"
+      "text": "雨一直没停。我们从第一口聊到杯子见底，又点了酒。调酒师收走一排空杯，在手边放了两杯水。",
+      "music": "opening_bar"
     },
     {
       "id": "s03_night_01",
@@ -569,7 +660,9 @@
       "title": "那夜后来 · 一句醉话的分量",
       "background": "city-bar-faceless",
       "speaker": "我 · 心声",
-      "text": "后来喝了多少，我记不清了。只记得他讲岛上的风，我讲那些没做成的配方。句子越来越长，杯沿碰在一起，声音却越来越远。"
+      "text": "后来喝了多少，我记不清了。只记得他讲岛上的风，我讲那些没做成的配方。句子越来越长，杯沿碰在一起，声音却越来越远。",
+      "music": "opening_bar",
+      "sfx": "clink"
     },
     {
       "id": "s03_night_02",
@@ -577,7 +670,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "background": "city-bar-faceless",
       "speaker": "调酒师",
-      "text": "两位，慢一点。这一轮之后，我可要收吧台了。"
+      "text": "两位，慢一点。这一轮之后，我可要收吧台了。",
+      "music": "opening_bar"
     },
     {
       "id": "s03_04",
@@ -585,7 +679,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "那位客人",
       "text": "你有没有想过……自己开一间？酒吧。你这样的。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s03_05",
@@ -593,7 +688,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "我",
       "text": "想过。真开又是另一回事。我会给自己调一杯，不代表一晚上能照顾好所有人。现在手上的事，也放不下。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s03_06",
@@ -601,7 +697,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "那位客人",
       "text": "我岛上……有间小店。吧台，窗户，外面就是海。有空，你去替我看看。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s03_07",
@@ -609,7 +706,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "我",
       "text": "真让我管？那我先在门口放把椅子。这个你得答应。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s03_08",
@@ -617,7 +715,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "那位客人",
       "text": "里面……没椅子？",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s03_09",
@@ -625,7 +724,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "我",
       "text": "里面坐下，总觉得得点点什么。放外面，谁走累了都能坐。不喝酒也行。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s03_night_03",
@@ -633,7 +733,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "background": "city-bar-faceless",
       "speaker": "旁白",
-      "text": "他沉默了一会儿。我以为他已经睡了，正想把笔记本抽回来，他忽然按住了纸角。"
+      "text": "他沉默了一会儿。我以为他已经睡了，正想把笔记本抽回来，他忽然按住了纸角。",
+      "music": "opening_bar"
     },
     {
       "id": "s03_10",
@@ -651,7 +752,8 @@
           "text": "等我把这杯调稳了再说。",
           "reply": "那位客人：酒可以慢慢改。地方先留着。"
         }
-      ]
+      ],
+      "music": "opening_bar"
     },
     {
       "id": "s03_night_04",
@@ -659,7 +761,9 @@
       "title": "那夜后来 · 一句醉话的分量",
       "background": "city-bar-faceless",
       "speaker": "我 · 心声",
-      "text": "我记不清后来是谁先笑的。地址倒记下了，字歪得厉害。我把那页纸夹进本子，以为只是个喝多了的晚上。"
+      "text": "我记不清后来是谁先笑的。地址倒记下了，字歪得厉害。我把那页纸夹进本子，以为只是个喝多了的晚上。",
+      "music": "opening_bar",
+      "sfx": "chuckle"
     },
     {
       "id": "s03_11",
@@ -667,7 +771,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "旁白",
       "text": "之后我们又见过几次。清醒时，他还是提那间店。我寄去新的试调笔记，他回一张酒单、一张码头照片。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s03_night_05",
@@ -675,7 +780,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "background": "city-bar-faceless",
       "speaker": "那位客人 · 旧消息",
-      "text": "椅子放好了。过来先住几天，看看喜不喜欢。真要接手，我们再把事情一件件说清楚。"
+      "text": "椅子放好了。过来先住几天，看看喜不喜欢。真要接手，我们再把事情一件件说清楚。",
+      "music": "opening_bar"
     },
     {
       "id": "s03_12",
@@ -683,7 +789,8 @@
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "我 · 心声",
       "text": "我总回：“最近忙，过阵子。”忙完这一个项目，忙完下一轮。他没有催，地址也一直在那里。",
-      "background": "city-bar-faceless"
+      "background": "city-bar-faceless",
+      "music": "opening_bar"
     },
     {
       "id": "s04_00",
@@ -692,7 +799,8 @@
       "speaker": "我 · 心声",
       "text": "雨声淡下去，眼前又是我的房间。邮箱还开着。那封私人来信，就在附件里。",
       "background": "apartment",
-      "mail_id": "private_letter"
+      "mail_id": "private_letter",
+      "music": "opening_solitude"
     },
     {
       "id": "s04_01",
@@ -700,7 +808,8 @@
       "title": "现在 · 那封终于读完的信",
       "speaker": "我 · 心声",
       "text": "交接说明写得很清楚：是否接受，由我决定。我把它往下翻，又停在他的信上。",
-      "background": "apartment"
+      "background": "apartment",
+      "music": "opening_solitude"
     },
     {
       "id": "s04_02",
@@ -708,7 +817,8 @@
       "title": "现在 · 那封终于读完的信",
       "speaker": "我 · 心声",
       "text": "“门口放了把椅子。”我想起那晚自己说得那么轻，像说一个不必实现的愿望。",
-      "background": "apartment"
+      "background": "apartment",
+      "music": "opening_solitude"
     },
     {
       "id": "s04_03",
@@ -716,7 +826,8 @@
       "title": "现在 · 那封终于读完的信",
       "speaker": "我 · 心声",
       "text": "原来他后来真的放了。还挪过地方，修过椅脚。那些我一再推迟的日子里，有人在认真做着一件小事。",
-      "background": "apartment"
+      "background": "apartment",
+      "music": "opening_solitude"
     },
     {
       "id": "s04_04",
@@ -724,7 +835,8 @@
       "title": "现在 · 那封终于读完的信",
       "speaker": "我 · 心声",
       "text": "上一次回信，我写的还是“最近忙，过阵子”。我点开那条记录，才发现已经隔了很久。",
-      "background": "apartment"
+      "background": "apartment",
+      "music": "opening_solitude"
     },
     {
       "id": "s04_05",
@@ -736,13 +848,97 @@
       "choices": [
         {
           "text": "我想去看看。",
-          "reply": "旁白：我写下这句话，联系管家核对了交接安排。"
+          "reply": "我在回复框里写下：“我想去看看。方便的话，请把下一步的安排发给我。”检查一遍收件人，按下了发送。"
         },
         {
           "text": "椅子还在那里吗？",
-          "reply": "老管家的回信：在。您来了，就能看见。"
+          "reply": "我写下：“椅子还在那里吗？我想去看看。方便的话，请告诉我怎么过去。”按下发送，才发现这次没有给自己留一句“以后再说”。"
         }
-      ]
+      ],
+      "music": "opening_solitude"
+    },
+    {
+      "id": "s04_wait_00",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "发出去了。我把鼠标挪开，装作只是随手问问。反正一封邮件，也不能替我把日子重新过一遍。",
+      "background": "apartment",
+      "music": "opening_solitude"
+    },
+    {
+      "id": "s04_wait_01",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "旁白",
+      "text": "我去倒了一杯水。回来时，房间已经暗了一些。屏幕还停在“已发送”。",
+      "background": "apartment",
+      "music": "opening_solitude"
+    },
+    {
+      "id": "s04_wait_02",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "最开始，我真没指望这件事能成。一个喝多了的约定，一间从没见过的酒馆——怎么看，都不像我以前会签字的方案。",
+      "background": "apartment",
+      "music": "opening_solitude"
+    },
+    {
+      "id": "s04_wait_03",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "可我还是把邮箱刷新了。没有。过了一会儿，又刷新一次。以前等项目批复，也没觉得几分钟这么长。",
+      "background": "apartment",
+      "music": "opening_solitude"
+    },
+    {
+      "id": "s04_wait_04",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "我甚至已经在想，靠海的房间会不会很潮。要带几件衣服。到了那里，第一句话该说什么。",
+      "background": "apartment",
+      "music": "opening_solitude"
+    },
+    {
+      "id": "s04_wait_05",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "原来我已经在盼了。不是盼谁替我收拾烂摊子，是盼明天终于有一件事，值得我出门去做。",
+      "background": "apartment",
+      "music": "opening_solitude"
+    },
+    {
+      "id": "s04_wait_06",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "也许我真的需要这封回信，拉我一把。哪怕先让我离开这张桌子……算是救我一命吧。",
+      "background": "apartment",
+      "music": "opening_solitude"
+    },
+    {
+      "id": "s04_reply_arrival",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "旁白",
+      "text": "就在这时，电脑响了一声。我差点碰翻杯子。是那位老管家。",
+      "background": "apartment",
+      "music": "opening_solitude",
+      "sfx": "mail"
+    },
+    {
+      "id": "s04_reply_read",
+      "chapter": "S04",
+      "title": "现在 · 那封终于读完的信",
+      "speaker": "我 · 心声",
+      "text": "标题前面多了一个“回复”。我把手放回鼠标上，忽然有些不敢点开。",
+      "background": "apartment",
+      "music": "opening_solitude",
+      "mail_id": "caretaker_reply"
     },
     {
       "id": "s04_06",
@@ -750,7 +946,8 @@
       "title": "现在 · 那封终于读完的信",
       "speaker": "旁白",
       "text": "几天后，我核对了交接安排，订下船票。行李里还是那本旧笔记。没做成的几版，我也没撕。",
-      "background": "apartment"
+      "background": "apartment",
+      "music": "opening_solitude"
     },
     {
       "id": "s05_00",
@@ -758,7 +955,8 @@
       "title": "海路",
       "speaker": "旁白",
       "text": "换船以后，手机信号时有时无。",
-      "background": "harbor-sunset"
+      "background": "harbor-sunset",
+      "music": "opening_harbor"
     },
     {
       "id": "s05_01",
@@ -766,7 +964,8 @@
       "title": "海路",
       "speaker": "旁白",
       "text": "我又刷新了一次邮件。然后把手机放回口袋。",
-      "background": "harbor-sunset"
+      "background": "harbor-sunset",
+      "music": "opening_harbor"
     },
     {
       "id": "s05_02",
@@ -774,7 +973,8 @@
       "title": "海路",
       "speaker": "旁白",
       "text": "船绕过岬角，夕阳里的码头才露出来。",
-      "background": "harbor-sunset"
+      "background": "harbor-sunset",
+      "music": "opening_harbor"
     },
     {
       "id": "s05_03",
@@ -782,7 +982,8 @@
       "title": "海路",
       "speaker": "旁白",
       "text": "有人站在那里等。我朝他抬了抬行李。",
-      "background": "harbor-sunset"
+      "background": "harbor-sunset",
+      "music": "opening_harbor"
     },
     {
       "id": "s06_00",
@@ -790,7 +991,8 @@
       "title": "椅子在原地",
       "speaker": "老管家",
       "text": "路上顺利吗？",
-      "background": "porch"
+      "background": "porch",
+      "music": "opening_home"
     },
     {
       "id": "s06_01",
@@ -798,7 +1000,8 @@
       "title": "椅子在原地",
       "speaker": "我",
       "text": "最后一段，差点以为坐错船了。",
-      "background": "porch"
+      "background": "porch",
+      "music": "opening_home"
     },
     {
       "id": "s06_02",
@@ -806,7 +1009,8 @@
       "title": "椅子在原地",
       "speaker": "老管家",
       "text": "第一次来的人常这么说。我先带您看看店。",
-      "background": "porch"
+      "background": "porch",
+      "music": "opening_home"
     },
     {
       "id": "s06_03",
@@ -814,7 +1018,8 @@
       "title": "椅子在原地",
       "speaker": "我",
       "text": "这把椅子……",
-      "background": "porch"
+      "background": "porch",
+      "music": "opening_home"
     },
     {
       "id": "s06_04",
@@ -822,7 +1027,8 @@
       "title": "椅子在原地",
       "speaker": "老管家",
       "text": "放了很久。下雨就搬进去，天晴再摆出来。",
-      "background": "porch"
+      "background": "porch",
+      "music": "opening_home"
     },
     {
       "id": "s06_05",
@@ -830,7 +1036,8 @@
       "title": "椅子在原地",
       "speaker": "我",
       "text": "有人坐吗？",
-      "background": "porch"
+      "background": "porch",
+      "music": "opening_home"
     },
     {
       "id": "s06_06",
@@ -838,7 +1045,8 @@
       "title": "椅子在原地",
       "speaker": "老管家",
       "text": "有。等船的，买完东西歇脚的。有时我也坐。",
-      "background": "porch"
+      "background": "porch",
+      "music": "opening_home"
     },
     {
       "id": "s06_07",
@@ -846,7 +1054,8 @@
       "title": "椅子在原地",
       "speaker": "我",
       "text": "店里以前一直有人打理？",
-      "background": "porch"
+      "background": "porch",
+      "music": "opening_home"
     },
     {
       "id": "s06_08",
@@ -854,7 +1063,8 @@
       "title": "椅子在原地",
       "speaker": "老管家",
       "text": "基本的东西我在照看。账和存货都列好了，您看过再慢慢定。",
-      "background": "porch"
+      "background": "porch",
+      "music": "opening_home"
     },
     {
       "id": "s06_09",
@@ -862,7 +1072,8 @@
       "title": "椅子在原地",
       "speaker": "我",
       "text": "我先试一天。",
-      "background": "porch"
+      "background": "porch",
+      "music": "opening_home"
     },
     {
       "id": "s06_10",
@@ -870,7 +1081,8 @@
       "title": "椅子在原地",
       "speaker": "老管家",
       "text": "先进去吧。",
-      "background": "porch"
+      "background": "porch",
+      "music": "opening_home"
     },
     {
       "id": "s07_00",
@@ -878,7 +1090,8 @@
       "title": "站到吧台这一边",
       "speaker": "旁白",
       "text": "从里面看出去，吧台比我坐着喝酒时宽得多。",
-      "background": "saloon"
+      "background": "saloon",
+      "music": "opening_home"
     },
     {
       "id": "s07_01",
@@ -886,7 +1099,8 @@
       "title": "站到吧台这一边",
       "speaker": "老管家",
       "text": "杯子在上面。常用的几样，我放在右边了。",
-      "background": "saloon"
+      "background": "saloon",
+      "music": "opening_home"
     },
     {
       "id": "s07_02",
@@ -894,7 +1108,8 @@
       "title": "站到吧台这一边",
       "speaker": "我",
       "text": "这页还是第三版，多加过糖。我后来把那一项划掉，回到四种原料各一份。",
-      "background": "saloon"
+      "background": "saloon",
+      "music": "opening_home"
     },
     {
       "id": "s07_03",
@@ -902,7 +1117,8 @@
       "title": "站到吧台这一边",
       "speaker": "老管家",
       "text": "后面还有一张。订在一起了。",
-      "background": "saloon"
+      "background": "saloon",
+      "music": "opening_home"
     },
     {
       "id": "s07_04",
@@ -910,7 +1126,8 @@
       "title": "站到吧台这一边",
       "speaker": "我",
       "text": "他连这张也留着。",
-      "background": "saloon"
+      "background": "saloon",
+      "music": "opening_home"
     },
     {
       "id": "s07_05",
@@ -918,7 +1135,8 @@
       "title": "站到吧台这一边",
       "speaker": "老管家",
       "text": "今天试这杯？",
-      "background": "saloon"
+      "background": "saloon",
+      "music": "opening_home"
     },
     {
       "id": "s07_06",
@@ -926,7 +1144,8 @@
       "title": "站到吧台这一边",
       "speaker": "我",
       "text": "回响。看看我还做不做得出来。",
-      "background": "saloon"
+      "background": "saloon",
+      "music": "opening_home"
     },
     {
       "id": "s07_07",
@@ -934,7 +1153,8 @@
       "title": "站到吧台这一边",
       "speaker": "老管家",
       "text": "先不用赶。我陪您认一下这张台面。",
-      "background": "saloon"
+      "background": "saloon",
+      "music": "opening_home"
     }
   ],
   "mail": {
@@ -953,6 +1173,14 @@
       "attachment": "随信附：回响 / Echo World，第五版配方",
       "body": "你上次问的那本笔记，我找到了。\n\n门口放了把椅子。你说“谁累了都能坐”，我就没给它配桌子，免得坐下的人又觉得该买杯什么。后来修过一次椅脚，结实得很。\n\n那晚我们都喝多了。我说过什么大话，记不全。但让你来看看这间店，不是随口说的。\n\n你一直问我，回响有没有比 Last Word 更好。我记得的，倒是你肯把做坏的那几版摊开给我看。还有，你明明说服不了我换酒，也没急着把我的杯子拿走。\n\n来这儿不用先证明什么。先住几天，看看窗外，认一认吧台。愿意的话，就替我把灯点起来。开店要做的那些琐碎事，有人会陪你慢慢理。\n\n配方都留着。等你想来的时候，先做一杯看看。",
       "button": "收好这封信 · 继续"
+    },
+    "caretaker_reply": {
+      "sender": "岛上酒馆 · 老管家",
+      "subject": "回复：椅子还在，您慢慢来",
+      "preview": "您愿意过来看看，他知道了，一定会高兴。",
+      "attachment": "附件：码头路线、最近船班、待核对的交接清单",
+      "body": "您好：\n\n刚收好外面的椅子，才看到您的邮件。让您久等了。\n\n椅子还在，今早我又擦过一遍。您愿意过来看看，他知道了，一定会高兴。\n\n路线和最近的船班放在附件里。您先看看哪一天方便，到码头前告诉我一声，我过去接。店里的账目、存货和交接文件，也已经整理好；等您来了，我们一项项核对，不急着做决定。\n\n楼上的房间收拾过了。海边夜里风大，记得带件外套。\n\n路上慢慢来。\n\n——老管家",
+      "button": "收好回信 · 看看接下来的安排"
     }
   },
   "notes": [

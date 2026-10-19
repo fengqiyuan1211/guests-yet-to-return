@@ -11,7 +11,7 @@ const GarnishPreview = preload("res://scripts/workbench_garnish_preview.gd")
 const IcePreview = preload("res://scripts/workbench_ice_preview.gd")
 const Measure = preload("res://scripts/workbench_measure.gd")
 const DraftPanel=preload("res://scripts/research_draft_panel.gd")
-const PAPER = preload("res://assets/codex/journal-paper-v1.png")
+const PAPER = preload("res://assets/pixel_b/paper.svg")
 const INK := Color("573c28")
 const CREAM := Color("efdab3")
 var surface: Control
@@ -106,7 +106,7 @@ func _style(fill: Color, border := Color("916c43")) -> StyleBoxFlat:
 	box.bg_color = fill
 	box.border_color = border
 	box.set_border_width_all(2)
-	box.set_corner_radius_all(7)
+	box.set_corner_radius_all(0)
 	box.set_content_margin_all(10)
 	return box
 
@@ -227,7 +227,7 @@ func _build() -> void:
 		var bar:=StyleBoxFlat.new()
 		bar.bg_color=Color("d8c8a9") if key=="background" else Color("b4924f")
 		bar.set_content_margin_all(0)
-		bar.set_corner_radius_all(4)
+		bar.set_corner_radius_all(0)
 		technique_progress.add_theme_stylebox_override(key,bar)
 	technique_panel.add_child(technique_progress)
 	var footer_panel:=_panel(surface,Rect2(22,817,300,71),Color("f3e2c2"))
@@ -264,12 +264,12 @@ func _show_category(value: String) -> void:
 	stock_labels.clear()
 	var items: Array=WorkbenchSession.pantry_items(value)
 	pantry_empty.visible=items.is_empty()
-	pantry_items.custom_minimum_size=Vector2(268,maxi(510,ceili(items.size()/2.0)*167))
+	pantry_items.custom_minimum_size=Vector2(268,maxi(510,ceili(items.size()/2.0)*185))
 	pantry_scroll.scroll_vertical=0
 	for i in range(items.size()):
 		var id: String=items[i][0]
 		var label: String=items[i][1]
-		var b:=_button(pantry_items,Rect2((i%2)*136,(i/2)*167,132,165),"",func(): pass)
+		var b:=_button(pantry_items,Rect2((i%2)*136,(i/2)*185,132,181),"",func(): pass)
 		b.set_meta("custom_audio",true)
 		b.gui_input.connect(_pantry_input.bind(value,id))
 		b.add_theme_stylebox_override("normal",_style(Color(0,0,0,0),Color(.45,.32,.17,.25)))
@@ -287,11 +287,14 @@ func _show_category(value: String) -> void:
 			texture.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			texture.texture=Art.texture(id)
 			art=texture
-		art.position=Vector2(26,8)
-		art.size=Vector2(88,111)
+		art.position=Vector2(22,8)
+		art.size=Vector2(88,98)
 		art.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		b.add_child(art)
-		var title:=_text(b,Rect2(4,111,124,34),label,16,INK)
+		var title:=_text(b,Rect2(6,108,120,47),label,16,INK)
+		title.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+		title.max_lines_visible=2
+		title.clip_text=true
 		title.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		title.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
 		if value=="器具":
@@ -302,7 +305,8 @@ func _show_category(value: String) -> void:
 				_text(b,Rect2(4,144,124,20),"传说",14,Color("986e25")).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 		title.add_theme_font_size_override("font_size",14 if label.length()>8 else 17)
 		if WorkbenchSession.MATERIALS.has(id) or WorkbenchSession.GARNISHES.has(id) or WorkbenchSession.SOLIDS.has(id):
-			var quantity_label:=_text(b,Rect2(4,142,132,20),"",14,INK)
+			var quantity_label:=_text(b,Rect2(6,157,120,22),"",14,INK)
+			quantity_label.clip_text=true
 			quantity_label.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 			stock_labels[id]=quantity_label
 		if value=="冰块":
@@ -845,7 +849,10 @@ func _begin_measure(material: String, target: float, vessel := "jigger") -> void
 			serve_armed=false
 		_show_category(category)
 	)
-	_text(p,Rect2(110,150,p.size.x-130,35),"空格 停止倒入     ·     Esc 取消",24,INK)
+	_button(p,Rect2(45,148,310,40),"停止倒入 · 空格",func():
+		if is_instance_valid(measure): measure.confirm()
+	,true)
+	_button(p,Rect2(375,148,p.size.x-420,40),"取消 · Esc",_close_modal)
 
 func _finish() -> void:
 	table.stop_gesture()
@@ -893,7 +900,7 @@ func _result() -> void:
 	var accent:=Color(str(evaluation.get("color","8c9aa2")))
 	var style:=_style(Color("f1e2c3"),accent)
 	style.set_border_width_all(3)
-	style.set_corner_radius_all(12)
+	style.set_corner_radius_all(0)
 	p.add_theme_stylebox_override("panel",style)
 	var paper:=TextureRect.new()
 	paper.texture=PAPER
@@ -945,6 +952,7 @@ func _result() -> void:
 			pending_confirm=_deliver
 		_button(p,Rect2(410,697,240,44),"查看制作依据",_result_details)
 		_button(p,Rect2(680,697,290,44),"返回桌面",_clear_modal)
+		return
 	elif _service_cup():
 		var served := _served_record()
 		var note := "客人已收到这杯酒 · 获得 %d 金币" % int(served.amount) if not served.is_empty() else (CustomerService.last_error if not CustomerService.last_error.is_empty() else "这一杯已经做好，送给正在等你的客人。")
@@ -952,9 +960,11 @@ func _result() -> void:
 		_button(p,Rect2(355,705,310,44),"回酒馆，听听客人怎么说" if not served.is_empty() else "送给客人，返回酒馆",_return_after_serving,true)
 		pending_confirm = _return_after_serving
 		return
-	_text(p,Rect2(45,704,930,38),"空格 另起一杯     ·     Esc 返回桌面     ·     R 查看依据",22,INK)
 	pending_confirm=func():
 		if _issue("start"): _clear_modal()
+	_button(p,Rect2(45,704,300,44),"另起一杯 · 空格",pending_confirm,true)
+	_button(p,Rect2(365,704,290,44),"返回桌面 · Esc",_close_modal)
+	_button(p,Rect2(675,704,290,44),"查看依据 · R",_result_details)
 
 func _deliver() -> void:
 	if GuestService.deliver(str(data.result.drink_id)):
@@ -1039,8 +1049,9 @@ func _result_details() -> void:
 	label.add_theme_font_size_override("font_size",22)
 	label.add_theme_color_override("font_color",CREAM)
 	scroll.add_child(label)
-	_text(p,Rect2(30,626,940,42),"空格 返回成品卡     ·     Esc 返回桌面",23)
 	pending_confirm=_result
+	_button(p,Rect2(30,626,445,44),"返回成品卡 · 空格",_result,true)
+	_button(p,Rect2(495,626,475,44),"返回桌面 · Esc",_close_modal)
 
 func _restart() -> void:
 	if WorkbenchSession.tutorial_active:
@@ -1052,12 +1063,13 @@ func _restart() -> void:
 		return
 	var p := _dialog("丢弃这一杯，重新试作？",320)
 	_text(p,Rect2(30,94,740,90),"已用材料不会退回；上一杯的动作记录会保留。\n继续使用仓库剩余原料，缺料需到商店补货。",22)
-	_text(p,Rect2(30,222,740,61),"空格 确认重做     ·     Esc 继续当前制作",22)
 	pending_confirm=func():
 		if data.get("status")=="mixing" and not _issue("discard"):
 			_clear_modal()
 			return
 		if _issue("start"): _clear_modal()
+	_button(p,Rect2(30,222,350,52),"确认重做 · 空格",pending_confirm,true)
+	_button(p,Rect2(400,222,370,52),"继续当前制作 · Esc",_close_modal)
 
 func _log() -> void:
 	var p := _dialog("这一杯的动作记录",620)
@@ -1180,7 +1192,7 @@ func _skip_tutorial() -> void:
 
 func _finish_tutorial(skipped := false) -> void:
 	if OpeningFlow.finish_tutorial(skipped):
-		get_tree().change_scene_to_file("res://scenes/opening_story.tscn")
+		get_tree().change_scene_to_file("res://scenes/opening_departure.tscn")
 	else: status_label.text=OpeningFlow.last_error
 
 func _material_info(id: String) -> Dictionary:

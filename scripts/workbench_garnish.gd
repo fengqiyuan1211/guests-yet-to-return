@@ -7,8 +7,17 @@ static func ellipse(canvas: CanvasItem, center: Vector2, radius: Vector2, color:
 	for i in range(48): points.append(center+Vector2(cos(i*TAU/48)*radius.x,sin(i*TAU/48)*radius.y))
 	canvas.draw_colored_polygon(points,color)
 
-static func piece(canvas: CanvasItem, center: Vector2, radius: float, kind: String, angle:=0.0) -> void:
-	canvas.draw_set_transform(center,angle)
+static func piece(canvas: CanvasItem, center: Vector2, radius: float, kind: String, angle:=0.0, pivot:=Vector2(.5,.5), frame:=Transform2D.IDENTITY) -> void:
+	canvas.draw_set_transform_matrix(frame*Transform2D(angle,center))
+	if kind not in ["sku_mint_leaf","sku_mint_sprig"]:
+		var sprite_id: String="lime_wedge" if kind=="garnish" else kind.trim_prefix("sku_")
+		var pixel: Texture2D=preload("res://scripts/pixel_art.gd").sprite(sprite_id)
+		if pixel!=null:
+			# Single fruit, native proportions; pantry and cup use the same artwork.
+			var extent:=pixel.get_size()*(radius*2/maxf(pixel.get_width(),pixel.get_height()))
+			canvas.draw_texture_rect(pixel,Rect2(-extent*pivot,extent),false)
+			canvas.draw_set_transform_matrix(frame)
+			return
 	if kind=="sku_mint_leaf":
 		Mint.leaf(canvas,Vector2.ZERO,radius*2.5,-.3,.84,0,.12)
 	elif kind=="sku_mint_sprig":
@@ -91,24 +100,41 @@ static func piece(canvas: CanvasItem, center: Vector2, radius: float, kind: Stri
 		if not lime:
 			ellipse(canvas,Vector2(6,-3),Vector2(1.3,2.7),Color("f7eac8"))
 			ellipse(canvas,Vector2(-5,4),Vector2(1.3,2.3),Color("f7eac8"))
-	canvas.draw_set_transform(Vector2.ZERO)
+	canvas.draw_set_transform_matrix(frame)
 
-static func draw(canvas: CanvasItem, rect: Rect2, ids: Array, ages: Array, phase: float, coupe: bool, shape:="") -> void:
+static func draw(canvas: CanvasItem, rect: Rect2, ids: Array, ages: Array, phase: float, coupe: bool, shape:="", frame:=Transform2D.IDENTITY) -> void:
+	canvas.draw_set_transform_matrix(frame)
 	var center:=rect.position+rect.size*Vector2(.5,.07 if coupe else .09)
 	var half:=rect.size.x*(.46 if coupe else .35)
+	var depth:=rect.size.y*.035
 	if not shape.is_empty():
 		var p:=preload("res://scripts/workbench_vessel_shape.gd").profile(shape)
 		center=rect.position+rect.size*Vector2(p.center,p.walls.front().x)
 		half=rect.size.x*p.walls.front().y
+		depth=rect.size.y*p.depth
 	for i in range(ids.size()):
 		var side:=1.0 if i%2==0 else -1.0
-		var anchor:=center+Vector2(side*half*(.87-(i/2)*.22),3+(i/2)*1.7)
+		# Place along the front ellipse, rather than on a flat row above the glass.
+		var across:=side*(.84-(i/2)*.23)
+		var anchor:=center+Vector2(across*half,depth*sqrt(maxf(0,1-across*across)))
 		var age: float=ages[i] if i<ages.size() else 10.0
 		var arriving:=1-smoothstep(0,.4,age)
 		var bob:=sin(maxf(0,age-.4)*15)*exp(-maxf(0,age-.4)*8)*2 if age>=.4 else 0.0
-		var radius:=clampf(rect.size.x*.19,20,32)
-		ellipse(canvas,anchor+Vector2(1,2),Vector2(radius*.55,3),Color(0,0,0,.2*(1-arriving)))
-		piece(canvas,anchor+Vector2(0,-radius*.20-arriving*55+bob),radius,ids[i],side*.20+arriving*.3)
-		# Small front rim highlight seats the fruit in the lip instead of floating like an icon.
-		if arriving<.03 and ids[i] in ["garnish","lemon_slice"]:
-			canvas.draw_line(anchor+Vector2(-3,4),anchor+Vector2(3,4),Color(.88,.87,.75,.65),1.2,true)
+		var radius:=clampf(half*.39,12,30)
+		var pivot:=Vector2(.5,.5)
+		var offset:=Vector2.ZERO
+		var kind: String=ids[i]
+		if kind in ["garnish","sku_lime_wedge"]: pivot=Vector2(.54,.79)
+		elif kind in ["lemon_slice","sku_lemon_slice"]:
+			pivot=Vector2(.64,.85); radius*=.91
+		elif kind=="sku_cocktail_cherry":
+			pivot=Vector2(.42,.76); radius*=.77
+		elif kind=="sku_mint_sprig":
+			radius*=.86; offset.y=-radius*.65
+		ellipse(canvas,anchor+Vector2(1,2),Vector2(radius*.30,1.6),Color(0,0,0,.17*(1-arriving)))
+		piece(canvas,anchor+offset+Vector2(0,-arriving*55+bob),radius,kind,side*.14+arriving*.3,pivot,frame)
+		# The rim passes through the citrus notch, and across cherry / mint stems.
+		if arriving<.03:
+			var tangent:=Vector2(1,-across*depth/maxf(1,half*sqrt(1-across*across))).normalized()
+			canvas.draw_line(anchor-tangent*2.5,anchor+tangent*2.5,Color(.85,.85,.73,.60),1.0,false)
+	canvas.draw_set_transform(Vector2.ZERO)

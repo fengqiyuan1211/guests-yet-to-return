@@ -1,6 +1,6 @@
 extends RefCounted
 ## Display aliases keep practice-session IDs independent of shared catalogue/SKU IDs.
-## Use fengqiyuan's existing trimmed resources without modifying their source pixels.
+## B sprites are visual overrides; original trimmed art remains the fallback.
 const ROOT := "res://assets/workbench/"
 const SHARED_ROOT := "res://assets/art/supplies/textures/"
 const CELLS := {
@@ -15,6 +15,8 @@ static var cache: Dictionary = {}
 static var catalog=preload("res://scripts/supply_catalog.gd").new()
 
 static func texture(id: String) -> Texture2D:
+	var pixel: Texture2D=preload("res://scripts/pixel_art.gd").sprite(str(CELLS.get(id,id)).trim_prefix("glass_"))
+	if pixel!=null: return pixel
 	if cache.has(id):
 		return cache[id]
 	if not CELLS.has(id):

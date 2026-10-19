@@ -3,7 +3,7 @@ signal close_requested
 const Data = preload("res://scripts/guest_journal_data.gd")
 const Preview = preload("res://scripts/workbench_drink_preview.gd")
 const Gauge = preload("res://scripts/journal_score.gd")
-const PAPER = preload("res://assets/codex/journal-paper-v1.png")
+const PAPER = preload("res://assets/pixel_b/paper.svg")
 const INK = Color("49301e")
 const MUTED = Color("684b2d")
 const CREAM = Color("f3dfb6")
@@ -22,6 +22,7 @@ var tab_buttons: Array[Button] = []
 var guest_buttons: Dictionary = {}
 var expanded: Dictionary = {}
 var page := 0
+var relationship_refresh_queued := false
 const PER_PAGE := 8
 
 func _ready() -> void:
@@ -42,14 +43,24 @@ func _ready() -> void:
 	StoryDialogue.changed.connect(_refresh)
 	WorkbenchSession.changed.connect(_refresh)
 	CustomerService.changed.connect(_refresh)
+	Relationships.changed.connect(_queue_relationship_refresh)
 	_refresh()
+
+func _queue_relationship_refresh() -> void:
+	if relationship_refresh_queued: return
+	relationship_refresh_queued=true
+	call_deferred("_refresh_relationships")
+
+func _refresh_relationships() -> void:
+	relationship_refresh_queued=false
+	if not is_queued_for_deletion(): _refresh()
 
 func _style(fill: Color, border:=Color("b28b53")) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()
 	box.bg_color = fill
 	box.border_color = border
 	box.set_border_width_all(1)
-	box.set_corner_radius_all(5)
+	box.set_corner_radius_all(0)
 	box.set_content_margin_all(13)
 	return box
 
@@ -155,7 +166,6 @@ func _select_guest(id: String) -> void:
 	_refresh()
 
 func _select_tab(index: int) -> void:
-	if index == 3 and not _has_unlocked_activity(selected_id): return
 	tab = index
 	page = 0
 	_render_content()
@@ -165,16 +175,13 @@ func _refresh() -> void:
 	_clear(sidebar)
 	guest_buttons.clear()
 	for profile in profiles:
-		var known := StoryDialogue.is_known(profile.id)
-		var button := _button(sidebar,str(profile.name) if known else "尚未相识",_select_guest.bind(str(profile.id)),profile.id == selected_id)
+		var known := Relationships.known(profile.id)
+		var button := _button(sidebar,str(profile.name) if known else (str(profile.name)+" · 演示" if _has_demo(str(profile.id)) else "尚未相识"),_select_guest.bind(str(profile.id)),profile.id == selected_id)
 		button.custom_minimum_size.y = 76
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		if known:
-			var portrait := AtlasTexture.new()
-			portrait.atlas = load(profile.texture)
-			var region: Array = profile.portrait
-			portrait.region = Rect2(region[0],region[1],region[2],region[3])
-			button.icon = portrait
+			button.icon = preload("res://scripts/pixel_art.gd").journal_avatar(profile)
+			if str(profile.id) in preload("res://scripts/pixel_art.gd").PEOPLE: button.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 			button.expand_icon = true
 			button.add_theme_constant_override("icon_max_width",46)
 			button.add_theme_constant_override("h_separation",12)
@@ -190,10 +197,10 @@ func _profile() -> Dictionary:
 func _render_profile() -> void:
 	_clear(profile_column)
 	var profile := _profile()
-	if profile.is_empty() or not StoryDialogue.is_known(selected_id):
+	if profile.is_empty() or not Relationships.known(selected_id):
 		_label(profile_column,"？",100,MUTED)
 		_label(profile_column,"尚未相识",30)
-		_label(profile_column,"等它推开酒馆的门，再从一句问候开始。" if selected_id=="yellow_creature" else "等他推开酒馆的门，再从一句问候开始。",23)
+		_label(profile_column,"等他推开酒馆的门，再从一句问候开始。",23)
 		_label(profile_column,"资料、偏好与故事会在相识后出现。",18,MUTED)
 		return
 	var row := HBoxContainer.new()
@@ -205,6 +212,9 @@ func _render_profile() -> void:
 	var region: Array = profile.portrait
 	portrait.region = Rect2(float(region[0])-20,maxf(0,float(region[1])-130),float(region[2])+40,float(region[3])*1.65)
 	art.texture = portrait
+	if selected_id in preload("res://scripts/pixel_art.gd").PEOPLE:
+		art.texture=preload("res://scripts/pixel_art.gd").person(profile)
+		art.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	art.custom_minimum_size = Vector2(180,228)
@@ -217,6 +227,15 @@ func _render_profile() -> void:
 	_label(intro,str(profile.name),36)
 	_label(intro,str(profile.role),21,MUTED)
 	_label(intro,str(profile.bio),21)
+	var relation:=Relationships.summary(selected_id)
+	_label(profile_column,"关系 · "+str(relation.stage),25,Color("6e5934"))
+	var reasons: Array=relation.reasons
+	for reason in reasons.slice(maxi(0,reasons.size()-2)):
+		_label(profile_column,"· "+str(reason),18,MUTED)
+	if selected_id=="harbor_merchant":
+		_label(profile_column,"聊过的事会留在这里。购物金额不影响关系。",20,MUTED)
+		_button(profile_column,"对话回顾 →",_select_tab.bind(1))
+		return
 	_label(profile_column,"喜欢的口味",21,MUTED)
 	_label(profile_column," · ".join(profile.get("preferences",[])),24,Color("506537"))
 	_label(profile_column,"不喜欢的口味",21,MUTED)
@@ -230,21 +249,30 @@ func _render_profile() -> void:
 func _render_content() -> void:
 	_clear(content)
 	content_scroll.scroll_vertical = 0
-	var has_game := _has_unlocked_activity(selected_id)
-	if tab == 3 and not has_game: tab = 0
-	tab_buttons[3].text = "专属小游戏" if has_game else "？"
-	tab_buttons[3].disabled = not has_game
 	for i in range(tab_buttons.size()):
 		tab_buttons[i].add_theme_stylebox_override("normal",_style(Color("916033") if i == tab else Color("59402b")))
-	if not StoryDialogue.is_known(selected_id):
+	if not Relationships.known(selected_id):
 		summary.text = "尚未相识"
-		_label(content,"这一页，还在等待一位客人。",28)
+		if _has_demo(selected_id):
+			_label(content,"内测期间，可提前体验小游戏。",21,MUTED)
+			_activities()
+		else: _label(content,"这一页，还在等待一位客人。",28)
 		return
 	var drinks := Data.drinks(selected_id,WorkbenchSession.state)
 	var groups := Data.conversations(selected_id,StoryDialogue.progress,StoryDialogue.catalog,WorkbenchSession.state)
 	summary.text = "已记录 %d 杯 · %d 段对话" % [drinks.size(),groups.size()]
+	if selected_id=="harbor_merchant":
+		summary.text="港口货栈 · "+str(Relationships.summary(selected_id).stage)
+		if tab==1:
+			for group in groups: _conversation(group)
+		elif tab in [2,3]:
+			_label(content,"这里还没有对应的记录。",23)
+			_label(content,"和她聊过的事，可以在资料与对话回顾中查看。",20,MUTED)
+		else: _merchant_clue()
+		return
 	match tab:
 		0:
+			_relationship_intro()
 			if drinks.is_empty(): _empty_drinks()
 			else: _drink(drinks[0],true)
 			_button(content,"查看全部饮酒记录  →",_select_tab.bind(2))
@@ -274,6 +302,33 @@ func _render_content() -> void:
 				var forward := _button(nav,"下一页",_change_page.bind(1))
 				forward.disabled = (page+1)*PER_PAGE >= drinks.size()
 		3: _activities()
+
+func _relationship_intro() -> void:
+	if not Relationships.guide_pending(): return
+	var column:=_card(content)
+	_label(column,"手帐记住的是人",25)
+	_label(column,"品质是这杯的手艺，满意度是客人今天的感受。好感度记录长期关系；认真招待、听完故事，可能让人愿意多说一些。",20)
+	_label(column,"关系与相关事件推进后，可能出现新对白、线索或特别的邀请。每个人条件不同，不必现在体验小游戏。",20)
+	_button(column,"我明白了",func():
+		Relationships.mark_guide_seen()
+	)
+
+func _merchant_clue() -> void:
+	_label(content,"未完的话",28)
+	if not Relationships.state.flags.get("invoice_heard",false):
+		_label(content,"先从一句问候开始。",22,MUTED)
+		return
+	var column:=_card(content)
+	_label(column,"留下来的旧送货单",25)
+	_label(column,"她保留了一张与酒馆有关的送货单。账早已结清，留着它与价钱无关。",22)
+	if Relationships.state.flags.get("invoice_seen",false):
+		_label(column,"已看见的字句 · 留到风停",27,Color("506537"))
+		_label(column,"纸仍留在老板娘那里。它指向什么，还没有答案。",20,MUTED)
+	else:
+		_label(column,"还不知道：纸背写了什么。",21,MUTED)
+		var available:=Relationships.topic_available("old_invoice")
+		_label(column,"她似乎愿意谈谈了，有空去货栈坐坐。" if available else "先顾好第一晚，再有空去和她聊聊。",21)
+	_button(content,"去港口货栈",func(): Navigation.go_to(&"shop"))
 
 func _change_page(direction: int) -> void:
 	page += direction
@@ -380,25 +435,23 @@ func _restore_scroll(value: int) -> void:
 	if is_instance_valid(content_scroll): content_scroll.scroll_vertical = value
 
 func _activities() -> void:
-	_label(content,"专属小游戏" if _has_unlocked_activity(selected_id) else "？",28)
+	_label(content,"专属小游戏",28)
 	var items := Data.activities(selected_id,StoryDialogue.progress)
 	if items.is_empty():
 		_label(content,"这位客人还没有留下小游戏邀请。",22)
 		return
 	for item in items:
 		var column := _card(content)
-		if not item.unlocked:
-			var locked := _button(column,"？",func(): pass)
-			locked.disabled = true
-			continue
 		_label(column,str(item.name),26)
 		_label(column,str(item.description),21,MUTED)
 		var available := Navigation.registered_pages.has(StringName(item.route))
-		_label(column,"已解锁 · 正式邀请",22)
+		_label(column,"已解锁 · 正式邀请" if item.unlocked else ("内测演示 · 暂时开放" if item.demo else "尚未解锁"),22)
 		var action := _button(column,"开始游戏  →" if available and item.accessible else ("尚未开放" if item.unlocked else "等待客人的邀请"),_launch_activity.bind(str(item.id)))
 		action.disabled = not available or not item.accessible
-		if item.id in preload("res://scripts/guest_activity_rules.gd").INVITATION_IDS:
+		if item.demo and not item.unlocked: action.tooltip_text = "内测演示：暂时开放体验，不代表正式剧情已解锁；不推进剧情、不发放奖励。"
+		if item.id in preload("res://scripts/guest_activity_rules.gd").IDS:
 			var info: Dictionary=GuestActivities.progress(item.id)
+			_label(column,"邀请进度："+GuestActivities.requirement_text(item.id,true),20)
 			if int(info.required_chapters)<StoryDialogue.catalog.get(selected_id,[]).size():
 				_label(column,"小游戏解锁后，后面的来访故事仍会继续。",19,MUTED)
 			if not info.keepsake.is_empty():
@@ -408,20 +461,20 @@ func _activities() -> void:
 			if not info.reward.is_empty():
 				var recipe:=preload("res://scripts/research_data.gd").legendary(info.reward.recipe_id)
 				_label(column,"首通已领取：《%s》配方 · 灵感 +%d" % [recipe.get("name",""),info.reward.inspiration],21,Color("506537"))
-			elif not str(item.get("reward_recipe_id","")).is_empty(): _label(column,"本小游戏首次通关：专属配方＋%d 点研发灵感。" % int(item.get("reward_inspiration",0)),18,MUTED)
+			else: _label(column,"本小游戏正式首通：专属配方＋%d 点研发灵感；演示不发奖。" % int(item.get("reward_inspiration",0)),18,MUTED)
 		if item.id=="stick_minigame":
-			_label(column,"小线的邀请已记录在这里。纪念酒单只领取一次。",19,MUTED)
+			_label(column,"这里可随时练习；正式邀请与纪念奖励在酒馆剧情中触发。",19,MUTED)
 
 func _launch_activity(id: String) -> void:
 	# Check again at click time; presentation state does not grant access.
 	for item in Data.activities(selected_id,StoryDialogue.progress):
 		if item.id == id and item.accessible and Navigation.registered_pages.has(StringName(item.route)):
 			if item.route=="stick_badminton":
-				Navigation.memory_match_context=CustomerService.memory_match_context()
+				Navigation.memory_match_context={"mode":"practice"}
 				Navigation.memory_from_journal=true
 			Navigation.go_to(StringName(item.route))
 
-func _has_unlocked_activity(id: String) -> bool:
+func _has_demo(id: String) -> bool:
 	for item in Data.activities(id,StoryDialogue.progress):
-		if item.unlocked: return true
+		if item.demo: return true
 	return false

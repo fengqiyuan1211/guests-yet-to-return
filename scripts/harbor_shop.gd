@@ -53,6 +53,14 @@ var merchant_line_index := 0
 var toast: Label
 var toast_remaining := 0.0
 var page_turning := false
+var opening_visit := false
+var merchant_dialogue: Control
+var topic_button: Button
+var opening_help: Panel
+var opening_help_text: Label
+var opening_pointer: Label
+var opening_clock := 0.0
+var purchase_note := ""
 var shelf_tween: Tween
 var balance_feedback_tween: Tween
 var purchase_feedback_sequence := 0
@@ -86,7 +94,7 @@ class MerchantInteraction extends Button:
 
 
 class PaperSurface extends Control:
-	const PAPER := preload("res://assets/codex/journal-paper-v1.png")
+	const PAPER := preload("res://assets/pixel_b/paper.svg")
 	var dark := false
 	var hanging := false
 	var marked := false
@@ -97,16 +105,11 @@ class PaperSurface extends Control:
 		var points := PackedVector2Array([Vector2(7, 1), Vector2(w - 8, 2), Vector2(w - 1, 8), Vector2(w - 3, h - 7), Vector2(w - 10, h - 1), Vector2(9, h - 2), Vector2(2, h - 10), Vector2(1, 8), Vector2(7, 1)])
 		draw_colored_polygon(points, Color("302014") if dark else Color("ead1a5"))
 		if not dark:
-			draw_texture_rect_region(PAPER, Rect2(4, 4, w - 8, h - 8), Rect2(460, 260, w - 8, h - 8), Color(1, 0.97, 0.93))
+			draw_rect(Rect2(4,4,w-8,h-8),Color("f3ddb0"))
 		draw_polyline(points, Color("ae8250") if dark else Color("aa7943"), 2, true)
 		draw_rect(Rect2(10, 10, w - 20, h - 20), Color("b48c59") if dark else Color("a67846"), false, 1)
-		for i in range(18):
-			var x := 12 + fposmod(i * 83.7, maxf(w - 25, 1))
-			var y := 11 + fposmod(i * 37.2, maxf(h - 25, 1))
-			draw_line(Vector2(x, y), Vector2(minf(x + 15, w - 10), y + 1), Color(0.42, 0.29, 0.15, 0.045), 1)
-		for p in [Vector2(13, 13), Vector2(w - 13, 13), Vector2(13, h - 13), Vector2(w - 13, h - 13)]:
-			draw_circle(p, 2.5, Color("b08751"))
-			draw_arc(p, 4, 0, TAU, 12, Color("654321"), 1, true)
+		for p in [Vector2(12,12),Vector2(w-16,12),Vector2(12,h-16),Vector2(w-16,h-16)]:
+			draw_rect(Rect2(p,Vector2(4,4)),Color("b08751"))
 		if hanging:
 			for x in [20.0, w - 20.0]:
 				draw_line(Vector2(x, -18), Vector2(x, 10), Color("52361e"), 3, true)
@@ -197,10 +200,17 @@ func _ready() -> void:
 	_balance_changed(_wallet_balance())
 	_time_changed(0, 0)
 	_update_harbor_lighting()
+	_paper(canvas,Rect2(74,695,538,60))
+	topic_button=_button(canvas,Rect2(78,699,530,52),"聊一聊",_talk_merchant,true)
+	Relationships.changed.connect(_refresh_merchant_topic)
+	_refresh_merchant_topic()
 
 
 func _process(delta: float) -> void:
 	_update_harbor_lighting()
+	if is_instance_valid(opening_pointer):
+		opening_clock+=delta
+		opening_pointer.position.y=buy_button.position.y-48+sin(opening_clock*3)*5
 	if toast_remaining > 0:
 		toast_remaining = maxf(0, toast_remaining - delta)
 		toast.visible = toast_remaining > 0
@@ -289,7 +299,7 @@ func _texture(parent: Node, rect: Rect2, texture: Texture2D) -> TextureRect:
 
 
 func _optional_art(path: String) -> Texture2D:
-	return load(path) as Texture2D if ResourceLoader.exists(path) else null
+	return preload("res://scripts/pixel_art.gd").texture(path)
 
 
 func _build() -> void:
@@ -320,7 +330,8 @@ func _build() -> void:
 		_paper(canvas, Rect2(0, 762, 1600, 138), true)
 	var merchant := _optional_art(MERCHANT_PATH)
 	if merchant != null:
-		var portrait := _texture(canvas, Rect2(55, 119, 644, 790), merchant)
+		var portrait := _texture(canvas, Rect2(55, 119, 644, 510), merchant)
+		portrait.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 		merchant_portrait = portrait
 		portrait.name = "Merchant"
 		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -331,7 +342,7 @@ func _build() -> void:
 		interaction.portrait_alpha = merchant.get_image()
 		if interaction.portrait_alpha.is_compressed():
 			interaction.portrait_alpha.decompress()
-		interaction.visible_height = 742 - portrait.position.y
+		interaction.visible_height = 610 - portrait.position.y
 		interaction.focus_mode = FOCUS_NONE
 		interaction.action_mode = BaseButton.ACTION_MODE_BUTTON_RELEASE
 		for state in ["normal", "hover", "pressed", "focus", "disabled"]:
@@ -343,12 +354,12 @@ func _build() -> void:
 		if background != null:
 			var counter_clip := Control.new()
 			counter_clip.name = "CounterClip"
-			counter_clip.position = Vector2(0, 742)
-			counter_clip.size = Vector2(703, 158)
+			counter_clip.position = Vector2(0, 610)
+			counter_clip.size = Vector2(703, 290)
 			counter_clip.clip_contents = true
 			counter_clip.mouse_filter = MOUSE_FILTER_IGNORE
 			canvas.add_child(counter_clip)
-			var counter := _texture(counter_clip, Rect2(Vector2(0, -742), DESIGN_SIZE), harbor_lighting.texture)
+			var counter := _texture(counter_clip, Rect2(Vector2(0, -610), DESIGN_SIZE), harbor_lighting.texture)
 			counter.name = "CounterForeground"
 			counter.stretch_mode = TextureRect.STRETCH_SCALE
 			counter.material = harbor_lighting.material
@@ -454,6 +465,9 @@ func _build_receipt() -> void:
 
 
 func _next_merchant_line() -> void:
+	if not opening_visit and not Relationships.next_merchant_topic().is_empty():
+		_talk_merchant()
+		return
 	merchant_line_index = (merchant_line_index + 1) % MERCHANT_LINES.size()
 	merchant_line.text = MERCHANT_LINES[merchant_line_index]
 
@@ -708,12 +722,15 @@ func _purchase() -> void:
 	var item := _selected_item()
 	var bought := packages
 	var balance_before := _wallet_balance()
+	var stock_before: float=supplies.total_remaining(selected_id)
 	if bool(supplies.call("purchase", selected_id, packages)):
 		SaloonAudio.ui.product(item,true)
 		merchant_line.text = "给你收好了。下回缺什么，再来找我。"
 		_show_toast("已买入 %s%s" % [str(item.name), " × %d" % bought if bought > 1 else ""])
 		_load_category()
 		_show_purchase_feedback(maxi(0, balance_before - _wallet_balance()))
+		purchase_note="%s：%s → %s %s" % [item.name,_amount(stock_before),_amount(supplies.total_remaining(item.id)),item.measurement_unit if item.storage_mode=="container" else item.quantity_unit]
+		_update_opening_help()
 	else:
 		SaloonAudio.ui.play("click")
 		var message := str(supplies.get("last_error"))
@@ -808,9 +825,40 @@ func _show_toast(message: String) -> void:
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
+	if is_instance_valid(merchant_dialogue): return
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		close_requested.emit()
+
+func _refresh_merchant_topic() -> void:
+	if not is_instance_valid(topic_button): return
+	var topic:=Relationships.next_merchant_topic()
+	topic_button.visible=not opening_visit and not topic.is_empty()
+	topic_button.text={"merchant_intro":"先认识一下 · 老板娘","merchant_seed":"她还有一句话……","merchant_return":"坐下来，聊聊第一晚","old_invoice":"那张留下来的送货单……"}.get(topic,"聊一聊")
+
+func _talk_merchant() -> void:
+	if opening_visit or is_instance_valid(merchant_dialogue): return
+	var topic:=Relationships.next_merchant_topic()
+	if topic.is_empty(): return
+	merchant_dialogue=preload("res://scripts/merchant_conversation.gd").new()
+	merchant_dialogue.topic=topic
+	merchant_dialogue.closed.connect(func():
+		merchant_dialogue=null
+		_refresh_merchant_topic()
+	)
+	canvas.add_child(merchant_dialogue)
+
+func show_opening_help() -> void:
+	if is_instance_valid(opening_help): return
+	opening_help=preload("res://scripts/opening_ui.gd").panel(canvas,Rect2(45,461,610,215))
+	opening_help_text=preload("res://scripts/opening_ui.gd").label(opening_help,Rect2(24,18,562,180),"",21)
+	opening_help_text.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
+	opening_pointer=preload("res://scripts/opening_ui.gd").label(canvas,Rect2(buy_button.position.x+buy_button.size.x*.5-20,buy_button.position.y-48,50,45),"↓",35,Color("ffe09d"))
+	_update_opening_help()
+
+func _update_opening_help() -> void:
+	if not is_instance_valid(opening_help_text): return
+	opening_help_text.text="① 点击货架商品\n② 看下方规格、数量和总价\n③ 点击购买；整瓶买入，调酒按实际量消耗\n"+(purchase_note+"\n买齐后点击左上角回酒馆。" if not purchase_note.is_empty() else "已有材料不用再买。可随时返回准备清单。")
 
 ## Optional deep link from a depleted workbench ingredient. Does not buy anything.
 func focus_item(id: String) -> bool:

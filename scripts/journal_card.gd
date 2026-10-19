@@ -36,5 +36,5 @@ func _frame(ink: Color) -> StyleBoxFlat:
 	result.bg_color = Color.TRANSPARENT
 	result.border_color = ink
 	result.set_border_width_all(1)
-	result.set_corner_radius_all(8)
+	result.set_corner_radius_all(0)
 	return result

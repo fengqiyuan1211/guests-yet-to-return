@@ -17,6 +17,7 @@ var gesture_clock := 0.0
 var visual_key := ""
 var guide_visible := true
 var completed_flash := 0.0
+var shortcut_button: Button
 
 func _ready() -> void:
 	name="OpeningTutorialGuide"
@@ -33,6 +34,23 @@ func _ready() -> void:
 	detail.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
 	bench.footer.text="Esc 保存并返回开始界面"
 	bench.gold_label.text="独立教学包 · 不扣仓库"
+	shortcut_button=UI.button(self,Rect2(650,206,300,54),"确认 · 空格",_click_shortcut,true)
+	shortcut_button.focus_mode=Control.FOCUS_NONE
+	shortcut_button.add_theme_color_override("font_color",Color("352416"))
+	shortcut_button.add_theme_color_override("font_hover_color",Color("352416"))
+	for key in ["normal","hover","pressed"]:
+		var style:=StyleBoxFlat.new()
+		style.bg_color=Color("ffe9ae" if key=="hover" else "f6e7c8")
+		style.border_color=Color("b98b3e")
+		style.set_border_width_all(2)
+		style.set_corner_radius_all(8)
+		shortcut_button.add_theme_stylebox_override(key,style)
+	shortcut_button.hide()
+
+func _click_shortcut() -> void:
+	if not is_visible_in_tree() or gesture!="space": return
+	if is_instance_valid(bench.measure): bench.measure.confirm()
+	elif bench.selected=="glass" and bench.serve_armed: bench._finish()
 
 func _process(delta: float) -> void:
 	if not WorkbenchSession.tutorial_active or bench.data.is_empty(): return
@@ -70,6 +88,13 @@ func _process(delta: float) -> void:
 			targets.append(rect.grow(6))
 			anchors.append(rect.get_center())
 	_update_gesture(step)
+	shortcut_button.visible=gesture=="space"
+	if shortcut_button.visible:
+		shortcut_button.position=Vector2(650,424 if is_instance_valid(bench.measure) else 206)
+		shortcut_button.text="停止倒入 · 空格" if is_instance_valid(bench.measure) else "完成这杯 · 空格"
+		# Draw order alone does not change mouse hit testing. Keep this small
+		# clickable cue above the dosing overlay; the rest of the guide ignores input.
+		if get_index()!=get_parent().get_child_count()-1: get_parent().move_child(self,-1)
 	var key:=str(step.key)+":"+gesture
 	if key!=visual_key:
 		visual_key=key
@@ -123,7 +148,7 @@ func _update_gesture(step: Dictionary) -> void:
 		cue_detail="滤盖会留下冰块，只倒入酒液"
 	elif step.key=="finish":
 		gesture="space" if bench.selected=="glass" else "click"
-		cue="按空格，完成这杯回响" if gesture=="space" else "点击右上角的成品杯"
+		cue="点击下方按钮或按空格，完成这一杯" if gesture=="space" else "点击右上角的成品杯"
 		cue_detail="完成后查看这杯酒的真实品质与数值"
 	elif str(step.key).begins_with("transfer_"):
 		cue="把量酒器拖到摇壶上，再松手"
@@ -135,7 +160,7 @@ func _update_gesture(step: Dictionary) -> void:
 		gesture="space"
 		var measure: Control=bench.measure
 		var close_to_goal: bool=absf(measure.current_ml()-measure.target)<=measure.target*measure.recommended_ratio
-		cue="现在按空格！" if close_to_goal else "看刻度，接近红线时按空格"
+		cue="现在点击停止，或按空格！" if close_to_goal else "接近红线时，点击停止或按空格"
 		cue_detail="目标 %s ml · 当前 %s ml · 停下才会记入用量" % [WorkbenchSession.format_amount(measure.target),WorkbenchSession.format_amount(measure.current_ml())]
 		targets.clear()
 		anchors.clear()
@@ -245,9 +270,7 @@ func _draw() -> void:
 			_cursor(a.lerp(b,rhythm),true)
 		"space":
 			if not is_instance_valid(bench.measure): _marker(start,"已选中成品杯",gold)
-			var key_box:=Rect2(690,banner.end.y+14,220,54)
-			draw_style_box(paper,key_box)
-			draw_string(UI.FONT,key_box.position+Vector2(25,36),"SPACE  空格",HORIZONTAL_ALIGNMENT_LEFT,-1,26,Color("352416"))
+			var key_box:=Rect2(shortcut_button.position,shortcut_button.size)
 			if not OpeningFlow.reduced_motion:
 				draw_style_box(_border(gold,3),key_box.grow(3+2*sin(pulse*5)))
 

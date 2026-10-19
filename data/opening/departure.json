@@ -1,0 +1,31 @@
+{
+  "version":1,
+  "nodes":[
+    {"id":"cup_today","chapter":"今天这一杯","background":"saloon","speaker":"老管家","text":"","dynamic":"cup","prop":"drink","sfx":"clink"},
+    {"id":"remember","chapter":"今天这一杯","background":"saloon","speaker":"我","text":"记忆里好像没这么难。","prop":"drink","skip_text":"那就先把步骤收好，哪天再练一杯。"},
+    {"id":"jigger","chapter":"今天这一杯","background":"saloon","speaker":"老管家","text":"记忆里，通常不用洗量酒器。","prop":"drink","skip_text":"配方留在这里。想做的时候，咱们再一起看。"},
+    {"id":"today","chapter":"今天这一杯","background":"saloon","speaker":"老管家","text":"他留的是配方。今天倒多少，还是得您自己看着。","prop":"drink"},
+    {"id":"knock","chapter":"收件人是我","background":"porch","speaker":"门外","text":"有人吗？送东西的。我看灯亮了。","prop":"parcel","sfx":"knock"},
+    {"id":"not_open","chapter":"收件人是我","background":"porch","speaker":"我","text":"还没……我们还没开门。","prop":"parcel"},
+    {"id":"recipient","chapter":"收件人是我","background":"porch","speaker":"投递员","text":"没事，我也不是来点单。只是这回，能让收件人自己签字了？","prop":"parcel"},
+    {"id":"ledger","chapter":"收件人是我","background":"porch","speaker":"老管家","text":"之前是我代收。整理好的账册，今天一起送来了。","prop":"parcel","sfx":"paper"},
+    {"id":"sign_receipt","chapter":"收件人是我","background":"porch","speaker":"我 · 心声","text":"收件人那一栏，是我的名字。不是职位，也不是哪一个项目的负责人。","prop":"receipt","action":"sign","button":"签收账册 · 空格"},
+    {"id":"find_you","chapter":"收件人是我","background":"porch","speaker":"投递员","text":"那以后送这里的东西，我就找您了。","prop":"receipt"},
+    {"id":"rest","chapter":"椅子还在","background":"porch","speaker":"投递员","text":"我在门口歇一会儿就走，下一家还等着。","prop":"water"},
+    {"id":"offer_water","chapter":"椅子还在","background":"porch","speaker":"我","text":"椅子就在外面。要不要喝点水？","prop":"water"},
+    {"id":"give_water","chapter":"椅子还在","background":"porch","speaker":"投递员","text":"好。常温的就行。","prop":"water","action":"water","button":"递一杯水 · 空格"},
+    {"id":"light_again","chapter":"椅子还在","background":"porch","speaker":"投递员","text":"以前走这条路，总会在这儿停一下。没想到今天又亮灯了。","prop":"water","sfx":"clink"},
+    {"id":"learning","chapter":"椅子还在","background":"porch","speaker":"我","text":"我还在学。","prop":"water"},
+    {"id":"next_time","chapter":"椅子还在","background":"porch","speaker":"投递员","text":"那我下回来，看看您学得怎么样。","prop":"water"},
+    {"id":"welcome","chapter":"椅子还在","background":"porch","speaker":"我 · 心声","text":"我本来以为，开店得先准备一句像样的欢迎。原来第一句话，只是“喝点水吗”。","prop":"water"},
+    {"id":"shelf","chapter":"今晚先备一款","background":"saloon","speaker":"老管家","text":"今晚卖什么，先听您的。不过纸上有的，架子上未必有。","prop":"ledger"},
+    {"id":"check_stock","chapter":"今晚先备一款","background":"saloon","speaker":"我","text":"先看库存？","prop":"ledger"},
+    {"id":"real_stock","chapter":"今晚先备一款","background":"saloon","speaker":"老管家","text":"对。刚才练习那份单独备着，往后营业，就得记这本账了。缺的东西，去港口货栈看看，也认识一下老板娘。","prop":"ledger"},
+    {"id":"prepare","chapter":"今晚先备一款","background":"saloon","speaker":"老管家","text":"挑一款今晚想卖的酒，看看还缺什么。材料足够，也可以只去认认门。","action":"prepare"},
+    {"id":"ready","chapter":"门在我手里","background":"porch","speaker":"我","text":"先准备这一款。她说，不用急着把架子摆满。","prop":"sign"},
+    {"id":"sounds_like","chapter":"门在我手里","background":"porch","speaker":"老管家","text":"这话很像她会说的。今天就开这一会儿？","prop":"sign"},
+    {"id":"one_evening","chapter":"门在我手里","background":"porch","speaker":"我","text":"先开这一会儿。","prop":"sign"},
+    {"id":"turn_sign","chapter":"门在我手里","background":"porch","speaker":"老管家","text":"那牌子，您来翻吧。","prop":"sign","action":"open","button":"翻转营业牌 · 空格"},
+    {"id":"my_door","chapter":"门在我手里","background":"porch","speaker":"我 · 心声","text":"过去，我总等着有人告诉我，下一步该做什么。这一次，门在我手里。","prop":"sign","sfx":"door","action":"finish","button":"迎接第一位客人 · 空格"}
+  ]
+}

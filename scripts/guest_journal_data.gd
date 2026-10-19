@@ -2,9 +2,12 @@ extends RefCounted
 ## Read-only projection of existing story and cup saves. No wallet/inventory writes.
 
 static func profiles() -> Array:
-	return JSON.parse_string(FileAccess.get_file_as_string("res://data/guests.json"))
+	var rows: Array=JSON.parse_string(FileAccess.get_file_as_string("res://data/guests.json"))
+	rows.append({"id":"harbor_merchant","name":"老板娘","role":"港口货栈的经营者","bio":"船到港时，她会清点货物，也记得一些旧日的来客。","texture":"res://assets/art/shop/harbor-merchant.png","portrait":[0,0,600,850],"preferences":[],"avoid":[]})
+	return rows
 
 static func conversations(id: String, progress: Dictionary, catalog: Dictionary, workbench: Dictionary={}) -> Array:
+	if id=="harbor_merchant": return Relationships.merchant_history()
 	var state: Dictionary = progress.get(id, {})
 	var groups: Array = []
 	var seen: Dictionary = {}

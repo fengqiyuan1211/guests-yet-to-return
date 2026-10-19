@@ -1,0 +1,8 @@
+{
+  "date": "2026-10-19",
+  "tool": "image_gen built-in",
+  "prompt": "Use case: precise-object-edit. Create production background texture for a pixel-art tavern game. Image 1 is the EDIT TARGET, clean empty saloon background. Image 2 is approved composition reference ONLY for the horizontal teal woven runner. Keep image1 exact composition, dimensions 1672x941, horizon and foreground wooden counter far lip at y544. Add only ONE flat horizontal teal woven runner on the foreground countertop, matching image2: far corners approximately (310,562),(1250,562), widening toward viewer, near corners (170,745),(1430,745). Two simple muted beige stitched border stripes at LEFT and RIGHT ends, sparse broad square pixel woven texture, same teal as reference, low contact shadow. Match pixel cluster sizes and warm sunset lighting. It lies flat on the counter and is part of the background painting, not a sticker. Keep exposed warm wood strip behind cloth and wood at sides/front. Preserve entire room above y544 unchanged, no people, no interface, no writing, no dialogue box. Do not copy any UI or people from image2. Single counter edge remains at y544, don't raise or thicken it. Original full 16:9 frame.",
+  "source": "/Users/wit/.codex/generated_images/01a14db2-8e33-7ff0-988b-05063d02389d/exec-c026b43b-e2c1-4b44-b98f-3cdb836c8caf.png",
+  "approved_preview": "docs/美术/B档像素风实机-20261018/counter-surface-preview/A2.png",
+  "usage": "Only the counter region at y544 and below is used. Original room and cameo art retained."
+}

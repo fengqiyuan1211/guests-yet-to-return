@@ -144,6 +144,7 @@ func restart_game() -> bool:
 		return false
 	var index := 0
 	var restart_paths := [save_path, save_path+".modes", OpeningFlow.save_path, StoryDialogue.save_path, SlotWallet.save_path, MenuCatalog.save_path, CustomerService.save_path]
+	restart_paths.append(save_path+".relationships")
 	var supplies := get_node_or_null("/root/Supplies")
 	if supplies != null:
 		restart_paths.append(supplies.save_path)
@@ -161,6 +162,11 @@ func restart_game() -> bool:
 func _finish_restart() -> bool:
 	resetting = true
 	writable = true
+	var relationships:=get_node_or_null("/root/Relationships")
+	if relationships!=null:
+		if not relationships.reset_game(): return false
+	elif FileAccess.file_exists(save_path+".relationships"):
+		if DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path+".relationships"))!=OK: return false
 	var modes:=get_node_or_null("/root/PlayModes")
 	if modes!=null:
 		if not modes.reset_game(): return false

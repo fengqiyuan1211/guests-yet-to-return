@@ -38,7 +38,7 @@ var research_button: Button
 func _ready() -> void:
 	_load_settings()
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	paper = load("res://assets/codex/journal-paper-v1.png")
+	paper = load("res://assets/pixel_b/paper.svg")
 	_build_frame()
 	page_content = _make_page(page_index)
 	page_content.position = PAGE_ORIGIN
@@ -119,7 +119,7 @@ func _style(fill: Color, border: Color, thickness := 1) -> StyleBoxFlat:
 	result.bg_color = fill
 	result.border_color = border
 	result.set_border_width_all(thickness)
-	result.set_corner_radius_all(3)
+	result.set_corner_radius_all(0)
 	result.set_content_margin_all(4)
 	return result
 

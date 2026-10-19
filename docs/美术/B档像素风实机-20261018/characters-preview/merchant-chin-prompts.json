@@ -1,0 +1,10 @@
+{
+  "tool": "image_gen.imagegen (built-in)",
+  "purpose": "仅预览：柔化 C 版老板娘下巴，保留像素眉眼",
+  "source": "/Users/wit/.codex/generated_images/01a14db2-8e33-7ff0-988b-05063d02389d/exec-13c2bf14-e07d-4332-882c-083b5bc77659.png",
+  "saved": "/Users/wit/Documents/GitHub/guests-yet-to-return/docs/美术/B档像素风实机-20261018/characters-preview/C-merchant-face-v3.png",
+  "refs": [
+    "/var/folders/7y/h4rsfg5d7gj2d294w6854m8m0000gn/T/codex-clipboard-3ea404a1-78d5-41e3-ac31-e8410ad3290e.png"
+  ],
+  "prompt": "Edit the leftmost white-haired woman's LOWER FACE so her chin is VISIBLY SOFTER AND ROUNDER. Her current jaw is a heavy BLACK ZIGZAG with big right-angle notches and a wide flat bottom. REMOVE that entire heavy black contour from her lower cheeks/chin. Replace it with a natural rounded U-shaped chin rendered in small tidy square pixel steps: softly curved lower cheeks, a gently rounded chin tip, short one-pixel stair steps rather than long flat horizontal plateaus. Use warm medium-brown shadow pixels blending into her existing neck/hair tones to define the edge; no black boxed border. Make this change clearly noticeable, not an almost identical output. Keep her mouth in place and slightly soften the flesh volume under it so the chin transitions naturally to the neck. Do not make a sharp pointed V or a baby face.\nKEEP her current BLOCKY PIXEL EYES, pixel eyebrows, smile, nose, hairstyle, outfit, pose and adult proportions. The eye area must NOT become smooth or more detailed. Everything remains pixel art, no anti-aliasing, no smooth painted face. Other three characters and all labels/background unchanged. Full original four-person sheet at same dimensions."
+}

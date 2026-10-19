@@ -1,0 +1,46 @@
+{
+  "metalware": [
+    "shaker_body",
+    "jigger",
+    "shaker_strainer_top",
+    "shaker_cap"
+  ],
+  "glassware": [
+    "highball_glass",
+    "mixing_glass",
+    "cocktail_glass",
+    "saucer_glass",
+    "balloon_glass"
+  ],
+  "small_tools": [
+    "bar_spoon",
+    "muddler",
+    "strainer"
+  ],
+  "bottles_0": [
+    "gin_london_dry",
+    "green_chartreuse",
+    "maraschino",
+    "white_rum",
+    "vodka"
+  ],
+  "bottles_1": [
+    "tequila",
+    "cointreau",
+    "rye_whiskey",
+    "sweet_red_vermouth",
+    "angostura_bitters"
+  ],
+  "bottles_2": [
+    "blue_curacao",
+    "bleu_de_minuit",
+    "tonic_water",
+    "soda_water"
+  ],
+  "bottles_3": [
+    "cola",
+    "simple_syrup",
+    "lime_juice",
+    "lemon_juice"
+  ]
+}

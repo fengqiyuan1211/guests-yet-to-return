@@ -28,7 +28,7 @@ func _ready() -> void:
 	paper.size=Vector2(1168,337)
 	var style:=StyleBoxFlat.new()
 	style.bg_color=Color("f0e2c6")
-	style.set_corner_radius_all(5)
+	style.set_corner_radius_all(0)
 	paper.add_theme_stylebox_override("panel",style)
 	p.add_child(paper)
 	reader=RichTextLabel.new()
@@ -46,7 +46,7 @@ func _ready() -> void:
 	UI.label(p,Rect2(40,600,420,30),"滚轮阅读全文 · Esc 收起邮件",18,Color("bba887"))
 	read_button=UI.button(p,Rect2(610,589,590,52),str(mail.get("button","读完，继续")),func(): read_requested.emit(),true)
 	error_label=UI.label(p,Rect2(40,645,1150,28),"",17,Color("ffd597"))
-	# Focus the close control, so a repeated Space from the story cannot mark a letter read.
+	# Keep focus in the document; reading remains an explicit button action.
 	reader.focus_mode=Control.FOCUS_ALL
 	reader.grab_focus()
 

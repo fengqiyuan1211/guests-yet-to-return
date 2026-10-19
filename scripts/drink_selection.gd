@@ -1,7 +1,7 @@
 extends Control
 ## Choosing a drink reads the published menu; only starting creates a cup snapshot.
 signal close_requested
-const PAPER = preload("res://assets/codex/journal-paper-v1.png")
+const PAPER = preload("res://assets/pixel_b/paper.svg")
 const INK := Color("57391f")
 const CREAM := Color("eed9b3")
 var surface: Control
@@ -43,7 +43,7 @@ func _style(color: Color) -> StyleBoxFlat:
 	style.bg_color=color
 	style.border_color=Color("b38c56")
 	style.set_border_width_all(1)
-	style.set_corner_radius_all(5)
+	style.set_corner_radius_all(0)
 	style.set_content_margin_all(14)
 	return style
 

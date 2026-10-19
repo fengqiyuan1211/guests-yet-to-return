@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://cwbic8tjoq3vx" path="res://scripts/clock_face.gd" id="clock_face"]
 [ext_resource type="Script" uid="uid://dy1ti4kx53ya2" path="res://scripts/day_night_background.gd" id="day_night"]
 [ext_resource type="Script" uid="uid://consb3bvbmpyy" path="res://scripts/guest_spawner.gd" id="guest_spawner"]
+[ext_resource type="Script" path="res://scripts/saloon_counter.gd" id="saloon_counter"]
 [ext_resource type="Texture2D" uid="uid://cq3njau71wfpx" path="res://assets/icons/backpack.svg" id="icon_backpack"]
 [ext_resource type="Texture2D" uid="uid://cw5ueqy5s5jwt" path="res://assets/icons/codex.svg" id="icon_codex"]
 [ext_resource type="Texture2D" uid="uid://cd2wqg4yesug7" path="res://assets/icons/coin.svg" id="icon_coin"]
@@ -15,9 +16,9 @@
 [ext_resource type="Texture2D" uid="uid://d2ic3bsplsrvj" path="res://assets/icons/shop.svg" id="icon_shop"]
 [ext_resource type="Texture2D" uid="uid://da6j1otawybfy" path="res://assets/icons/slots.svg" id="icon_slots"]
 [ext_resource type="Texture2D" uid="uid://dkgni51avstiq" path="res://assets/icons/sun.svg" id="icon_sun"]
-[ext_resource type="Script" uid="uid://bhky8sh5ta22w" path="res://scripts/ornament_panel.gd" id="ornament"]
+[ext_resource type="Script" path="res://scripts/pixel_ornament_panel.gd" id="ornament"]
 [ext_resource type="Script" uid="uid://3ir3op7esw4e" path="res://scripts/home.gd" id="script"]
-[ext_resource type="Theme" uid="uid://consbyld8xlmx" path="res://assets/western_theme.tres" id="theme"]
+[ext_resource type="Theme" path="res://assets/pixel_b/theme.tres" id="theme"]
 
 [sub_resource type="StyleBoxFlat" id="wood"]
 content_margin_left = 12.0
@@ -214,6 +215,15 @@ grow_vertical = 2
 theme = ExtResource("theme")
 script = ExtResource("script")
 
+[node name="SceneMatte" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.071, 0.047, 0.039, 1)
+
 [node name="Background" type="TextureRect" parent="." unique_id=872995181]
 layout_mode = 1
 anchors_preset = 15
@@ -244,6 +254,10 @@ script = ExtResource("atmosphere")
 [node name="GuestLayer" type="Node2D" parent="Stage" unique_id=2037870328]
 unique_name_in_owner = true
 script = ExtResource("guest_spawner")
+
+[node name="ForegroundCounter" type="TextureRect" parent="Stage"]
+mouse_filter = 2
+script = ExtResource("saloon_counter")
 
 [node name="HomeContent" type="Control" parent="Stage" unique_id=218939081]
 unique_name_in_owner = true

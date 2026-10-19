@@ -4,7 +4,7 @@ const Rules=preload("res://scripts/guest_activity_rules.gd")
 const CrateBoard=preload("res://scripts/hank_crate_board.gd")
 const Board=preload("res://scripts/guest_activity_board.gd")
 const FONT=preload("res://assets/fonts/NotoSerifSC.ttf")
-const PAPER=preload("res://assets/codex/journal-paper-v1.png")
+const PAPER=preload("res://assets/pixel_b/paper.svg")
 var activity_id: String
 var config: Dictionary
 var surface: Control
@@ -60,11 +60,11 @@ func _ready() -> void:
 	hint_label=_label(ribbon,Rect2(18,6,1245,61),"",21)
 	mode_label=_label(ribbon,Rect2(18,75,1245,21),"",14)
 	var portrait:=Panel.new(); portrait.position=Vector2(1350,735); portrait.size=Vector2(220,145); portrait.mouse_filter=Control.MOUSE_FILTER_IGNORE; portrait.add_theme_stylebox_override("panel",_style(Color("4a3424"))); surface.add_child(portrait)
-	var art:=TextureRect.new(); var atlas:=AtlasTexture.new()
+	var art:=TextureRect.new(); var atlas: Texture2D
 	for profile in preload("res://scripts/guest_journal_data.gd").profiles():
 		if profile.id==config.get("guest_id"):
-			atlas.atlas=load(profile.texture); var region: Array=profile.portrait; atlas.region=Rect2(region[0],region[1],region[2],region[3])
-	art.expand_mode=TextureRect.EXPAND_IGNORE_SIZE; art.texture=atlas; art.position=Vector2(4,4); art.size=Vector2(132,137); art.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED; art.mouse_filter=Control.MOUSE_FILTER_IGNORE; portrait.add_child(art)
+			atlas=preload("res://scripts/pixel_art.gd").person(profile,true)
+	art.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST; art.expand_mode=TextureRect.EXPAND_IGNORE_SIZE; art.texture=atlas; art.position=Vector2(4,4); art.size=Vector2(132,137); art.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED; art.mouse_filter=Control.MOUSE_FILTER_IGNORE; portrait.add_child(art)
 	var quote:=_label(portrait,Rect2(140,22,76,113),{"milo_ferry":"别忘了
 回来的
 那一趟。","ada_watch_memory":"今天，
@@ -94,7 +94,7 @@ func _intro() -> String:
 	return str(lines[activity_id])+ ("\n\n当前为演示：不推进剧情、不发放奖励。" if GuestActivities.active.mode=="demo" else "\n\n正式首通：专属配方＋3 点研发灵感。")
 
 func _style(fill: Color) -> StyleBoxFlat:
-	var s:=StyleBoxFlat.new(); s.bg_color=fill; s.border_color=Color("98713d"); s.set_border_width_all(2); s.set_corner_radius_all(10); return s
+	var s:=StyleBoxFlat.new(); s.bg_color=fill; s.border_color=Color("98713d"); s.set_border_width_all(2); s.set_corner_radius_all(0); return s
 
 func _label(parent: Node, rect: Rect2, text: String, px: int) -> Label:
 	var l:=Label.new(); l.position=rect.position; l.size=rect.size; l.text=text; l.add_theme_font_override("font",FONT); l.add_theme_font_size_override("font_size",px); l.add_theme_color_override("font_color",Color("49321f")); l.autowrap_mode=TextServer.AUTOWRAP_WORD_SMART; l.mouse_filter=Control.MOUSE_FILTER_IGNORE; parent.add_child(l); return l
@@ -329,7 +329,7 @@ func _crate_reset() -> void:
 func _ferry_failure() -> void:
 	playing=false; failure_shown=true; _clear_modal(); audio.cue("reject")
 	overlay=Panel.new(); overlay.size=Vector2(1600,900); overlay.add_theme_stylebox_override("panel",_style(Color("1e1712"))); surface.add_child(overlay)
-	var cg:=TextureRect.new(); cg.expand_mode=TextureRect.EXPAND_IGNORE_SIZE; cg.texture=load("res://assets/activities/v3/milo-riot.png"); cg.size=Vector2(1600,900); cg.mouse_filter=Control.MOUSE_FILTER_IGNORE; overlay.add_child(cg)
+	var cg:=TextureRect.new(); cg.expand_mode=TextureRect.EXPAND_IGNORE_SIZE; cg.texture=preload("res://scripts/pixel_art.gd").scene("milo_failure"); cg.size=Vector2(1600,900); cg.mouse_filter=Control.MOUSE_FILTER_IGNORE; overlay.add_child(cg)
 	cg.modulate.a=0; create_tween().tween_property(cg,"modulate:a",1.0,.3)
 	var paper:=Panel.new(); paper.position=Vector2(120,606); paper.size=Vector2(1360,260); paper.add_theme_stylebox_override("panel",_style(Color("f5e5c7"))); overlay.add_child(paper)
 	_label(paper,Rect2(28,12,1260,46),"囚犯暴动了",34)
