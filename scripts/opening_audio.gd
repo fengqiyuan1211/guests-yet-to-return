@@ -43,8 +43,11 @@ func present(node: Dictionary, owner: Node) -> void:
 	var id:=str(node.get("id","ending"))
 	if id==last_node: return
 	last_node=id
+	play_cue(str(node.get("sfx","")))
+
+func play_cue(cue: String) -> void:
 	voice.stop()
-	last_cue=str(node.get("sfx",""))
+	last_cue=cue
 	if not CUES.has(last_cue): return
 	voice.stream=load(CUES[last_cue][0])
 	voice.volume_db=CUES[last_cue][1]

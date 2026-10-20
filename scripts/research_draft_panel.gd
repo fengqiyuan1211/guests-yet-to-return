@@ -18,13 +18,14 @@ var error_label: Label
 func _ready() -> void:
 	size=Vector2(400,428)
 	add_theme_stylebox_override("panel",style(Color("f3e2c2"),Color("91673f")))
-	var paper:=TextureRect.new()
-	paper.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
-	paper.texture=preload("res://assets/codex/journal-paper-v1.png")
-	paper.size=size
-	paper.self_modulate=Color(1,1,1,.28)
-	paper.mouse_filter=Control.MOUSE_FILTER_IGNORE
-	add_child(paper)
+	# Quiet pixel corners match the journal paper without a stretched painted overlay.
+	for corner in [Vector2(8,8),Vector2(388,8),Vector2(8,416),Vector2(388,416)]:
+		var mark:=ColorRect.new()
+		mark.position=corner
+		mark.size=Vector2(4,4)
+		mark.color=Color("b49a71")
+		mark.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		add_child(mark)
 	var clip:=Panel.new()
 	clip.position=Vector2(163,-8)
 	clip.size=Vector2(74,15)
@@ -63,7 +64,7 @@ func style(fill: Color, border:=Color("b49a71")) -> StyleBoxFlat:
 	box.bg_color=fill
 	box.border_color=border
 	box.set_border_width_all(1)
-	box.set_corner_radius_all(5)
+	box.set_corner_radius_all(0)
 	return box
 
 func label(parent: Node, rect: Rect2, text: String, px: int) -> Label:

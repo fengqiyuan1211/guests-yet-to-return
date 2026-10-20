@@ -2,6 +2,7 @@ extends Node
 ## Startup runs before services: detect legacy files before they create fresh saves.
 signal changed
 const TUTORIAL_PATH := "res://data/opening/tutorial.json"
+const PLAYER_NAME_LIMIT := 16
 var story: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://data/opening/story.json"))
 var save_path := "user://game_session.json.opening"
 var state: Dictionary = {}
@@ -12,8 +13,25 @@ var last_error := ""
 var _return_state: Dictionary = {}
 var _return_path := ""
 var reduced_motion := false
+var replay_world = preload("res://scripts/opening_replay_world.gd").new()
+
+func can_write_playthrough() -> bool:
+	return not replaying or replay_world.active
+
+func ensure_replay_world() -> bool:
+	return not replaying or replay_world.start()
+
+func first_service_pending() -> bool:
+	return state.get("first_service_pending",false) and state.phase=="ready"
+
+func complete_first_service() -> bool:
+	if not first_service_pending(): return true
+	var next:=state.duplicate(true)
+	next.first_service_pending=false
+	return _commit(next)
 
 func _ready() -> void:
+	_bind_first_service.call_deferred()
 	for arg in OS.get_cmdline_args():
 		if arg.ends_with(".tscn") and not arg.ends_with("title_screen.tscn"):
 			front_end = false
@@ -51,8 +69,24 @@ func _ready() -> void:
 	if config.load(save_path+".settings") == OK:
 		reduced_motion = bool(config.get_value("display","reduced_motion",false))
 
+func _bind_first_service() -> void:
+	CustomerService.changed.connect(_reconcile_first_service)
+	GuestService.changed.connect(_reconcile_first_service)
+	_reconcile_first_service()
+
+func _reconcile_first_service() -> void:
+	if not first_service_pending() or not can_write_playthrough(): return
+	for record: Dictionary in CustomerService.state.deliveries.values():
+		if record.guest_id=="milo" and record.status=="settled" and record.get("play_mode","story")=="story":
+			complete_first_service()
+			return
+	for tx: Dictionary in GuestService.ledger().deliveries.values():
+		if tx.order.guest_id=="milo" and tx.phase=="complete":
+			complete_first_service()
+			return
+
 func fresh() -> Dictionary:
-	return {"version":1,"story_version":3,"node_id":str(story.nodes[0].id),"phase":"new","node":0,"choices":{},"mail_read":{},"history":[],"tutorial":{},"stock":{},"tutorial_status":"not_started","reward_claimed":false,"legacy":false,"arrival_pending":false}
+	return {"version":1,"story_version":4,"node_id":str(story.nodes[0].id),"phase":"new","node":0,"choices":{},"mail_read":{},"history":[],"tutorial":{},"stock":{},"tutorial_status":"not_started","reward_claimed":false,"legacy":false,"arrival_pending":false}
 
 func node_index(id: String) -> int:
 	for i in range(story.nodes.size()):
@@ -60,26 +94,35 @@ func node_index(id: String) -> int:
 	return -1
 
 func upgrade_story_progress(value: Variant) -> Variant:
-	# Old saves used array offsets. Recover their original scene before inserting new dialogue.
-	# This only builds an in-memory copy: a damaged save is never rewritten here.
 	if not value is Dictionary or value.get("version")!=1: return value
-	if value.get("story_version")==3: return value
-	if value.has("story_version") and value.story_version!=2: return value
+	if value.get("story_version")==4: return value
+	if value.has("story_version") and value.story_version not in [2,3]: return value
 	if not value.get("mail_read",{}) is Dictionary: return value
+	var generation:=int(value.get("story_version",1))
+	var legacy: Array=JSON.parse_string(FileAccess.get_file_as_string("res://data/opening/story-v%d-index.json" % generation))
 	var old_index: Variant=value.get("node")
-	var legacy: Array=JSON.parse_string(FileAccess.get_file_as_string("res://data/opening/story-v2-index.json" if value.has("story_version") else "res://data/opening/story-v1-index.json"))
 	if not (old_index is int or old_index is float) or not is_finite(float(old_index)): return value
 	if old_index<0 or old_index!=floor(old_index) or old_index>=legacy.size() or not value.get("choices") is Dictionary: return value
+	if value.has("story_version") and value.get("node_id")!=legacy[int(old_index)]: return value
 	var next: Dictionary=value.duplicate(true)
-	next.node_id=str(legacy[int(old_index)])
-	if value.has("story_version") and value.get("node_id")!=next.node_id: return value
+	var resume:=int(old_index)
+	while resume<legacy.size() and node_index(str(legacy[resume]))<0: resume+=1
+	if resume>=legacy.size(): return value
+	next.node_id=str(legacy[resume])
 	next.node=node_index(next.node_id)
-	next.story_version=3
+	next.story_version=4
 	next.mail_read=value.get("mail_read",{}).duplicate(true)
-	# Reconstruct only old-version lines up to the saved position; inserted lines stay unseen.
 	next.history=[]
-	if value.get("phase","new")!="new" and not value.get("legacy",false):
-		for i in range(int(old_index)+1): next.history.append(str(legacy[i]))
+	if generation==3:
+		if not value.get("history") is Array: return value
+		var seen: Dictionary={}
+		for id in value.history:
+			if not id is String or not legacy.has(id) or seen.has(id): return value
+			seen[id]=true
+			if node_index(id)>=0: next.history.append(id)
+	elif value.get("phase","new")!="new" and not value.get("legacy",false):
+		for i in range(int(old_index)+1):
+			if node_index(str(legacy[i]))>=0: next.history.append(str(legacy[i]))
 	next.choices={}
 	for key in value.choices:
 		var id:=str(key)
@@ -92,12 +135,16 @@ func upgrade_story_progress(value: Variant) -> Variant:
 
 func valid(value: Variant) -> bool:
 	if not value is Dictionary or value.get("version") != 1: return false
+	var saved_name: Variant=value.get("player_name","")
+	if not saved_name is String: return false
+	if not saved_name.is_empty() and (not player_name_error(saved_name).is_empty() or saved_name!=saved_name.strip_edges()): return false
+	if not value.get("first_service_pending",false) is bool or not value.get("arrival_pending",false) is bool: return false
 	if value.get("phase") not in ["new","cg","tutorial","ending","ready"]: return false
 	if value.has("departure") and not valid_departure(value.departure): return false
 	if not (value.get("node") is int or value.get("node") is float) or value.node < 0 or value.node != floor(value.node): return false
 	var nodes: Array = story.nodes
 	if value.node >= nodes.size(): return false
-	if value.get("story_version")!=3 or value.get("node_id")!=nodes[int(value.node)].id: return false
+	if value.get("story_version")!=4 or value.get("node_id")!=nodes[int(value.node)].id: return false
 	if not value.get("history") is Array or value.history.size()>nodes.size(): return false
 	var seen: Dictionary={}
 	for id in value.history:
@@ -140,6 +187,7 @@ func set_reduced_motion(value: bool) -> void:
 
 func begin_story() -> bool:
 	var next := fresh()
+	if replaying: next.player_name=_return_state.get("player_name","")
 	next.phase = "cg"
 	next.history.append(str(next.node_id))
 	return _commit(next)
@@ -248,6 +296,11 @@ func finish_tutorial(skipped := false) -> bool:
 	next.phase = "ending"
 	next.tutorial_status = "skipped" if skipped else "completed"
 	if not _commit(next): return false
+	# The durable tutorial milestone is written first. A failed catalogue write
+	# can be retried, or reconciled on the next startup, without replaying practice.
+	if not replaying and not MenuCatalog.unlock_recipe("echo_world"):
+		last_error = MenuCatalog.last_error
+		return false
 	leave_tutorial()
 	return true
 
@@ -266,6 +319,10 @@ func valid_departure(value: Variant) -> bool:
 		seen.append(row.id)
 	for flag in ["signed","water","opened","merchant_met","seed_heard"]:
 		if not value.get(flag) is bool: return false
+	if value.has("lesson"):
+		var lesson: Variant=value.lesson
+		if not lesson is Dictionary or lesson.get("phase") not in ["shop","mixing","complete"]: return false
+		if not lesson.get("accepted_drink","") is String: return false
 	return true
 
 func begin_departure() -> bool:
@@ -282,9 +339,50 @@ func update_departure(patch: Dictionary) -> bool:
 	if state.phase!="ending" or not state.has("departure"): return false
 	var next:=state.duplicate(true)
 	for key in patch:
-		if not next.departure.has(key): return false
+		if not next.departure.has(key) and key!="lesson": return false
 		next.departure[key]=patch[key]
 	return _commit(next)
+
+func player_name_error(value: String) -> String:
+	var clean:=value.strip_edges()
+	if clean.is_empty(): return "请先写下你的名字。"
+	if clean.length()>PLAYER_NAME_LIMIT: return "名字最多 16 个字。"
+	for i in range(clean.length()):
+		var code:=clean.unicode_at(i)
+		if code<32 or (code>=127 and code<=159) or code in [0x200B,0x200C,0x200D,0x2028,0x2029,0xFEFF] or (code>=0x202A and code<=0x202E) or (code>=0x2060 and code<=0x206F):
+			return "名字请使用可见文字，不要包含换行或隐藏字符。"
+	return ""
+
+func protagonist_name() -> String:
+	var value:=str(state.get("player_name",""))
+	return "我" if value.is_empty() else value
+
+func protagonist_speaker(value: String) -> String:
+	if value=="我": return protagonist_name()
+	if value.begins_with("我 · "): return protagonist_name()+value.trim_prefix("我")
+	return value
+
+func sign_receipt(value: String) -> bool:
+	last_error=player_name_error(value)
+	if not last_error.is_empty(): return false
+	if state.phase!="ending" or not state.has("departure"):
+		last_error="请在收货签认时填写名字。"
+		return false
+	var clean:=value.strip_edges()
+	if state.departure.signed:
+		return state.get("player_name","")==clean
+	if state.departure.node!="sign_receipt":
+		last_error="请在收货签认时填写名字。"
+		return false
+	var next:=state.duplicate(true)
+	next.player_name=clean
+	next.departure.signed=true
+	var rows:=departure_nodes()
+	for i in range(rows.size()-1):
+		if rows[i].id=="sign_receipt":
+			next.departure.node=rows[i+1].id
+			return _commit(next) # Name, signature and cursor succeed or fail together.
+	return false
 
 func observe_departure(row: Dictionary) -> bool:
 	for seen: Dictionary in state.departure.seen:
@@ -294,10 +392,9 @@ func observe_departure(row: Dictionary) -> bool:
 	return update_departure({"seen":seen})
 
 func finish_opening() -> bool:
+	if OpeningTransition.busy: return false
 	if state.phase != "ending": return false
-	if replaying:
-		return_to_title()
-		return true
+	if not ensure_replay_world(): return false
 	if not state.get("departure",{}).get("opened",false) or not preload("res://scripts/opening_preparation.gd").ready_menu():
 		last_error="先备齐一款酒、确认上架，再翻转营业牌。"
 		return false
@@ -309,10 +406,12 @@ func finish_opening() -> bool:
 	next.phase = "ready"
 	next.reward_claimed = true
 	next.arrival_pending = true
+	next.first_service_pending = true
 	if not _commit(next): return false
 	return enter_game()
 
 func enter_game() -> bool:
+	if OpeningTransition.busy: return false
 	if not GameSession.writable or not WorkbenchSession.writable or not SlotWallet.writable or not PlayModes.writable or not Supplies.writable or not MenuCatalog.writable or not StoryDialogue.writable or not CustomerService.writable:
 		last_error = "现有存档需要恢复，已保留原文件，暂未进入游戏。"
 		return false
@@ -320,12 +419,11 @@ func enter_game() -> bool:
 	front_end = false
 	Navigation.current_route = &"home"
 	SaloonAudio.hall_path = ""
-	TimeManager.set_running(true)
-	get_tree().change_scene_to_file("res://scenes/home.tscn")
-	return true
+	TimeManager.set_running(not arrival_pending())
+	return OpeningTransition.go("res://scenes/home.tscn")
 
 func arrival_pending() -> bool:
-	return not replaying and bool(state.get("arrival_pending",false))
+	return can_write_playthrough() and bool(state.get("arrival_pending",false))
 
 func acknowledge_arrival() -> bool:
 	var next := state.duplicate(true)
@@ -333,12 +431,14 @@ func acknowledge_arrival() -> bool:
 	return _commit(next)
 
 func return_to_title() -> void:
+	if OpeningTransition.busy: return
 	leave_tutorial()
 	if replaying:
+		replay_world.restore()
 		state = _return_state
 		save_path = _return_path
 		replaying = false
 	front_end = true
 	TimeManager.set_running(false)
 	GameSession.home = null
-	get_tree().change_scene_to_file("res://scenes/title_screen.tscn")
+	OpeningTransition.go("res://scenes/title_screen.tscn","title")

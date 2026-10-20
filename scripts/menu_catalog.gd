@@ -18,6 +18,8 @@ var writable := true
 var entries: Array = []
 var design: Dictionary = DEFAULT_DESIGN.duplicate(true)
 var unlocked_ids: Array = []
+var seen_recipe_ids: Array = []
+var _baseline_research_notifications := false
 var inventory: Dictionary = {}
 var _recipes: Array = []
 var _by_id: Dictionary = {}
@@ -98,7 +100,7 @@ func load_catalog() -> bool:
 			if not quote.ok: return _catalog_error()
 			recipe["reference_price"]=quote.price
 			recipe["pricing"]=quote
-			recipe["price_status"]="fixed_ingredient_cost"
+			recipe["price_status"]="ingredient_cost_recommendation"
 		if not _valid_recipe(recipe) or next_by_id.has(recipe.id):
 			return _catalog_error()
 		next_recipes.append(recipe.duplicate(true))
@@ -233,23 +235,46 @@ func all_recipes() -> Array:
 # stores IDs and prices; official unlocks and sample catalogues stay separate.
 func bind_research(service: Node) -> void:
 	_research_service = service
-	if not service.changed.is_connected(_refresh_fixed_prices):
-		service.changed.connect(_refresh_fixed_prices)
 	if _waiting_for_research:
 		_waiting_for_research = false
 		load_state()
+	if _baseline_research_notifications:
+		var before := seen_recipe_ids.duplicate()
+		for recipe in unlocked_recipes():
+			if not seen_recipe_ids.has(recipe.id): seen_recipe_ids.append(recipe.id)
+		_baseline_research_notifications = false
+		# Startup stock sync may already have upgraded the menu schema; keep
+		# existing DIY/character recipes acknowledged across the next restart too.
+		if seen_recipe_ids != before and writable: save_state()
+	# Recover the catalogue half of a tutorial completion interrupted by shutdown
+	# or an earlier write failure. Replays and pre-opening legacy profiles opt out.
+	if not OpeningFlow.replaying and not OpeningFlow.state.get("legacy",false) and OpeningFlow.state.get("tutorial_status") in ["completed","skipped"] and OpeningFlow.state.get("phase") in ["ending","ready"]:
+		unlock_recipe("echo_world")
 	changed.emit()
 
-func _refresh_fixed_prices() -> void:
-	if not writable or not _using_finished_catalog or _waiting_for_research: return
-	var next := entries.duplicate(true)
-	var updated := false
-	for entry in next:
-		var recipe := get_recipe(entry.id)
-		if not recipe.is_empty() and entry.price != recipe.reference_price:
-			entry.price = recipe.reference_price
-			updated = true
-	if updated: save_menu(next, design)
+func new_recipe_ids() -> Array:
+	var result: Array = []
+	for recipe in unlocked_recipes():
+		if not seen_recipe_ids.has(recipe.id): result.append(recipe.id)
+	return result
+
+func is_recipe_new(id: String) -> bool:
+	return not seen_recipe_ids.has(id) and get_recipe(id).get("unlocked",false)
+
+func mark_recipe_seen(id: String) -> bool:
+	if not is_recipe_new(id): return true
+	if not writable: return false
+	var next := seen_recipe_ids.duplicate()
+	next.append(id)
+	return _commit(entries,design,unlocked_ids,null,next)
+
+func _valid_seen(value: Variant) -> bool:
+	if not value is Array: return false
+	var ids: Dictionary = {}
+	for id in value:
+		if not _text(id,100,false) or ids.has(id): return false
+		ids[id] = true
+	return true
 
 func _diy_recipes() -> Dictionary:
 	if not _using_finished_catalog or not is_instance_valid(_research_service) or not _research_service.writable:
@@ -267,29 +292,20 @@ func _character_recipes() -> Dictionary:
 			r.attributes_complete=standard.missing.is_empty()
 			r.unlocked=_research_service.research_state().acquired.has(r.id)
 			r.preview_only=false
-			r=_fixed_recipe(r)
 			records[r.id]=r
 	return records
 
 func _menu_diy(record: Dictionary) -> Dictionary:
-	var recipe := preload("res://scripts/recipe_quantities.gd").recipe(record)
+	var recipe := record.duplicate(true)
 	var standard:=preload("res://scripts/research_data.gd").standard(record)
 	recipe.design_attributes=record.attributes.duplicate(true)
 	for key in standard.attributes: recipe[key]=standard.attributes[key]
 	recipe.attributes_version=standard.version
 	recipe.attributes_complete=standard.missing.is_empty()
 	recipe.merge({"category":"DIY", "subtitle":"自创特调", "thumbnail":"",
-		"reference_price":record.get("reference_price",1), "price_status":"fixed_ingredient_cost",
+		"reference_price":record.get("reference_price",1), "price_status":"ingredient_cost_recommendation",
 		"unlocked":true, "unlocked_by_default":false, "preview_only":false,
 		"recipe_status":"已保存的 DIY 配方 · v%s" % str(record.get("version",1))}, true)
-	return _fixed_recipe(recipe)
-
-func _fixed_recipe(recipe: Dictionary) -> Dictionary:
-	var quote:=preload("res://scripts/drink_pricing.gd").quote(recipe)
-	if quote.ok:
-		recipe.reference_price=quote.price
-		recipe.pricing=quote
-		recipe.price_status="fixed_ingredient_cost"
 	return recipe
 
 func unlocked_recipes() -> Array:
@@ -348,7 +364,7 @@ func _normalize_entries(value: Variant, available: Array, deduplicate: bool) -> 
 				continue
 			return {"ok": false, "message": "酒单中有重复的酒。"}
 		seen[entry.id] = true
-		result.append({"id": entry.id, "price": get_recipe(entry.id).reference_price if _using_finished_catalog else entry.price})
+		result.append({"id": entry.id, "price": entry.price})
 	if result.size() > MAX_MENU_SIZE:
 		return {"ok": false, "message": "一张酒单最多上架六款酒。"}
 	return {"ok": true, "entries": result}
@@ -395,11 +411,14 @@ func load_state(allow_research_wait := false) -> bool:
 		entries = []
 		design = DEFAULT_DESIGN.duplicate(true)
 		unlocked_ids = _default_unlocks()
+		seen_recipe_ids = unlocked_ids.duplicate()
+		_baseline_research_notifications = false
 		inventory = _default_inventory()
 		return true
 	var data: Variant = _read_json(save_path)
 	if not data is Dictionary or data.get("version") != 1 or not _valid_unlocks(data.get("unlocked_ids")) or not _valid_design(data.get("design")) or not _valid_inventory(data.get("inventory", {})):
 		return _state_error()
+	if not _valid_seen(data.get("seen_recipe_ids",data.unlocked_ids)): return _state_error()
 	var next_unlocked: Array = data.unlocked_ids.duplicate()
 	for id in _default_unlocks():
 		if not next_unlocked.has(id):
@@ -418,6 +437,8 @@ func load_state(allow_research_wait := false) -> bool:
 	if not normalized.ok:
 		return _state_error()
 	unlocked_ids = next_unlocked
+	seen_recipe_ids = data.get("seen_recipe_ids",next_unlocked).duplicate()
+	_baseline_research_notifications = not data.has("seen_recipe_ids")
 	entries = normalized.entries.duplicate(true)
 	design = DEFAULT_DESIGN.duplicate(true)
 	design.merge(data.design, true)
@@ -467,14 +488,15 @@ func reset_game() -> bool:
 	# Called only after the player's confirmed restart and GameSession backup.
 	if not _catalog_ready:
 		return false
-	return _commit([], DEFAULT_DESIGN.duplicate(true), _default_unlocks(), _default_inventory())
+	return _commit([], DEFAULT_DESIGN.duplicate(true), _default_unlocks(), _default_inventory(), _default_unlocks())
 
-func _commit(next_entries: Array, next_design: Dictionary, next_unlocked: Array, next_inventory: Variant = null) -> bool:
+func _commit(next_entries: Array, next_design: Dictionary, next_unlocked: Array, next_inventory: Variant = null, next_seen: Variant = null) -> bool:
 	var complete_inventory: Variant = inventory if next_inventory == null else next_inventory
 	if not _valid_inventory(complete_inventory):
 		last_error = "原料记录未能保存，请检查数量后重试。"
 		return false
 	var snapshot := {"version": 1, "unlocked_ids": next_unlocked.duplicate(true),
+		"seen_recipe_ids": seen_recipe_ids.duplicate() if next_seen == null else next_seen.duplicate(),
 		"entries": next_entries.duplicate(true), "design": next_design.duplicate(true),
 		"inventory": complete_inventory.duplicate(true)}
 	if not _atomic_write(snapshot):
@@ -482,6 +504,7 @@ func _commit(next_entries: Array, next_design: Dictionary, next_unlocked: Array,
 	entries = snapshot.entries
 	design = snapshot.design
 	unlocked_ids = snapshot.unlocked_ids
+	seen_recipe_ids = snapshot.seen_recipe_ids
 	inventory = snapshot.inventory
 	writable = true
 	last_error = ""

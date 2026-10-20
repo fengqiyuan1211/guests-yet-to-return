@@ -1,6 +1,7 @@
 extends RefCounted
 ## Hold belongs to this story view; never changes Engine.time_scale or saved progress.
-const HOLD_DELAY := 0.35
+const HOLD_DELAY := 0.25
+const SPEED := 10.0
 var held := false
 var held_seconds := 0.0
 var active := false
@@ -25,4 +26,4 @@ func cancel() -> void:
 func step(delta: float, allowed: bool) -> float:
 	if held: held_seconds+=maxf(delta,0.0)
 	active=held and held_seconds>=HOLD_DELAY and allowed
-	return 3.0 if active else 1.0
+	return SPEED if active else 1.0

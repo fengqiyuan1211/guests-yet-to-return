@@ -1916,6 +1916,7 @@
     },
     {
       "id": "echo_world",
+      "unlock_kind": "opening_tutorial",
       "source_id": "B1",
       "source_code": "B1",
       "name": "回响",

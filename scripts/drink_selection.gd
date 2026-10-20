@@ -164,6 +164,7 @@ func _reload() -> void:
 		button.custom_minimum_size.y=92
 		button.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
 		buttons[entry.id]=button
+	if selected_id.is_empty() and OpeningFlow.first_service_pending() and guest.get("id")=="milo" and buttons.has("gin_and_tonic"): selected_id="gin_and_tonic"
 	if not buttons.has(selected_id): selected_id=str(buttons.keys()[0]) if not buttons.is_empty() else ""
 	_select(selected_id)
 
@@ -207,6 +208,7 @@ func _select(id: String) -> void:
 	start_button.text="收拾并制作新酒  空格" if pending else "开始制作  空格 →"
 	start_button.disabled=recipe.is_empty() or not WorkbenchSession.writable
 	status.text="选定后按空格开始制作，左上角会显示这款酒的配方。"
+	if OpeningFlow.first_service_pending() and guest.get("id")=="milo": status.text="为米洛制作第一杯 · 建议选择刚练过的金汤力；完成后点击「交给客人」。"
 	if PlayModes.mode=="mixing": status.text=str(CustomerService.state.active.get("free_order",{}).get("speech","请先准备营业酒单。" )).replace("[b]","").replace("[/b]","")
 	if recipe.is_empty(): status.text="暂无上架酒款，请先保存一份营业酒单。"
 	if pending: status.text="开工将收拾桌上的「%s」，制作新选的酒；已用原料不退回。也可继续原来这一杯。" % session.recipe.name

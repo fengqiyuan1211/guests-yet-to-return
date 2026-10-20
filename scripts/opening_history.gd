@@ -37,7 +37,7 @@ func _ready() -> void:
 			reader.add_text("\n— "+chapter+" —\n\n")
 			reader.pop()
 		reader.push_color(Color("eac88d"))
-		reader.add_text(str(entry.speaker)+"\n")
+		reader.add_text(OpeningFlow.protagonist_speaker(str(entry.speaker))+"\n")
 		reader.pop()
 		reader.add_text(str(entry.text)+"\n\n")
 	if entries.is_empty(): reader.add_text("这里还没有留下对话。")

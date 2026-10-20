@@ -3,6 +3,20 @@ var failures: Array[String] = []
 var home: Control
 var capture := false
 
+func check_detail_layout(journal: Control, context: String) -> void:
+	var paper_view := journal.page_content.get_child(0) as TextureRect
+	check(paper_view != null and paper_view.stretch_mode == TextureRect.STRETCH_SCALE, "Detail paper covers all columns: " + context)
+	if paper_view != null:
+		check(paper_view.texture.get_size() == journal.PAGE_SIZE, "Landscape paper matches page proportions: " + context)
+	var page_bounds: Rect2 = journal.page_content.get_global_rect()
+	check(page_bounds.encloses(journal.research_button.get_global_rect()), "Research action stays inside the recipe page: " + context)
+	var version := home.find_child("Version", true, false) as Control
+	check(not version.get_global_rect().intersects(journal.research_button.get_global_rect()), "Research action does not overlap home footer: " + context)
+	check(not version.get_global_rect().intersects(journal.navigation_hint.get_global_rect()), "Page help clears home footer: " + context)
+	for path in ["StepsScroll", "StoryScroll", "FlavorScroll", "MethodScroll"]:
+		var scroll := journal.page_content.find_child(path, true, false) as ScrollContainer
+		check(scroll != null and page_bounds.encloses(scroll.get_global_rect()), "Scrolling content stays within paper: " + path + " " + context)
+
 func _ready() -> void:
 	for service_name: String in ["SlotWallet", "StoryDialogue", "GameSession", "MenuCatalog", "Supplies"]:
 		var service := get_node_or_null("/root/" + service_name)
@@ -91,7 +105,7 @@ func run() -> void:
 	check(journal.page_content.get_child(0).size == journal.PAGE_SIZE, "Paper texture respects journal bounds")
 	check(journal.previous_button.disabled and not journal.next_button.disabled, "First page bounds")
 	var tutorial: Button = journal.page_content.find_child("CardSlot1", true, false)
-	check(tutorial != null and tutorial.disabled and not tutorial.get_meta("has_recipe", false), "First position remains blank and disabled for the tutorial")
+	check(tutorial != null and tutorial.disabled and (not tutorial.get_meta("has_recipe", false) if journal.reserved_tutorial_slot else tutorial.get_meta("cocktail_id", "") == "echo_world"), "First position follows current tutorial setting / locked Echo World")
 	if tutorial != null:
 		click(tutorial)
 	check(not journal.turning and journal.page_index == 0 and journal.detail_id.is_empty(), "Clicking the tutorial placeholder does not open a drink or turn the page")
@@ -147,6 +161,7 @@ func run() -> void:
 		check(journal.detail_id == expected_id, "Actual card click opens matching details: " + expected_id)
 		if journal.detail_id != expected_id:
 			continue
+		check_detail_layout(journal, expected_id)
 		var title: Label = journal.page_content.find_child("RecipeTitle", true, false)
 		var ingredients: Control = journal.page_content.find_child("Ingredients", true, false)
 		var flavors: Control = journal.page_content.find_child("FlavorTags", true, false)
@@ -158,6 +173,12 @@ func run() -> void:
 			for tag in flavors.get_children():
 				check(tag is Label and recipe.flavor_tags.has(tag.text), "Flavor tags use text only")
 		await screenshot("11-detail-%s.png" % expected_id)
+		if expected_id == "last_word":
+			var steps_scroll := journal.page_content.find_child("StepsScroll", true, false) as ScrollContainer
+			steps_scroll.scroll_vertical = 10000
+			await settle(0.1)
+			check(steps_scroll.scroll_vertical > 0, "Long preparation steps can scroll to the final step")
+			await screenshot("11-detail-last-word-scrolled.png")
 		var back: Button = journal.page_content.find_child("BackToCodex", true, false)
 		check(back != null, "Detail has a return control")
 		if back != null:
@@ -171,7 +192,11 @@ func run() -> void:
 	await screenshot("03-codex-page-1.png")
 	# Click blank paper far from the small arrow, exercising the full gutter hit area.
 	click_at(journal.get_global_transform_with_canvas() * (journal.PAGE_ORIGIN + Vector2(1225, 194)))
-	await settle(0.22)
+	# First shader compilation can delay the turn coroutine's two-frame setup.
+	for frame in range(120):
+		await get_tree().process_frame
+		if journal.curl.visible and float(journal.curl.material.get_shader_parameter("progress"))>0.0:
+			break
 	check(journal.turning and journal.curl.visible, "Turning leaf is visible during animation")
 	var progress: float = journal.curl.material.get_shader_parameter("progress")
 	check(progress > 0.0 and progress < 1.0, "Curl shader progresses")
@@ -236,8 +261,24 @@ func run() -> void:
 		await settle(0.3)
 		check(Navigation.current_route == &"codex", "Responsive sidebar hit test")
 		await screenshot("10-codex-%dx%d.png" % [dimensions.x, dimensions.y])
+		journal = home.active_page
+		journal.show_detail("last_word")
+		await settle(0.1)
+		check_detail_layout(journal, str(dimensions))
+		await screenshot("12-detail-%dx%d.png" % [dimensions.x, dimensions.y])
+		click(journal.page_content.find_child("BackToCodex", true, false))
+		await settle(0.1)
+		check(journal.detail_id.is_empty(), "Responsive return button works")
 		key(KEY_ESCAPE)
 		await settle(0.15)
+	click(home.find_child("CodexButton", true, false))
+	await settle(0.15)
+	journal = home.active_page
+	journal.show_detail("last_word")
+	await settle(0.15)
+	click(journal.research_button)
+	await settle(0.2)
+	check(Navigation.current_route == &"research" and home.active_page.get("base_id") == "last_word", "Relocated research button opens the selected recipe")
 	check(SlotWallet.balance == balance, "UI browsing does not modify wallet")
 	print("CODEX VERIFICATION: ", "PASS" if failures.is_empty() else "FAIL", " — reserved tutorial, five cocktail details, lock gate, curl, reverse, bounds, rapid clicks, swipe, sidebar, guest persistence, responsive layout")
 	get_tree().quit(0 if failures.is_empty() else 1)

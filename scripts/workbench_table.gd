@@ -454,7 +454,6 @@ func _draw() -> void:
 			var pivot:=rect.position+Vector2(rect.size.x*.5,rect.size.y)
 			var garnish_frame:=Transform2D(0,pivot)*Transform2D(angle,Vector2.ZERO)*Transform2D(0,-pivot)
 			Garnish.draw(self,fill_rect,WorkbenchSession.garnishes(vessel),ages,clock,coupe_shape,shape,garnish_frame)
-		if id=="jigger" and not dragging: _draw_jigger_marks(rect,qty)
 		if (id==hover or id==selected) and not pouring:
 			_ellipse(rect.position+Vector2(rect.size.x*.5,rect.size.y+3),Vector2(rect.size.x*.48,5),Color(.93,.72,.34,.30))
 	if not returning_spoon.is_empty() and clock-spoon_change_time<.28:
@@ -559,12 +558,6 @@ func ice_fraction_for(id: String) -> float:
 		var age:=clock-float(times[i]) if i<times.size() else 10.0
 		result+=Ice.displacement(age,batches[i].kind)*float(batches[i].volume)/40.0
 	return result
-
-func _draw_jigger_marks(rect: Rect2, qty: float) -> void:
-	for ml in [15,30,45,60]:
-		var y: float=rect.position.y+rect.size.y*(.43-float(ml)/60.0*.30)
-		draw_line(Vector2(rect.position.x+rect.size.x*.36,y),Vector2(rect.position.x+rect.size.x*.60,y),Color(.29,.20,.11,.78),1.0,true)
-		draw_string(_font,Vector2(rect.position.x+rect.size.x*.67,y+4),str(ml),HORIZONTAL_ALIGNMENT_LEFT,-1,11,Color("eedbb0"))
 
 func _tooltip_style() -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()

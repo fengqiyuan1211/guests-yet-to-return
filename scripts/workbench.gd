@@ -1,5 +1,6 @@
 extends Control
 signal close_requested
+signal opening_practice_completed
 const ToolHelp=preload("res://scripts/workbench_tool_help.gd")
 const ToolButton=preload("res://scripts/workbench_tool_button.gd")
 const Evaluation=preload("res://scripts/workbench_evaluation.gd")
@@ -48,6 +49,7 @@ var serve_armed := false
 var technique := "shake"
 var category := "基酒"
 var pending_item := ""
+var tutorial_departing := false
 var data: Dictionary = {}
 var counter := 0
 var dose_overrides: Dictionary = {}
@@ -93,6 +95,10 @@ func _ready() -> void:
 	if data.get("status")=="finished": _result()
 	if WorkbenchSession.tutorial_active:
 		var guide=preload("res://scripts/opening_tutorial.gd").new()
+		guide.bench=self
+		surface.add_child(guide)
+	elif (data.get("opening_practice",false) and OpeningFlow.state.phase=="ending") or (OpeningFlow.first_service_pending() and data.get("guest",{}).get("id")=="milo" and data.get("recipe",{}).get("id")=="gin_and_tonic"):
+		var guide=preload("res://scripts/opening_stock_tutorial.gd").new()
 		guide.bench=self
 		surface.add_child(guide)
 
@@ -509,6 +515,7 @@ func _act(kind: String,payload: Dictionary={}) -> void:
 		_rebuild_context()
 
 func _refresh() -> void:
+	if tutorial_departing: return
 	data=WorkbenchSession.snapshot().session
 	table.set_materials(WorkbenchSession.state.get("table_materials",[]))
 	table.apply_snapshot(data)
@@ -857,14 +864,17 @@ func _begin_measure(material: String, target: float, vessel := "jigger") -> void
 func _finish() -> void:
 	table.stop_gesture()
 	if data.get("status") == "finished":
-		if _service_cup(): _send_finished_drink()
+		if _service_cup() and not _first_service_cup(): _send_finished_drink()
 		else: _result()
 		return
 	if _issue("finish"):
-		if _service_cup(): _send_finished_drink()
+		if _service_cup() and not _first_service_cup(): _send_finished_drink()
 		else: _result()
 	else:
 		status_label.text=WorkbenchSession.last_error
+
+func _first_service_cup() -> bool:
+	return OpeningFlow.first_service_pending() and data.get("guest",{}).get("id")=="milo" and _service_cup()
 
 func _service_cup() -> bool:
 	return not data.has("order") and not WorkbenchSession.is_research(data) and not str(data.get("guest", {}).get("visit_id", "")).is_empty()
@@ -895,7 +905,7 @@ func _served_record() -> Dictionary:
 	return {}
 
 func _result() -> void:
-	var p:=_dialog("",760,1020,_return_after_serving if _service_cup() else Callable())
+	var p:=_dialog("",760,1020,_return_after_serving if _service_cup() and not _first_service_cup() else Callable())
 	var evaluation: Dictionary=data.result.get("evaluation",{})
 	var accent:=Color(str(evaluation.get("color","8c9aa2")))
 	var style:=_style(Color("f1e2c3"),accent)
@@ -917,14 +927,26 @@ func _result() -> void:
 	card.size=Vector2(980,630)
 	card.result=data.result.duplicate(true)
 	card.service_record = _served_record() if _service_cup() else {}
+	if _service_cup():
+		card.footer_message="客人已收到这杯酒 · 获得 %d 金币" % int(card.service_record.amount) if not card.service_record.is_empty() else CustomerService.last_error
 	card.result["cup"]=data.result.get("cup",data.cup)
 	card.result["capacity_ml"]=data.result.get("capacity_ml",WorkbenchSession.capacity(data,"glass"))
 	p.add_child(card)
 	_text(p,Rect2(34,20,800,30),"这一杯的出品",23,INK)
 	if WorkbenchSession.tutorial_active:
 		_button(p,Rect2(40,705,360,44),"重做练习 · 不扣仓库",_restart)
-		_button(p,Rect2(525,705,435,44),"记下这一杯，准备开门 · 空格",_finish_tutorial,true)
+		_button(p,Rect2(525,705,435,44),"把这一杯递过去 · 空格",_finish_tutorial,true)
 		pending_confirm=_finish_tutorial
+		return
+	if data.get("opening_practice",false) and OpeningFlow.state.phase=="ending":
+		_button(p,Rect2(40,705,360,44),"重做 · 会消耗库存",_restart)
+		pending_confirm=func(): opening_practice_completed.emit()
+		_button(p,Rect2(525,705,435,44),"确认这杯，加入今晚酒单 →",pending_confirm,true)
+		return
+	if _first_service_cup():
+		_button(p,Rect2(40,705,360,44),"重做 · 会消耗库存",_restart)
+		_button(p,Rect2(525,705,435,44),"交给米洛 · 空格",_send_finished_drink,true)
+		pending_confirm=_send_finished_drink
 		return
 	if WorkbenchSession.is_research(data):
 		var saved: bool=WorkbenchSession.research_state().saved_drinks.has(data.result.drink_id)
@@ -955,8 +977,6 @@ func _result() -> void:
 		return
 	elif _service_cup():
 		var served := _served_record()
-		var note := "客人已收到这杯酒 · 获得 %d 金币" % int(served.amount) if not served.is_empty() else (CustomerService.last_error if not CustomerService.last_error.is_empty() else "这一杯已经做好，送给正在等你的客人。")
-		_text(p,Rect2(45,667,930,26),note,18,INK)
 		_button(p,Rect2(355,705,310,44),"回酒馆，听听客人怎么说" if not served.is_empty() else "送给客人，返回酒馆",_return_after_serving,true)
 		pending_confirm = _return_after_serving
 		return
@@ -1109,6 +1129,9 @@ func _log() -> void:
 	scroll.add_child(label)
 
 func _input(event: InputEvent) -> void:
+	if tutorial_departing or OpeningTransition.busy:
+		get_viewport().set_input_as_handled()
+		return
 	if is_instance_valid(image_dialog): return
 	if is_instance_valid(external_page): return
 	var focus:=get_viewport().gui_get_focus_owner()
@@ -1191,9 +1214,43 @@ func _skip_tutorial() -> void:
 	pending_confirm=_finish_tutorial.bind(true)
 
 func _finish_tutorial(skipped := false) -> void:
+	if tutorial_departing or OpeningTransition.busy: return
+	var completed_cup: Dictionary=data.get("result",{}).duplicate(true)
+	tutorial_departing=true
 	if OpeningFlow.finish_tutorial(skipped):
-		get_tree().change_scene_to_file("res://scenes/opening_departure.tscn")
-	else: status_label.text=OpeningFlow.last_error
+		sfx.silence()
+		table.stop_gesture()
+		SaloonAudio.set_scene_context(self,"opening_home")
+		var handoff:=Control.new()
+		handoff.size=Vector2(1600,900)
+		handoff.mouse_filter=Control.MOUSE_FILTER_STOP
+		surface.add_child(handoff)
+		var backdrop:=TextureRect.new()
+		backdrop.texture=load(preload("res://scripts/saloon_composition.gd").BACKGROUND_PATH)
+		backdrop.size=handoff.size
+		backdrop.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+		backdrop.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
+		backdrop.mouse_filter=Control.MOUSE_FILTER_IGNORE
+		handoff.add_child(backdrop)
+		handoff.modulate.a=0
+		var reveal:=create_tween()
+		reveal.tween_property(handoff,"modulate:a",1.0,.4)
+		if not skipped:
+			var cup:=preload("res://scripts/workbench_drink_preview.gd").new()
+			cup.result=completed_cup
+			cup.reference_only=true
+			cup.tabletop_shadow=true
+			cup.position=Vector2(1000,368 if OpeningFlow.reduced_motion else 410)
+			cup.size=Vector2(240,270)
+			handoff.add_child(cup)
+			reveal.tween_property(cup,"position:y",368.0,.75).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		await reveal.finished
+		sfx.tap()
+		await get_tree().create_timer(.35).timeout
+		OpeningTransition.go("res://scenes/opening_departure.tscn")
+	else:
+		tutorial_departing=false
+		status_label.text=OpeningFlow.last_error
 
 func _material_info(id: String) -> Dictionary:
 	return WorkbenchSession.MATERIALS.get(id,WorkbenchSession.SOLIDS.get(id,WorkbenchSession.GARNISHES.get(id,{})))

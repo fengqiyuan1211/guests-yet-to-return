@@ -207,6 +207,9 @@ func release_workbench(owner: Node) -> void:
 	workbench_owners.erase(owner.get_instance_id())
 	_release_scene(owner.get_instance_id())
 
+func release_scene(owner: Node) -> void:
+	_release_scene(owner.get_instance_id())
+
 func _scene_track() -> String:
 	return SCENE_TRACKS[scene_owners.values().back()] if not scene_owners.is_empty() else ""
 
@@ -218,7 +221,8 @@ func acquire_scene(owner: Node, context: String) -> void:
 		hall_from_front_end=OpeningFlow.front_end
 		hall_position=players[active_index].get_playback_position() if active_index>=0 else 0.0
 	scene_owners[id]=context
-	owner.tree_exiting.connect(_release_scene.bind(id),CONNECT_ONE_SHOT)
+	if not owner.tree_exiting.is_connected(_release_scene.bind(id)):
+		owner.tree_exiting.connect(_release_scene.bind(id),CONNECT_ONE_SHOT)
 	if active_path!=_scene_track(): _play_path(_scene_track())
 
 func set_scene_context(owner: Node, context: String) -> void:

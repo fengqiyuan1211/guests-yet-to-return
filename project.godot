@@ -35,6 +35,7 @@ GuestActivities="*res://scripts/guest_activity_service.gd"
 SaloonAudio="*res://scripts/saloon_audio.gd"
 PlayModes="*res://scripts/play_modes.gd"
 Relationships="*res://scripts/relationship_service.gd"
+OpeningTransition="*res://scripts/opening_transition.gd"
 
 [display]
 

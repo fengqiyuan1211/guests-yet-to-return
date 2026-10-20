@@ -24,7 +24,7 @@ func run() -> void:
 	hold.press()
 	check(hold.step(.2,true)==1.0 and hold.release(),"short press remains a single tap")
 	hold.press()
-	check(hold.step(.36,true)==3.0,"hold activates exactly 3x after threshold")
+	check(hold.step(.36,true)==10.0,"hold activates exactly 10x after threshold")
 	check(not hold.release() and hold.step(1,true)==1.0,"release restores 1x without extra advance")
 	hold.press()
 	check(hold.step(1,false)==1.0 and not hold.release(),"holding at an interactive beat cannot submit it on release")
@@ -56,12 +56,20 @@ func run() -> void:
 	if DisplayServer.get_name()!="headless":
 		page.type_clock=0.0; page.dialogue.visible_characters=0
 		page._process(.1)
-		check(page.dialogue.visible_characters==9,"held key reveals text at 96 instead of 32 chars/sec")
-		check(page.speed_hint.visible and page.background.playback_speed==3.0,"hold feedback and CG motion use 3x")
+		check(page.dialogue.visible_characters==page.dialogue.text.length(),"held key reveals the whole line without waiting for typewriting")
+		check(page.speed_hint.visible and page.background.playback_speed==10.0,"hold feedback and CG motion use 10x")
 		await capture("revision-02-fast-forward")
+		# Desktop focus may move while a screenshot awaits rendering. Re-arm explicitly
+		# after focus loss, as a real player must, before checking uninterrupted holds.
+		if not get_window().has_focus() or not page.fast_forward.held:
+			get_window().grab_focus(); await settle()
+			space_edge(true); page.fast_forward.step(.4,true)
 		page.dialogue.visible_characters=page.dialogue.text.length()
 		page._process(2.1)
 		check(int(OpeningFlow.state.node)==index+1 and page.fast_forward.held,"sustained hold automatically continues prose without re-pressing")
+		index=int(OpeningFlow.state.node)
+		for i in range(4): page._process(.17)
+		check(int(OpeningFlow.state.node)==index+4 and page.fast_forward.held,"one hold flows across four more lines without typing pauses")
 		index=int(OpeningFlow.state.node)
 	space_edge(false)
 	check(not page.fast_forward.active and OpeningFlow.state.node==index,"long release never advances an extra line")
@@ -77,6 +85,8 @@ func run() -> void:
 	OpeningFlow.advance(page.nodes.size()-1); page._render()
 	space_edge(true); page.fast_forward.step(2,page._can_auto_advance()); space_edge(false)
 	check(OpeningFlow.state.phase=="cg","holding at tutorial gate cannot start gameplay")
+	page.dialogue.visible_characters=page.dialogue.text.length()
+	await capture("revision-05-island-saloon")
 	page.queue_free(); await settle(); page=null
 	check(OpeningFlow.begin_tutorial(),"prepare isolated tutorial")
 	await show_scene("res://scenes/workbench.tscn")
@@ -100,12 +110,27 @@ func run() -> void:
 	space_edge(true); page.fast_forward.step(.4,true)
 	if DisplayServer.get_name()!="headless":
 		page.clock=0.0; page.dialogue.visible_characters=0; page._process(.1)
-		check(page.dialogue.visible_characters==10,"departure held text uses 102 instead of 34 chars/sec")
+		check(page.dialogue.visible_characters==page.dialogue.text.length(),"departure hold reveals whole line immediately")
+		var before_run: int=page.current_index()
+		for i in range(3): page._process(.17)
+		check(page.current_index()==before_run+3 and page.fast_forward.held,"departure hold survives ordinary lines and room changes")
 	space_edge(false)
 	for id in ["sign_receipt","give_water","turn_sign","my_door"]:
 		OpeningFlow.update_departure({"node":id}); page._render()
 		space_edge(true); page.fast_forward.step(2,page._can_auto_advance()); space_edge(false)
 		check(OpeningFlow.state.departure.node==id and not OpeningFlow.state.departure.opened,"hold stops at departure action: "+id)
+	OpeningFlow.update_departure({"node":"today"}); page._render()
+	page.dialogue.visible_characters=page.dialogue.text.length()
+	await key_press(KEY_SPACE)
+	check(page.busy,"ordinary cross-room transition begins")
+	space_edge(true)
+	check(page.fast_forward.held,"Space pressed during a dissolve arms continuous fast-forward")
+	page.fast_forward.step(.3,true); page._process(.01)
+	check(page.fast_forward.active,"room dissolve can also accelerate during a hold")
+	space_edge(false)
+	check(not page.fast_forward.held,"release during room dissolve is never lost")
+	while page.busy: await get_tree().process_frame
+	check(not page.fast_forward.active,"room dissolve cannot leave fast-forward stuck on")
 	check(Engine.time_scale==1.0 and not TimeManager.running,"CG speed never accelerates economy or global time")
 	page.queue_free(); await settle(); page=null
 	print("OPENING VISUAL/HOLD: %d checks, %d failures" % [count,failures.size()])

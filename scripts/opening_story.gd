@@ -29,6 +29,7 @@ var autoplay = preload("res://scripts/story_autoplay.gd").new()
 var auto_button: Button
 var fast_forward = preload("res://scripts/story_fast_forward.gd").new()
 var speed_hint: Panel
+var character_art: Control
 
 func _ready() -> void:
 	if OpeningFlow.state.phase=="ending":
@@ -48,6 +49,8 @@ func _ready() -> void:
 	background=preload("res://scripts/opening_background.gd").new()
 	background.size=stage.size
 	stage.add_child(background)
+	character_art=preload("res://scripts/opening_portrait.gd").new()
+	stage.add_child(character_art)
 	fade=ColorRect.new()
 	fade.color=Color("142128")
 	fade.size=stage.size
@@ -61,7 +64,7 @@ func _ready() -> void:
 	UI.button(stage,Rect2(1380,35,155,48),"返回开始",OpeningFlow.return_to_title,true)
 	speed_hint=UI.panel(stage,Rect2(1220,95,320,44))
 	speed_hint.mouse_filter=Control.MOUSE_FILTER_IGNORE
-	UI.label(speed_hint,Rect2(12,5,296,34),"快进中 ×3 · 松开恢复",21,Color("ffe7a7"))
+	UI.label(speed_hint,Rect2(12,5,296,34),"快进中 ×10 · 松开恢复",21,Color("ffe7a7"))
 	speed_hint.hide()
 	var panel:=UI.panel(stage,Rect2(55,650,1490,208))
 	panel.gui_input.connect(func(event: InputEvent):
@@ -74,7 +77,7 @@ func _ready() -> void:
 	auto_button=UI.button(panel,Rect2(850,150,240,48),"自动播放：关 A",_toggle_auto,true)
 	auto_button.tooltip_text="文字播放完后自动继续；邮件、选项和教学入口等待手动操作。"
 	next_button=UI.button(panel,Rect2(1110,150,330,48),"空格 · 继续",_advance,true)
-	next_button.tooltip_text="短按空格或点击继续；长按空格以 3 倍速播放，遇到交互会暂停。"
+	next_button.tooltip_text="短按空格或点击继续；长按空格以 10 倍速播放，遇到交互会暂停。"
 	choices=Control.new()
 	choices.position=Vector2(600,475)
 	stage.add_child(choices)
@@ -93,22 +96,30 @@ func _render() -> void:
 	ending=OpeningFlow.state.phase=="ending"
 	var index:=int(OpeningFlow.state.node)
 	var node: Dictionary=nodes[index]
+	if not ending and not OpeningFlow.state.history.has(node.id):
+		if not OpeningFlow.advance(index):
+			error_label.text=OpeningFlow.last_error
+			next_button.disabled=true
+			return
 	story_audio.present({"id":"ending","music":"opening_home","background":"porch"} if ending else node,self)
 	var bg: String="porch" if ending else str(node.background)
 	if bg!=current_background:
 		current_background=bg
 		background.texture=preload("res://scripts/pixel_art.gd").texture("res://assets/art/saloon-day-unlit-v2.png" if bg=="saloon" else "res://assets/art/opening/"+bg+".png")
+		if bg in ["city-bar","city-bar-faceless"]: background.texture=load("res://assets/pixel_b/opening_characters/city-bar-empty.png")
 		background.material.set_shader_parameter("ocean",bg=="harbor-sunset")
 		if is_instance_valid(transition): transition.kill()
-		fade.modulate.a=1
-		transition=create_tween()
-		transition.tween_property(fade,"modulate:a",0.0,.65)
+		fade.modulate.a=0 if fast_forward.active else 1
+		if not fast_forward.active:
+			transition=create_tween()
+			transition.tween_property(fade,"modulate:a",0.0,.65)
 	heading.text="序章 · 今晚，先把灯点亮" if ending else node.chapter+" · "+node.title
 	chapter_panel.size.x=minf(950.0,heading.get_theme_font("font").get_string_size(heading.text,HORIZONTAL_ALIGNMENT_LEFT,-1,28).x+44.0)
 	heading.size.x=chapter_panel.size.x-44.0
-	speaker.text="老管家" if ending else node.speaker
+	speaker.text="老管家" if ending else OpeningFlow.protagonist_speaker(str(node.speaker))
+	character_art.present({"speaker":"老管家"} if ending else node,false,fast_forward.active)
 	dialogue.text="开门了，才知道谁会来。\n回响的配方会留在图鉴，之后由您决定是否放进营业酒单。" if ending else node.text
-	progress.text="回看 · 长按空格 3 倍速 · 不改变原旅程" if OpeningFlow.replaying else ("教学杯不计收入；正式原料需要从商店备齐。" if ending else "%d / %d · 点击/短按继续 · 长按空格 3 倍速" % [index+1,nodes.size()])
+	progress.text="回看 · 长按空格 10 倍速 · 不改变原旅程" if OpeningFlow.replaying else ("教学杯不计收入；正式原料需要从商店备齐。" if ending else "%d / %d · 点击/短按继续 · 长按空格 10 倍速" % [index+1,nodes.size()])
 	for child in choices.get_children():
 		child.hide()
 		child.queue_free()
@@ -125,8 +136,8 @@ func _render() -> void:
 	next_button.disabled=not options.is_empty() and answered.is_empty()
 	next_button.text=("结束回看" if OpeningFlow.replaying else "翻转营业牌 · 开门") if ending else ("空格 · 开始调酒" if index==nodes.size()-1 else "空格 · 继续")
 	_render_mail(node if not ending else {})
-	dialogue.visible_characters=0
-	type_clock=0
+	dialogue.visible_characters=dialogue.text.length() if fast_forward.active else 0
+	type_clock=dialogue.visible_characters
 
 func _render_mail(node: Dictionary) -> void:
 	if is_instance_valid(mail_card):
@@ -138,6 +149,11 @@ func _render_mail(node: Dictionary) -> void:
 	var mail: Dictionary=OpeningFlow.story.mail[active_mail_id]
 	var read: bool=OpeningFlow.state.mail_read.get(active_mail_id,false)
 	mail_card=UI.panel(stage,Rect2(690,160,820,255))
+	mail_card.modulate.a=0
+	mail_card.position.y=160 if OpeningFlow.reduced_motion else 145
+	var arrival:=create_tween().set_parallel()
+	arrival.tween_property(mail_card,"modulate:a",1.0,.3)
+	arrival.tween_property(mail_card,"position:y",160.0,.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	UI.label(mail_card,Rect2(28,15,740,32),"邮件  ·  已阅读" if read else "●  收到一封新邮件",20,Color("eac88d"))
 	UI.label(mail_card,Rect2(28,55,740,48),str(mail.subject),30)
 	UI.label(mail_card,Rect2(28,109,740,31),str(mail.sender),20,Color("caba9e"))
@@ -181,10 +197,13 @@ func _process(delta: float) -> void:
 	speed_hint.visible=fast_forward.active
 	background.playback_speed=playback
 	if is_instance_valid(transition): transition.set_speed_scale(playback)
-	if dialogue.visible_characters<dialogue.text.length():
-		type_clock+=delta*32*playback
+	if fast_forward.active:
+		type_clock=dialogue.text.length()
+		dialogue.visible_characters=dialogue.text.length()
+	elif dialogue.visible_characters<dialogue.text.length():
+		type_clock+=delta*32
 		dialogue.visible_characters=mini(int(type_clock),dialogue.text.length())
-	if autoplay.tick(delta*playback,dialogue.text.length(),dialogue.visible_characters>=dialogue.text.length(),_can_auto_advance(),fast_forward.active): _advance()
+	if autoplay.tick(delta,dialogue.text.length(),dialogue.visible_characters>=dialogue.text.length(),_can_auto_advance(),fast_forward.active): _advance()
 
 func _cancel_fast_forward() -> void:
 	fast_forward.cancel()
@@ -232,8 +251,11 @@ func _advance() -> void:
 	else: error_label.text=OpeningFlow.last_error
 
 func _skip() -> void:
-	if ending or is_instance_valid(history_panel) or is_instance_valid(mail_reader): return
-	if OpeningFlow.begin_tutorial(): get_tree().change_scene_to_file("res://scenes/workbench.tscn")
+	if busy or OpeningTransition.busy or ending or is_instance_valid(history_panel) or is_instance_valid(mail_reader): return
+	_cancel_fast_forward()
+	if OpeningFlow.begin_tutorial():
+		busy=true
+		OpeningTransition.go("res://scenes/workbench.tscn","workbench")
 	else: error_label.text=OpeningFlow.last_error
 
 func _open_history() -> void:
@@ -262,6 +284,9 @@ func _focus_story_action() -> void:
 				break
 
 func _input(event: InputEvent) -> void:
+	if OpeningTransition.busy:
+		get_viewport().set_input_as_handled()
+		return
 	if not is_instance_valid(dialogue): return
 	# Reserved story keys run before Control's ui_accept (Space). Consuming both
 	# edges prevents focused History/Skip buttons from firing on key release.

@@ -195,6 +195,10 @@ func _valid(data: Variant) -> bool:
 			return false
 	if not data.get("history") is Array or not _number(data.get("serial"), 1000000000):
 		return false
+	if data.has("opening_purchases"):
+		if not data.opening_purchases is Dictionary: return false
+		for sku in data.opening_purchases:
+			if not Supplies.OPENING_PACKS.has(sku) or not _number(data.opening_purchases[sku],1000000000): return false
 	if data.has("activities") and not preload("res://scripts/guest_activity_rules.gd").valid_book(data.activities): return false
 	if data.has("service") and not preload("res://scripts/guest_service_data.gd").valid(data.service): return false
 	if data.has("research"):
@@ -716,7 +720,8 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 		for entry in MenuCatalog.entries:
 			if entry.id == recipe_id: listed = true
 		var reference: Dictionary = MenuCatalog.get_recipe(recipe_id)
-		if not listed or reference.is_empty() or not reference.get("unlocked",false):
+		var opening_practice: bool=payload.get("opening_practice",false)==true and recipe_id=="gin_and_tonic" and OpeningFlow.state.phase=="ending" and OpeningFlow.can_write_playthrough() and OpeningFlow.state.get("departure",{}).get("lesson",{}).get("phase","") in ["shop","mixing"]
+		if (not listed and not opening_practice) or reference.is_empty() or not reference.get("unlocked",false):
 			return _error("这款酒已不在营业酒单中，请重新选择。")
 		var recipe := recipe_snapshot(reference)
 		if not _valid_recipe_snapshot(recipe): return _error("这款酒的配方资料暂时无法用于制作。")
@@ -731,6 +736,7 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 		next.serial += 1
 		next.session = _session(int(next.serial))
 		next.session.recipe = recipe
+		if opening_practice: next.session.opening_practice=true
 		set_cup(next.session,recommended_cup(recipe))
 		next.session.guest = payload.get("guest",{}).duplicate(true)
 		if payload.has("order"):
@@ -756,6 +762,7 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 		# Restarting the same drink keeps its frozen reference and reception context.
 		if not s.is_empty():
 			next.session.recipe = s.recipe.duplicate(true)
+			if s.get("opening_practice",false): next.session.opening_practice=true
 			set_cup(next.session,recommended_cup(s.recipe))
 			next.session.guest = s.get("guest",{}).duplicate(true)
 			if s.has("order"): next.session.order=s.order.duplicate(true)

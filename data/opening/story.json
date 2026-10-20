@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "legacy_index_path": "res://data/opening/story-v1-index.json",
   "nodes": [
     {
@@ -362,7 +362,7 @@
       "chapter": "S02",
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "我",
-      "text": "带了个改编。绿查特的位置，我换了午夜蓝草本酒。",
+      "text": "带了个改编。把绿查特换成了午夜蓝草本酒。想请你尝尝。",
       "background": "city-bar-faceless",
       "music": "opening_bar"
     },
@@ -380,62 +380,8 @@
       "chapter": "S02",
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "我",
-      "text": "最早确实想省一点。在家常做，总得考虑一瓶酒用完之后，还愿不愿意再买。但试过才知道，替换没那么简单。",
+      "text": "最早是想省点钱。后来越改越不像它，我倒舍不得停了。总觉得还能再试一次。",
       "background": "city-bar-faceless",
-      "music": "opening_bar"
-    },
-    {
-      "id": "s02_extra_01",
-      "chapter": "S02",
-      "title": "三年前 · 他杯里的 Last Word",
-      "background": "city-bar-faceless",
-      "speaker": "那位客人",
-      "text": "那你先说说，原来的那杯，为什么非得是它们四个。",
-      "music": "opening_bar"
-    },
-    {
-      "id": "s02_extra_02",
-      "chapter": "S02",
-      "title": "三年前 · 他杯里的 Last Word",
-      "background": "city-bar-faceless",
-      "speaker": "我",
-      "text": "经典配方是金酒、绿查特、Maraschino 樱桃利口酒、鲜青柠汁，等份。这杯各二十二点五毫升，加冰摇和，再过滤进冰镇杯。",
-      "music": "opening_bar"
-    },
-    {
-      "id": "s02_extra_03",
-      "chapter": "S02",
-      "title": "三年前 · 他杯里的 Last Word",
-      "background": "city-bar-faceless",
-      "speaker": "我",
-      "text": "我喜欢它的地方，是四样都有存在感。金酒的杜松、查特复杂的草本、Maraschino 的果核香，还有青柠的酸。谁都不太肯退后。",
-      "music": "opening_bar"
-    },
-    {
-      "id": "s02_extra_04",
-      "chapter": "S02",
-      "title": "三年前 · 他杯里的 Last Word",
-      "background": "city-bar-faceless",
-      "speaker": "那位客人",
-      "text": "所以写成一比一比一比一，就一定平衡？",
-      "music": "opening_bar"
-    },
-    {
-      "id": "s02_extra_05",
-      "chapter": "S02",
-      "title": "三年前 · 他杯里的 Last Word",
-      "background": "city-bar-faceless",
-      "speaker": "我",
-      "text": "也不一定。青柠每次酸度会变，换瓶金酒也会变。摇出来的温度和融水不一样，同一张配方也会喝出差别。",
-      "music": "opening_bar"
-    },
-    {
-      "id": "s02_extra_06",
-      "chapter": "S02",
-      "title": "三年前 · 他杯里的 Last Word",
-      "background": "city-bar-faceless",
-      "speaker": "我",
-      "text": "我第一版犯的就是这个错。以为毫升数一样，味道也会自己站到一样的位置。结果入口挺香，后面却散了。",
       "music": "opening_bar"
     },
     {
@@ -443,26 +389,8 @@
       "chapter": "S02",
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "那位客人",
-      "text": "至少，你没有把那杯散掉的也叫“创新”。",
+      "text": "不像了，还非要叫它 Last Word？",
       "background": "city-bar-faceless",
-      "music": "opening_bar"
-    },
-    {
-      "id": "s02_07",
-      "chapter": "S02",
-      "title": "三年前 · 他杯里的 Last Word",
-      "speaker": "我",
-      "text": "午夜蓝是另一种草本酒。龙胆、杜松、柠檬马鞭草的方向更明显，尾段有苦味。它是钴蓝色，但蓝色不是我要留下它的理由。",
-      "background": "city-bar-faceless",
-      "music": "opening_bar"
-    },
-    {
-      "id": "s02_extra_07",
-      "chapter": "S02",
-      "title": "三年前 · 他杯里的 Last Word",
-      "background": "city-bar-faceless",
-      "speaker": "我",
-      "text": "我想留住那种喝下去以后，草本还回得来的感觉。前面让青柠把它提起来，后面不要只剩甜。",
       "music": "opening_bar"
     },
     {
@@ -470,7 +398,7 @@
       "chapter": "S02",
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "那位客人",
-      "text": "你试了几版？",
+      "text": "你试了几次？",
       "background": "city-bar-faceless",
       "music": "opening_bar"
     },
@@ -479,7 +407,7 @@
       "chapter": "S02",
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "我",
-      "text": "今天第五版。第三版加过糖，越补越闷。第四版又摇得太久，香气和酒感都薄了。今天回到四种各一份，不额外加糖。",
+      "text": "五次。前几杯都不太好。我本来想，今天要是还不行，就算了。",
       "background": "city-bar-faceless",
       "music": "opening_bar"
     },
@@ -488,7 +416,7 @@
       "chapter": "S02",
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "调酒师",
-      "text": "下午你留下的笔记，我照着复了一杯。新开的青柠，杯子也冰过了。先尝，再争。",
+      "text": "酒来了。先尝尝，你们再争。",
       "background": "city-bar-faceless",
       "music": "opening_bar"
     },
@@ -506,7 +434,7 @@
       "chapter": "S02",
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "那位客人",
-      "text": "入口的酸挺清楚。草本没有绿查特那么厚，倒是尾巴干净。樱桃的果核香留着，最后那点苦……比我预想的好。",
+      "text": "不是原来那杯。……不过，挺好。你也坐下，别站着等我打分。",
       "background": "city-bar-faceless",
       "music": "opening_bar"
     },
@@ -516,34 +444,7 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "我",
-      "text": "嗯。它做不出原来那种密实的草本层次。我后来就没再逼它。让它清一点，把自己能留下的那部分做好。",
-      "music": "opening_bar"
-    },
-    {
-      "id": "s02_taste_03",
-      "chapter": "S02",
-      "title": "三年前 · 他杯里的 Last Word",
-      "background": "city-bar-faceless",
-      "speaker": "那位客人",
-      "text": "你怎么不用更甜的樱桃酒把中间补满？",
-      "music": "opening_bar"
-    },
-    {
-      "id": "s02_taste_04",
-      "chapter": "S02",
-      "title": "三年前 · 他杯里的 Last Word",
-      "background": "city-bar-faceless",
-      "speaker": "我",
-      "text": "我想留的是 Maraschino 的果核调性，不是把它调成樱桃糖水。如果只顾着填满，中间会黏，青柠也会显得突兀。",
-      "music": "opening_bar"
-    },
-    {
-      "id": "s02_12",
-      "chapter": "S02",
-      "title": "三年前 · 他杯里的 Last Word",
-      "speaker": "我",
-      "text": "那你会选哪杯？别照顾我。",
-      "background": "city-bar-faceless",
+      "text": "我还以为，你会让我倒了重来。",
       "music": "opening_bar"
     },
     {
@@ -551,7 +452,7 @@
       "chapter": "S02",
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "那位客人",
-      "text": "要熟悉的味道，我还是选 Last Word。但这一杯，我愿意慢慢喝完。",
+      "text": "熟悉的味道，我还是选 Last Word。但这一杯，我愿意慢慢喝完。",
       "background": "city-bar-faceless",
       "music": "opening_bar"
     },
@@ -560,7 +461,7 @@
       "chapter": "S02",
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "我",
-      "text": "以前做项目，我最怕听“还可以”。总觉得差一点，就等于没做好。做酒倒逼着我学了一件事：你不选它，也不代表它白做了。",
+      "text": "你这么一说，我倒不知道怎么接了。我总觉得，没被选上，就是没做好。",
       "background": "city-bar-faceless",
       "music": "opening_bar"
     },
@@ -569,7 +470,7 @@
       "chapter": "S02",
       "title": "三年前 · 他杯里的 Last Word",
       "speaker": "那位客人",
-      "text": "刚才我话说得重了。我以为你只想拿个便宜办法，证明别人花了冤枉钱。你是真的在尝。",
+      "text": "刚才话说重了。我以为你只是想赢我一句。现在看，是我先下了结论。",
       "background": "city-bar-faceless",
       "music": "opening_bar"
     },
@@ -579,7 +480,7 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "旁白",
-      "text": "他不再靠着椅背，把那页笔记拉近了一点。这一次，是他先问我，前四版到底哪里不好。",
+      "text": "他把笔记合上，给我让出一点位置。我们终于不再盯着杯子说话。",
       "music": "opening_bar"
     },
     {
@@ -588,7 +489,7 @@
       "title": "三年前 · 他杯里的 Last Word",
       "background": "city-bar-faceless",
       "speaker": "我 · 心声",
-      "text": "那晚第一次有人问起我的失败版本，却不是为了让我难堪。我一下说了很多。",
+      "text": "我坐了下来。聊了几句，又开始解释。他说：“不用证明什么。我听着呢。”我忽然松了口气。",
       "music": "opening_bar"
     },
     {
@@ -623,7 +524,7 @@
       "chapter": "S03",
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "我",
-      "text": "回响。Echo World。不是给 Last Word 换一个词——是喝完以后，那些以为过去了的声音，又回到你身边。",
+      "text": "回响。Echo World。像有些声音，安静下来以后，反而听得更清楚。",
       "background": "city-bar-faceless",
       "music": "opening_bar"
     },
@@ -632,7 +533,7 @@
       "chapter": "S03",
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "那位客人",
-      "text": "Echo World……回响的世界。名字挺大，这杯倒没有急着把话说满。",
+      "text": "回响……那今晚这杯，我记住了。",
       "background": "city-bar-faceless",
       "music": "opening_bar"
     },
@@ -641,7 +542,7 @@
       "chapter": "S03",
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "我",
-      "text": "那就先把这四个字记下来。好不好，等下一次喝的时候再说。",
+      "text": "那我把名字写下来。你下次来，还做给你喝。",
       "background": "city-bar-faceless",
       "music": "opening_bar"
     },
@@ -660,7 +561,7 @@
       "title": "那夜后来 · 一句醉话的分量",
       "background": "city-bar-faceless",
       "speaker": "我 · 心声",
-      "text": "后来喝了多少，我记不清了。只记得他讲岛上的风，我讲那些没做成的配方。句子越来越长，杯沿碰在一起，声音却越来越远。",
+      "text": "后来喝了多少，我记不清了。他讲岛上的风，我讲那些不敢在同事面前说的心事。杯沿碰在一起，我们连彼此说过的话也开始记不清。",
       "music": "opening_bar",
       "sfx": "clink"
     },
@@ -687,7 +588,7 @@
       "chapter": "S03",
       "title": "那夜后来 · 一句醉话的分量",
       "speaker": "我",
-      "text": "想过。真开又是另一回事。我会给自己调一杯，不代表一晚上能照顾好所有人。现在手上的事，也放不下。",
+      "text": "想过。可手上的项目一个接一个，总觉得走开一步，就会被别人落下。开店的事，也就只敢想想。",
       "background": "city-bar-faceless",
       "music": "opening_bar"
     },
