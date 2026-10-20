@@ -150,9 +150,18 @@ func _build() -> void:
 		button.add_theme_font_size_override("font_size",19)
 		_place(button,Rect2(1007+i*130,216,127,44))
 		tab_buttons.append(button)
-	content = _scroll(Rect2(1010,280,522,510))
+	content = _scroll(Rect2(1010,280,522,490))
 	content_scroll = content.get_parent()
-	_place(_label(root,"只记下已知的故事与真实出品 · 滚动翻阅",16,MUTED),Rect2(1010,799,521,28))
+	# A fixed one-line footer must not inherit the wrapping helper's zero-width
+	# initial layout (which can leave an oversized minimum-height rectangle).
+	var footer := Label.new()
+	footer.text = "只记下已知的故事与真实出品 · 滚动翻阅"
+	footer.add_theme_font_size_override("font_size",16)
+	footer.add_theme_color_override("font_color",MUTED)
+	footer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(footer)
+	footer.name = "JournalFooter"
+	_place(footer,Rect2(1010,778,521,24))
 
 func _clear(parent: Node) -> void:
 	for child in parent.get_children():
@@ -253,10 +262,23 @@ func _render_content() -> void:
 		tab_buttons[i].add_theme_stylebox_override("normal",_style(Color("916033") if i == tab else Color("59402b")))
 	if not Relationships.known(selected_id):
 		summary.text = "尚未相识"
-		if _has_demo(selected_id):
-			_label(content,"内测期间，可提前体验小游戏。",21,MUTED)
-			_activities()
-		else: _label(content,"这一页，还在等待一位客人。",28)
+		match tab:
+			0:
+				_label(content,"这一页，还在等待一位客人。",28)
+				_label(content,"在酒馆相识后，手帐会逐渐记下对方的资料。",21,MUTED)
+				if _has_demo(selected_id):
+					_button(content,"提前体验小游戏  →",_select_tab.bind(3))
+			1:
+				_label(content,"对话回顾",28)
+				_label(content,"还没有和这位客人交谈过。相识后的对话会记在这里。",21,MUTED)
+			2:
+				_label(content,"饮酒记录",28)
+				_label(content,"还没有为这位客人留下饮酒记录。",21,MUTED)
+			3:
+				if _has_demo(selected_id):
+					_label(content,"内测期间，可提前体验小游戏。",21,MUTED)
+					_activities()
+				else: _label(content,"相识之后，等待客人的邀请。",23)
 		return
 	var drinks := Data.drinks(selected_id,WorkbenchSession.state)
 	var groups := Data.conversations(selected_id,StoryDialogue.progress,StoryDialogue.catalog,WorkbenchSession.state)
@@ -354,7 +376,7 @@ func _conversation(group: Dictionary, short:=false) -> void:
 	var lines: Array = group.lines
 	var shown: Array = lines.slice(maxi(0,lines.size()-2)) if short else lines
 	for line in shown:
-		_label(column,("我：" if line.speaker == "player" else str(_profile().name)+"：")+str(line.text),20,Color("745033") if line.speaker == "player" else INK)
+		_label(column,(OpeningFlow.protagonist_name()+"：" if line.speaker == "player" else str(_profile().name)+"：")+str(line.text),20,Color("745033") if line.speaker == "player" else INK)
 
 func _drink(record: Dictionary, overview: bool) -> void:
 	var result: Dictionary = record.result

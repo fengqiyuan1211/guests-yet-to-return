@@ -8,14 +8,19 @@ func _ready() -> void:
 	call_deferred("run")
 
 func topic_to_end() -> void:
+	var shop: Control=page.preparation.page
 	var limit:=0
-	while is_instance_valid(page.conversation) and limit<20:
+	while is_instance_valid(shop.merchant_dialogue) and limit<20:
 		limit+=1
-		await pointer_click(page.conversation.next_button)
-	check(limit<20,"merchant topic completes by mouse")
+		await pointer_click(shop.merchant_dialogue.next_button)
+	check(limit<20,"native merchant topic completes by mouse")
 
 func next_line() -> void:
 	while is_instance_valid(page) and page.busy: await get_tree().process_frame
+	if page.row.get("action")=="sign":
+		page.name_edit.text="归舟"
+		await pointer_click(page.signature_button)
+		return
 	page.dialogue.visible_characters=page.dialogue.text.length()
 	await key_press(KEY_SPACE)
 
@@ -59,23 +64,21 @@ func run() -> void:
 		var echo:=Prep.report("echo_world")
 		check(not echo.ready and echo.cost==394 and echo.cost>SlotWallet.balance,"real echo shortfall is disclosed")
 		check(Prep.report("gin_and_tonic").cost==122,"affordable first-order route exists")
-		page._select_recipe("gin_and_tonic")
 		await settle()
-		await capture("departure-01-preparation")
-		await pointer_click(page.preparation.find_child("VisitShop",true,false))
+		var shop: Control=page.preparation.page
+		check(shop.get_script().resource_path=="res://scripts/harbor_shop.gd","preparation directly opens existing shop")
+		await pointer_click(shop.topic_button)
 		await topic_to_end()
-		check(is_instance_valid(page.external_page),"intro opens existing shop")
 		check(Relationships.known("harbor_merchant"),"merchant has real identity event")
 		await capture("departure-02-shop")
-		var shop: Control=page.external_page
 		shop.focus_item("sku_gin_london_dry")
 		await settle()
 		await pointer_click(shop.buy_button)
 		check(Supplies.total_remaining("sku_gin_london_dry")==750 and SlotWallet.balance==200,"purchase commits actual package and cost")
 		check(Relationships.summary("harbor_merchant").points==0,"buying cannot purchase affection")
-		await pointer_click(shop.find_child("BackButton",true,false))
-		check(is_instance_valid(page.conversation) and page.conversation.topic=="merchant_seed","leaving shop begins clue seed")
-		await pointer_click(page.conversation.next_button)
+		await pointer_click(shop.topic_button)
+		check(is_instance_valid(shop.merchant_dialogue) and shop.merchant_dialogue.topic=="merchant_seed","native shop offers clue seed")
+		await pointer_click(shop.merchant_dialogue.next_button)
 		check(not Relationships.state.flags.get("invoice_seen",false),"clue evidence not leaked by initial conversation")
 		var save:=Relationships.state.duplicate(true)
 		var path:=Relationships.save_path
@@ -86,22 +89,32 @@ func run() -> void:
 		get_tree().quit(0 if failures.is_empty() else 1)
 		return
 	check(OpeningFlow.state.phase=="ending" and OpeningFlow.state.departure.node=="prepare","process restart resumes preparation")
+	check(OpeningFlow.protagonist_name()=="归舟","protagonist signature survives process restart")
 	check(SlotWallet.balance==200 and Supplies.total_remaining("sku_gin_london_dry")==750,"restart retains one purchase exactly")
 	check(Relationships.state.cursors.get("merchant_seed")==1,"interrupted conversation resumes correct line")
 	await show_scene("res://scenes/opening_departure.tscn")
-	page._visit_shop()
 	await settle()
-	var shop: Control=page.external_page
+	var shop: Control=page.preparation.page
 	for sku in ["sku_tonic_water","sku_lime_wedge"]:
 		shop.focus_item(sku)
+		if sku=="sku_tonic_water": await pointer_click(shop.find_child("QuantityPlus",true,false))
 		await pointer_click(shop.buy_button)
-	await pointer_click(shop.find_child("BackButton",true,false))
-	check(page.conversation.index==1,"returning to seed does not start it over")
+	await pointer_click(shop.topic_button)
+	check(shop.merchant_dialogue.index==1,"returning to seed does not start it over")
 	await topic_to_end()
 	check(Relationships.state.flags.get("invoice_heard",false) and not Relationships.state.flags.get("invoice_seen",false),"heard clue and physical evidence are distinct")
 	check(Prep.report("gin_and_tonic").ready,"all required ingredients now available")
-	check(SlotWallet.balance==178,"no duplicate or hidden purchase")
-	await pointer_click(page.preparation.find_child("PublishOpeningMenu",true,false))
+	check(SlotWallet.balance==166,"no duplicate or hidden purchase")
+	page.preparation.guide.refresh()
+	await pointer_click(page.preparation.guide.proceed)
+	await settle()
+	for i in range(3): operation("ice",{"ice":"cube","vessel":"glass"})
+	operation("withdraw",{"material":"gin","ml":50,"vessel":"glass"})
+	operation("withdraw",{"material":"sku_tonic_water","ml":150,"vessel":"glass"})
+	operation("garnish",{"material":"garnish"})
+	page.preparation.page._finish()
+	await settle()
+	await pointer_click(button_named(page.preparation.page,"确认这杯，加入今晚酒单 →"))
 	check(MenuCatalog.entries.size()==1 and MenuCatalog.entries[0].id=="gin_and_tonic","explicit menu publication")
 	while OpeningFlow.state.departure.node!="my_door": await next_line()
 	check(OpeningFlow.state.departure.opened,"sign opened once")

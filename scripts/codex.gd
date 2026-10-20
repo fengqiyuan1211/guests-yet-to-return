@@ -34,6 +34,7 @@ var allow_locked_details := false
 var detail_id := ""
 var navigation_hint: Label
 var research_button: Button
+var _acknowledging_recipe := false
 
 func _ready() -> void:
 	_load_settings()
@@ -85,6 +86,7 @@ func _load_settings() -> void:
 		allow_locked_details = settings.get("allow_locked_details", false) == true
 
 func _catalog_changed() -> void:
+	if _acknowledging_recipe: return
 	if turning:
 		_catalog_refresh_pending = true
 		return
@@ -205,6 +207,7 @@ func _make_page(index: int) -> Control:
 	return sheet
 
 func _missing_material_tooltip(recipe_id: String) -> String:
+	if MenuCatalog.get_recipe(recipe_id).get("unlock_kind")=="opening_tutorial": return "完成新手调酒教程后解锁：回响 · Echo World。"
 	if MenuCatalog.get_recipe(recipe_id).get("unlock_kind")=="legendary_mastery": return "带着旧酒单前往传说研习台，完美出品后点亮。"
 	var names: Array[String] = []
 	var supplies := get_node_or_null("/root/Supplies")
@@ -266,6 +269,14 @@ func _populate_card(card: Button, recipe: Dictionary) -> void:
 	_label(card, Rect2(43 if not recipe.unlocked else 25, 192, 127, 28), "已点亮" if recipe.unlocked else "未点亮", 16, ink)
 	var progress := MenuCatalog.ingredient_progress(recipe)
 	_label(card, Rect2(168, 193, 111, 27), "原料 %d / %d" % [progress.owned, progress.total], 15, ink, HORIZONTAL_ALIGNMENT_RIGHT)
+	if MenuCatalog.is_recipe_new(str(recipe.id)):
+		var highlight := preload("res://scripts/recipe_unlock_highlight.gd").new()
+		highlight.name = "NewRecipeHighlight"
+		highlight.active = true
+		card.add_child(highlight)
+		var badge := _label(card,Rect2(111,14,99,29),"新解锁",17,Color("845725"),HORIZONTAL_ALIGNMENT_CENTER)
+		badge.name = "NewRecipeBadge"
+		card.tooltip_text = "新解锁 · 打开酒谱查看后消除提示"
 
 func show_detail(id: String) -> void:
 	if turning:
@@ -273,6 +284,10 @@ func show_detail(id: String) -> void:
 	var recipe := _recipe(id)
 	if recipe.is_empty() or (not recipe.unlocked and not allow_locked_details):
 		return
+	if recipe.unlocked:
+		_acknowledging_recipe = true
+		MenuCatalog.mark_recipe_seen(id)
+		_acknowledging_recipe = false
 	detail_id = id
 	press_active = false
 	var child_index := page_content.get_index()

@@ -64,6 +64,7 @@ func _ready() -> void:
 	Navigation.register_page(&"reviews", preload("res://scenes/customer_reviews.tscn"))
 	_setup_settings_button()
 	_setup_mode_button()
+	_setup_recipe_unlock_hint()
 	relationship_hint=Button.new()
 	relationship_hint.position=Vector2(990,103)
 	relationship_hint.size=Vector2(540,48)
@@ -115,6 +116,29 @@ func _ready() -> void:
 		arrival_scene=preload("res://scripts/opening_arrival.gd").new()
 		arrival_scene.home=self
 		%Stage.add_child(arrival_scene)
+
+func _setup_recipe_unlock_hint() -> void:
+	var button: Button = find_child("CodexButton",true,false)
+	var highlight := preload("res://scripts/recipe_unlock_highlight.gd").new()
+	highlight.name = "NewRecipesHighlight"
+	button.add_child(highlight)
+	var badge := Label.new()
+	badge.name = "NewRecipesBadge"
+	badge.text = "新"
+	badge.add_theme_font_size_override("font_size",16)
+	badge.add_theme_color_override("font_color",Color("e1c18b"))
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(badge)
+	badge.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	badge.position = Vector2(button.size.x-29,7)
+	var refresh := func():
+		var ids: Array = MenuCatalog.new_recipe_ids()
+		highlight.active = not ids.is_empty()
+		badge.visible = not ids.is_empty()
+		button.tooltip_text = "有 %d 款新解锁酒谱，打开对应酒谱查看。" % ids.size() if not ids.is_empty() else ""
+	MenuCatalog.changed.connect(refresh)
+	WorkbenchSession.changed.connect(refresh)
+	refresh.call()
 
 func _setup_settings_button() -> void:
 	var emblem: TextureRect = find_child("Emblem", true, false)

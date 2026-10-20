@@ -415,6 +415,7 @@ func _sync_menu() -> bool:
 	var unlocked: Array = []
 	for recipe: Dictionary in menu.all_recipes():
 		if not recipe.get("source_guest", "").is_empty(): continue
+		if recipe.get("unlock_kind") == "opening_tutorial": continue
 		if recipe.get("unlock_kind") == "legendary_mastery":
 			if workbench.get("research", {}).get("mastered", {}).has(recipe.id): unlocked.append(recipe.id)
 		elif _recipe_requirements(recipe).ready:

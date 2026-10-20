@@ -1,6 +1,6 @@
 extends Control
 signal close_requested
-const PAPER=preload("res://assets/pixel_b/paper.svg")
+const PAPER=preload("res://assets/pixel_b/journal-paper-wide.svg")
 const Preview=preload("res://scripts/workbench_drink_preview.gd")
 const Research=preload("res://scripts/research_data.gd")
 const DESK=preload("res://assets/pixel_b/v2/research.png")
@@ -86,9 +86,15 @@ func _fit() -> void:
 	surface.position=(size-surface.size*factor)*.5
 
 func _paper(parent: Node, rect: Rect2) -> void:
-	var paper:=TextureRect.new()
+	var paper:=NinePatchRect.new()
+	paper.name="ResearchPaper"
 	paper.texture=PAPER
-	paper.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
+	# Keep the pixel border square when this landscape sheet changes proportions.
+	paper.patch_margin_left=28
+	paper.patch_margin_right=28
+	paper.patch_margin_top=28
+	paper.patch_margin_bottom=28
+	paper.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
 	paper.position=rect.position
 	paper.size=rect.size
 	paper.mouse_filter=Control.MOUSE_FILTER_IGNORE

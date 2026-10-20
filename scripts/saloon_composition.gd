@@ -1,7 +1,7 @@
 extends RefCounted
 ## Shared canvas coordinates keep people, counter and room aligned at every aspect ratio.
 const DESIGN_SIZE := Vector2(1600, 900)
-const BACKGROUND_PATH := "res://assets/pixel_b/saloon_depth/saloon-teal-runner.png"
+const BACKGROUND_PATH := "res://assets/pixel_b/saloon_depth/saloon-island-seaview.png"
 const COUNTER_TEXTURE_PATH := BACKGROUND_PATH
 const SOURCE_SIZE := Vector2(1672, 941)
 # First opaque pixel row of the far counter lip in the approved painting.

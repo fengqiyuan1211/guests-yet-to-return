@@ -1,0 +1,12 @@
+{
+  "tool": "image_gen.imagegen (built-in)",
+  "mode": "edit",
+  "date": "2026-10-20",
+  "prompt": "Edit reference image 1, the pixel-art tavern interior, preserving its exact full composition, aspect ratio, and all interior furniture, walls, shelves, lanterns, tables, floor and foreground teal green woven counter runner. Reference image 2 is ONLY the geographical, sunset-color and ocean-art reference: this tavern is INSIDE that isolated island inn looking OUT towards the sea, not looking back at the inn. Replace ONLY the urban buildings and city skyline visible through the large central doorway with a peaceful open ocean at sunset, distant low rocky island silhouettes, orange-pink sunset clouds, a small low sun and golden reflections on blue-teal water, and a short wooden coastal landing at the doorway threshold. Absolutely no town, city buildings or urban skyline outside. View should feel like a secluded island, poetic, beautiful and quiet, consistent with reference 2. Maintain the same restrained crisp pixel-art grain as reference 1, no photographic surfaces. Preserve all existing interior silhouette and foreground geometry, especially the horizontal front counter rear lip at y=544 of the 941-high reference and its green runner. Keep foreground and all interior unchanged as closely as possible. Keep the original 1672 by 941 wide 16:9 composition, no crop, no zoom, no border, no lettering, no interface, no people. Deliver only the revised full tavern background.",
+  "references": [
+    "assets/pixel_b/saloon_depth/saloon-teal-runner.png",
+    "assets/pixel_b/harbor.png"
+  ],
+  "output": "assets/pixel_b/saloon_depth/saloon-island-seaview.png",
+  "scope": "Shared island tavern: opening S07, departure, home and workbench. City memories remain separate."
+}

@@ -216,6 +216,27 @@ func run() -> void:
 		check(v3_save.history.has("s04_06") and not v3_save.history.has("s04_wait_00"),"migrated backlog never invents newly inserted dialogue")
 		v2_save.node_id="invalid"
 		check(not OpeningFlow.valid(OpeningFlow.upgrade_story_progress(v2_save)),"inconsistent old node/index is rejected")
+		var v3_ids: Array=JSON.parse_string(FileAccess.get_file_as_string("res://data/opening/story-v3-index.json"))
+		for legacy_id in v3_ids:
+			var saved:=OpeningFlow.fresh()
+			saved.story_version=3
+			saved.phase="cg"
+			saved.node=v3_ids.find(legacy_id)
+			saved.node_id=legacy_id
+			saved.history=v3_ids.slice(0,int(saved.node)+1)
+			saved.mail_read={"private_letter":true}
+			saved.choices={"s03_10":"那就替我留个位置。"}
+			var migrated: Dictionary=OpeningFlow.upgrade_story_progress(saved)
+			check(OpeningFlow.valid(migrated),"v3 resume remains valid: "+str(legacy_id))
+			if OpeningFlow.node_index(legacy_id)>=0:
+				check(migrated.node_id==legacy_id,"surviving dialogue never moves to a different line: "+str(legacy_id))
+			else:
+				check(migrated.node>=0 and v3_ids.find(migrated.node_id)>int(saved.node),"removed dialogue resumes forward: "+str(legacy_id))
+			check(migrated.choices==saved.choices and migrated.mail_read==saved.mail_read and saved.story_version==3,"migration preserves choices/mail and original snapshot")
+		var technical_count:=0
+		for beat: Dictionary in OpeningFlow.story.nodes:
+			if beat.chapter=="S02": technical_count+=1
+		check(technical_count==18,"bar conversation condensed from 29 to 18 beats")
 		for id in ["s01_young_01","s01_depart_03"]:
 			OpeningFlow.advance(OpeningFlow.node_index(id))
 			page._render()

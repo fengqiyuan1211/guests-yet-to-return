@@ -13,7 +13,7 @@ var fast_forward=preload("res://scripts/story_fast_forward.gd").new()
 func _process(delta: float) -> void:
 	var speed: float=fast_forward.step(delta,phase not in ["waiting","complete"])
 	if is_instance_valid(shot_tween): shot_tween.set_speed_scale(speed)
-	if is_instance_valid(hint): hint.text="快进中 ×3 · 松开恢复" if fast_forward.active else "长按空格 · 3 倍速"
+	if is_instance_valid(hint): hint.text="快进中 ×10 · 松开恢复" if fast_forward.active else "长按空格 · 10 倍速"
 
 func _pause(seconds: float) -> void:
 	shot_tween=create_tween()
@@ -42,9 +42,9 @@ func run() -> void:
 	if OpeningTransition.busy: await OpeningTransition.finished
 	phase="empty_room"
 	var caption:=UI.panel(self,Rect2(55,650,1490,208))
-	UI.label(caption,Rect2(35,22,1400,40),"我 · 心声",24,Color("eac88d"))
+	UI.label(caption,Rect2(35,22,1400,40),OpeningFlow.protagonist_speaker("我 · 心声"),24,Color("eac88d"))
 	var line:=UI.label(caption,Rect2(35,80,1400,65),"门开了。接下来，得由我自己招呼了。",28)
-	hint=UI.label(caption,Rect2(1090,165,340,30),"长按空格 · 3 倍速",18,Color("d8c7ac"))
+	hint=UI.label(caption,Rect2(1090,165,340,30),"长按空格 · 10 倍速",18,Color("d8c7ac"))
 	caption.modulate.a=0
 	shot_tween=create_tween()
 	shot_tween.tween_property(caption,"modulate:a",1.0,.45)

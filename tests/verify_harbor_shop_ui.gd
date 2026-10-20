@@ -84,6 +84,9 @@ func click_at(point: Vector2) -> void:
 	await get_tree().process_frame
 	var up := down.duplicate() as InputEventMouseButton
 	up.pressed = false
+	# Desktop mouse motion can arrive between rendered frames. Restore the
+	# synthetic pointer before release so this remains a click, not a drag-out.
+	move_mouse(point)
 	get_viewport().push_input(up, true)
 	await settle()
 

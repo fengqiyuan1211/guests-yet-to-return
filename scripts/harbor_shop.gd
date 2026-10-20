@@ -53,9 +53,11 @@ var merchant_line_index := 0
 var toast: Label
 var toast_remaining := 0.0
 var page_turning := false
+var opening_purchase_guard := Callable()
 var opening_visit := false
 var merchant_dialogue: Control
 var topic_button: Button
+var topic_paper: Control
 var opening_help: Panel
 var opening_help_text: Label
 var opening_pointer: Label
@@ -200,7 +202,7 @@ func _ready() -> void:
 	_balance_changed(_wallet_balance())
 	_time_changed(0, 0)
 	_update_harbor_lighting()
-	_paper(canvas,Rect2(74,695,538,60))
+	topic_paper=_paper(canvas,Rect2(74,695,538,60))
 	topic_button=_button(canvas,Rect2(78,699,530,52),"聊一聊",_talk_merchant,true)
 	Relationships.changed.connect(_refresh_merchant_topic)
 	_refresh_merchant_topic()
@@ -288,10 +290,10 @@ func _paper(parent: Node, rect: Rect2, dark := false, hanging := false) -> Paper
 
 func _texture(parent: Node, rect: Rect2, texture: Texture2D) -> TextureRect:
 	var image := TextureRect.new()
+	image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	image.texture = texture
 	image.position = rect.position
 	image.size = rect.size
-	image.texture = texture
-	image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	image.mouse_filter = MOUSE_FILTER_IGNORE
 	parent.add_child(image)
@@ -719,6 +721,11 @@ func _amount(value: float) -> String:
 func _purchase() -> void:
 	if buy_button.disabled or supplies == null or selected_id.is_empty():
 		return
+	if opening_purchase_guard.is_valid():
+		var reason: String=opening_purchase_guard.call(selected_id,packages)
+		if not reason.is_empty():
+			_show_toast(reason)
+			return
 	var item := _selected_item()
 	var bought := packages
 	var balance_before := _wallet_balance()
@@ -834,6 +841,7 @@ func _refresh_merchant_topic() -> void:
 	if not is_instance_valid(topic_button): return
 	var topic:=Relationships.next_merchant_topic()
 	topic_button.visible=not opening_visit and not topic.is_empty()
+	topic_paper.visible=topic_button.visible
 	topic_button.text={"merchant_intro":"先认识一下 · 老板娘","merchant_seed":"她还有一句话……","merchant_return":"坐下来，聊聊第一晚","old_invoice":"那张留下来的送货单……"}.get(topic,"聊一聊")
 
 func _talk_merchant() -> void:

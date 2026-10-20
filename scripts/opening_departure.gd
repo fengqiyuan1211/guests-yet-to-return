@@ -4,6 +4,7 @@ const UI=preload("res://scripts/opening_ui.gd")
 const Prep=preload("res://scripts/opening_preparation.gd")
 const Conversation=preload("res://scripts/merchant_conversation.gd")
 const PAPER=preload("res://assets/pixel_b/paper.svg")
+var arrival_timer: Timer
 var stage: Control
 var background: TextureRect
 var props: Control
@@ -32,9 +33,14 @@ var fast_forward = preload("res://scripts/story_fast_forward.gd").new()
 var speed_hint: Panel
 var scene_cover: ColorRect
 var prop_tween: Tween
+var room_transition: Tween
 var prop_key := ""
 var water_cup: Control
 var sign_face: Button
+var character_art: Control
+var name_edit: LineEdit
+var name_hint: Label
+var signature_button: Button
 
 func _ready() -> void:
 	OpeningFlow.front_end=true
@@ -49,6 +55,8 @@ func _ready() -> void:
 	background.size=stage.size
 	background.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	stage.add_child(background)
+	character_art=preload("res://scripts/opening_portrait.gd").new()
+	stage.add_child(character_art)
 	props=Control.new()
 	props.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	stage.add_child(props)
@@ -66,7 +74,7 @@ func _ready() -> void:
 	,true)
 	speed_hint=UI.panel(stage,Rect2(1220,95,320,44))
 	speed_hint.mouse_filter=Control.MOUSE_FILTER_IGNORE
-	UI.label(speed_hint,Rect2(12,5,296,34),"快进中 ×3 · 松开恢复",21,Color("ffe7a7"))
+	UI.label(speed_hint,Rect2(12,5,296,34),"快进中 ×10 · 松开恢复",21,Color("ffe7a7"))
 	speed_hint.hide()
 	var panel:=UI.panel(stage,Rect2(55,650,1490,208))
 	narrative_panel=panel
@@ -80,7 +88,7 @@ func _ready() -> void:
 	auto_button=UI.button(panel,Rect2(815,152,230,46),"自动播放：关 A",_toggle_auto,true)
 	auto_button.tooltip_text="对话自动继续；签收、备料、购物与开门仍由你操作。"
 	next_button=UI.button(panel,Rect2(1060,152,380,46),"继续 · 空格",_advance,true)
-	next_button.tooltip_text="短按空格或点击继续；长按空格 3 倍速，签收、购物、开门等操作仍需手动确认。"
+	next_button.tooltip_text="短按空格或点击继续；长按空格 10 倍速，签收、购物、开门等操作仍需手动确认。"
 	tip=UI.label(stage,Rect2(220,590,1160,44),"",23,Color("ffe7a7"))
 	tip.horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
 	story_audio=preload("res://scripts/opening_audio.gd").new()
@@ -132,11 +140,12 @@ func _render() -> void:
 		next_button.disabled=true
 		return
 	heading.text="开业前 · "+str(row.chapter)
-	speaker.text=row.speaker
+	speaker.text=OpeningFlow.protagonist_speaker(str(row.speaker))
+	character_art.present(row,true,fast_forward.active)
 	dialogue.text=row.text
-	dialogue.visible_characters=0
-	clock=0
-	status.text="回看 · 长按空格 3 倍速 · 不改变经营进度" if OpeningFlow.replaying else "点击/短按继续 · 长按空格 3 倍速 · H 历史"
+	dialogue.visible_characters=dialogue.text.length() if fast_forward.active else 0
+	clock=dialogue.visible_characters
+	status.text="回看 · 长按空格 10 倍速 · 不改变经营进度" if OpeningFlow.replaying else "点击/短按继续 · 长按空格 10 倍速 · H 历史"
 	next_button.text=str(row.get("button","继续 · 空格"))
 	next_button.disabled=false
 	if OpeningFlow.replaying and row.get("action")=="finish": next_button.text="结束回看 · 返回开始"
@@ -150,6 +159,9 @@ func _render() -> void:
 	water_cup=null
 	sign_face=null
 	hint_target=null
+	name_edit=null
+	name_hint=null
+	signature_button=null
 	tip.text=""
 	_render_prop()
 	var next_prop:=str(row.get("prop",""))
@@ -161,6 +173,25 @@ func _render() -> void:
 		prop_tween.tween_property(props,"position:y",0.0,.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	prop_key=next_prop
 	if row.get("action")=="prepare": _show_preparation()
+	if row.get("action")=="finish" and not OpeningFlow.replaying:
+		status.text="营业牌已翻开 · 稍后直接迎接第一位客人"
+		if not is_instance_valid(arrival_timer):
+			arrival_timer=Timer.new()
+			arrival_timer.one_shot=true
+			add_child(arrival_timer)
+			arrival_timer.timeout.connect(_enter_first_arrival)
+		arrival_timer.start(4.5)
+
+func _enter_first_arrival() -> void:
+	if row.get("action")!="finish" or OpeningFlow.replaying: return
+	if busy or OpeningTransition.busy or is_instance_valid(history_panel):
+		arrival_timer.start(.5)
+		return
+	busy=true
+	if not OpeningFlow.finish_opening():
+		busy=false
+		status.text=OpeningFlow.last_error
+
 
 func _paper(rect: Rect2) -> TextureRect:
 	var paper:=TextureRect.new()
@@ -189,11 +220,13 @@ func _render_prop() -> void:
 		paper.rotation=-.025
 		UI.label(props,Rect2(593,235,420,42),"交 接 账 册" if prop!="receipt" else "收 货 签 认",32,Color("51371f"))
 		var text:="旧酒单 · 空白收货单\n\n收件人：酒馆的新主人\n\n纸上的东西，慢慢理清。"
-		if prop=="receipt": text="已收到：账册、旧酒单\n\n收件人签字："+("已签收" if OpeningFlow.state.departure.signed else "________________")
-		UI.label(props,Rect2(590,302,420,195),text,24,Color("63482c"))
+		if prop=="receipt":
+			UI.label(props,Rect2(590,302,420,35),"已收到：账册、旧酒单",24,Color("63482c"))
+			UI.label(props,Rect2(590,348,420,32),"收件人签字：",23,Color("63482c"))
+		else:
+			UI.label(props,Rect2(590,302,420,195),text,24,Color("63482c"))
 		if row.get("action")=="sign":
-			hint_target=UI.button(props,Rect2(650,465,310,58),"点击签收",_advance)
-			tip.text="↓  点击签收单，或按空格"
+			_render_signature()
 	elif prop=="water":
 		var image:=preload("res://scripts/workbench_drink_preview.gd").new()
 		image.reference_only=true
@@ -205,7 +238,7 @@ func _render_prop() -> void:
 		image.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		props.add_child(image)
 		water_cup=image
-		var caption:=UI.panel(props,Rect2(390,235,430,160))
+		var caption:=UI.panel(props,Rect2(565,235,430,160))
 		UI.label(caption,Rect2(25,25,380,100),"门口的椅子还在。\n给赶路的人，留一杯水。",28)
 	elif prop=="sign":
 		var opened: bool=OpeningFlow.state.departure.opened
@@ -229,6 +262,44 @@ func _render_prop() -> void:
 			tip.text="↓  点击或拖动营业牌 · 也可以按空格"
 		UI.label(props,Rect2(635,437,340,40),"今晚，先开这一会儿。",23,Color("63482c"))
 
+func _render_signature() -> void:
+	_cancel_fast_forward()
+	name_edit=LineEdit.new()
+	name_edit.name="ProtagonistName"
+	name_edit.position=Vector2(590,385)
+	name_edit.size=Vector2(420,48)
+	name_edit.max_length=OpeningFlow.PLAYER_NAME_LIMIT
+	name_edit.placeholder_text="在这里写下你的名字"
+	name_edit.text=str(OpeningFlow.state.get("player_name",""))
+	name_edit.add_theme_font_override("font",UI.FONT)
+	name_edit.add_theme_font_size_override("font_size",25)
+	name_edit.add_theme_color_override("font_color",Color("51371f"))
+	name_edit.add_theme_color_override("font_placeholder_color",Color("887354"))
+	name_edit.add_theme_color_override("caret_color",Color("51371f"))
+	name_edit.add_theme_color_override("selection_color",Color("b5a57a"))
+	for style in ["normal","focus"]:
+		var box:=StyleBoxFlat.new()
+		box.bg_color=Color("f6e7bd")
+		box.border_color=Color("9e713c" if style=="focus" else "baa173")
+		box.set_border_width_all(2)
+		box.content_margin_left=12
+		box.content_margin_right=12
+		name_edit.add_theme_stylebox_override(style,box)
+	props.add_child(name_edit)
+	name_hint=UI.label(props,Rect2(590,438,430,28),"1—16 个字 · 将作为你的主角名字",18,Color("745033"))
+	signature_button=UI.button(props,Rect2(650,478,310,46),"确认名字并签收",_advance,true)
+	hint_target=signature_button
+	next_button.text="确认名字并签收"
+	status.text="输入时空格与字母只用于填写 · 点击按钮确认"
+	if OpeningFlow.replaying: status.text="回看试填 · 不会更改正式存档中的主角名字"
+	tip.text="↓  点击签字栏填写名字，再点击确认"
+	name_edit.text_changed.connect(func(_value):
+		name_hint.text="1—16 个字 · 将作为你的主角名字"
+		name_hint.add_theme_color_override("font_color",Color("745033"))
+	)
+	name_edit.focus_entered.connect(_cancel_fast_forward)
+	name_edit.grab_focus()
+
 func _process(delta: float) -> void:
 	if not is_instance_valid(dialogue): return
 	if not get_window().has_focus():
@@ -241,17 +312,20 @@ func _process(delta: float) -> void:
 		autoplay.reset()
 		_cancel_fast_forward()
 		return
-	var playback:=fast_forward.step(delta,_can_auto_advance())
+	var playback:=fast_forward.step(delta,_can_auto_advance() or (busy and str(row.get("action","")).is_empty()))
+	if is_instance_valid(room_transition): room_transition.set_speed_scale(playback)
 	speed_hint.visible=fast_forward.active
 	background.playback_speed=playback
-	clock+=delta*34*playback
+	if fast_forward.active: clock=dialogue.text.length()
+	else: clock+=delta*34
 	dialogue.visible_characters=mini(int(clock),dialogue.text.length())
-	if autoplay.tick(delta*playback,dialogue.text.length(),dialogue.visible_characters>=dialogue.text.length(),_can_auto_advance(),fast_forward.active): _advance()
+	if autoplay.tick(delta,dialogue.text.length(),dialogue.visible_characters>=dialogue.text.length(),_can_auto_advance(),fast_forward.active): _advance()
 
 func _cancel_fast_forward() -> void:
 	fast_forward.cancel()
 	if is_instance_valid(speed_hint): speed_hint.hide()
 	if is_instance_valid(background): background.playback_speed=1.0
+	if is_instance_valid(room_transition): room_transition.set_speed_scale(1.0)
 
 func _notification(what: int) -> void:
 	if what==NOTIFICATION_APPLICATION_FOCUS_OUT: _cancel_fast_forward()
@@ -266,13 +340,20 @@ func _toggle_auto() -> void:
 func _advance() -> void:
 	autoplay.reset()
 	if busy or OpeningTransition.busy or next_button.disabled or row.is_empty() or is_instance_valid(history_panel) or is_instance_valid(conversation) or is_instance_valid(external_page) or is_instance_valid(preparation): return
-	if dialogue.visible_characters>=0 and dialogue.visible_characters<dialogue.text.length():
+	if row.get("action")!="sign" and dialogue.visible_characters>=0 and dialogue.visible_characters<dialogue.text.length():
 		clock=dialogue.text.length()
 		dialogue.visible_characters=-1
 		return
 	var patch: Dictionary={}
 	match str(row.get("action","")):
-		"sign": patch.signed=true
+		"sign":
+			if not is_instance_valid(name_edit): return
+			var error:=OpeningFlow.player_name_error(name_edit.text)
+			if not error.is_empty():
+				name_hint.text=error
+				name_hint.add_theme_color_override("font_color",Color("963f30"))
+				name_edit.grab_focus()
+				return
 		"water": patch.water=true
 		"open":
 			if not OpeningFlow.replaying and not Prep.ready_menu():
@@ -289,24 +370,30 @@ func _advance() -> void:
 	var i:=current_index()
 	if i+1>=nodes.size(): return
 	patch.node=nodes[i+1].id
-	if not OpeningFlow.update_departure(patch):
+	var saved: bool=OpeningFlow.sign_receipt(name_edit.text) if row.get("action")=="sign" else OpeningFlow.update_departure(patch)
+	if not saved:
 		status.text=OpeningFlow.last_error
 		return
+	if is_instance_valid(name_edit):
+		name_edit.text=OpeningFlow.protagonist_name()
+		name_edit.editable=false
+		name_edit.release_focus()
+		name_hint.hide()
 	busy=true
 	next_button.disabled=true
-	_cancel_fast_forward()
+	if not str(row.get("action","")).is_empty(): _cancel_fast_forward()
 	await _perform_action(str(row.get("action","")))
-	var changed_room: bool=nodes[i+1].background!=row.background
+	var changed_room: bool=nodes[i+1].background!=row.background and not fast_forward.active
 	if changed_room:
-		var out:=create_tween()
-		out.tween_property(scene_cover,"modulate:a",1.0,.3)
-		await out.finished
+		room_transition=create_tween()
+		room_transition.tween_property(scene_cover,"modulate:a",1.0,.3)
+		await room_transition.finished
 	_render()
 	if changed_room:
 		busy=true
-		var reveal:=create_tween()
-		reveal.tween_property(scene_cover,"modulate:a",0.0,.5)
-		await reveal.finished
+		room_transition=create_tween()
+		room_transition.tween_property(scene_cover,"modulate:a",0.0,.5)
+		await room_transition.finished
 		busy=false
 
 func _perform_action(action: String) -> void:
@@ -319,7 +406,7 @@ func _perform_action(action: String) -> void:
 	match action:
 		"sign":
 			story_audio.play_cue("paper")
-			var stamp:=UI.label(props,Rect2(790,365,230,60),"已 签 收",36,Color("8b4435"))
+			var stamp:=UI.label(props,Rect2(790,438,230,40),"已 签 收",30,Color("8b4435"))
 			stamp.pivot_offset=stamp.size*.5
 			stamp.rotation=-.1
 			stamp.scale=Vector2.ONE*(1.0 if OpeningFlow.reduced_motion else 1.25)
@@ -357,6 +444,21 @@ func _perform_action(action: String) -> void:
 			await get_tree().create_timer(.55).timeout
 
 func _show_preparation() -> void:
+	if OpeningFlow.replaying:
+		_show_legacy_preparation()
+		return
+	if is_instance_valid(preparation): return
+	narrative_panel.hide()
+	preparation=preload("res://scripts/opening_supply_lesson.gd").new()
+	preparation.size=Vector2(1600,900)
+	stage.add_child(preparation)
+	preparation.completed.connect(func():
+		preparation.queue_free()
+		preparation=null
+		narrative_panel.show()
+		_render())
+
+func _show_legacy_preparation() -> void:
 	narrative_panel.hide()
 	tip.text=""
 	if is_instance_valid(preparation): preparation.queue_free()
@@ -441,13 +543,23 @@ func _start_conversation(topic: String, done: Callable) -> void:
 	var harbor:=preload("res://scripts/harbor_day_night.gd").new()
 	harbor.size=stage.size
 	view.add_child(harbor)
+	var portrait_layer:=Control.new()
+	portrait_layer.size=Vector2(1600,535)
+	portrait_layer.clip_contents=true
+	portrait_layer.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	view.add_child(portrait_layer)
 	var art:=TextureRect.new()
-	art.texture=preload("res://scripts/pixel_art.gd").sprite("harbor_merchant")
-	art.position=Vector2(50,95)
-	art.size=Vector2(640,790)
+	art.name="MerchantPortrait"
+	# Ignore the source minimum BEFORE assigning texture/size, or the 1447px
+	# source silently expands this control into an unintended face close-up.
 	art.expand_mode=TextureRect.EXPAND_IGNORE_SIZE
 	art.stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	view.add_child(art)
+	art.texture=preload("res://scripts/pixel_art.gd").sprite("harbor_merchant")
+	art.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
+	art.mouse_filter=Control.MOUSE_FILTER_IGNORE
+	art.position=Vector2(90,125)
+	art.size=Vector2(560,725)
+	portrait_layer.add_child(art)
 	conversation=Conversation.new()
 	conversation.topic=topic
 	conversation.preview_only=OpeningFlow.replaying
@@ -524,10 +636,21 @@ func _close_history() -> void:
 	next_button.grab_focus()
 
 func _input(event: InputEvent) -> void:
-	if busy or OpeningTransition.busy:
+	if OpeningTransition.busy:
+		_cancel_fast_forward()
+		get_viewport().set_input_as_handled()
+		return
+	if busy:
+		if event is InputEventKey and not event.echo and (event.keycode==KEY_SPACE or event.physical_keycode==KEY_SPACE):
+			if event.pressed: fast_forward.press()
+			else: _cancel_fast_forward()
 		get_viewport().set_input_as_handled()
 		return
 	if not event is InputEventKey or is_instance_valid(conversation) or is_instance_valid(external_page): return
+	# Text entry owns Space, A/H shortcuts and IME keys; never interpret them as story input.
+	if is_instance_valid(name_edit) and name_edit.has_focus() and not is_instance_valid(history_panel):
+		_cancel_fast_forward()
+		return
 	var key: int=event.physical_keycode if event.physical_keycode!=0 else event.keycode
 	if key not in [KEY_SPACE,KEY_ESCAPE,KEY_H,KEY_A]: return
 	get_viewport().set_input_as_handled()

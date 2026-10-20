@@ -1,5 +1,6 @@
 extends Control
 signal close_requested
+signal opening_practice_completed
 const ToolHelp=preload("res://scripts/workbench_tool_help.gd")
 const ToolButton=preload("res://scripts/workbench_tool_button.gd")
 const Evaluation=preload("res://scripts/workbench_evaluation.gd")
@@ -94,6 +95,10 @@ func _ready() -> void:
 	if data.get("status")=="finished": _result()
 	if WorkbenchSession.tutorial_active:
 		var guide=preload("res://scripts/opening_tutorial.gd").new()
+		guide.bench=self
+		surface.add_child(guide)
+	elif data.get("opening_practice",false) and OpeningFlow.state.phase=="ending":
+		var guide=preload("res://scripts/opening_stock_tutorial.gd").new()
 		guide.bench=self
 		surface.add_child(guide)
 
@@ -902,6 +907,11 @@ func _result() -> void:
 		_button(p,Rect2(40,705,360,44),"重做练习 · 不扣仓库",_restart)
 		_button(p,Rect2(525,705,435,44),"把这一杯递过去 · 空格",_finish_tutorial,true)
 		pending_confirm=_finish_tutorial
+		return
+	if data.get("opening_practice",false) and OpeningFlow.state.phase=="ending":
+		_button(p,Rect2(40,705,360,44),"重做 · 会消耗库存",_restart)
+		pending_confirm=func(): opening_practice_completed.emit()
+		_button(p,Rect2(525,705,435,44),"确认这杯，加入今晚酒单 →",pending_confirm,true)
 		return
 	if WorkbenchSession.is_research(data):
 		var saved: bool=WorkbenchSession.research_state().saved_drinks.has(data.result.drink_id)

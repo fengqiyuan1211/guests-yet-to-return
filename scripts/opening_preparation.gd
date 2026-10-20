@@ -1,7 +1,7 @@
 extends RefCounted
 ## Quantity checks for opening night. Discovery/unlock checks are not stock checks.
 
-static func report(recipe_id: String) -> Dictionary:
+static func report(recipe_id: String, servings: int = 1) -> Dictionary:
 	var recipe: Dictionary = MenuCatalog.get_recipe(recipe_id)
 	var result := {"ready":false,"rows":[],"cost":0,"message":"","recipe":recipe}
 	if recipe.is_empty():
@@ -15,7 +15,7 @@ static func report(recipe_id: String) -> Dictionary:
 		if sku.is_empty() or amount <= 0:
 			result.message = "这款配方的用量尚未完整，先选另一款。"
 			return result
-		amounts[sku] = float(amounts.get(sku,0)) + amount
+		amounts[sku] = float(amounts.get(sku,0)) + amount * maxi(1,servings)
 	result.ready = not amounts.is_empty()
 	for sku: String in amounts:
 		var item: Dictionary = Supplies.get_item(sku)

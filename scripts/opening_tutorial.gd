@@ -3,6 +3,7 @@ extends Control
 const UI=preload("res://scripts/opening_ui.gd")
 const TABLE=preload("res://scripts/workbench_table.gd")
 var bench: Control
+var stock_lesson := false
 var step_title: Label
 var detail: Label
 var targets: Array[Rect2]=[]
@@ -53,7 +54,7 @@ func _click_shortcut() -> void:
 	elif bench.selected=="glass" and bench.serve_armed: bench._finish()
 
 func _process(delta: float) -> void:
-	if not WorkbenchSession.tutorial_active or bench.data.is_empty(): return
+	if (not WorkbenchSession.tutorial_active and not stock_lesson) or bench.data.is_empty(): return
 	if get_window().has_focus():
 		pulse+=delta
 		gesture_clock+=delta
@@ -73,7 +74,7 @@ func _process(delta: float) -> void:
 	var s: Dictionary=bench.data
 	var step:=next_step(s)
 	step_title.text=str(step.title)
-	detail.text="跟随金色光标操作\n练习材料不足可按 N 重做。"
+	detail.text="跟随金色光标操作\n材料来自仓库；按 S 可补货。" if stock_lesson else "跟随金色光标操作\n练习材料不足可按 N 重做。"
 	if step.key!=current_key and not is_instance_valid(bench.measure) and bench.table.carry_id.is_empty():
 		if not current_key.is_empty(): completed_flash=1.3
 		current_key=step.key
@@ -261,6 +262,10 @@ func _draw() -> void:
 			_marker(start,"点击这里",gold)
 			draw_arc(start,24+12*t,0,TAU,48,Color(1,.85,.5,1-t*.65),3,true)
 			_cursor(start+Vector2(8,9 if OpeningFlow.reduced_motion else 9+sin(pulse*4)*6),false)
+		"stir":
+			draw_arc(start,35,0,TAU,32,gold,3)
+			_cursor(start+Vector2.from_angle(pulse*2)*35,true)
+			_marker(start+Vector2(0,-55),"按住 · 轻轻画圈",gold)
 		"shake":
 			var a:=start+Vector2(-38,30)
 			var b:=start+Vector2(38,-85)

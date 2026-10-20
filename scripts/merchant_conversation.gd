@@ -40,7 +40,7 @@ func _show_line() -> void:
 		next_button.disabled=true
 		return
 	var line: Dictionary=lines[index]
-	text_label.text=str(line.speaker)+"\n"+str(line.text)
+	text_label.text=OpeningFlow.protagonist_speaker(str(line.speaker))+"\n"+str(line.text)
 	local_history.append({"chapter":"港口货栈","speaker":line.speaker,"text":line.text})
 	next_button.text="收进手帐 · 空格" if index==lines.size()-1 else "继续 · 空格"
 	next_button.grab_focus()

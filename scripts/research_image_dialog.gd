@@ -67,15 +67,16 @@ func _ready() -> void:
 	surface=Control.new()
 	surface.size=Vector2(1600,900)
 	add_child(surface)
-	var panel:=Panel.new()
+	var panel:=NinePatchRect.new()
 	panel.position=Vector2(190,65)
 	panel.size=Vector2(1220,770)
-	var style:=StyleBoxFlat.new()
-	style.bg_color=Color("eed9b3")
-	style.border_color=Color("b58a48")
-	style.set_border_width_all(3)
-	style.set_corner_radius_all(12)
-	panel.add_theme_stylebox_override("panel",style)
+	panel.texture=preload("res://assets/pixel_b/journal-paper-wide.svg")
+	panel.patch_margin_left=28
+	panel.patch_margin_right=28
+	panel.patch_margin_top=28
+	panel.patch_margin_bottom=28
+	panel.texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST
+	panel.mouse_filter=Control.MOUSE_FILTER_IGNORE
 	surface.add_child(panel)
 	_label(Rect2(235,95,1030,48),"把这一杯留在酒谱里",31)
 	_button(Rect2(1330,91,48,45),"×",func(): queue_free())
@@ -156,7 +157,7 @@ func _button(rect: Rect2,value: String,action: Callable) -> Button:
 		style.bg_color=Color("69462b") if state=="normal" else Color("876039") if state!="disabled" else Color("9a8a72")
 		style.border_color=Color("b58a48")
 		style.set_border_width_all(1)
-		style.set_corner_radius_all(5)
+		style.set_corner_radius_all(0)
 		node.add_theme_stylebox_override(state,style)
 	node.pressed.connect(action)
 	surface.add_child(node)
@@ -168,6 +169,7 @@ func _line(rect: Rect2,hint: String) -> LineEdit:
 	node.size=rect.size
 	node.placeholder_text=hint
 	node.add_theme_font_size_override("font_size",22)
+	_style_input(node)
 	surface.add_child(node)
 	return node
 
@@ -178,8 +180,29 @@ func _editor(rect: Rect2,hint: String) -> TextEdit:
 	node.placeholder_text=hint
 	node.wrap_mode=TextEdit.LINE_WRAPPING_BOUNDARY
 	node.add_theme_font_size_override("font_size",21)
+	_style_input(node)
 	surface.add_child(node)
 	return node
+
+func _style_input(node: Control) -> void:
+	node.add_theme_font_override("font",FONT)
+	for state in ["normal","read_only"]:
+		var box:=StyleBoxFlat.new()
+		box.bg_color=Color("fff0d0") if state=="normal" else Color("e3cfaa")
+		box.border_color=Color("ad8956")
+		box.set_border_width_all(1)
+		box.set_content_margin_all(8)
+		node.add_theme_stylebox_override(state,box)
+	var focus:=StyleBoxFlat.new()
+	focus.bg_color=Color.TRANSPARENT
+	focus.border_color=Color("946338")
+	focus.set_border_width_all(2)
+	node.add_theme_stylebox_override("focus",focus)
+	for key in ["font_color","font_readonly_color","caret_color"]:
+		node.add_theme_color_override(key,Color("49301f"))
+	node.add_theme_color_override("font_placeholder_color",Color("806346"))
+	node.add_theme_color_override("selection_color",Color("bfa574"))
+	node.add_theme_color_override("font_selected_color",Color("30241b"))
 
 func _form() -> Dictionary:
 	return {"name":title.text.strip_edges(),"english_name":english.text,"story":story.text,"notes":notes.text}

@@ -56,6 +56,7 @@ func run() -> void:
 	var stock: Dictionary=Supplies.inventory.serialize()
 	var gold:=SlotWallet.balance
 	await jump("sign_receipt")
+	page.name_edit.text="归舟"
 	page._advance()
 	check(page.busy and OpeningFlow.state.departure.signed,"sign commits before showing its feedback")
 	page._advance()
