@@ -315,31 +315,25 @@ func _library() -> void:
 	feedback.text="已保存成品用量和试调笔记。可在「酒单」选择 DIY 并设置售价，保存配方不会自动上架。"
 
 func _legendary() -> void:
-	var records: Array=Research.config().legendary_recipes
 	var state:=WorkbenchSession.research_state()
+	var records: Array=Research.config().legendary_recipes.filter(func(r: Dictionary): return state.acquired.has(r.id))
 	if records.is_empty():
+		legendary_id=""
 		_label(body,Rect2(20,30,1100,100),"还没有收到特别的配方。",30)
+		feedback.text=""
 		return
-	if legendary_id.is_empty():
+	if not records.any(func(r: Dictionary): return str(r.id)==legendary_id):
 		legendary_id=str(records[0].id)
-		for candidate: Dictionary in records:
-			if state.acquired.has(candidate.id): legendary_id=str(candidate.id); break
 	var choices:=_scroll(Rect2(0,0,340,460))
 	for candidate: Dictionary in records:
-		var unlocked: bool=state.acquired.has(candidate.id)
-		var caption: String=str(candidate.name)+"\n"+("已掌握" if state.mastered.has(candidate.id) else ("待研习" if unlocked else "未获得"))
+		var caption: String=str(candidate.name)+"\n"+("已掌握" if state.mastered.has(candidate.id) else "待研习")
 		var button:=_button(choices,Rect2(0,0,320,94),caption,func(): legendary_id=str(candidate.id); _refresh())
 		button.custom_minimum_size=Vector2(320,94)
 		button.name="Legendary_"+str(candidate.id)
 	var r:=Research.legendary(legendary_id)
-	if r.is_empty(): return
-	var acquired: bool=state.acquired.has(r.id)
+	if r.is_empty() or not state.acquired.has(r.id): return
 	var mastered: bool=state.mastered.has(r.id)
 	_label(body,Rect2(385,0,840,48),str(r.name),31)
-	if not acquired:
-		_label(body,Rect2(385,90,800,125),"这份配方还藏在客人的故事里。\n完成对应角色的正式小游戏，收到他的纪念酒单后再来研习。",24)
-		_resume_button()
-		return
 	var preview:=Preview.new()
 	preview.position=Vector2(370,80)
 	preview.size=Vector2(215,290)

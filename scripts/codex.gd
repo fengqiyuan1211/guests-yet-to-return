@@ -76,7 +76,20 @@ func _ready() -> void:
 func _recipe(id: String) -> Dictionary:
 	var r:=MenuCatalog.get_recipe(id)
 	if r.is_empty(): r=WorkbenchSession.research_state().recipes.get(id,{}).duplicate(true)
-	return r
+	return r if _discovered(r) else {}
+
+func _discovered(recipe: Dictionary) -> bool:
+	var is_reward: bool=not str(recipe.get("source_guest", "")).is_empty() or recipe.get("unlock_kind")=="legendary_mastery"
+	return not is_reward or WorkbenchSession.research_state().acquired.has(recipe.get("id", ""))
+
+func _discovered_recipes() -> Array:
+	var records: Array=[]
+	var seen: Dictionary={}
+	for recipe: Dictionary in MenuCatalog.all_recipes()+WorkbenchSession.research_recipes():
+		if not _discovered(recipe) or seen.has(recipe.id): continue
+		seen[recipe.id]=true
+		records.append(recipe)
+	return records
 
 func _load_settings() -> void:
 	var settings: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/codex_settings.json"))
@@ -102,8 +115,7 @@ func _catalog_changed() -> void:
 
 func _visible_recipes() -> Array:
 	if selected_filter==3: return WorkbenchSession.research_recipes()
-	var records := MenuCatalog.all_recipes().filter(func(r: Dictionary): return r.get("unlock_kind")!="legendary_mastery" or WorkbenchSession.research_state().acquired.has(r.id))
-	records.append_array(WorkbenchSession.research_recipes())
+	var records := _discovered_recipes()
 	records.sort_custom(func(a: Dictionary, b: Dictionary): return int(a.get("codex_order", 99999)) < int(b.get("codex_order", 99999)))
 	if selected_filter == 0:
 		return records
@@ -170,7 +182,7 @@ func _make_page(index: int) -> Control:
 	sheet.add_child(texture)
 	_label(sheet, Rect2(180, 15, 330, 61), "酒 馆 图 鉴", 38)
 	_label(sheet, Rect2(510, 32, 504, 31), "S A L O O N  R E C I P E  J O U R N A L", 16)
-	_label(sheet, Rect2(1030, 27, 166, 34), ("原创配方 %d 款" % WorkbenchSession.research_recipes().size()) if selected_filter==3 else "已点亮 %d / %d" % [MenuCatalog.unlocked_ids.size(), MenuCatalog.all_recipes().size()], 20)
+	_label(sheet, Rect2(1030, 27, 166, 34), ("原创配方 %d 款" % WorkbenchSession.research_recipes().size()) if selected_filter==3 else "已点亮 %d / %d" % [_discovered_recipes().filter(func(r: Dictionary): return r.get("unlocked", false)).size(), _discovered_recipes().size()], 20)
 	var records := _visible_recipes()
 	var offset := 1 if reserved_tutorial_slot and selected_filter!=3 else 0
 	for i in range(6):

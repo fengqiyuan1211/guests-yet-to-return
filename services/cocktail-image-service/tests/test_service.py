@@ -146,7 +146,7 @@ class ContractAndPromptTests(unittest.TestCase):
         request["preview_image"] = "data:image/png;base64," + base64.b64encode(png_fixture()).decode("ascii")
         parsed = parse_request(request, self.builder.profiles)
         with_preview = self.builder.build(parsed)
-        self.assertEqual(len(neutral.images), 2)
+        self.assertEqual(len(neutral.images), 1)
         self.assertEqual(len(with_preview.images), 2)
         self.assertEqual(with_preview.images[0], parsed.preview_image)
         self.assertEqual(with_preview.metadata["generation_intent"], "redraw")

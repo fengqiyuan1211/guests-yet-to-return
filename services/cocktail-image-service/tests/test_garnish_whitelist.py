@@ -22,16 +22,16 @@ class GarnishWhitelistTests(unittest.TestCase):
         value["recipe"]["ingredients"] = [x for x in value["recipe"]["ingredients"] if x["use"] != "装饰"]
         bundle = self.build(value)
         pictures = [x["shot_id"] for x in bundle.metadata["image_roles"] if x["role"] == "style_few_shot"]
-        self.assertEqual(pictures, ["last_word"])
-        self.assertIn("禁止出现薄荷叶、薄荷枝、绿色装饰叶", bundle.prompt)
-        self.assertIn("清单为空就没有装饰", bundle.prompt)
+        self.assertEqual(pictures, [])  # No garnish-free reference with this selected glass.
+        self.assertIn("均不添加水果、叶片", bundle.prompt)
+        self.assertIn("没有装饰，也没有留杯固体", bundle.prompt)
         self.assertEqual(bundle.metadata["serving_constraints"]["allowed_visible_ingredients"], [])
 
     def test_lime_drink_cannot_copy_mojito_mint(self):
         bundle = self.build(self.request)
         pictures = [x["shot_id"] for x in bundle.metadata["image_roles"] if x["role"] == "style_few_shot"]
         self.assertNotIn("mojito", pictures)
-        self.assertIn("本杯未选择薄荷", bundle.prompt)
+        self.assertIn("种类和数量必须一致，不增加、不省略、不替换", bundle.prompt)
 
     def test_real_mint_in_glass_is_still_allowed(self):
         value = copy.deepcopy(self.request)

@@ -39,8 +39,8 @@ class ServingConstraintsTests(unittest.TestCase):
         self.assertEqual(constraints["serving_ice"], parsed.recipe["ice"])
         self.assertEqual(constraints["piece_count_ice"], parsed.recipe["ice"])
         self.assertEqual(constraints["piece_count_ice"][0]["amount"], 1)
-        self.assertIn('“大方冰”只画1块完整冰', bundle.prompt)
-        self.assertIn("不能拆成多块、堆叠冰或碎冰", bundle.prompt)
+        self.assertIn('“大方冰” 1 piece', bundle.prompt)
+        self.assertIn("按件记录的数量必须一致", bundle.prompt)
         for forbidden in ("薄荷", "柠檬片", "青柠角"):
             self.assertIn(forbidden, self.forbidden(bundle))
         self.assertEqual(bundle.metadata["target_recipe"], parsed.recipe)
@@ -51,8 +51,8 @@ class ServingConstraintsTests(unittest.TestCase):
         self.assertEqual(glass["name"], "古典杯")
         self.assertEqual(glass["shape"], "rocks")
         self.assertEqual(glass["height_to_width_hint"], [0.9, 1.25])
-        self.assertIn("0.9", bundle.prompt)
-        self.assertIn("1.25", bundle.prompt)
+        self.assertIn("矮宽直壁", bundle.prompt)
+        self.assertIn("没有杯脚", bundle.prompt)
 
     def test_actual_mojito_mint_and_lime_are_allowed_and_not_blanket_forbidden(self):
         data = copy.deepcopy(self.green)
@@ -101,9 +101,9 @@ class ServingConstraintsTests(unittest.TestCase):
         self.assertEqual(constraints["allowed_visible_ingredients"], [expected_mint])
         self.assertEqual(bundle.metadata["appearance"]["visible_garnishes"], [])
         self.assertNotIn("薄荷", self.forbidden(bundle))
-        self.assertIn("这杯酒没有装饰，不自行加入杯口装饰", bundle.prompt)
-        self.assertIn("杯内实体食材仅按明确留杯固体清单绘制", bundle.prompt)
-        self.assertIn('留在杯中的固体是：“薄荷叶” 6 piece', bundle.prompt)
+        self.assertIn("可见装饰和留杯固体仅有", bundle.prompt)
+        self.assertIn("种类和数量必须一致", bundle.prompt)
+        self.assertIn('“薄荷叶” 6 piece', bundle.prompt)
         self.assertNotIn("不添加任何水果、香草", bundle.prompt)
 
     def test_gram_based_ice_does_not_invent_a_piece_count(self):
@@ -113,7 +113,7 @@ class ServingConstraintsTests(unittest.TestCase):
         self.assertEqual(constraints["serving_ice"][0]["amount"], 150)
         self.assertEqual(constraints["serving_ice"][0]["unit"], "g")
         self.assertEqual(constraints["piece_count_ice"], [])
-        self.assertIn("按g记录的出品冰只指定重量，不能擅自换算成固定块数", bundle.prompt)
+        self.assertIn("按重量记录的不换算成固定块数", bundle.prompt)
         self.assertNotIn("只画1块完整冰", bundle.prompt)
         self.assertNotIn("150块", bundle.prompt)
 
@@ -158,9 +158,9 @@ class ServingConstraintsTests(unittest.TestCase):
         self.assertEqual(bundle.metadata["appearance"], baseline.metadata["appearance"])
         self.assertEqual(bundle.metadata["preview_role"], "actual_contents_reference")
         self.assertEqual(bundle.metadata["story_role"], "subtle_mood_only")
-        self.assertEqual(len(bundle.images), 2)
-        self.assertIn("仅绘制配方授权的实体食材", bundle.prompt)
-        self.assertIn("不复制它们的酒杯类型、内容、冰、装饰或背景", bundle.prompt)
+        self.assertEqual(len(bundle.images), 1)  # Only actual preview; no matching rocks-glass example.
+        self.assertIn("不能改变杯型或增减食材", bundle.prompt)
+        self.assertEqual([role["role"] for role in bundle.metadata["image_roles"]], ["rule_preview"])
 
 
 if __name__ == "__main__":
