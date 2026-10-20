@@ -97,7 +97,7 @@ func _ready() -> void:
 		var guide=preload("res://scripts/opening_tutorial.gd").new()
 		guide.bench=self
 		surface.add_child(guide)
-	elif data.get("opening_practice",false) and OpeningFlow.state.phase=="ending":
+	elif (data.get("opening_practice",false) and OpeningFlow.state.phase=="ending") or (OpeningFlow.first_service_pending() and data.get("guest",{}).get("id")=="milo" and data.get("recipe",{}).get("id")=="gin_and_tonic"):
 		var guide=preload("res://scripts/opening_stock_tutorial.gd").new()
 		guide.bench=self
 		surface.add_child(guide)
@@ -848,14 +848,17 @@ func _begin_measure(material: String, target: float, vessel := "jigger") -> void
 func _finish() -> void:
 	table.stop_gesture()
 	if data.get("status") == "finished":
-		if _service_cup(): _send_finished_drink()
+		if _service_cup() and not _first_service_cup(): _send_finished_drink()
 		else: _result()
 		return
 	if _issue("finish"):
-		if _service_cup(): _send_finished_drink()
+		if _service_cup() and not _first_service_cup(): _send_finished_drink()
 		else: _result()
 	else:
 		status_label.text=WorkbenchSession.last_error
+
+func _first_service_cup() -> bool:
+	return OpeningFlow.first_service_pending() and data.get("guest",{}).get("id")=="milo" and _service_cup()
 
 func _service_cup() -> bool:
 	return not data.has("order") and not WorkbenchSession.is_research(data) and not str(data.get("guest", {}).get("visit_id", "")).is_empty()
@@ -877,7 +880,7 @@ func _served_record() -> Dictionary:
 	return {}
 
 func _result() -> void:
-	var p:=_dialog("",760,1020,_return_after_serving if _service_cup() else Callable())
+	var p:=_dialog("",760,1020,_return_after_serving if _service_cup() and not _first_service_cup() else Callable())
 	var evaluation: Dictionary=data.result.get("evaluation",{})
 	var accent:=Color(str(evaluation.get("color","8c9aa2")))
 	var style:=_style(Color("f1e2c3"),accent)
@@ -899,6 +902,8 @@ func _result() -> void:
 	card.size=Vector2(980,630)
 	card.result=data.result.duplicate(true)
 	card.service_record = _served_record() if _service_cup() else {}
+	if _service_cup():
+		card.footer_message="客人已收到这杯酒 · 获得 %d 金币" % int(card.service_record.amount) if not card.service_record.is_empty() else CustomerService.last_error
 	card.result["cup"]=data.result.get("cup",data.cup)
 	card.result["capacity_ml"]=data.result.get("capacity_ml",WorkbenchSession.capacity(data,"glass"))
 	p.add_child(card)
@@ -912,6 +917,11 @@ func _result() -> void:
 		_button(p,Rect2(40,705,360,44),"重做 · 会消耗库存",_restart)
 		pending_confirm=func(): opening_practice_completed.emit()
 		_button(p,Rect2(525,705,435,44),"确认这杯，加入今晚酒单 →",pending_confirm,true)
+		return
+	if _first_service_cup():
+		_button(p,Rect2(40,705,360,44),"重做 · 会消耗库存",_restart)
+		_button(p,Rect2(525,705,435,44),"交给米洛 · 空格",_send_finished_drink,true)
+		pending_confirm=_send_finished_drink
 		return
 	if WorkbenchSession.is_research(data):
 		var saved: bool=WorkbenchSession.research_state().saved_drinks.has(data.result.drink_id)
@@ -942,8 +952,6 @@ func _result() -> void:
 		return
 	elif _service_cup():
 		var served := _served_record()
-		var note := "客人已收到这杯酒 · 获得 %d 金币" % int(served.amount) if not served.is_empty() else (CustomerService.last_error if not CustomerService.last_error.is_empty() else "这一杯已经做好，送给正在等你的客人。")
-		_text(p,Rect2(45,667,930,26),note,18,INK)
 		_button(p,Rect2(355,705,310,44),"回酒馆，听听客人怎么说" if not served.is_empty() else "送给客人，返回酒馆",_return_after_serving,true)
 		pending_confirm = _return_after_serving
 		return

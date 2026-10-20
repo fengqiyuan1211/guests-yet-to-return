@@ -6,6 +6,7 @@ const KEYS=["alcohol_intensity","sweetness","sourness","bitterness"]
 const LABELS=["酒感","甜度","酸度","苦度"]
 var result: Dictionary={}
 var service_record: Dictionary={}
+var footer_message := ""
 var preview: Control
 
 func _ready() -> void:
@@ -48,7 +49,7 @@ func _ready() -> void:
 			_label(Rect2(382,458,580,28),"风味印象 · 试调记录" if not evaluation.get("has_target",true) else "配方 %d   ·   制作 %d   ·   出品 %d" % [subs.recipe,subs.process,subs.finish],18,Color("816b4d"))
 			for i in range(mini(3,evaluation.reasons.size())):
 				_label(Rect2(28,503+i*29,920,28),"· "+str(evaluation.reasons[i]),18,Color("574332"))
-	_label(Rect2(28,599,922,26),"回到酒馆，听听客人的感受。" if not service_record.is_empty() else "试玩参数 · 四项属性 0—100 · 酒感不等于 ABV · R 查看全部依据",16,Color("816b4d"))
+	_label(Rect2(28,599,922,26),footer_message if not footer_message.is_empty() else ("回到酒馆，听听客人的感受。" if not service_record.is_empty() else "试玩参数 · 四项属性 0—100 · 酒感不等于 ABV · R 查看全部依据"),16,Color("816b4d"))
 
 	if result.get("legendary_buff", {}).get("id") == "buff.to_be_continued":
 		var badge:=Panel.new()

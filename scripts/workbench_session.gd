@@ -192,6 +192,10 @@ func _valid(data: Variant) -> bool:
 			return false
 	if not data.get("history") is Array or not _number(data.get("serial"), 1000000000):
 		return false
+	if data.has("opening_purchases"):
+		if not data.opening_purchases is Dictionary: return false
+		for sku in data.opening_purchases:
+			if not Supplies.OPENING_PACKS.has(sku) or not _number(data.opening_purchases[sku],1000000000): return false
 	if data.has("activities") and not preload("res://scripts/guest_activity_rules.gd").valid_book(data.activities): return false
 	if data.has("service") and not preload("res://scripts/guest_service_data.gd").valid(data.service): return false
 	if data.has("research"):
@@ -712,7 +716,7 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 		for entry in MenuCatalog.entries:
 			if entry.id == recipe_id: listed = true
 		var reference: Dictionary = MenuCatalog.get_recipe(recipe_id)
-		var opening_practice: bool=payload.get("opening_practice",false)==true and recipe_id=="gin_and_tonic" and OpeningFlow.state.phase=="ending" and not OpeningFlow.replaying and OpeningFlow.state.get("departure",{}).get("lesson",{}).get("phase","") in ["shop","mixing"]
+		var opening_practice: bool=payload.get("opening_practice",false)==true and recipe_id=="gin_and_tonic" and OpeningFlow.state.phase=="ending" and OpeningFlow.can_write_playthrough() and OpeningFlow.state.get("departure",{}).get("lesson",{}).get("phase","") in ["shop","mixing"]
 		if (not listed and not opening_practice) or reference.is_empty() or not reference.get("unlocked",false):
 			return _error("这款酒已不在营业酒单中，请重新选择。")
 		var recipe := recipe_snapshot(reference)

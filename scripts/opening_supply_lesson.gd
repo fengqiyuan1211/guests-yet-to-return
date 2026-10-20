@@ -40,11 +40,12 @@ func _shop() -> void:
 		return
 	_clear()
 	page=load("res://scenes/harbor_shop.tscn").instantiate()
+	page.opening_free_lesson=true
 	page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(page)
 	page.close_requested.connect(_shop_back)
 	var back: Button=page.find_child("BackButton",true,false)
-	back.text="← 回工作台" if WorkbenchSession.state.session.get("opening_practice",false) else "保存并返回开始"
+	back.text="← 回工作台" if WorkbenchSession.state.session.get("opening_practice",false) else ("退出体验，返回开始" if OpeningFlow.replaying else "保存并返回开始")
 	back.add_theme_font_size_override("font_size",18)
 	guide=preload("res://scripts/opening_shop_guide.gd").new()
 	guide.shop=page
@@ -68,7 +69,7 @@ func _mix() -> void:
 	var s: Dictionary=WorkbenchSession.state.session
 	var ours: bool=s.get("opening_practice",false) and s.get("recipe",{}).get("id")=="gin_and_tonic"
 	if not ours:
-		if not Prep.report("gin_and_tonic").ready:
+		if not Supplies.opening_purchase_report().ready:
 			_shop()
 			return
 		if not s.is_empty() and s.status=="mixing" and not s.actions.is_empty():

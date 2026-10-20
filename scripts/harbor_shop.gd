@@ -53,6 +53,7 @@ var merchant_line_index := 0
 var toast: Label
 var toast_remaining := 0.0
 var page_turning := false
+var opening_free_lesson := false
 var opening_purchase_guard := Callable()
 var opening_visit := false
 var merchant_dialogue: Control
@@ -704,10 +705,13 @@ func _update_receipt() -> void:
 	var total := maxi(0, price) * packages
 	var quote: Dictionary = {}
 	if supplies != null and supplies.has_method("quote_purchase"):
-		quote = supplies.call("quote_purchase", selected_id, packages)
+		quote = supplies.call("quote_opening_purchase" if opening_free_lesson else "quote_purchase", selected_id, packages)
 		total = int(quote.get("total", total))
 	receipt_total.text = "合计 %d 金币" % total if price >= 0 else ""
-	buy_button.text = "已购置" if owned else "购买"
+	if opening_free_lesson:
+		receipt_total.text = "教学采购 · 0 金币"
+		receipt_hint.text = "教学赠送，原有金币不会减少"
+	buy_button.text = "已购置" if owned else ("免费领取 · 教学购买" if opening_free_lesson else "购买")
 	buy_button.disabled = page_turning or owned or supplies == null or wallet == null or price < 0 or total > _wallet_balance() or (not quote.is_empty() and not bool(quote.get("ok", false)))
 	if not owned and price >= 0 and total > _wallet_balance():
 		receipt_hint.text = "还差 %d 金币" % (total - _wallet_balance())
@@ -730,7 +734,7 @@ func _purchase() -> void:
 	var bought := packages
 	var balance_before := _wallet_balance()
 	var stock_before: float=supplies.total_remaining(selected_id)
-	if bool(supplies.call("purchase", selected_id, packages)):
+	if bool(supplies.call("purchase_opening" if opening_free_lesson else "purchase", selected_id, packages)):
 		SaloonAudio.ui.product(item,true)
 		merchant_line.text = "给你收好了。下回缺什么，再来找我。"
 		_show_toast("已买入 %s%s" % [str(item.name), " × %d" % bought if bought > 1 else ""])

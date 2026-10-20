@@ -13,8 +13,25 @@ var last_error := ""
 var _return_state: Dictionary = {}
 var _return_path := ""
 var reduced_motion := false
+var replay_world = preload("res://scripts/opening_replay_world.gd").new()
+
+func can_write_playthrough() -> bool:
+	return not replaying or replay_world.active
+
+func ensure_replay_world() -> bool:
+	return not replaying or replay_world.start()
+
+func first_service_pending() -> bool:
+	return state.get("first_service_pending",false) and state.phase=="ready"
+
+func complete_first_service() -> bool:
+	if not first_service_pending(): return true
+	var next:=state.duplicate(true)
+	next.first_service_pending=false
+	return _commit(next)
 
 func _ready() -> void:
+	_bind_first_service.call_deferred()
 	for arg in OS.get_cmdline_args():
 		if arg.ends_with(".tscn") and not arg.ends_with("title_screen.tscn"):
 			front_end = false
@@ -51,6 +68,22 @@ func _ready() -> void:
 	var config := ConfigFile.new()
 	if config.load(save_path+".settings") == OK:
 		reduced_motion = bool(config.get_value("display","reduced_motion",false))
+
+func _bind_first_service() -> void:
+	CustomerService.changed.connect(_reconcile_first_service)
+	GuestService.changed.connect(_reconcile_first_service)
+	_reconcile_first_service()
+
+func _reconcile_first_service() -> void:
+	if not first_service_pending() or not can_write_playthrough(): return
+	for record: Dictionary in CustomerService.state.deliveries.values():
+		if record.guest_id=="milo" and record.status=="settled" and record.get("play_mode","story")=="story":
+			complete_first_service()
+			return
+	for tx: Dictionary in GuestService.ledger().deliveries.values():
+		if tx.order.guest_id=="milo" and tx.phase=="complete":
+			complete_first_service()
+			return
 
 func fresh() -> Dictionary:
 	return {"version":1,"story_version":4,"node_id":str(story.nodes[0].id),"phase":"new","node":0,"choices":{},"mail_read":{},"history":[],"tutorial":{},"stock":{},"tutorial_status":"not_started","reward_claimed":false,"legacy":false,"arrival_pending":false}
@@ -105,6 +138,7 @@ func valid(value: Variant) -> bool:
 	var saved_name: Variant=value.get("player_name","")
 	if not saved_name is String: return false
 	if not saved_name.is_empty() and (not player_name_error(saved_name).is_empty() or saved_name!=saved_name.strip_edges()): return false
+	if not value.get("first_service_pending",false) is bool or not value.get("arrival_pending",false) is bool: return false
 	if value.get("phase") not in ["new","cg","tutorial","ending","ready"]: return false
 	if value.has("departure") and not valid_departure(value.departure): return false
 	if not (value.get("node") is int or value.get("node") is float) or value.node < 0 or value.node != floor(value.node): return false
@@ -360,9 +394,7 @@ func observe_departure(row: Dictionary) -> bool:
 func finish_opening() -> bool:
 	if OpeningTransition.busy: return false
 	if state.phase != "ending": return false
-	if replaying:
-		return_to_title()
-		return true
+	if not ensure_replay_world(): return false
 	if not state.get("departure",{}).get("opened",false) or not preload("res://scripts/opening_preparation.gd").ready_menu():
 		last_error="先备齐一款酒、确认上架，再翻转营业牌。"
 		return false
@@ -374,6 +406,7 @@ func finish_opening() -> bool:
 	next.phase = "ready"
 	next.reward_claimed = true
 	next.arrival_pending = true
+	next.first_service_pending = true
 	if not _commit(next): return false
 	return enter_game()
 
@@ -390,7 +423,7 @@ func enter_game() -> bool:
 	return OpeningTransition.go("res://scenes/home.tscn")
 
 func arrival_pending() -> bool:
-	return not replaying and bool(state.get("arrival_pending",false))
+	return can_write_playthrough() and bool(state.get("arrival_pending",false))
 
 func acknowledge_arrival() -> bool:
 	var next := state.duplicate(true)
@@ -401,6 +434,7 @@ func return_to_title() -> void:
 	if OpeningTransition.busy: return
 	leave_tutorial()
 	if replaying:
+		replay_world.restore()
 		state = _return_state
 		save_path = _return_path
 		replaying = false

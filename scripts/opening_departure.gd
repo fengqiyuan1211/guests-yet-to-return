@@ -148,7 +148,7 @@ func _render() -> void:
 	status.text="回看 · 长按空格 10 倍速 · 不改变经营进度" if OpeningFlow.replaying else "点击/短按继续 · 长按空格 10 倍速 · H 历史"
 	next_button.text=str(row.get("button","继续 · 空格"))
 	next_button.disabled=false
-	if OpeningFlow.replaying and row.get("action")=="finish": next_button.text="结束回看 · 返回开始"
+	if OpeningFlow.replaying and row.get("action")=="finish": next_button.text="开业，迎接米洛 →"
 	background.texture=preload("res://scripts/pixel_art.gd").texture("res://assets/art/saloon-day-unlit-v2.png" if row.background=="saloon" else "res://assets/art/opening/porch.png")
 	background.material.set_shader_parameter("ocean",false)
 	story_audio.present(row,self)
@@ -173,7 +173,7 @@ func _render() -> void:
 		prop_tween.tween_property(props,"position:y",0.0,.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	prop_key=next_prop
 	if row.get("action")=="prepare": _show_preparation()
-	if row.get("action")=="finish" and not OpeningFlow.replaying:
+	if row.get("action")=="finish" and OpeningFlow.can_write_playthrough():
 		status.text="营业牌已翻开 · 稍后直接迎接第一位客人"
 		if not is_instance_valid(arrival_timer):
 			arrival_timer=Timer.new()
@@ -183,7 +183,7 @@ func _render() -> void:
 		arrival_timer.start(4.5)
 
 func _enter_first_arrival() -> void:
-	if row.get("action")!="finish" or OpeningFlow.replaying: return
+	if row.get("action")!="finish" or not OpeningFlow.can_write_playthrough(): return
 	if busy or OpeningTransition.busy or is_instance_valid(history_panel):
 		arrival_timer.start(.5)
 		return
@@ -356,7 +356,7 @@ func _advance() -> void:
 				return
 		"water": patch.water=true
 		"open":
-			if not OpeningFlow.replaying and not Prep.ready_menu():
+			if not Prep.ready_menu():
 				status.text="库存发生变化，先返回备料，确保有一款酒能够制作。"
 				_show_preparation()
 				return
@@ -444,8 +444,8 @@ func _perform_action(action: String) -> void:
 			await get_tree().create_timer(.55).timeout
 
 func _show_preparation() -> void:
-	if OpeningFlow.replaying:
-		_show_legacy_preparation()
+	if not OpeningFlow.ensure_replay_world():
+		status.text=OpeningFlow.last_error
 		return
 	if is_instance_valid(preparation): return
 	narrative_panel.hide()

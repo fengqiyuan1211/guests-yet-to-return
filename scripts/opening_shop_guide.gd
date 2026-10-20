@@ -46,10 +46,10 @@ func refresh() -> void:
 	proceed.hide()
 	var back: Button=shop.find_child("BackButton",true,false)
 	if is_instance_valid(back):
-		back.text="← 回工作台" if WorkbenchSession.state.session.get("opening_practice",false) or (supply_report().ready and Relationships.state.flags.get("done:merchant_seed",false)) else "保存并返回开始"
+		back.text="← 回工作台" if WorkbenchSession.state.session.get("opening_practice",false) or (supply_report().ready and Relationships.state.flags.get("done:merchant_seed",false)) else ("退出体验，返回开始" if OpeningFlow.replaying else "保存并返回开始")
 	if not Relationships.state.flags.get("done:merchant_intro",false):
 		title.text="01 · 先认识老板娘"
-		description.text="这就是港口货栈。\n点击发光的「先认识一下」，听她介绍。\n稍后我们买金酒、汤力水和青柠角。"
+		description.text="教学购买免费，原来的金币不会减少。\n点击发光的「先认识一下」，听她介绍。\n稍后我们买金酒、汤力水和青柠角。"
 		target=shop.topic_button
 		return
 	var report: Dictionary=supply_report()
@@ -60,7 +60,7 @@ func refresh() -> void:
 			current_sku=item.sku
 			shop.focus_item(current_sku)
 		title.text="%02d · 买%s" % [i+2,item.name]
-		description.text="备料合计 %s %s；库存已有 %s %s。\n买 %d 包就够；下方显示整包价格。\n先备练习＋营业各一杯，购买会进入仓库。" % [WorkbenchSession.format_amount(item.required),item.unit,WorkbenchSession.format_amount(item.remaining),item.unit,item.packages]
+		description.text="备料合计 %s %s；库存已有 %s %s。\n按提示领取 %d 包，教学购买不扣金币。\n已有库存也要练习一次，赠送材料进入仓库。" % [WorkbenchSession.format_amount(item.required),item.unit,WorkbenchSession.format_amount(item.remaining),item.unit,item.packages]
 		if shop.selected_id!=current_sku:
 			target=shop.find_child("Product_"+current_sku,true,false)
 			if not is_instance_valid(target):
@@ -85,11 +85,10 @@ func refresh() -> void:
 func _purchase_reason(sku: String, packages: int) -> String:
 	for row: Dictionary in supply_report().rows:
 		if row.sku==sku and row.missing>0 and packages<=int(row.packages): return ""
-	return "这次先按提示买够练习和营业材料，留好开店预算；开业后可自由采购。"
+	return "教学采购免费，请按高亮提示领取；开业后恢复正常价格。"
 
 func supply_report() -> Dictionary:
-	var continuing: bool=WorkbenchSession.state.session.get("opening_practice",false)
-	return Prep.report("gin_and_tonic",1 if continuing else 2)
+	return Supplies.opening_purchase_report()
 
 func _proceed() -> void:
 	if not supply_report().ready:

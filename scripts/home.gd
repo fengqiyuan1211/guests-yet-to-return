@@ -112,6 +112,9 @@ func _ready() -> void:
 	_on_time_changed(TimeManager.day, TimeManager.minutes_since_midnight)
 	%OpenButton.grab_focus()
 	GameSession.save_game()
+	var first_service=preload("res://scripts/opening_first_service.gd").new()
+	first_service.home=self
+	%Stage.add_child(first_service)
 	if arrival_presenting:
 		arrival_scene=preload("res://scripts/opening_arrival.gd").new()
 		arrival_scene.home=self

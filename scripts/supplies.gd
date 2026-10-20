@@ -149,6 +149,54 @@ func quote_purchase(id: String, packages: Variant = 1) -> Dictionary:
 			message = "金币不足，还需要 %d 金币。" % (total - wallet.balance)
 	return {"ok": message.is_empty(), "unit_price": price, "total": total, "message": message}
 
+const OPENING_PACKS := {"sku_gin_london_dry":1,"sku_tonic_water":2,"sku_lime_wedge":1}
+
+func opening_purchase_report() -> Dictionary:
+	var report: Dictionary=preload("res://scripts/opening_preparation.gd").report("gin_and_tonic",1 if WorkbenchSession.state.session.get("opening_practice",false) else 2)
+	var receipts: Dictionary=workbench.get("opening_purchases",{})
+	report.ready=true
+	for row: Dictionary in report.rows:
+		row.packages=maxi(int(row.packages),int(OPENING_PACKS.get(row.sku,0))-int(receipts.get(row.sku,0)))
+		row.missing=maxf(float(row.missing),1.0 if row.packages>0 else 0.0)
+		row.cost=0
+		if row.packages>0: report.ready=false
+	report.cost=0
+	return report
+
+func quote_opening_purchase(id: String, packages: Variant=1) -> Dictionary:
+	var message := "这笔商品不属于当前免费教学，请按高亮提示操作。"
+	if OpeningFlow.can_write_playthrough() and OpeningFlow.state.phase=="ending" and OpeningFlow.state.get("departure",{}).get("lesson",{}).get("phase")=="shop" and writable and not _busy and _pending.is_empty() and menu.writable and _whole(packages,1,1000):
+		for row: Dictionary in opening_purchase_report().rows:
+			if row.sku==id and row.packages>0 and packages==row.packages: message=""
+	return {"ok":message.is_empty(),"unit_price":0,"total":0,"message":message}
+
+func purchase_opening(id: String, packages: Variant=1) -> bool:
+	var quote:=quote_opening_purchase(id,packages)
+	if not quote.ok:
+		last_error=quote.message
+		return false
+	var candidate: RefCounted=InventoryScript.new()
+	if not candidate.restore(inventory.serialize()) or not candidate.purchase(id,int(packages)): return false
+	var next: Dictionary=WorkbenchSession.state.duplicate(true)
+	if not next.has("opening_purchases"): next.opening_purchases={}
+	next.opening_purchases[id]=int(next.opening_purchases.get(id,0))+int(packages)
+	_busy=true
+	var previous:=workbench
+	workbench=next
+	if not _write(candidate.serialize(),{}):
+		workbench=previous
+		_busy=false
+		return false
+	inventory.restore(candidate.serialize())
+	workbench_initialized=true
+	_busy=false
+	last_error=""
+	_sync_menu()
+	changed.emit()
+	shop_changed.emit()
+	purchase_completed.emit(id,int(packages),0)
+	return true
+
 func purchase(id: String, packages: Variant = 1) -> bool:
 	var quote := quote_purchase(id, packages)
 	if not quote.ok:

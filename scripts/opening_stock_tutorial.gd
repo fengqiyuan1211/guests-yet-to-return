@@ -12,7 +12,7 @@ func _stirred(s: Dictionary) -> float:
 func _ready() -> void:
 	stock_lesson=true
 	super._ready()
-	bench.footer.text="Esc 回货栈 · 半成品自动保留"
+	bench.footer.text="Esc 回酒馆 · 做完后交给米洛" if OpeningFlow.first_service_pending() else "Esc 回货栈 · 半成品自动保留"
 	bench._update_stock_ui()
 
 func next_step(s: Dictionary) -> Dictionary:
@@ -40,7 +40,7 @@ func next_step(s: Dictionary) -> Dictionary:
 	if s.get("spoon_vessel","")=="glass": return _step("remove_spoon","收回吧勺","点击杯中露出的吧勺，让它自动收回。","",["glass"])
 	if not WorkbenchSession.garnishes(glass).has("garnish"):
 		return _step("garnish","05 · 一角青柠","把装饰菜单里的青柠角拖到高球杯，一块即可。","装饰",["garnish","glass"])
-	return _step("finish","06 · 看看这杯金汤力","点击成品杯，再按空格完成。查看品质后确认加入今晚酒单。","",["glass"])
+	return _step("finish","06 · 看看这杯金汤力","点击成品杯，再按空格完成。查看品质后点击「交给米洛」或按空格交付。" if OpeningFlow.first_service_pending() else "点击成品杯，再按空格完成。查看品质后确认加入今晚酒单。","",["glass"])
 
 func _update_gesture(step: Dictionary) -> void:
 	super._update_gesture(step)

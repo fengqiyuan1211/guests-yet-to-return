@@ -425,7 +425,7 @@ func run() -> void:
 	check(OpeningFlow.begin_replay(),"existing player can replay without reset")
 	check(OpeningFlow.begin_tutorial(),"replay uses isolated practice materials")
 	check(OpeningFlow.finish_tutorial(true),"optional skip leads to ending")
-	check(OpeningFlow.finish_opening(),"replay returns to title")
+	OpeningFlow.return_to_title() # Explicit exit only; completing replay continues into business.
 	await settle_opening_transition()
 	check(OpeningFlow.state==actual_state and not OpeningFlow.replaying,"replay restores actual story phase")
 	check(StoryDialogue.session_snapshot()==story_before and Supplies.inventory.serialize()==baseline,"replay does not change formal guest or stock")

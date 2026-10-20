@@ -50,7 +50,7 @@ func load_state() -> bool:
 	return true
 
 func _commit(next: Dictionary) -> bool:
-	if not writable or OpeningFlow.replaying or not valid(next): return false
+	if not writable or not OpeningFlow.can_write_playthrough() or not valid(next): return false
 	var file := FileAccess.open(save_path+".tmp",FileAccess.WRITE)
 	if file==null:
 		last_error="手帐暂时无法保存，请重试。"
@@ -82,7 +82,7 @@ func _event(next: Dictionary, id: String, person: String, reason: String, points
 
 func reconcile() -> bool:
 	queued=false
-	if OpeningFlow.replaying or GameSession.resetting or not writable or not StoryDialogue.writable or not StoryDialogue.last_error.is_empty(): return false
+	if not OpeningFlow.can_write_playthrough() or GameSession.resetting or not writable or not StoryDialogue.writable or not StoryDialogue.last_error.is_empty(): return false
 	var next := state.duplicate(true)
 	for person: String in StoryDialogue.progress:
 		if StoryDialogue.is_known(person): _event(next,"met:"+person,person,"已经互相介绍",0)

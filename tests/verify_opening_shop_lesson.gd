@@ -47,7 +47,7 @@ func run() -> void:
 				await pointer_click(shop.find_child("QuantityPlus",true,false))
 			await pointer_click(shop.buy_button)
 			lesson.guide.refresh()
-		check(SlotWallet.balance==166,"real fresh budget 300 minus purchases 134")
+		check(SlotWallet.balance==300,"tutorial procurement preserves 300 coins")
 		check(Prep.report("gin_and_tonic").ready,"warehouse now contains recipe ingredients")
 		await talk(shop)
 		lesson.guide.refresh()
@@ -68,7 +68,7 @@ func run() -> void:
 		bench.measure.progress=50.0/bench.measure.volume_limit()
 		await key_press(KEY_SPACE)
 		check(Supplies.total_remaining("sku_gin_london_dry")==700,"real 50 ml consumption before transfer")
-		check(SlotWallet.balance==166,"no sale or extra fee")
+		check(SlotWallet.balance==300,"no sale or extra fee")
 	elif mode=="--lesson-resume":
 		check(OpeningFlow.state.departure.lesson.phase=="mixing","phase survives process restart")
 		check(WorkbenchSession.state.session.vessels.jigger.contents.gin==50,"half cup survives restart")
@@ -102,7 +102,7 @@ func run() -> void:
 		await pointer_click(button_named(bench,"确认这杯，加入今晚酒单 →"))
 		check(OpeningFlow.state.departure.node=="ready","result returns to opening story")
 		check(MenuCatalog.entries.size()==1 and MenuCatalog.entries[0].id=="gin_and_tonic","explicit confirmed listing")
-		check(SlotWallet.balance==166,"practice earns no sales money")
+		check(SlotWallet.balance==300,"practice earns no sales money")
 		var advance_count:=0
 		while OpeningFlow.state.departure.node!="turn_sign" and advance_count<15:
 			advance_count+=1
@@ -124,7 +124,7 @@ func run() -> void:
 		await capture("shop-lesson-07-first-guest")
 	else:
 		check(OpeningFlow.state.phase=="ready" and not OpeningFlow.state.arrival_pending,"completed tutorial survives restart")
-		check(Supplies.total_remaining("sku_gin_london_dry")==700 and SlotWallet.balance==166,"no repeated purchases or material deductions")
+		check(Supplies.total_remaining("sku_gin_london_dry")==700 and SlotWallet.balance==300,"no repeated purchases or material deductions")
 		check(MenuCatalog.entries.size()==1,"menu publication not duplicated")
 	print("SHOP LESSON ",mode,": ",count," checks, ",failures.size()," failures")
 	get_tree().quit(0 if failures.is_empty() else 1)
