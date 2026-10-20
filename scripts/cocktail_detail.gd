@@ -44,9 +44,9 @@ func _rule(parent: Node, rect: Rect2) -> void:
 	line.size = rect.size
 	parent.add_child(line)
 
-func _texture(parent: Node, rect: Rect2, texture: Texture2D, stretch := TextureRect.STRETCH_KEEP_ASPECT_CENTERED) -> void:
+func _texture(parent: Node, rect: Rect2, texture: Texture2D, stretch := TextureRect.STRETCH_KEEP_ASPECT_CENTERED) -> TextureRect:
 	if texture == null:
-		return
+		return null
 	var picture := TextureRect.new()
 	picture.position = rect.position
 	picture.size = rect.size
@@ -55,6 +55,7 @@ func _texture(parent: Node, rect: Rect2, texture: Texture2D, stretch := TextureR
 	picture.stretch_mode = stretch
 	picture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	parent.add_child(picture)
+	return picture
 
 func _background() -> void:
 	# Paper fills the complete three-column page; artwork keeps its own aspect ratio.
@@ -104,8 +105,12 @@ func _header() -> void:
 	_label(self, Rect2(1033, 62, 143, 25), "原料 %d / %d" % [progress.owned, progress.total], 16, MUTED)
 
 func _left_column() -> void:
-	_texture(self, Rect2(142, 115, 302, 277), CocktailDatabase.get_image(str(recipe.id)))
-	if recipe.get("source_kind")=="diy" or recipe.get("unlock_kind")=="legendary_mastery":
+	var cover := preload("res://scripts/research_data.gd").codex_cover(recipe)
+	var picture := _texture(self, Rect2(142, 115, 302, 277), cover if cover != null else CocktailDatabase.get_image(str(recipe.id)))
+	if cover != null:
+		picture.name = "CodexCover"
+		picture.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	if cover == null and (recipe.get("source_kind")=="diy" or recipe.get("unlock_kind")=="legendary_mastery"):
 		var preview:=preload("res://scripts/workbench_drink_preview.gd").new()
 		preview.position=Vector2(142,115)
 		preview.size=Vector2(302,277)

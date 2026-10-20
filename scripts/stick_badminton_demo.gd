@@ -66,7 +66,7 @@ func _ready() -> void:
 	jump_button = _button(surface, Rect2(1100, 747, 164, 76), "跳跃 · W", _jump)
 	swing_button = _button(surface, Rect2(1278, 747, 200, 76), "挥拍 · 空格", _swing)
 	_label(surface, Rect2(476, 754, 604, 59), "低球向上挑，高球上手击。\n太高跳起接，按左打短、右打深。", 20, true)
-	_label(surface, Rect2(120, 839, 1360, 28), "先得 5 分获胜  ·  赢得《童年拾忆》  ·  酒馆时间暂停" if _story_match() else "内测演示 · 不发放剧情奖励 · 酒馆时间暂停", 18, true)
+	_label(surface, Rect2(120, 839, 1360, 28), "先得 3 分获胜  ·  赢得《童年拾忆》  ·  酒馆时间暂停" if _story_match() else "内测演示 · 不发放剧情奖励 · 酒馆时间暂停", 18, true)
 	_setup_audio()
 	_intro()
 	_sync_controls()
@@ -157,8 +157,8 @@ func _panel() -> Panel:
 func _intro() -> void:
 	var p := _panel()
 	_label(p, Rect2(42, 30, 795, 64), "另一支球拍，给你。" if _story_match() else "童年拾忆 · 内测演示", 34, true)
-	_label(p, Rect2(60, 110, 760, 112), "小线把牛仔帽扶正，走到球网另一边。\n“都说了这么多以前的事了。陪我打一局？”" if _story_match() else "陪小线打一场五分友谊赛。\n当前为内测演示，不推进剧情、不发放奖励。", 25, true)
-	_label(p, Rect2(58, 224, 766, 77), "空格击球：低球自动挑起，高球上手挥拍，太高跳起接。\n先得 5 分获胜；按左打短、右打深，自动跑位只帮你移动。", 21, true)
+	_label(p, Rect2(60, 110, 760, 112), "小线把牛仔帽扶正，走到球网另一边。\n“都说了这么多以前的事了。陪我打一局？”" if _story_match() else "陪小线打一场三分友谊赛。\n当前为内测演示，不推进剧情、不发放奖励。", 25, true)
+	_label(p, Rect2(58, 224, 766, 77), "空格击球：低球自动挑起，高球上手挥拍，太高跳起接。\n先得 3 分获胜；按左打短、右打深，自动跑位只帮你移动。", 21, true)
 	warmup = CheckBox.new()
 	warmup.text = "先试两个球，不记分"
 	warmup.button_pressed = true
@@ -204,7 +204,7 @@ func _pause() -> void:
 	var p := _panel()
 	_label(p, Rect2(42, 35, 796, 64), "球先放一会儿。", 35, true)
 	_label(p, Rect2(70, 128, 740, 80), "当前比分  %d : %d\n暂停期间，比赛和酒馆时间都停在这里。" % [model.player_score, model.ai_score], 25, true)
-	_label(p, Rect2(70, 238, 740, 58), "继续这一球，或重新开始一场五分友谊赛。", 23, true)
+	_label(p, Rect2(70, 238, 740, 58), "继续这一球，或重新开始一场三分友谊赛。", 23, true)
 	_button(p, Rect2(42, 365, 235, 60), "继续 · Esc", _resume)
 	_button(p, Rect2(300, 365, 280, 60), "重新开一局", _start)
 	_button(p, Rect2(605, 365, 235, 60), "回到小线" if _story_match() else "返回手帐", _close)
@@ -299,7 +299,7 @@ func _result() -> void:
 	_label(p, Rect2(100, 89, 680, 60), "%d : %d    最长 %d 拍" % [model.player_score, model.ai_score, model.longest_rally], 28, true)
 	var response := "“先说好，这分得算啊。下回你可别说我记错了。”\n再来一局，把下一分接回来？"
 	if won and story: response = "“行啊，最后这球接得好。回去坐会儿吧，我有样东西给你。”\n小线收起球拍，朝酒馆门口抬了抬头。"
-	elif won: response = "这一局演示，你先拿到了五分。\n比赛结果仅本局展示，不发放剧情奖励。"
+	elif won: response = "这一局演示，你先拿到了三分。\n比赛结果仅本局展示，不发放剧情奖励。"
 	_label(p, Rect2(60, 168, 760, 92), response, 24, true)
 	var status := "比分记下了，下回接着打。" if saved else "比分还没记好，请再试一次。"
 	if won and story: status = "回到酒馆，听听小线接下来想说的话。" if saved else "比赛结果还没记好，请再试一次。"

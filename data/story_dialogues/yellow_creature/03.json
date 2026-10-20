@@ -15,11 +15,11 @@
   "nodes": {
     "start": {
       "speaker": "guest",
-      "text": "我是奶龙",
+      "text": "我是奶蛙",
       "choices": [
         {
           "id": "yellow_creature_03.start.c1",
-          "text": "我才是奶龙",
+          "text": "我才是奶蛙",
           "next": "handoff"
         }
       ]

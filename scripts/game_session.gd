@@ -82,6 +82,9 @@ func load_game() -> bool:
 	if not FileAccess.file_exists(save_path):
 		return true # First upgrade retains legacy stories and wallet; old builds stored no clock.
 	var data = JSON.parse_string(FileAccess.get_file_as_string(save_path))
+	if data is Dictionary:
+		StoryDialogue.upgrade_demo_progress(data.get("story"))
+		StoryDialogue.upgrade_demo_session(data.get("active"))
 	if not _valid(data):
 		writable = false
 		last_error = "上次的营业记录未能读取，原记录已保留。"

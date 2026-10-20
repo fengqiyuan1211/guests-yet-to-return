@@ -1,3 +1,12 @@
 * text=auto eol=lf
 *.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ogg binary
+*.mp3 binary
+*.wav binary
 *.ttf binary
+*.sqlite binary
+*.db binary
+*.sqlite3 binary

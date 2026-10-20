@@ -1,7 +1,0 @@
-{
-  "date": "2026-10-09",
-  "method": "内置 image_gen",
-  "file": "milo-failure.png",
-  "prompt": "Use case stylized-concept. Production illustrated failure cutscene background for a warm hand-painted western harbor tavern tabletop river puzzle. Reference image establishes exact river diorama materials/style. Cinematic close perspective of wooden model ferry crossing going wrong in a nonviolent way: foreground loose mooring rope, an overturned blue patrol wooden pawn and brown worker wooden pawn ON THE DRY TABLE next to a partly crumpled route map, small river boat drifting out of focus behind; a tipped wooden waiting-fence sign, amber lantern glow and cooler teal water. Convey 'the crossing plan fell apart, let's reset the tabletop model', no actual injury, no drowning, no realistic dead people. Toys and miniature scenery clearly wood. Rich painterly material depth, expressive warm melancholy but recoverable mishap. 16:9 landscape, focal tableau upper-middle with bottom 20% dark unbusy wood for runtime text overlay. NO text, NO UI, NO letters, NO numbers, NO hands. No game outcome counts depicted.",
-  "reference": "milo-river.png"
-}

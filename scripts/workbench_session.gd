@@ -669,6 +669,7 @@ func command(id: String, session_id: String, kind: String, payload: Dictionary =
 			record.image_path=picture.path
 			record.thumbnail=picture.path
 			record.image_generation=picture.duplicate(true)
+			record.result.image_path=picture.path
 			s.result.image_path=picture.path
 		record.story=str(payload.get("story",memo)).left(1000)
 		var quote:=preload("res://scripts/drink_pricing.gd").quote(record)

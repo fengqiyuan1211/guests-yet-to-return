@@ -227,8 +227,6 @@ func all_recipes() -> Array:
 	var result: Array = []
 	for recipe in _recipes:
 		result.append(get_recipe(recipe.id))
-	for recipe in _character_recipes().values():
-		if recipe.unlocked: result.append(recipe)
 	return result
 
 # Research remains owned by the atomic warehouse/workbench save. The menu only
@@ -292,6 +290,7 @@ func _character_recipes() -> Dictionary:
 			r.attributes_complete=standard.missing.is_empty()
 			r.unlocked=_research_service.research_state().acquired.has(r.id)
 			r.preview_only=false
+			_apply_fixed_price(r)
 			records[r.id]=r
 	return records
 
@@ -302,11 +301,19 @@ func _menu_diy(record: Dictionary) -> Dictionary:
 	for key in standard.attributes: recipe[key]=standard.attributes[key]
 	recipe.attributes_version=standard.version
 	recipe.attributes_complete=standard.missing.is_empty()
-	recipe.merge({"category":"DIY", "subtitle":"自创特调", "thumbnail":"",
+	recipe.merge({"category":"DIY", "subtitle":"自创特调", "thumbnail":record.get("image_path", record.get("thumbnail", "")),
 		"reference_price":record.get("reference_price",1), "price_status":"ingredient_cost_recommendation",
 		"unlocked":true, "unlocked_by_default":false, "preview_only":false,
 		"recipe_status":"已保存的 DIY 配方 · v%s" % str(record.get("version",1))}, true)
+	_apply_fixed_price(recipe)
 	return recipe
+
+func _apply_fixed_price(recipe: Dictionary) -> void:
+	var quote := preload("res://scripts/drink_pricing.gd").quote(recipe)
+	if quote.ok:
+		recipe.reference_price = quote.price
+		recipe.pricing = quote
+		recipe.price_status = "fixed_ingredient_cost"
 
 func unlocked_recipes() -> Array:
 	var result: Array = []
@@ -364,7 +371,7 @@ func _normalize_entries(value: Variant, available: Array, deduplicate: bool) -> 
 				continue
 			return {"ok": false, "message": "酒单中有重复的酒。"}
 		seen[entry.id] = true
-		result.append({"id": entry.id, "price": entry.price})
+		result.append({"id": entry.id, "price": int(get_recipe(entry.id).reference_price)})
 	if result.size() > MAX_MENU_SIZE:
 		return {"ok": false, "message": "一张酒单最多上架六款酒。"}
 	return {"ok": true, "entries": result}

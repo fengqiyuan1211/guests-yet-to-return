@@ -71,65 +71,9 @@
     },
     {
       "event_id": "stick_visit_03",
-      "event_version": "0.3",
+      "event_version": "demo-three-v1",
       "guest_id": "stick",
       "story_episode_id": "stick_03",
-      "preference_delta": {
-        "alcohol_intensity": 0,
-        "sweetness": -10,
-        "sourness": 15,
-        "bitterness": 0
-      },
-      "expected_target": {
-        "alcohol_intensity": 35,
-        "sweetness": 15,
-        "sourness": 35,
-        "bitterness": 30
-      },
-      "persistent": false,
-      "mood_note": "整理旧物后想换个酸一点的口味",
-      "demand_line_ref": {
-        "episode_id": "stick_03",
-        "node_id": "start"
-      },
-      "lock_before": "first_order_clue_displayed",
-      "reroll_on_screen_change": false,
-      "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
-    },
-    {
-      "event_id": "stick_visit_04",
-      "event_version": "0.3",
-      "guest_id": "stick",
-      "story_episode_id": "stick_04",
-      "preference_delta": {
-        "alcohol_intensity": 0,
-        "sweetness": 10,
-        "sourness": 0,
-        "bitterness": -10
-      },
-      "expected_target": {
-        "alcohol_intensity": 35,
-        "sweetness": 35,
-        "sourness": 20,
-        "bitterness": 20
-      },
-      "persistent": false,
-      "mood_note": "排练有了进展",
-      "demand_line_ref": {
-        "episode_id": "stick_04",
-        "node_id": "start"
-      },
-      "lock_before": "first_order_clue_displayed",
-      "reroll_on_screen_change": false,
-      "soft_state_penalty_additions": [],
-      "buff_affinity_overrides": {}
-    },
-    {
-      "event_id": "stick_visit_05",
-      "event_version": "0.3",
-      "guest_id": "stick",
-      "story_episode_id": "stick_05",
       "preference_delta": {
         "alcohol_intensity": 0,
         "sweetness": 0,
@@ -145,7 +89,7 @@
       "persistent": false,
       "mood_note": "想喝第一次来时的味道",
       "demand_line_ref": {
-        "episode_id": "stick_05",
+        "episode_id": "stick_03",
         "node_id": "order_request"
       },
       "lock_before": "first_order_clue_displayed",

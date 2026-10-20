@@ -3,7 +3,7 @@ extends Node
 signal changed
 signal story_finished(guest_id: String, episode_id: String)
 signal smalltalk_requested(guest_id: String, context: Dictionary)
-const CONTENT_REVISIONS := {"stick": "stick-v0.3", "yellow_creature": "yellow-mojito-five-v1"}
+const CONTENT_REVISIONS := {"stick": "stick-demo-three-v1", "yellow_creature": "yellow-mojito-five-v1"}
 const DATA_ROOT := "res://data/story_dialogues/"
 var catalog: Dictionary = {}
 var introductions: Dictionary = {}
@@ -61,6 +61,7 @@ func load_progress() -> void:
 	if not FileAccess.file_exists(save_path):
 		return
 	var data = JSON.parse_string(FileAccess.get_file_as_string(save_path))
+	upgrade_demo_progress(data)
 	if not _valid_save(data):
 		writable = false
 		last_error = "对话存档无法读取，本次进度暂不保存。"
@@ -70,6 +71,34 @@ func load_progress() -> void:
 
 func content_revision(id: String) -> String:
 	return str(CONTENT_REVISIONS.get(id, ""))
+
+func upgrade_demo_progress(data: Variant) -> void:
+	if not data is Dictionary or data.get("version") != 1 or not data.get("guests") is Dictionary: return
+	var old: Variant = data.guests.get("stick")
+	if not old is Dictionary or old.get("content_revision") == content_revision("stick"): return
+	var done: Variant = old.get("completed")
+	if not (done is int or done is float) or not is_finite(float(done)) or done < 0 or done > 5 or done != floor(done): return
+	old.completed = mini(int(done), 3)
+	old.pending = {}
+
+func upgrade_demo_session(data: Variant) -> void:
+	if not data is Dictionary or data.get("guest_id") != "stick" or data.get("content_revision") == content_revision("stick"): return
+	if data.get("phase") not in ["story", "idle"]: return
+	var old_id := str(data.get("episode_id", ""))
+	if old_id not in ["stick_03", "stick_04", "stick_05"]: return
+	var chapter: Dictionary = catalog.stick[2]
+	data.episode_id = chapter.id
+	data.history = []
+	if old_id in ["stick_04", "stick_05"] or data.phase == "idle":
+		data.phase = "idle"
+		data.node_id = "closing"
+		data.speech = str(chapter.nodes.closing.text)
+		data.idle_index = -1
+	else:
+		data.node_id = chapter.entry
+		data.speech = str(chapter.nodes[chapter.entry].text)
+	data.taste_event_id = ""
+	data.content_revision = content_revision("stick")
 
 func migrate_content_progress() -> void:
 	# Preserve completed chapters and identity. Restart only an unfinished revised chapter.

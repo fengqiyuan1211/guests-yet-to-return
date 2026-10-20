@@ -72,8 +72,8 @@
   },
   "yellow_creature": {
     "yellow_ski": {
-      "name": "奶龙大冒险",
-      "description": "踩着扁牛滑过雪山，跳过石头和倒木，在雪崩追上之前回到酒馆。首次通关获得传说吧勺「我是奶龙」。",
+      "name": "奶蛙大冒险",
+      "description": "踩着扁牛滑过雪山，跳过石头和倒木，在雪崩追上之前回到酒馆。首次通关获得传说吧勺「我是奶蛙」。",
       "route": "yellow_ski",
       "demo_unlocked": false,
       "guest_id": "yellow_creature",

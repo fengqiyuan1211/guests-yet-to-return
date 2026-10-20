@@ -18,7 +18,7 @@ func run() -> void:
 	check(MenuCatalog.load_state() and MenuCatalog.entries[0].price==fixed,"legacy menu price migrated on load")
 	check(MenuCatalog.menu_for_ai().selected_drinks[0].price==fixed,"poster/AI uses fixed price")
 	check(MenuCatalog.save_state(),"migrated menu can be saved")
-	var source_profiles: Array=JournalData.profiles()
+	var source_profiles: Array=JournalData.profiles().filter(func(profile): return StoryDialogue.catalog.has(profile.id))
 	var index:=0
 	for profile in source_profiles:
 		for chapter in StoryDialogue.catalog[profile.id]:

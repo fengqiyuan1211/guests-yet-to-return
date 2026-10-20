@@ -305,7 +305,7 @@ func _show_category(value: String) -> void:
 		title.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
 		if value=="器具":
 			b.set_script(ToolButton)
-			b.tooltip_text="传说吧勺 · 我是奶龙\n拖入打开的杯子或搅拌杯，按住画圈搅拌。" if id=="tool_yellow_bar_spoon" else ToolHelp.description(id)
+			b.tooltip_text="传说吧勺 · 我是奶蛙\n拖入打开的杯子或搅拌杯，按住画圈搅拌。" if id=="tool_yellow_bar_spoon" else ToolHelp.description(id)
 			if id=="tool_yellow_bar_spoon":
 				b.add_theme_stylebox_override("normal",_style(Color(.77,.58,.29,.16),Color("d4ad59")))
 				_text(b,Rect2(4,144,124,20),"传说",14,Color("986e25")).horizontal_alignment=HORIZONTAL_ALIGNMENT_CENTER
@@ -625,7 +625,7 @@ func _equip_spoon(id: String, target: String) -> void:
 		return
 	_select(target)
 	_set_technique("stir")
-	status_label.text="%s已插入，按住杯中吧勺画圈搅拌。" % ("「我是奶龙」" if id=="tool_yellow_bar_spoon" else "吧勺")
+	status_label.text="%s已插入，按住杯中吧勺画圈搅拌。" % ("「我是奶蛙」" if id=="tool_yellow_bar_spoon" else "吧勺")
 
 func _prop(id: String) -> void:
 	if data.get("status")!="mixing": return

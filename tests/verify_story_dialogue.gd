@@ -72,7 +72,7 @@ func run() -> void:
 	StoryDialogue.progress = {}
 	for i in range(guests.profiles.size()):
 		var id: String = guests.profiles[i].id
-		var count := 1 if id == "yellow_creature" else 5
+		var count: int = StoryDialogue.catalog[id].size()
 		for visit in range(count):
 			guests.show_guest(i)
 			await settle()
@@ -128,14 +128,14 @@ func run() -> void:
 			else:
 				click(home.get_node("%TalkButton"))
 				await settle()
-				check(StoryDialogue.speech == "我是奶龙" and home.story_choices.get_child(0).text == "我才是奶龙", "Yellow creature repeats only its fixed gag")
+				check(StoryDialogue.speech == "我是奶蛙" and home.story_choices.get_child(0).text == "我才是奶蛙", "Yellow creature repeats only its fixed gag")
 		if id != "yellow_creature":
 			guests.show_guest(i)
-			check(StoryDialogue.phase == "idle", "After five visits no sixth chapter")
+			check(StoryDialogue.phase == "idle", "After all authored visits no extra chapter")
 	# Unfinished choice/reply survives a new process-style reload and route changes.
 	StoryDialogue.load_progress()
 	for id in ["milo", "ada", "hank", "stick"]:
-		check(int(StoryDialogue.progress[id].completed) == 5, "All five chapters persisted independently: " + id)
+		check(int(StoryDialogue.progress[id].completed) == StoryDialogue.catalog[id].size(), "All authored chapters persisted independently: " + id)
 	StoryDialogue.progress = {}
 	guests.show_guest(0)
 	await settle()

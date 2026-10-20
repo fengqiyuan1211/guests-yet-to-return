@@ -19,7 +19,7 @@ SYSTEM = """你为游戏《致未归的客人》写喝完酒后的短对话。�
 像人聊天，少逗号，少感叹号。不要写舞台说明、分析、评分数字或技术名词，也不要说“偏好+10”“Buff加分”等规则提示。用口味和感受自然表达喜好。
 人物：小线是以前出演4399小游戏的演员，记挂长大后没有回来的玩家；米洛是旅行者；
 艾达是骑手；老霍克是小镇老人。只接续输入里已经说过的故事，不透露未讲的章节。
-角色身份尚未介绍时不得自报名字。黄色生物只说“我是奶龙”，直接结束。
+角色身份尚未介绍时不得自报名字。黄色生物只说“我是奶蛙”，直接结束。
 必须以实际数值与目标差异为准。偏甜/偏酸/偏苦/偏烈只有超出对应容差时才说；
 actual.status不为complete时不要断言味道；review.status为rejected时说明碰到了忌口。
 previous_drink为空就不能说“上次”。有上次数据时，只在实际属性相差超过5时比较。
@@ -96,7 +96,7 @@ def validate_turn(turn, round_number):
 
 def generate(data, config):
     if data['guest'].get('id') == 'yellow_creature':
-        return {'text': '我是奶龙', 'emotion': 'neutral', 'replies': [], 'end': True}
+        return {'text': '我是奶蛙', 'emotion': 'neutral', 'replies': [], 'end': True}
     key = config.get('DEEPSEEK_API_KEY', '')
     if not key: raise ValueError('not_configured')
     base = config.get('DEEPSEEK_BASE_URL', 'https://api.deepseek.com').rstrip('/')

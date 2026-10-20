@@ -175,6 +175,7 @@ func _select_guest(id: String) -> void:
 	_refresh()
 
 func _select_tab(index: int) -> void:
+	if index == 3 and not _has_unlocked_activity(selected_id): return
 	tab = index
 	page = 0
 	_render_content()
@@ -258,6 +259,10 @@ func _render_profile() -> void:
 func _render_content() -> void:
 	_clear(content)
 	content_scroll.scroll_vertical = 0
+	var has_game := _has_unlocked_activity(selected_id)
+	if tab == 3 and not has_game: tab = 0
+	tab_buttons[3].text = "专属小游戏" if has_game else "？"
+	tab_buttons[3].disabled = not has_game
 	for i in range(tab_buttons.size()):
 		tab_buttons[i].add_theme_stylebox_override("normal",_style(Color("916033") if i == tab else Color("59402b")))
 	if not Relationships.known(selected_id):
@@ -463,6 +468,7 @@ func _activities() -> void:
 		_label(content,"这位客人还没有留下小游戏邀请。",22)
 		return
 	for item in items:
+		if not item.unlocked: continue
 		var column := _card(content)
 		_label(column,str(item.name),26)
 		_label(column,str(item.description),21,MUTED)
@@ -473,7 +479,6 @@ func _activities() -> void:
 		if item.demo and not item.unlocked: action.tooltip_text = "内测演示：暂时开放体验，不代表正式剧情已解锁；不推进剧情、不发放奖励。"
 		if item.id in preload("res://scripts/guest_activity_rules.gd").IDS:
 			var info: Dictionary=GuestActivities.progress(item.id)
-			_label(column,"邀请进度："+GuestActivities.requirement_text(item.id,true),20)
 			if int(info.required_chapters)<StoryDialogue.catalog.get(selected_id,[]).size():
 				_label(column,"小游戏解锁后，后面的来访故事仍会继续。",19,MUTED)
 			if not info.keepsake.is_empty():
@@ -499,4 +504,9 @@ func _launch_activity(id: String) -> void:
 func _has_demo(id: String) -> bool:
 	for item in Data.activities(id,StoryDialogue.progress):
 		if item.demo: return true
+	return false
+
+func _has_unlocked_activity(id: String) -> bool:
+	for item in Data.activities(id, StoryDialogue.progress):
+		if item.unlocked: return true
 	return false

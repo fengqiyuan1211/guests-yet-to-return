@@ -1,11 +1,28 @@
+# Godot generates these locally. Keep .import settings and script .uid files.
 .godot/
 *.translation
-.DS_Store
-exports/
 
-# Local API secrets and generated service state
+# Local credentials and service state
 .env
 .env.*
 !.env.example
+**/.venv/
+**/venv/
+services/*/var/
+services/.runtime/
+
+# Build output, previews, caches and editor files
+exports/
+output/
+.codex-backups/
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+*.swp
+.idea/
+.vscode/

@@ -1,0 +1,9 @@
+{
+  "id": "childhood_keepsake",
+  "name": "童年拾忆",
+  "tool": "built-in image_gen",
+  "transparent_background": true,
+  "image_path": "res://assets/art/cocktails/childhood_keepsake_pixel.png",
+  "style_revision": "pixel-20261020",
+  "prompt": "Create a finished pixel-art inventory illustration for a cozy nostalgic tavern game, a cocktail called Childhood Keepsake (童年拾忆). One isolated elegant tall highball glass, straight sides subtly tapering toward a thick glass base, centered and fully visible, viewed mostly from the front with a slight view of the oval rim. Recipe: white rum 35 ml, maraschino cherry liqueur 10 ml, fresh lime juice 15 ml, cola 90 ml, ice cubes, exactly one glossy deep red cocktail cherry with a thin curved stem perched at the rim. Liquid is translucent deep cola brown with warm amber highlights, not orange juice, not opaque black. Several clear chunky ice cubes emerge at the top and are visible through the drink, delicate tiny carbonation bubbles, a thin restrained line of fizz at the rim, not a beer foam head. The cherry is the charming focal accent. Beautiful hand-placed 16-bit RPG pixel art, visibly coarse clean square pixel clusters as if designed on a 128 by 160 sprite grid then nearest-neighbor enlarged; crisp stepped outlines, limited thoughtful palette, warm amber and cream highlights with subtle muted blue-gray glass reflections. Polished readable silhouette and attractive balanced proportions, handcrafted shading using 3-5 discrete tones per material. Fill about 85 percent of the canvas height, moderate margins, glass body about 40 percent of canvas width. Actual transparent alpha background, including around the stem. No backdrop, no checkerboard pattern, no floor or cast shadow, no props, no extra fruit or lime garnish, no straw, no text, no frame, no watermark. Absolutely no photorealism, smooth gradients, blur, vector styling, or photographic texture."
+}

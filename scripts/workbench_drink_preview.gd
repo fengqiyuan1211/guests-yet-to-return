@@ -4,7 +4,10 @@ const Liquid=preload("res://scripts/workbench_liquid.gd")
 const Mint=preload("res://scripts/workbench_mint.gd")
 const Ice=preload("res://scripts/workbench_ice.gd")
 const Garnish=preload("res://scripts/workbench_garnish.gd")
-var result: Dictionary={}
+var result: Dictionary={}:
+	set(value):
+		result = value
+		if is_inside_tree(): _load_saved_art()
 var accent:=Color("dbb455")
 var clock:=0.0
 var saved_art: Texture2D
@@ -12,10 +15,15 @@ var reference_only := false
 var tabletop_shadow := false
 
 func _ready() -> void:
+	_load_saved_art()
+
+func _load_saved_art() -> void:
+	saved_art = null
 	var path:=str(result.get("image_path",""))
 	if not reference_only and path.begins_with("user://") and FileAccess.file_exists(path):
 		var picture:=Image.load_from_file(path)
 		if picture != null: saved_art=ImageTexture.create_from_image(picture)
+	queue_redraw()
 
 func _init() -> void:
 	texture_filter=CanvasItem.TEXTURE_FILTER_NEAREST

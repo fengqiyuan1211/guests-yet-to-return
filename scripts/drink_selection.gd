@@ -174,7 +174,7 @@ func _select(id: String) -> void:
 	for key in buttons: buttons[key].add_theme_stylebox_override("normal",_style(Color("996e3c") if key==id else Color("62462e")))
 	var recipe: Dictionary=MenuCatalog.get_recipe(id)
 	diy_preview.visible=recipe.get("source_kind","")=="diy"
-	diy_preview.result=recipe.get("result",{}).duplicate(true)
+	diy_preview.result=preload("res://scripts/research_data.gd").preview_result(recipe)
 	drink_image.visible=not diy_preview.visible
 	if recipe.is_empty():
 		title.text="酒单还空着"

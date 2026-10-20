@@ -292,7 +292,7 @@ func _library() -> void:
 	var preview:=Preview.new()
 	preview.position=Vector2(390,80)
 	preview.size=Vector2(300,325)
-	preview.result=record.result
+	preview.result=Research.preview_result(record)
 	body.add_child(preview)
 	_button(body,Rect2(390,412,300,46),"以此研发新的一杯",func():
 		base_id=selected_id

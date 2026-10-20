@@ -464,6 +464,7 @@ func _prepare_serve(who: int) -> void:
 
 func result() -> Dictionary:
 	return {"match_id": match_id, "minigame_id": Rules.GAME_ID, "guest_id": "stick",
+		"target_score": Rules.TARGET,
 		"finish_reason": "target_score_reached", "player_score": player_score, "stick_score": ai_score,
 		"outcome": "win" if player_score >= Rules.TARGET else "lose", "longest_rally": longest_rally,
 		"player_legal_actions": player_actions, "assist_used": assist_used}

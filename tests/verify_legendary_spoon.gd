@@ -64,7 +64,7 @@ func _ready() -> void:
 	Supplies.inventory.restore(locked); Supplies.save_state()
 	check(GuestActivities.migrate_legacy_ski_spoon() and not Supplies.is_owned(ITEM),"migration receipt prevents old records regranting after reset")
 	check(Supplies.grant_activity_equipment(ITEM,"yellow_ski"),"restore test reward")
-	check(WorkbenchSession.pantry_items("器具").has([ITEM,"我是奶龙"]),"reward available in tool pantry")
+	check(WorkbenchSession.pantry_items("器具").has([ITEM,"我是奶蛙"]),"reward available in tool pantry")
 	SlotWallet.balance=10000; SlotWallet.persist()
 	check(Supplies.purchase("sku_gin_london_dry",1),"stock for stirring test")
 	check(issue("pour","withdraw",{"material":"gin","ml":30,"vessel":"glass"}),"liquid for stirring test")
@@ -93,7 +93,7 @@ func _ready() -> void:
 	bench.queue_free(); await frames()
 	var bag=load("res://scenes/backpack.tscn").instantiate(); add_child(bag); await frames()
 	bag._select_item(ITEM); await frames()
-	check(bag.detail_name.text=="我是奶龙" and bag.detail_status.text.contains("传说"),"backpack details use player-facing name and rarity")
+	check(bag.detail_name.text=="我是奶蛙" and bag.detail_status.text.contains("传说"),"backpack details use player-facing name and rarity")
 	if "--spoon-capture" in OS.get_cmdline_user_args():
 		await RenderingServer.frame_post_draw
 		get_viewport().get_texture().get_image().save_png("/tmp/legendary-spoon-backpack.png")

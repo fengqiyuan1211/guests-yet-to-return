@@ -7,18 +7,6 @@
       "status": "active",
       "background": "res://assets/art/opening/harbor-sunset.png",
       "ocean": true
-    },
-    {
-      "id": "porch_lantern",
-      "status": "reserved",
-      "concept": "res://docs/剧情设计/开始界面概念-20261016/images/B-留一盏灯.png",
-      "note": "预留剧情条件，尚不自动切换"
-    },
-    {
-      "id": "tide_letter",
-      "status": "reserved",
-      "concept": "res://docs/剧情设计/开始界面概念-20261016/images/C-潮汐来信.png",
-      "note": "预留剧情条件，尚不自动切换"
     }
   ]
 }

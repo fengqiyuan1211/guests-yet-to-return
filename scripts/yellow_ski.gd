@@ -138,7 +138,7 @@ func _panel(title: String,body: String,width:=880.0,height:=540.0) -> void:
 
 func _intro() -> void:
 	pause_button.disabled=true
-	_panel("奶龙大冒险","趴好，牛来。我们下山。
+	_panel("奶蛙大冒险","趴好，牛来。我们下山。
 
 01   轻点起跳，越过石头和倒木
 02   腾空后按住，慢慢转过一整圈
@@ -251,11 +251,11 @@ func _finish() -> void:
 	_save_record()
 	var total:=model.score+model.distance()
 	var title:="到酒馆了！" if model.state=="won" else "它从雪里探出了头"
-	var body:="我是奶龙。" if model.state=="won" else "牛还在。抖掉身上的雪，再来一次。"
+	var body:="我是奶蛙。" if model.state=="won" else "牛还在。抖掉身上的雪，再来一次。"
 	if model.state=="won":
 		var already_owned := Supplies.is_owned("tool_yellow_bar_spoon")
 		if _claim_spoon():
-			body+="\n（它把一把长得像自己的吧勺塞给你。）\n传说吧勺「我是奶龙」"+("已在背包里。" if already_owned else "已收入背包。")
+			body+="\n（它把一把长得像自己的吧勺塞给你。）\n传说吧勺「我是奶蛙」"+("已在背包里。" if already_owned else "已收入背包。")
 		else:
 			body+="\n"+Supplies.last_error+" 返回时会再次尝试。"
 	_panel(title,body+"\n\n"+record_error,880,550)

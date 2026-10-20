@@ -7,6 +7,12 @@ const ATTRS := ["alcohol_intensity", "sweetness", "sourness", "bitterness"]
 static func config() -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string(CONFIG_PATH))
 
+static func codex_cover(recipe: Dictionary) -> Texture2D:
+	var path := str(recipe.get("codex_image_path", ""))
+	if path.begins_with("res://") and ResourceLoader.exists(path):
+		return load(path) as Texture2D
+	return null
+
 static func fresh() -> Dictionary:
 	return {"version":1,"inspiration":int(config().initial_inspiration),"serial":0,"recipes":{},"saved_drinks":{},"acquired":{},"mastered":{},"versions":{},"archived":{},"memory_matches":{},"story_items":{}}
 
@@ -32,7 +38,7 @@ static func valid(value: Variant) -> bool:
 		if not id is String or value.archived[id]!=true or value.recipes.has(id): return false
 	if not value.get("memory_matches", {}) is Dictionary: return false
 	for id in value.get("memory_matches", {}):
-		if not preload("res://scripts/stick_memory_rules.gd").valid_result(value.memory_matches[id]) or value.memory_matches[id].match_id != id: return false
+		if not preload("res://scripts/stick_memory_rules.gd").valid_result(value.memory_matches[id], true) or value.memory_matches[id].match_id != id: return false
 	if not value.get("story_items", {}) is Dictionary: return false
 	for id in value.get("story_items", {}):
 		var item: Variant = value.story_items[id]
@@ -171,7 +177,12 @@ static func valid_image(value: Variant, require_file := false) -> bool:
 	return not require_file or (value.get("confirmed",false) and FileAccess.file_exists(path) and Image.load_from_file(path) != null)
 
 static func preview_result(recipe: Dictionary) -> Dictionary:
-	if recipe.has("result"): return recipe.result.duplicate(true)
+	if recipe.has("result"):
+		var preview: Dictionary = recipe.result.duplicate(true)
+		# Saved covers belong to the recipe version; older snapshots predate confirmation.
+		if not str(recipe.get("image_path", "")).is_empty():
+			preview.image_path = recipe.image_path
+		return preview
 	var liquids: Dictionary={}
 	var garnishes: Array=[]
 	for row: Dictionary in recipe.get("ingredients",[]):

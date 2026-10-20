@@ -339,6 +339,7 @@
       "version": "childhood-keepsake-1",
       "name": "童年拾忆",
       "english_name": "CHILDHOOD KEEPSAKE",
+      "codex_image_path": "res://assets/art/cocktails/childhood_keepsake_pixel.png",
       "type": "特调",
       "category": "传说",
       "source_item_id": "item_recipe_after_school",

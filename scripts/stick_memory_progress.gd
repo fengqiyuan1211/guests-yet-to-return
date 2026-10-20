@@ -1,5 +1,5 @@
 extends RefCounted
-## Story invitation uses the final customer total of the five fixed, settled story cups.
+## Story invitation uses the final customer total of the three fixed, settled story cups.
 const PATH := "res://data/minigames/stick_badminton.json"
 
 static func config() -> Dictionary:

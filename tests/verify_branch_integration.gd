@@ -114,6 +114,9 @@ func run() -> void:
 	await feedback()
 	# The formal badminton scene is reachable from the journal, and its exit returns there.
 	Navigation.journal_focus_guest="stick"; Navigation.go_to(&"journal"); await settle(); bench=home.active_page
+	bench._launch_activity("stick_minigame"); await settle()
+	check(Navigation.current_route==&"journal","unearned badminton remains locked")
+	StoryDialogue.unlock_activity("stick","stick_minigame","test-earned-invitation")
 	bench._launch_activity("stick_minigame"); await settle(); bench=home.active_page
 	check(Navigation.current_route==&"stick_badminton" and bench.match_context.mode=="practice","journal launches formal badminton in practice mode")
 	bench.close_requested.emit(); await settle(); check(Navigation.current_route==&"journal","badminton returns to journal")

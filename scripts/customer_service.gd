@@ -343,7 +343,7 @@ func _memory_reception_ready() -> bool:
 	if not writable or state.active.get("guest_id") != "stick" or str(state.active.get("id", "")).is_empty(): return false
 	if StoryDialogue.guest_id != "stick" or StoryDialogue.phase != "idle": return false
 	var record := current_record()
-	# Eligibility belongs to the five story cups. A later reunion needs no sixth purchase.
+	# Eligibility belongs to the authored story cups. A later reunion needs no extra purchase.
 	if record.is_empty(): return state.active.get("order", {}).is_empty()
 	return record.status == "settled" and record.feedback.done and not record.feedback.pending
 
@@ -684,7 +684,7 @@ func _fallback(record: Dictionary, round_number: int) -> Dictionary:
 	elif round_number == 3:
 		text = "刚才的事还没说完。我接着讲，你再听一会儿？" if StoryDialogue.guest_id == record.guest_id and StoryDialogue.phase == "story" else "今晚先到这里吧。我该走了，下次见。"
 		emotion = "pleased" if record.review.get("satisfied", false) else "neutral"
-	if record.guest_id == "yellow_creature": return {"text": "我是奶龙", "emotion": "neutral", "replies": [], "end": true}
+	if record.guest_id == "yellow_creature": return {"text": "我是奶蛙", "emotion": "neutral", "replies": [], "end": true}
 	return {"text": text, "emotion": emotion, "replies": ["这个味道你喜欢吗？", "下次我记着你的口味。"] if round_number < 3 else [], "end": round_number >= 3}
 
 func average_stars() -> float:

@@ -99,7 +99,7 @@ func run() -> void:
 	await get_tree().process_frame
 	card = card_for(RECIPE)
 	check(MenuCatalog.get_recipe(RECIPE).unlocked and not card.disabled, "Buying all required materials permanently enables the card")
-	check(card.tooltip_text == "查看酒谱" and card.mouse_default_cursor_shape == Control.CURSOR_POINTING_HAND, "Unlocked card uses its ordinary viewing hint and hand cursor")
+	check(card.tooltip_text == "新解锁 · 打开酒谱查看后消除提示" and card.mouse_default_cursor_shape == Control.CURSOR_POINTING_HAND, "Newly unlocked card uses its discovery hint and hand cursor")
 	click_at(card.get_global_rect().get_center())
 	await get_tree().process_frame
 	check(journal.detail_id == RECIPE, "Native click opens only the now-unlocked recipe")

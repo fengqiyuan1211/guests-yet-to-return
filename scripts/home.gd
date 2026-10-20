@@ -49,6 +49,7 @@ func _ready() -> void:
 	if arrival_presenting: TimeManager.set_running(false)
 	for activity in preload("res://scripts/guest_activity_rules.gd").IDS:
 		Navigation.register_page(StringName(activity),preload("res://scenes/guest_activity.tscn"))
+	Navigation.register_page(&"yellow_ski", preload("res://scenes/yellow_ski.tscn"))
 	Navigation.register_page(&"stick_demo",preload("res://scenes/stick_badminton_demo.tscn"))
 	Navigation.register_page(&"journal",preload("res://scenes/guest_journal.tscn"))
 	Navigation.register_page(&"drink_selection", preload("res://scenes/drink_selection.tscn"))
@@ -90,8 +91,10 @@ func _ready() -> void:
 	StoryDialogue.changed.connect(_render_dialogue)
 	GuestService.changed.connect(_on_customer_changed)
 	CustomerService.changed.connect(_on_customer_changed)
+	GuestActivities.changed.connect(_on_customer_changed)
 	_on_customer_changed()
 	%GuestLayer.guest_spawned.connect(_on_guest_spawned)
+	%GuestLayer.yellow_laugh_finished.connect(_on_yellow_laugh_finished)
 	%NextGuestButton.hide()
 	%TalkButton.hide()
 	%GuestPortrait.hide()
@@ -134,14 +137,20 @@ func _setup_recipe_unlock_hint() -> void:
 	button.add_child(badge)
 	badge.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	badge.position = Vector2(button.size.x-29,7)
-	var refresh := func():
-		var ids: Array = MenuCatalog.new_recipe_ids()
-		highlight.active = not ids.is_empty()
-		badge.visible = not ids.is_empty()
-		button.tooltip_text = "有 %d 款新解锁酒谱，打开对应酒谱查看。" % ids.size() if not ids.is_empty() else ""
-	MenuCatalog.changed.connect(refresh)
-	WorkbenchSession.changed.connect(refresh)
-	refresh.call()
+	MenuCatalog.changed.connect(_refresh_recipe_unlock_hint)
+	WorkbenchSession.changed.connect(_refresh_recipe_unlock_hint)
+	_refresh_recipe_unlock_hint()
+
+func _refresh_recipe_unlock_hint() -> void:
+	var button: Button = find_child("CodexButton",true,false)
+	if not is_instance_valid(button): return
+	var highlight = button.get_node_or_null("NewRecipesHighlight")
+	var badge = button.get_node_or_null("NewRecipesBadge")
+	if not is_instance_valid(highlight) or not is_instance_valid(badge): return
+	var ids: Array = MenuCatalog.new_recipe_ids()
+	highlight.active = not ids.is_empty()
+	badge.visible = not ids.is_empty()
+	button.tooltip_text = "有 %d 款新解锁酒谱，打开对应酒谱查看。" % ids.size() if not ids.is_empty() else ""
 
 func _setup_settings_button() -> void:
 	var emblem: TextureRect = find_child("Emblem", true, false)
@@ -283,6 +292,7 @@ func _sync_service_controls() -> void:
 		%ShiftStatus.text = "备料中 · 20:00 开门"
 
 func _on_next_guest_pressed() -> void:
+	if _show_activity_invitation(): return
 	if service_started and Navigation.current_route == &"home":
 		if _memory_invitation_available():
 			_show_memory_invitation()
@@ -526,6 +536,7 @@ func _render_dialogue() -> void:
 			%GuestSpeech.text = str(_memory_lines.farewell)
 			_clear_story_choices()
 		return
+	if _show_activity_invitation(): return
 	var legacy_receipt:=GuestService.visit_receipt(reception_id)
 	if not legacy_receipt.is_empty():
 		_clear_story_choices(); _layout_dialogue(false)
@@ -644,6 +655,8 @@ func _render_customer_feedback() -> void:
 		%GuestTags.text += "    " + "★".repeat(int(review.stars)) + "☆".repeat(5 - int(review.stars))
 	%OrderKicker.hide()
 	%NoteOrder.hide()
+	if _show_yellow_laugh(record): return
+	if _show_activity_invitation(): return
 	%NextGuestButton.disabled = record.status != "settled" or not feedback.done or StoryDialogue.phase == "story"
 	%NextGuestButton.text = "送客，结束营业" if TimeManager.closing_pending else "送客，迎接下一位"
 	if feedback.done:
@@ -686,15 +699,55 @@ func _render_customer_feedback() -> void:
 			button.pressed.connect(CustomerService.choose_feedback.bind(i, round_number))
 			story_choices.add_child(button)
 
+func _show_yellow_laugh(record: Dictionary) -> bool:
+	if Navigation.current_route != &"home" or %GuestLayer.spawned_profile.get("id") != "yellow_creature": return false
+	if not %GuestLayer.yellow_laugh_active() and preload("res://scripts/yellow_laugh_rules.gd").eligible(record):
+		if CustomerService.claim_yellow_laugh(str(record.id)):
+			%GuestLayer.play_yellow_laugh()
+	if not %GuestLayer.yellow_laugh_active(): return false
+	%GuestSpeech.text = "（它抱住肚子笑弯了腰，连帽子都跟着一颤一颤的。）"
+	%NextGuestButton.disabled = true
+	%TalkButton.hide()
+	_clear_story_choices()
+	find_child("GuestDialogue", true, false).mouse_default_cursor_shape = Control.CURSOR_ARROW
+	return true
+
+func _on_yellow_laugh_finished() -> void:
+	# Guest/mode changes can finish the effect while rebuilding the home. Render after that.
+	call_deferred("_render_dialogue")
+
+func _show_activity_invitation() -> bool:
+	if Navigation.current_route!=&"home" or %GuestLayer.yellow_laugh_active(): return false
+	var id:=GuestActivities.current_invitation()
+	if id.is_empty() or GuestActivities.config(id).guest_id!=guest_profile.get("id"): return false
+	var c:=GuestActivities.config(id)
+	_clear_story_choices(); _layout_dialogue(true)
+	%GuestSpeech.text=str(c.invitation)
+	%GuestTags.text="向你发出了邀请 · "+str(c.name); %GuestTags.show()
+	%GuestSpeech.size.y=60
+	%GuestTags.position.y=148
+	story_choices.show()
+	%TalkButton.hide(); %NextGuestButton.disabled=true
+	_memory_choice(str(c.get("invitation_accept","接受邀请")),_accept_activity_invitation.bind(id))
+	_memory_choice("稍后去，先把邀请收好",_defer_activity_invitation.bind(id))
+	find_child("GuestDialogue",true,false).mouse_default_cursor_shape=Control.CURSOR_ARROW
+	return true
+
+func _accept_activity_invitation(id: String) -> void:
+	if not GuestActivities.acknowledge_invitation(id): return
+	Navigation.go_to(StringName(GuestActivities.config(id).route))
+
+func _defer_activity_invitation(id: String) -> void:
+	if GuestActivities.acknowledge_invitation(id): _render_dialogue()
+
 func _show_activity_hint() -> void:
+	if _show_activity_invitation(): return
 	if PlayModes.mode!="story" or StoryDialogue.phase=="story": return
-	var invitations:=0
-	for activity in preload("res://scripts/guest_activity_rules.gd").IDS:
-		if GuestActivities.config(activity).guest_id==StoryDialogue.guest_id and GuestActivities.progress(activity).unlocked:
-			invitations+=1
-	if invitations>0:
-		%GuestTags.text+=" · %d 个小游戏邀请已收进手帐" % invitations
-		%GuestTags.show()
+	for id in preload("res://scripts/guest_activity_rules.gd").INVITATION_IDS:
+		if GuestActivities.config(id).guest_id==StoryDialogue.guest_id and GuestActivities.progress(id).unlocked:
+			%GuestTags.text+=" · 小游戏邀请已收进手帐"
+			%GuestTags.show()
+			break
 
 func _update_bottom_status() -> void:
 	if guest_profile.is_empty():

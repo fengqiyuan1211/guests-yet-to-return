@@ -22,20 +22,8 @@
         {
           "id": "stick_03",
           "episode": 3,
-          "title": "箱子里还有一本旧戏",
-          "file": "stick/03.json"
-        },
-        {
-          "id": "stick_04",
-          "episode": 4,
-          "title": "这次约好了下周",
-          "file": "stick/04.json"
-        },
-        {
-          "id": "stick_05",
-          "episode": 5,
           "title": "致未归的客人",
-          "file": "stick/05.json"
+          "file": "stick/03.json"
         }
       ]
     },

@@ -214,6 +214,11 @@ func run() -> void:
 		var v3_save: Dictionary=OpeningFlow.upgrade_story_progress(v2_save)
 		check(OpeningFlow.valid(v3_save) and v3_save.node==OpeningFlow.node_index("s04_06") and v3_save.mail_read.private_letter,"v2 resume remaps by stable ID and preserves mail")
 		check(v3_save.history.has("s04_06") and not v3_save.history.has("s04_wait_00"),"migrated backlog never invents newly inserted dialogue")
+		var decoded_v2: Variant = JSON.parse_string(JSON.stringify(v2_save))
+		check(OpeningFlow.valid(OpeningFlow.upgrade_story_progress(decoded_v2)),"JSON v2 numeric version upgrades after real file decoding")
+		var decoded_legacy: Variant = JSON.parse_string('{"arrival_pending":false,"choices":{},"legacy":true,"mail_read":{},"node":0,"node_id":"s01_00","phase":"ready","reward_claimed":false,"stock":{},"story_version":2,"tutorial":{},"tutorial_status":"not_started","version":1}')
+		var legacy_ready: Dictionary = OpeningFlow.upgrade_story_progress(decoded_legacy)
+		check(OpeningFlow.valid(legacy_ready) and legacy_ready.legacy and legacy_ready.phase=="ready","existing ready profile stays playable without resetting progress")
 		v2_save.node_id="invalid"
 		check(not OpeningFlow.valid(OpeningFlow.upgrade_story_progress(v2_save)),"inconsistent old node/index is rejected")
 		var v3_ids: Array=JSON.parse_string(FileAccess.get_file_as_string("res://data/opening/story-v3-index.json"))

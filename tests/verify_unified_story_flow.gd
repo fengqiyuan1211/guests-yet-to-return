@@ -12,25 +12,25 @@ func _ready() -> void:
 
 func gate_checks() -> void:
 	for guest in ["stick","milo","ada","hank","yellow_creature"]:
-		var chapters:=Gate.episodes(guest); var story:={"completed":5,"heard":{}}; var cups:={}
-		for i in range(5):
+		var chapters:=Gate.episodes(guest); var story:={"completed":chapters.size(),"heard":{}}; var cups:={}
+		for i in range(chapters.size()):
 			var key:=str(i); cups[key]={"id":key,"guest_id":guest,"status":"settled","play_mode":"story","visit_serial":i+1,"visit_id":"v"+key,"story_episode_id":chapters[i].id,"story_completed":true,"review":{"status":"scored","satisfaction":60.0},"craft":{"score":100.0}}
 		check(not Gate.summarize(guest,story,chapters,cups).eligible,"exactly 60 never qualifies: "+guest)
-		cups["4"].review.satisfaction=60.01
+		cups[str(chapters.size()-1)].review.satisfaction=60.01
 		check(Gate.summarize(guest,story,chapters,cups).eligible,"unrounded average strictly >60: "+guest)
-		cups["4"].review.satisfaction=0.0
+		cups[str(chapters.size()-1)].review.satisfaction=0.0
 		check(not Gate.summarize(guest,story,chapters,cups).eligible,"final cup is included: "+guest)
-		cups["4"].review.satisfaction=100; cups["4"].play_mode="mixing"
+		cups[str(chapters.size()-1)].review.satisfaction=100; cups[str(chapters.size()-1)].play_mode="mixing"
 		check(not Gate.summarize(guest,story,chapters,cups).eligible,"free mode excluded: "+guest)
-		cups["4"].play_mode="story"; cups["4"].status="prepared"
+		cups[str(chapters.size()-1)].play_mode="story"; cups[str(chapters.size()-1)].status="prepared"
 		check(not Gate.summarize(guest,story,chapters,cups).eligible,"unsettled cup excluded: "+guest)
-		cups["4"].status="settled"; cups["4"].story_completed=false
+		cups[str(chapters.size()-1)].status="settled"; cups[str(chapters.size()-1)].story_completed=false
 		check(not Gate.summarize(guest,story,chapters,cups).eligible,"unfinished story excluded: "+guest)
-		cups["4"].story_completed=true; cups["0"].review={"status":"rejected","satisfaction":null}
-		check(Gate.summarize(guest,story,chapters,cups).average==56,"refusal is zero and retains slot: "+guest)
+		cups[str(chapters.size()-1)].story_completed=true; cups["0"].review={"status":"rejected","satisfaction":null}
+		check(Gate.summarize(guest,story,chapters,cups).average==(60.0*(chapters.size()-2)+100)/chapters.size(),"refusal is zero and retains slot: "+guest)
 		var duplicate: Dictionary=cups["0"].duplicate(true); duplicate.id="repeat"; duplicate.visit_id="repeat"; duplicate.visit_serial=20; duplicate.review={"status":"scored","satisfaction":100}
 		cups.repeat=duplicate
-		check(Gate.summarize(guest,story,chapters,cups).average==56,"repeats cannot replace first chapter cup: "+guest)
+		check(Gate.summarize(guest,story,chapters,cups).average==(60.0*(chapters.size()-2)+100)/chapters.size(),"repeats cannot replace first chapter cup: "+guest)
 	var crate:=Rules.Crates.fresh()
 	crate=Rules.Crates.apply(crate,"move",{"direction":"L"}).state
 	var restored_crate: Dictionary=JSON.parse_string(JSON.stringify(crate))
@@ -90,10 +90,11 @@ func run() -> void:
 	TimeManager.set_process(false); TimeManager.advance_minutes(posmod(1200-TimeManager.minutes_since_midnight,1440)); await settle()
 	for row in [["milo",0,"milo_ferry"],["ada",1,"ada_watch_memory"],["hank",2,"hank_lantern"],["yellow_creature",4,"yellow_ski"],["stick",3,"stick_minigame"]]:
 		var guest: String=row[0]; var id: String=row[2]
-		for chapter in range(5):
+		var chapter_count: int=StoryDialogue.catalog[guest].size()
+		for chapter in range(chapter_count):
 			home.get_node("%GuestLayer").show_guest(row[1]); await settle()
 			check(CustomerService.state.active.story_episode_id==StoryDialogue.catalog[guest][chapter].id,"current episode demand matches chapter "+guest+str(chapter))
-			if chapter<4: talk_chapter(); await settle()
+			if chapter<chapter_count-1: talk_chapter(); await settle()
 			if guest!="stick": check(not GuestActivities.progress(id).unlocked,"no early invitation before final cup "+guest)
 			home._on_open_pressed(); await settle(); bench=home.active_page
 			check(Navigation.current_route==&"drink_selection","story opens drink selection")
@@ -105,7 +106,7 @@ func run() -> void:
 			check(record.status=="settled" and record.review.satisfaction>60,"actual settled total meets target "+guest)
 			check(SlotWallet.balance==money+record.amount and CustomerService.deliver(result) and SlotWallet.balance==money+record.amount,"single payment despite repeat submit")
 			bench._return_after_serving(); await settle(); await drain_feedback()
-			if chapter==4:
+			if chapter==chapter_count-1:
 				if guest!="stick": check(not GuestActivities.progress(id).unlocked,"finish drinking alone does not skip remaining story")
 				check(CustomerService.resume_served_story(str(record.id)),"can finish story after drinking")
 				var stock_path: String=Supplies.save_path
@@ -119,10 +120,10 @@ func run() -> void:
 			var summary: Dictionary=CustomerService.memory_summary() if guest=="stick" else GuestActivities.progress(id).summary
 			check(summary.score_count==chapter+1,"one final-score receipt per episode")
 			print("FLOW ",guest," chapter=",chapter+1," total=",record.review.satisfaction," craft=",record.craft.score)
-			if chapter<4:
+			if chapter<chapter_count-1:
 				check(not summary.eligible,"four or fewer story cups cannot qualify")
 				home.on_drink_served(); await settle()
-		check((CustomerService.memory_summary() if guest=="stick" else GuestActivities.progress(id).summary).eligible,"all five qualified "+guest)
+		check((CustomerService.memory_summary() if guest=="stick" else GuestActivities.progress(id).summary).eligible,"all configured chapters qualified "+guest)
 		if guest=="stick":
 			check(home._memory_inviting,"final stick feedback automatically starts authored invitation")
 			while CustomerService.memory_dialogue_step("invitation")<2:
@@ -173,8 +174,8 @@ func verify_stick_reward() -> void:
 				if m.shuttle.y<400 and m.shuttle.x<760 and absf(m.shuttle.x-m.player_x)<180 and m.velocity.y>0: m.jump()
 				if m.can_hit(0): m.swing()
 			m.step(1.0/120.0,0,true)
-		if bench.model.player_score==5: won=true; break
-	check(won,"badminton actual simulation can win to five")
+		if bench.model.player_score==3: won=true; break
+	check(won,"badminton actual simulation can win to three")
 	bench._result(); await settle()
 	check(bench.recorded and WorkbenchSession.research_state().story_items.has("item_recipe_after_school"),"formal win grants recipe paper")
 	check(bench._record_result() and WorkbenchSession.research_state().story_items.item_recipe_after_school.quantity==1,"badminton reward idempotent")

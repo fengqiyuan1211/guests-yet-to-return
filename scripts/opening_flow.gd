@@ -96,7 +96,7 @@ func node_index(id: String) -> int:
 func upgrade_story_progress(value: Variant) -> Variant:
 	if not value is Dictionary or value.get("version")!=1: return value
 	if value.get("story_version")==4: return value
-	if value.has("story_version") and value.story_version not in [2,3]: return value
+	if value.has("story_version") and value.story_version != 2 and value.story_version != 3: return value
 	if not value.get("mail_read",{}) is Dictionary: return value
 	var generation:=int(value.get("story_version",1))
 	var legacy: Array=JSON.parse_string(FileAccess.get_file_as_string("res://data/opening/story-v%d-index.json" % generation))

@@ -77,7 +77,16 @@ func _ready() -> void:
 func _recipe(id: String) -> Dictionary:
 	var r:=MenuCatalog.get_recipe(id)
 	if r.is_empty(): r=WorkbenchSession.research_state().recipes.get(id,{}).duplicate(true)
+	if not _recipe_visible(r): return {}
 	return r
+
+func _recipe_visible(recipe: Dictionary) -> bool:
+	if not str(recipe.get("source_guest", "")).is_empty() or recipe.get("unlock_kind") == "legendary_mastery":
+		return WorkbenchSession.research_state().acquired.has(recipe.id)
+	return true
+
+func _catalog_recipes() -> Array:
+	return MenuCatalog.all_recipes().filter(_recipe_visible)
 
 func _load_settings() -> void:
 	var settings: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/codex_settings.json"))
@@ -104,7 +113,7 @@ func _catalog_changed() -> void:
 
 func _visible_recipes() -> Array:
 	if selected_filter==3: return WorkbenchSession.research_recipes()
-	var records := MenuCatalog.all_recipes().filter(func(r: Dictionary): return r.get("unlock_kind")!="legendary_mastery" or WorkbenchSession.research_state().acquired.has(r.id))
+	var records := _catalog_recipes()
 	records.append_array(WorkbenchSession.research_recipes())
 	records.sort_custom(func(a: Dictionary, b: Dictionary): return int(a.get("codex_order", 99999)) < int(b.get("codex_order", 99999)))
 	if selected_filter == 0:
@@ -172,7 +181,9 @@ func _make_page(index: int) -> Control:
 	sheet.add_child(texture)
 	_label(sheet, Rect2(180, 15, 330, 61), "酒 馆 图 鉴", 38)
 	_label(sheet, Rect2(510, 32, 504, 31), "S A L O O N  R E C I P E  J O U R N A L", 16)
-	_label(sheet, Rect2(1030, 27, 166, 34), ("原创配方 %d 款" % WorkbenchSession.research_recipes().size()) if selected_filter==3 else "已点亮 %d / %d" % [MenuCatalog.unlocked_ids.size(), MenuCatalog.all_recipes().size()], 20)
+	var catalog := _catalog_recipes()
+	var lit_count := catalog.filter(func(r: Dictionary): return r.get("unlocked", false)).size()
+	_label(sheet, Rect2(1030, 27, 166, 34), ("原创配方 %d 款" % WorkbenchSession.research_recipes().size()) if selected_filter==3 else "已点亮 %d / %d" % [lit_count, catalog.size()], 20)
 	var records := _visible_recipes()
 	var offset := 1 if reserved_tutorial_slot and selected_filter!=3 else 0
 	for i in range(6):
@@ -217,7 +228,7 @@ func _missing_material_tooltip(recipe_id: String) -> String:
 			var name_value := str(item.get("name", "")).strip_edges()
 			if not name_value.is_empty() and not names.has(name_value):
 				names.append(name_value)
-	return "缺少：\n" + "\n".join(names)
+	return "缺少：\n" + "\n".join(names) if not names.is_empty() else "尚未点亮这份酒谱。"
 
 func _populate_card(card: Button, recipe: Dictionary) -> void:
 	var ink := INK if recipe.unlocked else Color("624e35")
@@ -238,12 +249,16 @@ func _populate_card(card: Button, recipe: Dictionary) -> void:
 		card.add_child(decoration)
 	var drink := TextureRect.new()
 	drink.name = "DrinkPicture"
-	drink.position = Vector2(15, 36)
-	drink.size = Vector2(144, 155)
+	drink.position = Vector2(22, 48)
+	drink.size = Vector2(122, 137)
 	drink.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	drink.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	drink.texture = CocktailDatabase.get_image(str(recipe.id))
-	if drink.texture == null and not str(recipe.get("thumbnail", "")).is_empty() and ResourceLoader.exists(str(recipe.get("thumbnail", ""))):
+	var cover := preload("res://scripts/research_data.gd").codex_cover(recipe)
+	drink.texture = cover if cover != null else CocktailDatabase.get_image(str(recipe.id))
+	if cover != null:
+		drink.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	# Downloaded user:// PNGs are decoded by the preview below, not Godot's import loader.
+	if drink.texture == null and str(recipe.get("thumbnail", "")).begins_with("res://") and ResourceLoader.exists(str(recipe.get("thumbnail", ""))):
 		drink.texture = load(str(recipe.thumbnail))
 	if not recipe.unlocked:
 		var material_instance := ShaderMaterial.new()
@@ -252,20 +267,29 @@ func _populate_card(card: Button, recipe: Dictionary) -> void:
 		drink.modulate.a = 0.82
 	drink.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	card.add_child(drink)
-	if recipe.get("source_kind")=="diy" or recipe.get("unlock_kind")=="legendary_mastery":
+	if cover == null and (recipe.get("source_kind")=="diy" or recipe.get("unlock_kind")=="legendary_mastery"):
 		var preview:=preload("res://scripts/workbench_drink_preview.gd").new()
 		preview.position=drink.position
 		preview.size=drink.size
 		preview.result=preload("res://scripts/research_data.gd").preview_result(recipe)
 		preview.mouse_filter=Control.MOUSE_FILTER_IGNORE
 		card.add_child(preview)
-	var stamp := _panel(card, Rect2(218, 14, 59, 29), _style(Color.TRANSPARENT, Color(0.40, 0.26, 0.11, 0.65)))
-	_label(stamp, Rect2(0, 0, 59, 29), str(recipe.get("type", recipe.category)), 17, ink, HORIZONTAL_ALIGNMENT_CENTER)
-	var title := _label(card, Rect2(153, 66, 133, 37), str(recipe.name), 24 if str(recipe.name).length() > 4 else 26, ink)
+	var stamp := _panel(card, Rect2(191, 14, 86, 29), _style(Color.TRANSPARENT, Color(0.40, 0.26, 0.11, 0.65)))
+	var category := _label(stamp, Rect2(4, 0, 78, 29), str(recipe.get("type", recipe.category)), 16, ink, HORIZONTAL_ALIGNMENT_CENTER)
+	category.name = "RecipeCategory"
+	category.clip_text = true
+	var title := _label(card, Rect2(153, 45, 124, 72), str(recipe.name), 22, ink)
+	title.name = "RecipeTitle"
+	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title.max_lines_visible = 2
 	title.clip_text = true
-	var english := _label(card, Rect2(154, 106, 128, 41), str(recipe.get("english_name", "")), 12, Color("8b7354"))
+	var english := _label(card, Rect2(154, 119, 123, 47), str(recipe.get("english_name", "")), 11, Color("8b7354"))
+	english.name = "RecipeEnglish"
 	english.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_label(card, Rect2(153, 153, 132, 28), " · ".join(recipe.get("mouthfeel_tags", [])), 16, ink)
+	english.max_lines_visible = 3
+	english.clip_text = true
+	var tags := _label(card, Rect2(153, 168, 124, 20), " · ".join(recipe.get("mouthfeel_tags", [])), 14, ink)
+	tags.clip_text = true
 	_label(card, Rect2(43 if not recipe.unlocked else 25, 192, 127, 28), "已点亮" if recipe.unlocked else "未点亮", 16, ink)
 	var progress := MenuCatalog.ingredient_progress(recipe)
 	_label(card, Rect2(168, 193, 111, 27), "原料 %d / %d" % [progress.owned, progress.total], 15, ink, HORIZONTAL_ALIGNMENT_RIGHT)
@@ -274,7 +298,7 @@ func _populate_card(card: Button, recipe: Dictionary) -> void:
 		highlight.name = "NewRecipeHighlight"
 		highlight.active = true
 		card.add_child(highlight)
-		var badge := _label(card,Rect2(111,14,99,29),"新解锁",17,Color("845725"),HORIZONTAL_ALIGNMENT_CENTER)
+		var badge := _label(card,Rect2(98,14,86,29),"新解锁",17,Color("845725"),HORIZONTAL_ALIGNMENT_CENTER)
 		badge.name = "NewRecipeBadge"
 		card.tooltip_text = "新解锁 · 打开酒谱查看后消除提示"
 

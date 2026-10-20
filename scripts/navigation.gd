@@ -4,7 +4,7 @@ signal route_requested(route_id: StringName)
 signal page_changed(route_id: StringName)
 
 const ROUTES: Dictionary = {
-	&"yellow_ski": {"title":"奶龙大冒险"},
+	&"yellow_ski": {"title":"奶蛙大冒险"},
 	&"milo_ferry": {"title":"把路画到家 · 雨后渡口"},
 	&"ada_watch_memory": {"title":"慢半拍的下午"},
 	&"hank_lantern": {"title":"灯下有名 · 风沙前的货棚"},

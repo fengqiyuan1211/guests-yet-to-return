@@ -47,7 +47,7 @@ func run() -> void:
 	check(game.paused,"pause works")
 	game._resume()
 	check(not game.paused,"resume works")
-	game.model.player_score=5
+	game.model.player_score=3
 	game.model.ai_score=2
 	game.model.phase="finished"
 	game._result()
