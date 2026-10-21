@@ -1,0 +1,80 @@
+name: Deploy Godot Web to GitHub Pages
+
+# Publishes a frozen Web export. It does not change ModelScope, COS or DNS.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/deploy-godot-pages.yml]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Download frozen Web export from this repository's Release
+        run: |
+          curl --fail --location --retry 3 --max-time 900 \
+            https://github.com/fengqiyuan1211/guests-yet-to-return/releases/download/web-2026-10-21/guests-web.zip \
+            --output guests-web.zip
+      - name: Verify checksums, resources, size and single-thread compatibility
+        run: |
+          python3 - <<'PYCODE'
+          import hashlib, json, os, pathlib, re, zipfile
+          archive = pathlib.Path("guests-web.zip")
+          expected_zip = "2cc95aaa92efa850e3ba6eca82ecd34ff6e54a0f99a1148bb81c64c97db092d9"
+          assert hashlib.sha256(archive.read_bytes()).hexdigest() == expected_zip, "Release ZIP checksum mismatch"
+          expected = {'index.apple-touch-icon.png': {'bytes': 11939, 'sha256': '071ccd3c3619e62c9e27995cf1afde427bb1b630767801a0fe1ac33505b2f221'}, 'index.audio.position.worklet.js': {'bytes': 2973, 'sha256': 'be33985bc7160d6bf9646f259cd86b259cd67b02ccb297ee5c44f8ac84327bc8'}, 'index.audio.worklet.js': {'bytes': 7298, 'sha256': '5b476a9c9ce642c0ee4256436d1bc31d9c38f868aca0f9a8e2a57c18d2dec2a3'}, 'index.html': {'bytes': 5451, 'sha256': 'c404da7691f19adb9696c4cb5d443259815a29a21f75e0755c229a6db1746c20'}, 'index.icon.png': {'bytes': 5765, 'sha256': '662f81d7672001a6f5f928532493267c226624757de3b5fa2908f6e5923964b7'}, 'index.js': {'bytes': 279815, 'sha256': '33c94cb3175f3333b82e2a3be5e8e86f77986f0aa2042b1631f6367a4e5bb6ba'}, 'index.pck': {'bytes': 262884788, 'sha256': 'f52d7909b3b98e58d948f0a2261e81da67f1a2eeeedd68f21cbc4d637b0c3665'}, 'index.png': {'bytes': 21443, 'sha256': '3cb4495c0b98dfbe4b663cbf2b6836473572339beb66d902367893162a70be0e'}, 'index.wasm': {'bytes': 39514754, 'sha256': 'fc74679e3b97f76878947fcd4fbe1268cbfa6188182a2e33bbc3f5dc9bfa57d0'}}
+          site = pathlib.Path("_site")
+          site.mkdir(exist_ok=True)
+          with zipfile.ZipFile(archive) as bundle:
+              assert set(bundle.namelist()) == set(expected), "Unexpected or missing files"
+              assert sum(x.file_size for x in bundle.infolist()) < 1_000_000_000, "Pages site exceeds 1 GB"
+              for name, metadata in expected.items():
+                  data = bundle.read(name)
+                  assert len(data) == metadata["bytes"], name + ": size mismatch"
+                  assert hashlib.sha256(data).hexdigest() == metadata["sha256"], name + ": checksum mismatch"
+                  assert not data.startswith(b"version https://git-lfs.github.com/spec/v1"), "Unresolved LFS pointer: " + name
+                  (site / name).write_bytes(data)
+          html = (site / "index.html").read_text()
+          assert "const GODOT_THREADS_ENABLED = false;" in html, "Pages needs a single-threaded export"
+          config = json.loads(re.search(r"const GODOT_CONFIG = (.*?);", html).group(1))
+          for name, size in config["fileSizes"].items():
+              assert (site / name).stat().st_size == size, "HTML resource size mismatch: " + name
+          assert (site / "index.wasm").read_bytes()[:4] == b"\x00asm", "Invalid WebAssembly file"
+          assert (site / "index.pck").read_bytes()[:4] == b"GDPC", "Invalid Godot pack"
+          assert not (site / "CNAME").exists(), "Use github.io only; do not change the custom domain"
+          (site / ".nojekyll").touch()
+          (site / "build.json").write_text(json.dumps({"release": "web-2026-10-21", "archive_sha256": expected_zip, "workflow_commit": os.environ.get("GITHUB_SHA", "local-validation"), "files": expected}, indent=2) + "\n")
+          print("Validated", len(expected), "Web files;", sum(x["bytes"] for x in expected.values()), "bytes")
+          PYCODE
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
+        with:
+          path: _site
+          retention-days: 1
+
+  deploy:
+    needs: package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
