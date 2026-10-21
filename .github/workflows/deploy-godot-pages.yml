@@ -55,6 +55,25 @@ jobs:
           (site / "build.json").write_text(json.dumps({"release": "web-2026-10-21", "archive_sha256": expected_zip, "workflow_commit": os.environ.get("GITHUB_SHA", "local-validation"), "files": expected}, indent=2) + "\n")
           print("Validated", len(expected), "Web files;", sum(x["bytes"] for x in expected.values()), "bytes")
           PYCODE
+      - name: Fix Godot Web audio bus append routing
+        run: |
+          python3 - <<'PYCODE'
+          # Godot upstream issue https://github.com/godotengine/godot/issues/119026
+          # Keep append (-1) from reordering Master and disconnecting the browser output.
+          import hashlib,json,pathlib
+          site=pathlib.Path('_site')
+          p=site/'index.js'
+          js=p.read_text()
+          old='if(index!==newBus.getId()){GodotAudio.Bus.move(newBus.getId(),index)}'
+          new='if(index!==-1&&index!==newBus.getId()){GodotAudio.Bus.move(newBus.getId(),index)}'
+          assert js.count(old)==1, 'Unexpected engine version: review the Web audio bus workaround'
+          p.write_text(js.replace(old,new))
+          metadata=json.loads((site/'build.json').read_text())
+          metadata['patches']=['godot-web-audio-append-bus-119026']
+          metadata['files']['index.js']={'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
+          (site/'build.json').write_text(json.dumps(metadata,indent=2)+'\n')
+          print('Patched Godot Web audio bus append; updated published JS checksum')
+          PYCODE
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
